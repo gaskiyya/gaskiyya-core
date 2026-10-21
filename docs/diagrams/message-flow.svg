@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="diagram" viewBox="0 0 1200 796" role="img" aria-labelledby="message-flow-title message-flow-desc">
+<title id="message-flow-title">Message registration and verification</title>
+<desc id="message-flow-desc">The bank registers a fingerprint before sending. The customer later checks the same fingerprint, bound to their own number.</desc>
+<style>.bg{fill:#ffffff}
+.lane{stroke-width:1}
+.lane-bank{fill:#f3f5f8;stroke:#d8dee6}
+.lane-gk{fill:#eef8f3;stroke:#bfe3d1}
+.lane-cust{fill:#fbf6ee;stroke:#ecdcc0}
+.lane-plain{fill:#f6f6f3;stroke:#e1e1da}
+.lane-label{font:700 11px Inter,system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase}
+.lane-label.bank{fill:#4a5a6e}.lane-label.gk{fill:#0a7a55}.lane-label.cust{fill:#9a6a1c}.lane-label.plain{fill:#6b716d}
+.node{fill:#ffffff;stroke:#c9d0d8;stroke-width:1.2}
+.node.gk{stroke:#0a7a55;stroke-width:1.5}
+.node.cust{stroke:#d9a441}
+.node.bank{stroke:#8494a7}
+.node.muted{fill:#f7f7f5;stroke:#c9ccc8;stroke-dasharray:4 3}
+.node.good{fill:#e7f6ee;stroke:#0a7a55;stroke-width:1.5}
+.node.warn{fill:#fff4e5;stroke:#d9890b;stroke-width:1.5}
+.node.bad{fill:#fdecea;stroke:#c8372d;stroke-width:1.5}
+.node.dec{fill:#ffffff;stroke:#4a5a6e;stroke-width:1.3}
+.t{font:600 13.5px Inter,system-ui,sans-serif;fill:#0e1512}
+.ts{font:400 11.5px Inter,system-ui,sans-serif;fill:#59645e}
+.tm{font:500 11px "SF Mono",Menlo,Consolas,monospace;fill:#0e1512}
+.edge{fill:none;stroke:#3d4843;stroke-width:1.4}
+.edge.gk{stroke:#0a7a55}
+.edge.dash{stroke-dasharray:5 4}
+.edge.soft{stroke:#9aa39e}
+.arrow{fill:#3d4843}.arrow.gk{fill:#0a7a55}.arrow.soft{fill:#9aa39e}
+.el{font:500 11px Inter,system-ui,sans-serif;fill:#26302b}
+.elb{fill:#ffffff;opacity:.94}
+.step{fill:#0a7a55}
+.stepn{font:700 10.5px Inter,system-ui,sans-serif;fill:#ffffff}
+.life{stroke:#b9c0bc;stroke-width:1.2;stroke-dasharray:3 4}
+.act{fill:#e7f6ee;stroke:#0a7a55;stroke-width:1}
+.note{fill:#fffaf0;stroke:#e6cf9c}
+.cap{font:400 11px Inter,system-ui,sans-serif;fill:#6b716d}</style>
+<defs><marker id="message-flow-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow " d="M0 0 L10 5 L0 10 z"/></marker><marker id="message-flow-ink-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow " d="M0 0 L10 5 L0 10 z"/></marker><marker id="message-flow-gk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow gk" d="M0 0 L10 5 L0 10 z"/></marker><marker id="message-flow-gk-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow gk" d="M0 0 L10 5 L0 10 z"/></marker><marker id="message-flow-soft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow soft" d="M0 0 L10 5 L0 10 z"/></marker><marker id="message-flow-soft-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow soft" d="M0 0 L10 5 L0 10 z"/></marker></defs>
+<rect class="bg" x="0" y="0" width="1200" height="796"/>
+<rect class="node bank" x="49" y="24" width="206" height="58" rx="10"/>
+<text class="t" x="152" y="50" text-anchor="middle">Notification service</text>
+<text class="ts" x="152" y="66" text-anchor="middle">Bank</text>
+<line class="life" x1="152" y1="82" x2="152" y2="726"/>
+<rect class="node bank" x="273" y="24" width="206" height="58" rx="10"/>
+<text class="t" x="376" y="50" text-anchor="middle">SMS gateway</text>
+<text class="ts" x="376" y="66" text-anchor="middle">Bank</text>
+<line class="life" x1="376" y1="82" x2="376" y2="726"/>
+<rect class="node gk" x="497" y="24" width="206" height="58" rx="10"/>
+<text class="t" x="600" y="50" text-anchor="middle">Gaskiyya registry</text>
+<text class="ts" x="600" y="66" text-anchor="middle">API, key service</text>
+<line class="life" x1="600" y1="82" x2="600" y2="726"/>
+<rect class="node gk" x="721" y="24" width="206" height="58" rx="10"/>
+<text class="t" x="824" y="50" text-anchor="middle">Registry store</text>
+<text class="ts" x="824" y="66" text-anchor="middle">Keyed hashes</text>
+<line class="life" x1="824" y1="82" x2="824" y2="726"/>
+<rect class="node cust" x="945" y="24" width="206" height="58" rx="10"/>
+<text class="t" x="1048" y="50" text-anchor="middle">Customer app</text>
+<text class="ts" x="1048" y="66" text-anchor="middle">Bank app or Gaskiyya</text>
+<line class="life" x1="1048" y1="82" x2="1048" y2="726"/>
+<rect class="note" x="140" y="100" width="187.84" height="40" rx="8"/>
+<text class="el" x="170" y="117" text-anchor="start">Canonicalise the text,</text>
+<text class="el" x="170" y="131" text-anchor="start">SHA-256 to contentDigest</text>
+<path class="edge " d="M156 176 L594 176" marker-end="url(#message-flow-ink)"/>
+<rect class="note" x="588" y="198" width="212.48000000000002" height="40" rx="8"/>
+<text class="el" x="618" y="215" text-anchor="start">HMAC the number and digest</text>
+<text class="el" x="618" y="229" text-anchor="start">with the bank key, drop both</text>
+<path class="edge " d="M604 274 L818 274" marker-end="url(#message-flow-ink)"/>
+<path class="edge soft dash" d="M596 320 L158 320" marker-end="url(#message-flow-soft)"/>
+<path class="edge " d="M156 366 L370 366" marker-end="url(#message-flow-ink)"/>
+<path class="edge " d="M380 412 L1042 412" marker-end="url(#message-flow-ink)"/>
+<rect class="note" x="972.16" y="468" width="187.84" height="40" rx="8"/>
+<text class="el" x="1002.16" y="485" text-anchor="start">Same canonicalisation</text>
+<text class="el" x="1002.16" y="499" text-anchor="start">and SHA-256 on the phone</text>
+<path class="edge " d="M1044 544 L606 544" marker-end="url(#message-flow-ink)"/>
+<path class="edge " d="M604 590 L818 590" marker-end="url(#message-flow-ink)"/>
+<path class="edge soft dash" d="M820 636 L606 636" marker-end="url(#message-flow-soft)"/>
+<path class="edge gk" d="M604 682 L1042 682" marker-end="url(#message-flow-gk)"/>
+<text class="cap" x="600" y="750" text-anchor="middle">The message text never leaves the bank or the phone. Only the 64-character digest travels.</text>
+<circle class="step" cx="155" cy="120" r="10"/><text class="stepn" x="155" y="123.7" text-anchor="middle">1</text>
+<rect class="elb" x="254.27999999999997" y="142" width="243.44000000000003" height="31" rx="5"/>
+<text class="tm" x="387" y="154" text-anchor="middle">POST /v1/messages</text>
+<text class="el" x="387" y="167" text-anchor="middle">recipient, contentDigest, category</text>
+<circle class="step" cx="265.28" cy="156.5" r="10"/><text class="stepn" x="265.28" y="160.2" text-anchor="middle">2</text>
+<circle class="step" cx="603" cy="218" r="10"/><text class="stepn" x="603" y="221.7" text-anchor="middle">3</text>
+<rect class="elb" x="621.08" y="253" width="181.84" height="18" rx="5"/>
+<text class="el" x="723" y="265" text-anchor="middle">Write record with expiry</text>
+<circle class="step" cx="632.08" cy="261" r="10"/><text class="stepn" x="632.08" y="264.7" text-anchor="middle">4</text>
+<rect class="elb" x="288.15999999999997" y="299" width="175.68" height="18" rx="5"/>
+<text class="el" x="387" y="311" text-anchor="middle">202 recordId, expiresAt</text>
+<circle class="step" cx="299.15999999999997" cy="307" r="10"/><text class="stepn" x="299.15999999999997" y="310.7" text-anchor="middle">5</text>
+<rect class="elb" x="154.6" y="345" width="218.8" height="18" rx="5"/>
+<text class="el" x="275" y="357" text-anchor="middle">Hand off the unchanged message</text>
+<circle class="step" cx="165.6" cy="353" r="10"/><text class="stepn" x="165.6" y="356.7" text-anchor="middle">6</text>
+<rect class="elb" x="621.08" y="391" width="181.84" height="18" rx="5"/>
+<text class="el" x="723" y="403" text-anchor="middle">SMS reaches the customer</text>
+<circle class="step" cx="632.08" cy="399" r="10"/><text class="stepn" x="632.08" y="402.7" text-anchor="middle">7</text>
+<rect class="elb" x="455.55999999999995" y="440" width="288.88000000000005" height="20" rx="6"/>
+<text class="cap" x="600" y="454" text-anchor="middle">Later, when the customer doubts the message</text>
+<circle class="step" cx="987.16" cy="488" r="10"/><text class="stepn" x="987.16" y="491.7" text-anchor="middle">8</text>
+<rect class="elb" x="714.6" y="510" width="218.8" height="31" rx="5"/>
+<text class="tm" x="835" y="522" text-anchor="middle">POST /v1/verify/message</text>
+<text class="el" x="835" y="535" text-anchor="middle">contentDigest + customer token</text>
+<circle class="step" cx="725.6" cy="524.5" r="10"/><text class="stepn" x="725.6" y="528.2" text-anchor="middle">9</text>
+<rect class="elb" x="608.76" y="569" width="206.48000000000002" height="18" rx="5"/>
+<text class="el" x="723" y="581" text-anchor="middle">Exact lookup for this number</text>
+<circle class="step" cx="619.76" cy="577" r="10"/><text class="stepn" x="619.76" y="580.7" text-anchor="middle">10</text>
+<rect class="elb" x="627.24" y="615" width="169.52" height="18" rx="5"/>
+<text class="el" x="723" y="627" text-anchor="middle">Record, none, or error</text>
+<circle class="step" cx="638.24" cy="623" r="10"/><text class="stepn" x="638.24" y="626.7" text-anchor="middle">11</text>
+<rect class="elb" x="683.8" y="661" width="280.40000000000003" height="18" rx="5"/>
+<text class="el" x="835" y="673" text-anchor="middle">confirmed, not_confirmed or cannot_check</text>
+<circle class="step" cx="694.8" cy="669" r="10"/><text class="stepn" x="694.8" y="672.7" text-anchor="middle">12</text>
+</svg>

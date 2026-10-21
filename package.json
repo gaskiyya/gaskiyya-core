@@ -7,14 +7,18 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -p tsconfig.json && vite build",
-    "preview": "vite preview",
+    "dev": "vite --mode site",
+    "build": "pnpm typecheck && pnpm build:ui",
+    "build:ui": "pnpm build:site",
+    "build:site": "vite build --mode site",
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@gaskiya/canonical": "workspace:^",
+    "@gaskiya/schemas": "workspace:^",
     "react": "^19",
-    "react-dom": "^19"
+    "react-dom": "^19",
+    "thinking-orbs": "0.3.2"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",

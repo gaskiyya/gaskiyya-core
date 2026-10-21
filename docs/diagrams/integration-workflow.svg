@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="diagram" viewBox="0 0 1200 330" role="img" aria-labelledby="integration-workflow-title integration-workflow-desc">
+<title id="integration-workflow-title">Bank integration workflow</title>
+<desc id="integration-workflow-desc">Five stages take a bank from agreement to production: agree, set up, connect, test, then pilot and expand.</desc>
+<style>.bg{fill:#ffffff}
+.lane{stroke-width:1}
+.lane-bank{fill:#f3f5f8;stroke:#d8dee6}
+.lane-gk{fill:#eef8f3;stroke:#bfe3d1}
+.lane-cust{fill:#fbf6ee;stroke:#ecdcc0}
+.lane-plain{fill:#f6f6f3;stroke:#e1e1da}
+.lane-label{font:700 11px Inter,system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase}
+.lane-label.bank{fill:#4a5a6e}.lane-label.gk{fill:#0a7a55}.lane-label.cust{fill:#9a6a1c}.lane-label.plain{fill:#6b716d}
+.node{fill:#ffffff;stroke:#c9d0d8;stroke-width:1.2}
+.node.gk{stroke:#0a7a55;stroke-width:1.5}
+.node.cust{stroke:#d9a441}
+.node.bank{stroke:#8494a7}
+.node.muted{fill:#f7f7f5;stroke:#c9ccc8;stroke-dasharray:4 3}
+.node.good{fill:#e7f6ee;stroke:#0a7a55;stroke-width:1.5}
+.node.warn{fill:#fff4e5;stroke:#d9890b;stroke-width:1.5}
+.node.bad{fill:#fdecea;stroke:#c8372d;stroke-width:1.5}
+.node.dec{fill:#ffffff;stroke:#4a5a6e;stroke-width:1.3}
+.t{font:600 13.5px Inter,system-ui,sans-serif;fill:#0e1512}
+.ts{font:400 11.5px Inter,system-ui,sans-serif;fill:#59645e}
+.tm{font:500 11px "SF Mono",Menlo,Consolas,monospace;fill:#0e1512}
+.edge{fill:none;stroke:#3d4843;stroke-width:1.4}
+.edge.gk{stroke:#0a7a55}
+.edge.dash{stroke-dasharray:5 4}
+.edge.soft{stroke:#9aa39e}
+.arrow{fill:#3d4843}.arrow.gk{fill:#0a7a55}.arrow.soft{fill:#9aa39e}
+.el{font:500 11px Inter,system-ui,sans-serif;fill:#26302b}
+.elb{fill:#ffffff;opacity:.94}
+.step{fill:#0a7a55}
+.stepn{font:700 10.5px Inter,system-ui,sans-serif;fill:#ffffff}
+.life{stroke:#b9c0bc;stroke-width:1.2;stroke-dasharray:3 4}
+.act{fill:#e7f6ee;stroke:#0a7a55;stroke-width:1}
+.note{fill:#fffaf0;stroke:#e6cf9c}
+.cap{font:400 11px Inter,system-ui,sans-serif;fill:#6b716d}</style>
+<defs><marker id="integration-workflow-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow " d="M0 0 L10 5 L0 10 z"/></marker><marker id="integration-workflow-ink-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow " d="M0 0 L10 5 L0 10 z"/></marker><marker id="integration-workflow-gk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow gk" d="M0 0 L10 5 L0 10 z"/></marker><marker id="integration-workflow-gk-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow gk" d="M0 0 L10 5 L0 10 z"/></marker><marker id="integration-workflow-soft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow soft" d="M0 0 L10 5 L0 10 z"/></marker><marker id="integration-workflow-soft-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow soft" d="M0 0 L10 5 L0 10 z"/></marker></defs>
+<rect class="bg" x="0" y="0" width="1200" height="330"/>
+<rect class="lane lane-plain" x="20" y="20" width="208" height="290" rx="16"/>
+<circle class="step" cx="50" cy="54" r="15"/><text class="stepn" style="font-size:13px" x="50" y="58.5" text-anchor="middle">1</text>
+<text class="t" x="74" y="52" text-anchor="start">Agree</text>
+<text class="ts" x="74" y="69" text-anchor="start">Review and scope</text>
+<line class="life" style="stroke-dasharray:none" x1="36" y1="94" x2="212" y2="94"/>
+<circle class="step" cx="44" cy="120" r="3"/>
+<text class="ts" x="56" y="124" text-anchor="start">Data protection review</text>
+<text class="ts" x="56" y="140" text-anchor="start">under the NDPA</text>
+<circle class="step" cx="44" cy="166" r="3"/>
+<text class="ts" x="56" y="170" text-anchor="start">Bank-hosted or shared</text>
+<circle class="step" cx="44" cy="196" r="3"/>
+<text class="ts" x="56" y="200" text-anchor="start">Choose the first</text>
+<text class="ts" x="56" y="216" text-anchor="start">message type</text>
+<circle class="step" cx="44" cy="242" r="3"/>
+<text class="ts" x="56" y="246" text-anchor="start">Data processing terms</text>
+<path class="edge gk" d="M232 54 L254 54" marker-end="url(#integration-workflow-gk)"/>
+<rect class="lane lane-plain" x="258" y="20" width="208" height="290" rx="16"/>
+<circle class="step" cx="288" cy="54" r="15"/><text class="stepn" style="font-size:13px" x="288" y="58.5" text-anchor="middle">2</text>
+<text class="t" x="312" y="52" text-anchor="start">Set up</text>
+<text class="ts" x="312" y="69" text-anchor="start">Tenant and credentials</text>
+<line class="life" style="stroke-dasharray:none" x1="274" y1="94" x2="450" y2="94"/>
+<circle class="step" cx="282" cy="120" r="3"/>
+<text class="ts" x="294" y="124" text-anchor="start">Tenant: id, name and</text>
+<text class="ts" x="294" y="140" text-anchor="start">official domains</text>
+<circle class="step" cx="282" cy="166" r="3"/>
+<text class="ts" x="294" y="170" text-anchor="start">Hashing key in your KMS</text>
+<circle class="step" cx="282" cy="196" r="3"/>
+<text class="ts" x="294" y="200" text-anchor="start">OAuth client per system</text>
+<circle class="step" cx="282" cy="226" r="3"/>
+<text class="ts" x="294" y="230" text-anchor="start">mTLS and IP allowlist</text>
+<circle class="step" cx="282" cy="256" r="3"/>
+<text class="ts" x="294" y="260" text-anchor="start">Fraud desk email list</text>
+<path class="edge gk" d="M470 54 L492 54" marker-end="url(#integration-workflow-gk)"/>
+<rect class="lane lane-plain" x="496" y="20" width="208" height="290" rx="16"/>
+<circle class="step" cx="526" cy="54" r="15"/><text class="stepn" style="font-size:13px" x="526" y="58.5" text-anchor="middle">3</text>
+<text class="t" x="550" y="52" text-anchor="start">Connect</text>
+<text class="ts" x="550" y="69" text-anchor="start">Four touchpoints</text>
+<line class="life" style="stroke-dasharray:none" x1="512" y1="94" x2="688" y2="94"/>
+<circle class="step" cx="520" cy="120" r="3"/>
+<text class="ts" x="532" y="124" text-anchor="start">Register each message</text>
+<text class="ts" x="532" y="140" text-anchor="start">before hand-off</text>
+<circle class="step" cx="520" cy="166" r="3"/>
+<text class="ts" x="532" y="170" text-anchor="start">Announce calls before</text>
+<text class="ts" x="532" y="186" text-anchor="start">dialling</text>
+<circle class="step" cx="520" cy="212" r="3"/>
+<text class="ts" x="532" y="216" text-anchor="start">Sign customer tokens</text>
+<text class="ts" x="532" y="232" text-anchor="start">and publish the JWKS</text>
+<circle class="step" cx="520" cy="258" r="3"/>
+<text class="ts" x="532" y="262" text-anchor="start">Fraud desk on the API</text>
+<path class="edge gk" d="M708 54 L730 54" marker-end="url(#integration-workflow-gk)"/>
+<rect class="lane lane-plain" x="734" y="20" width="208" height="290" rx="16"/>
+<circle class="step" cx="764" cy="54" r="15"/><text class="stepn" style="font-size:13px" x="764" y="58.5" text-anchor="middle">4</text>
+<text class="t" x="788" y="52" text-anchor="start">Test</text>
+<text class="ts" x="788" y="69" text-anchor="start">Before customers see it</text>
+<line class="life" style="stroke-dasharray:none" x1="750" y1="94" x2="926" y2="94"/>
+<circle class="step" cx="758" cy="120" r="3"/>
+<text class="ts" x="770" y="124" text-anchor="start">Pass all 36 shared</text>
+<text class="ts" x="770" y="140" text-anchor="start">test vectors</text>
+<circle class="step" cx="758" cy="166" r="3"/>
+<text class="ts" x="770" y="170" text-anchor="start">Searchable within 2 s</text>
+<circle class="step" cx="758" cy="196" r="3"/>
+<text class="ts" x="770" y="200" text-anchor="start">Retries reuse the</text>
+<text class="ts" x="770" y="216" text-anchor="start">idempotency key</text>
+<circle class="step" cx="758" cy="242" r="3"/>
+<text class="ts" x="770" y="246" text-anchor="start">A tampered copy is</text>
+<text class="ts" x="770" y="262" text-anchor="start">not confirmed</text>
+<path class="edge gk" d="M946 54 L968 54" marker-end="url(#integration-workflow-gk)"/>
+<rect class="lane lane-plain" x="972" y="20" width="208" height="290" rx="16"/>
+<circle class="step" cx="1002" cy="54" r="15"/><text class="stepn" style="font-size:13px" x="1002" y="58.5" text-anchor="middle">5</text>
+<text class="t" x="1026" y="52" text-anchor="start">Pilot and expand</text>
+<text class="ts" x="1026" y="69" text-anchor="start">Measure coverage</text>
+<line class="life" style="stroke-dasharray:none" x1="988" y1="94" x2="1164" y2="94"/>
+<circle class="step" cx="996" cy="120" r="3"/>
+<text class="ts" x="1008" y="124" text-anchor="start">One message type and</text>
+<text class="ts" x="1008" y="140" text-anchor="start">a small customer group</text>
+<circle class="step" cx="996" cy="166" r="3"/>
+<text class="ts" x="1008" y="170" text-anchor="start">Track coverage in</text>
+<text class="tm" x="1008" y="186" text-anchor="start">/v1/metrics</text>
+<circle class="step" cx="996" cy="212" r="3"/>
+<text class="ts" x="1008" y="216" text-anchor="start">Expand once nearly every</text>
+<text class="ts" x="1008" y="232" text-anchor="start">message is registered</text>
+<circle class="step" cx="996" cy="258" r="3"/>
+<text class="ts" x="1008" y="262" text-anchor="start">Then calls and WhatsApp</text>
+</svg>

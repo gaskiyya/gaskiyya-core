@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="diagram" viewBox="0 0 1200 572" role="img" aria-labelledby="identity-flow-title identity-flow-desc">
+<title id="identity-flow-title">Customer identity</title>
+<desc id="identity-flow-desc">The bank backend signs a short-lived token naming the customer. Gaskiyya checks it against the bank published keys and never sees a password.</desc>
+<style>.bg{fill:#ffffff}
+.lane{stroke-width:1}
+.lane-bank{fill:#f3f5f8;stroke:#d8dee6}
+.lane-gk{fill:#eef8f3;stroke:#bfe3d1}
+.lane-cust{fill:#fbf6ee;stroke:#ecdcc0}
+.lane-plain{fill:#f6f6f3;stroke:#e1e1da}
+.lane-label{font:700 11px Inter,system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase}
+.lane-label.bank{fill:#4a5a6e}.lane-label.gk{fill:#0a7a55}.lane-label.cust{fill:#9a6a1c}.lane-label.plain{fill:#6b716d}
+.node{fill:#ffffff;stroke:#c9d0d8;stroke-width:1.2}
+.node.gk{stroke:#0a7a55;stroke-width:1.5}
+.node.cust{stroke:#d9a441}
+.node.bank{stroke:#8494a7}
+.node.muted{fill:#f7f7f5;stroke:#c9ccc8;stroke-dasharray:4 3}
+.node.good{fill:#e7f6ee;stroke:#0a7a55;stroke-width:1.5}
+.node.warn{fill:#fff4e5;stroke:#d9890b;stroke-width:1.5}
+.node.bad{fill:#fdecea;stroke:#c8372d;stroke-width:1.5}
+.node.dec{fill:#ffffff;stroke:#4a5a6e;stroke-width:1.3}
+.t{font:600 13.5px Inter,system-ui,sans-serif;fill:#0e1512}
+.ts{font:400 11.5px Inter,system-ui,sans-serif;fill:#59645e}
+.tm{font:500 11px "SF Mono",Menlo,Consolas,monospace;fill:#0e1512}
+.edge{fill:none;stroke:#3d4843;stroke-width:1.4}
+.edge.gk{stroke:#0a7a55}
+.edge.dash{stroke-dasharray:5 4}
+.edge.soft{stroke:#9aa39e}
+.arrow{fill:#3d4843}.arrow.gk{fill:#0a7a55}.arrow.soft{fill:#9aa39e}
+.el{font:500 11px Inter,system-ui,sans-serif;fill:#26302b}
+.elb{fill:#ffffff;opacity:.94}
+.step{fill:#0a7a55}
+.stepn{font:700 10.5px Inter,system-ui,sans-serif;fill:#ffffff}
+.life{stroke:#b9c0bc;stroke-width:1.2;stroke-dasharray:3 4}
+.act{fill:#e7f6ee;stroke:#0a7a55;stroke-width:1}
+.note{fill:#fffaf0;stroke:#e6cf9c}
+.cap{font:400 11px Inter,system-ui,sans-serif;fill:#6b716d}</style>
+<defs><marker id="identity-flow-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow " d="M0 0 L10 5 L0 10 z"/></marker><marker id="identity-flow-ink-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow " d="M0 0 L10 5 L0 10 z"/></marker><marker id="identity-flow-gk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow gk" d="M0 0 L10 5 L0 10 z"/></marker><marker id="identity-flow-gk-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow gk" d="M0 0 L10 5 L0 10 z"/></marker><marker id="identity-flow-soft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow soft" d="M0 0 L10 5 L0 10 z"/></marker><marker id="identity-flow-soft-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow soft" d="M0 0 L10 5 L0 10 z"/></marker></defs>
+<rect class="bg" x="0" y="0" width="1200" height="572"/>
+<rect class="node cust" x="121.66666666666666" y="24" width="210" height="58" rx="10"/>
+<text class="t" x="226.66666666666666" y="50" text-anchor="middle">Customer app</text>
+<text class="ts" x="226.66666666666666" y="66" text-anchor="middle">Logged in</text>
+<line class="life" x1="226.66666666666666" y1="82" x2="226.66666666666666" y2="502"/>
+<rect class="node bank" x="495" y="24" width="210" height="58" rx="10"/>
+<text class="t" x="600" y="50" text-anchor="middle">Mobile banking backend</text>
+<text class="ts" x="600" y="66" text-anchor="middle">Bank</text>
+<line class="life" x1="600" y1="82" x2="600" y2="502"/>
+<rect class="node gk" x="868.3333333333333" y="24" width="210" height="58" rx="10"/>
+<text class="t" x="973.3333333333333" y="50" text-anchor="middle">Gaskiyya customer API</text>
+<text class="ts" x="973.3333333333333" y="66" text-anchor="middle">Token check</text>
+<line class="life" x1="973.3333333333333" y1="82" x2="973.3333333333333" y2="502"/>
+<path class="edge " d="M230.66666666666666 124 L594 124" marker-end="url(#identity-flow-ink)"/>
+<path class="edge " d="M230.66666666666666 170 L594 170" marker-end="url(#identity-flow-ink)"/>
+<rect class="note" x="588" y="185" width="249.44000000000003" height="54" rx="8"/>
+<text class="el" x="618" y="202" text-anchor="start">Sign a JWT: iss = bank id,</text>
+<text class="el" x="618" y="216" text-anchor="start">sub = E.164 number, aud = gaskiya,</text>
+<text class="el" x="618" y="230" text-anchor="start">ES256, RS256 or EdDSA, 15 min max</text>
+<path class="edge soft dash" d="M596 268 L232.66666666666666 268" marker-end="url(#identity-flow-soft)"/>
+<path class="edge " d="M230.66666666666666 314 L967.3333333333333 314" marker-end="url(#identity-flow-ink)"/>
+<path class="edge  dash" d="M969.3333333333333 360 L606 360" marker-end="url(#identity-flow-ink)"/>
+<rect class="note" x="961.3333333333333" y="382" width="187.84" height="40" rx="8"/>
+<text class="el" x="991.3333333333333" y="399" text-anchor="start">Check signature, issuer,</text>
+<text class="el" x="991.3333333333333" y="413" text-anchor="start">audience, age and number</text>
+<path class="edge gk" d="M969.3333333333333 458 L232.66666666666666 458" marker-end="url(#identity-flow-gk)"/>
+<text class="cap" x="600" y="526" text-anchor="middle">Gaskiyya never receives a password, PIN or session cookie. The token is the only proof of identity.</text>
+<rect class="elb" x="263.8933333333333" y="103" width="298.88000000000005" height="18" rx="5"/>
+<text class="el" x="424.3333333333333" y="115" text-anchor="middle">Customer signs in with the bank's own login</text>
+<circle class="step" cx="274.8933333333333" cy="111" r="10"/><text class="stepn" x="274.8933333333333" y="114.7" text-anchor="middle">1</text>
+<rect class="elb" x="322.4133333333333" y="149" width="181.84" height="18" rx="5"/>
+<text class="el" x="424.3333333333333" y="161" text-anchor="middle">Ask for a Gaskiyya token</text>
+<circle class="step" cx="333.4133333333333" cy="157" r="10"/><text class="stepn" x="333.4133333333333" y="160.7" text-anchor="middle">2</text>
+<circle class="step" cx="603" cy="212" r="10"/><text class="stepn" x="603" y="215.7" text-anchor="middle">3</text>
+<rect class="elb" x="380.9333333333333" y="247" width="64.80000000000001" height="18" rx="5"/>
+<text class="el" x="424.3333333333333" y="259" text-anchor="middle">Token</text>
+<circle class="step" cx="391.9333333333333" cy="255" r="10"/><text class="stepn" x="391.9333333333333" y="258.7" text-anchor="middle">4</text>
+<rect class="elb" x="456.71999999999997" y="293" width="286.56000000000006" height="18" rx="5"/>
+<text class="el" x="611" y="305" text-anchor="middle">API call with Authorization: Bearer token</text>
+<circle class="step" cx="467.71999999999997" cy="301" r="10"/><text class="stepn" x="467.71999999999997" y="304.7" text-anchor="middle">5</text>
+<rect class="elb" x="621.8266666666666" y="339" width="329.68" height="18" rx="5"/>
+<text class="el" x="797.6666666666666" y="351" text-anchor="middle">Fetch the JWKS from tokenKeysUrl (cached 10 min)</text>
+<circle class="step" cx="632.8266666666666" cy="347" r="10"/><text class="stepn" x="632.8266666666666" y="350.7" text-anchor="middle">6</text>
+<circle class="step" cx="976.3333333333333" cy="402" r="10"/><text class="stepn" x="976.3333333333333" y="405.7" text-anchor="middle">7</text>
+<rect class="elb" x="475.2" y="437" width="249.60000000000002" height="18" rx="5"/>
+<text class="el" x="611" y="449" text-anchor="middle">Result for this number only, or 401</text>
+<circle class="step" cx="486.2" cy="445" r="10"/><text class="stepn" x="486.2" y="448.7" text-anchor="middle">8</text>
+</svg>
