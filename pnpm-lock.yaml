@@ -63,12 +63,18 @@ importers:
       '@gaskiya/schemas':
         specifier: workspace:^
         version: link:../schemas
+      '@fastify/static':
+        specifier: ^10.1.5
+        version: 10.1.5
       '@google-cloud/firestore':
         specifier: ^9.3.1
         version: 9.3.1
       '@google/genai':
         specifier: ^2.27.0
         version: 2.27.0(@modelcontextprotocol/sdk@1.32.1(zod@4.6.5))
+      fastify:
+        specifier: ^5
+        version: 5.12.5
       jose:
         specifier: ^6.2.12
         version: 6.2.12
