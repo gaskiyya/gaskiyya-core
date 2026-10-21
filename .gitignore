@@ -1,4 +1,19 @@
 node_modules
 dist
+coverage
 *.local
 .DS_Store
+.env
+.env.*
+!.env.example
+.dart_tool/
+video/out/
+video/public/audio/
+video/.kokoro/
+
+# The SDK has its own repository: github.com/gaskiyya/gaskiyya-sdk
+/sdk/
+/gaskiyya-sdk/
+/gaskiyya-sdk-node/
+.firebase/
+__pycache__/

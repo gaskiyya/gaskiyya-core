@@ -1,0 +1,2 @@
+// Version numbers only: the extension must not pick up the Runner's CocoaPods settings.
+#include "../Flutter/Generated.xcconfig"

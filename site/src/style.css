@@ -216,6 +216,9 @@ section { position: relative; padding: clamp(80px, 12vw, 150px) 0; }
 h1 { font-size: clamp(48px, 8vw, 96px); font-weight: 800; letter-spacing: -0.045em; line-height: 1; margin-top: 0; text-wrap: balance; }
 h1 em { font-style: normal; background: var(--em-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .hero h1 { font-size: clamp(48px, 5.4vw, 82px); font-weight: 650; line-height: 0.98; letter-spacing: -0.045em; color: #f7f7f4; text-wrap: initial; }
+.h1-word { display: inline-block; transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.35s ease; }
+.h1-word.is-out { opacity: 0; transform: translateY(-0.3em); }
+.h1-word.is-entering { opacity: 0; transform: translateY(0.3em); transition: none; }
 .h1-accent { display: block; margin-top: 0.02em; padding-bottom: 0.06em; background: linear-gradient(100deg, #c8f8e2 0%, #7ff0c0 40%, #2fbf8a 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .lede { font-size: clamp(18px, 1.9vw, 21px); color: var(--text-2); max-width: 620px; margin-top: 24px; text-wrap: pretty; }
 .hero .lede { color: rgba(244, 243, 239, 0.72); max-width: 34em; font-size: clamp(17px, 1.5vw, 19px); }

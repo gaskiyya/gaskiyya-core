@@ -69,6 +69,7 @@
           <li><a href="#overview">What you connect</a></li>
           <li><a href="#workflow">Integration workflow</a></li>
           <li><a href="#architecture">Architecture</a></li>
+          <li><a href="#sdk">Node.js SDK</a></li>
           <li><a href="#messages">1. Register messages</a></li>
           <li><a href="#fingerprint">The fingerprint</a></li>
           <li><a href="#calls">2. Announce calls</a></li>
@@ -144,6 +145,37 @@
             <div class="figure-scroll"><!-- diagram:architecture --></div>
             <figcaption><b>System architecture.</b> Bank systems call the bank-facing API. Customer channels call the customer API. Numbers mark the three calls that matter most.</figcaption>
           </figure>
+        </section>
+
+        <section id="sdk">
+          <p class="eyebrow">Fastest path</p>
+          <h2>Use the Node.js SDK</h2>
+          <p class="sub">The Gaskiyya bank SDK wraps the bank-facing API for Node.js 20.19 and later: it gets and renews the access token, hashes message text with the registry's own fingerprint rules, validates every field before sending, retries safely with idempotency keys, and signs customer tokens. Source and full reference: <a href="https://github.com/gaskiyya/gaskiyya-sdk">github.com/gaskiyya/gaskiyya-sdk</a>.</p>
+          <div class="code" data-copy>
+            <pre><code>npm install @gaskiyya/bank-sdk
+
+# The client ID and secret Gaskiyya issued you (the secret is shown once)
+GASKIYYA_API_URL=https://&lt;address from Gaskiyya&gt;
+GASKIYYA_CLIENT_ID=notify-svc
+GASKIYYA_CLIENT_SECRET=...</code></pre>
+          </div>
+          <div class="code" data-copy>
+            <pre><code>import { Gaskiyya } from '@gaskiyya/bank-sdk';
+
+const gaskiyya = Gaskiyya.fromEnv();
+
+// Only the fingerprint, link domains and callback flag leave your servers
+await gaskiyya.messages.register({ recipient: '+2348012345678', text: finalSmsText, category: 'transaction_alert' });
+
+const call = await gaskiyya.calls.open({ recipient: '+2348012345678', purpose: 'fraud_check', agentRef: 'agent-017' });
+const sim = await gaskiyya.simSwap.check('+2348012345678');</code></pre>
+          </div>
+          <ul class="checks">
+            <li><b>Server-side only.</b> The SDK holds your client secret and refuses to start in a browser. Never put the secret in a mobile app.</li>
+            <li><b>Same fingerprint everywhere.</b> Its hashing passes every shared test vector the registry and the Gaskiyya apps are tested with.</li>
+            <li><b>Typed errors.</b> Failures arrive as <code>ValidationError</code>, <code>AuthenticationError</code>, <code>PermissionError</code>, <code>RateLimitError</code>, <code>ServerError</code> or <code>ConnectionError</code>.</li>
+          </ul>
+          <p class="note-line">The sections below describe the HTTP API the SDK calls, for teams on other platforms or who want to see what goes over the wire.</p>
         </section>
 
         <section id="messages">
@@ -229,12 +261,12 @@ curl -s "$GASKIYYA_URL/v1/messages" \
             <figcaption><b>From message to stored record.</b> Gaskiyya keys the digest and the number with your bank's secret, and stores neither.</figcaption>
           </figure>
           <div class="code" data-copy>
-            <pre><code>// TypeScript, with the shared library
-import { contentDigest } from '@gaskiya/canonical';
+            <pre><code>// Node.js, with the Gaskiyya bank SDK (no credentials needed for hashing)
+import { contentDigest } from '@gaskiyya/bank-sdk/hashing';
 
 const digest = contentDigest(finalSmsText); // 64 lowercase hex characters</code></pre>
           </div>
-          <p class="note-line">Libraries exist in TypeScript and Dart. In any other language, implement the four steps and pass all 36 shared test vectors in <code>packages/test-vectors/vectors.json</code> before going live.</p>
+          <p class="note-line">The <a href="#sdk">Node.js SDK</a> implements the fingerprint for banks; the Gaskiyya apps use the same rules in Dart. In any other language, implement the four steps and pass every shared test vector (<code>tests/fixtures/vectors.json</code> in the SDK repository) before going live.</p>
         </section>
 
         <section id="calls">
@@ -315,6 +347,14 @@ const token = await new SignJWT({})
   .setIssuedAt()
   .setExpirationTime('10m')
   .sign(privateKey);</code></pre>
+          </div>
+          <div class="code" data-copy>
+            <pre><code>// Or with the Gaskiyya bank SDK, which also serves your JWKS
+import { CustomerTokenIssuer } from '@gaskiyya/bank-sdk/customer-tokens';
+
+const issuer = new CustomerTokenIssuer({ organisationId: 'demobank', privateKey: pem, keyId: 'bank-2026-10' });
+const { token, expiresIn } = await issuer.issue({ phone: '+2348012345678', accounts: ['0123456789'] });
+const jwks = await issuer.jwks(); // publish at your tokenKeysUrl</code></pre>
           </div>
           <p class="note-line">Publish the public half at a stable HTTPS URL; it becomes your tenant's <code>tokenKeysUrl</code>. Gaskiyya caches the set for up to ten minutes, so publish a new key before you start signing with it.</p>
           <h3>Bringing the verify screen into your app</h3>

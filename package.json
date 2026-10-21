@@ -7,6 +7,7 @@
     "node": ">=22"
   },
   "scripts": {
+    "start": "node scripts/dev.mjs",
     "dev": "vite --mode site",
     "dev:console": "vite --mode console",
     "dev:sandbox": "vite --mode sandbox",
@@ -17,7 +18,10 @@
     "build:site": "vite build --mode site && vite build --mode sandbox",
     "build:console": "vite build --mode console",
     "build:admin": "vite build --mode admin && vite build --mode admin-login",
+    "web:build": "pnpm build:ui",
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.app.json",
+    "demo:offline": "node scripts/demo-offline.mjs",
+    "sync:copy": "node scripts/sync-copy.mjs",
     "test": "vitest run && node scripts/flutter.mjs test"
   },
   "dependencies": {

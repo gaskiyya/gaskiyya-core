@@ -16,7 +16,7 @@ COPY packages/test-vectors/package.json packages/test-vectors/
 RUN pnpm install --frozen-lockfile
 COPY . .
 FROM deps AS web
-RUN pnpm build:ui
+RUN pnpm build:console && pnpm build:admin
 
 FROM deps AS api
 RUN pnpm --filter=@gaskiya/api deploy --prod --legacy /out
@@ -28,7 +28,9 @@ ENV HOST=0.0.0.0
 ENV WEB_DIST_DIR=/app/web
 WORKDIR /app
 COPY --from=api --chown=node:node /out ./
-COPY --from=web --chown=node:node /repo/dist/site ./web
+COPY --from=web --chown=node:node /repo/dist/console ./web/console
+COPY --from=web --chown=node:node /repo/dist/admin ./web/admin
+COPY --from=web --chown=node:node /repo/dist/admin-login ./web/admin-login
 USER node
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s \

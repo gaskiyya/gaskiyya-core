@@ -49,6 +49,23 @@ if (CONFIG.demoUrl) {
   }
 }
 
+const heroWord = $('[data-rotate]');
+if (heroWord && !reduceMotion) {
+  const words = heroWord.dataset.rotate!.split(',');
+  let i = 0;
+  setInterval(() => {
+    if (document.hidden) return;
+    heroWord.classList.add('is-out');
+    setTimeout(() => {
+      i = (i + 1) % words.length;
+      heroWord.textContent = `${words[i]},`;
+      heroWord.classList.replace('is-out', 'is-entering');
+      void heroWord.offsetWidth;
+      heroWord.classList.remove('is-entering');
+    }, 350);
+  }, 2400);
+}
+
 const nav = $('#nav')!;
 const hero = $('.dark-hero .hero');
 const onScroll = () => {

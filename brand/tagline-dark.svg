@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="72" viewBox="0 0 720 72" role="img" aria-label="Every message, call, OTP, link and payment, proven.">
+<style>
+text{font:700 40px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;letter-spacing:-0.5px;fill:#F0F6FC}
+.f{opacity:0;animation:cycle 12s infinite}
+.f0{animation-delay:0.0s}.f1{animation-delay:2.4s}.f2{animation-delay:4.8s}.f3{animation-delay:7.2s}.f4{animation-delay:9.6s}
+@keyframes cycle{0%{opacity:0}3%{opacity:1}17%{opacity:1}20%{opacity:0}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.f{animation:none}.f0{opacity:1}}
+</style>
+<text class="f f0" x="360" y="50" text-anchor="middle">Every message, <tspan fill="#2FBF8A">proven.</tspan></text><text class="f f1" x="360" y="50" text-anchor="middle">Every call, <tspan fill="#2FBF8A">proven.</tspan></text><text class="f f2" x="360" y="50" text-anchor="middle">Every OTP, <tspan fill="#2FBF8A">proven.</tspan></text><text class="f f3" x="360" y="50" text-anchor="middle">Every link, <tspan fill="#2FBF8A">proven.</tspan></text><text class="f f4" x="360" y="50" text-anchor="middle">Every payment, <tspan fill="#2FBF8A">proven.</tspan></text>
+</svg>
