@@ -11,11 +11,12 @@
     "build": "pnpm typecheck && pnpm build:ui",
     "build:ui": "pnpm build:site",
     "build:site": "vite build --mode site",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.app.json"
   },
   "dependencies": {
     "@gaskiya/canonical": "workspace:^",
     "@gaskiya/schemas": "workspace:^",
+    "motion": "12.23.12",
     "react": "^19",
     "react-dom": "^19",
     "thinking-orbs": "0.3.2"
