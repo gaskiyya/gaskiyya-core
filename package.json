@@ -10,10 +10,13 @@
     "dev": "vite --mode site",
     "dev:console": "vite --mode console",
     "dev:sandbox": "vite --mode sandbox",
+    "dev:admin": "vite --mode admin",
+    "dev:admin-login": "vite --mode admin-login",
     "build": "pnpm typecheck && pnpm build:ui",
-    "build:ui": "pnpm build:site && pnpm build:console",
+    "build:ui": "pnpm build:site && pnpm build:console && pnpm build:admin",
     "build:site": "vite build --mode site && vite build --mode sandbox",
     "build:console": "vite build --mode console",
+    "build:admin": "vite build --mode admin && vite build --mode admin-login",
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.app.json"
   },
   "dependencies": {

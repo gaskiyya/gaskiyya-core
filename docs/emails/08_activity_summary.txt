@@ -1,0 +1,35 @@
+Subject: DemoBank on Gaskiya: 18,452 registered, 1,517 checks
+
+GASKIYA · ACTIVITY SUMMARY
+
+How DemoBank's customers used Gaskiya
+
+Totals as of 20 Oct 2026, 13:02 WAT. Counts only: Gaskiya never sees message text.
+
+Messages registered: 18,452
+Customer checks: 1,517
+Reports: 47
+
+Confirmed: 1,204
+Not confirmed: 311
+Could not check: 2
+Links checked: 234
+"Is my bank calling?" checks: 84
+
+Registered by type
+- Transaction alerts (14,210 registered)
+- One-time codes (3,120 registered)
+- Security notices (822 registered)
+- Service updates (300 registered)
+
+Active scam campaigns
+- 3 customer reports of the same fake message, pointing to demobank-restore.com. Uses links to non-bank sites, urgent threats. (3 reports · advisory approved)
+- 4 customer reports of the same fake message, sharing one callback number. Uses promised rewards or refunds. (4 reports · advisory awaiting approval)
+
+Some checks could not be completed. If this persists, check the registry’s availability.
+
+Open the console: https://console.gaskiya.ng
+
+--
+You are receiving this because you are on DemoBank's Gaskiya alerts.
+Gaskiya stores no phone numbers and no text of the messages banks register; customer fraud reports, sent with consent, are kept masked. Gaskiya never asks anyone for a PIN, password, card number or one-time code.

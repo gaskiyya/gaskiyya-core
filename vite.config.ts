@@ -17,7 +17,7 @@ const inlineDiagrams: Plugin = {
   },
 };
 
-// One build per UI: vite build --mode site | sandbox | console.
+// One build per UI: vite build --mode site | sandbox | console | admin | admin-login.
 const apps: Record<string, UserConfig> = {
   site: {
     root: at('site'),
@@ -46,6 +46,21 @@ const apps: Record<string, UserConfig> = {
     define: { __SANDBOX__: 'false' },
     server: { port: 5171, proxy: { '/sim': API, '/v1': API } },
     build: { outDir: at('dist/console') },
+  },
+  admin: {
+    root: at('admin/dashboard'),
+    publicDir: at('admin/public'),
+    base: '/admin/',
+    plugins: [react()],
+    server: { port: 5172, proxy: { '/v1': API, '/admin/login': API } },
+    build: { outDir: at('dist/admin') },
+  },
+  'admin-login': {
+    root: at('admin/login'),
+    publicDir: at('admin/public'),
+    base: '/admin/login/',
+    server: { port: 5174, proxy: { '/v1': API } },
+    build: { outDir: at('dist/admin-login') },
   },
 };
 

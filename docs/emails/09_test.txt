@@ -1,0 +1,14 @@
+Subject: Gaskiya test email for DemoBank
+
+GASKIYA · TEST (Delivered)
+
+Email delivery is working
+
+This is a test from the Gaskiya registry. Campaign alerts and other emails for DemoBank will arrive at this address.
+
+Bank: DemoBank
+Sent: 20 Oct 2026, 13:02 WAT
+
+--
+You are receiving this because someone ran an email test for DemoBank's Gaskiya alerts.
+Gaskiya stores no phone numbers and no text of the messages banks register; customer fraud reports, sent with consent, are kept masked. Gaskiya never asks anyone for a PIN, password, card number or one-time code.
