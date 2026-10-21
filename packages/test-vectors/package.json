@@ -1,0 +1,8 @@
+{
+  "name": "@gaskiya/test-vectors",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./index.ts", "./vectors.json": "./vectors.json" },
+  "dependencies": { "@gaskiya/canonical": "workspace:*" }
+}

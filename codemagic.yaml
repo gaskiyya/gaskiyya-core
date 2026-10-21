@@ -1,0 +1,143 @@
+
+workflows:
+  release_android:
+    name: Android Release (APK + AAB)
+    instance_type: mac_mini_m1
+    working_directory: mobile
+    environment:
+      flutter: stable
+      groups:
+        - gaskiyya_app
+      vars:
+        JAVA_HOME: /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+        GRADLE_OPTS: "-Xmx4g -XX:MaxMetaspaceSize=1g -Dkotlin.daemon.jvm.options=-Xmx2g"
+    scripts:
+      - name: Flutter pub get
+        script: |
+          flutter pub get
+      - name: Write build config from environment
+        script: |
+          node tool/write_config.mjs
+      - name: Build release APK
+        script: |
+          flutter build apk --release --dart-define-from-file=config/production.json
+      - name: Build release AAB
+        script: |
+          flutter build appbundle --release --dart-define-from-file=config/production.json
+    artifacts:
+      - "**/build/app/outputs/flutter-apk/app-release.apk"
+      - "**/build/app/outputs/bundle/release/app-release.aab"
+
+  release_ios_testflight:
+    name: iOS Release -> TestFlight
+    instance_type: mac_mini_m1
+    working_directory: mobile
+    integrations:
+      app_store_connect: gaskiyya
+    environment:
+      flutter: stable
+      groups:
+        - gaskiyya_app
+      vars:
+        BUNDLE_ID: "com.gaskiya.app"
+      ios_signing:
+        provisioning_profiles:
+          - gaskiyya
+        certificates:
+          - gaskiyya
+    scripts:
+      - name: Flutter pub get
+        script: |
+          flutter pub get
+      - name: Write build config from environment
+        script: |
+          node tool/write_config.mjs
+      - name: Set up code signing settings on Xcode project
+        script: |
+          xcode-project use-profiles
+      - name: Install CocoaPods
+        script: |
+          if [ -f ios/Podfile ]; then cd ios && pod install; else echo "No Podfile: Swift Package Manager"; fi
+      - name: Increment build number
+        script: |
+          #!/usr/bin/env sh
+          cd $CM_BUILD_DIR/mobile
+          if BUILD_NUMBER=$(app-store-connect get-latest-build-number "$BUNDLE_ID" 2>/dev/null); then
+            NEW_BUILD_NUMBER=$((BUILD_NUMBER + 1))
+            echo "Latest build number from App Store Connect: $BUILD_NUMBER"
+          else
+            NEW_BUILD_NUMBER=$(grep '^version:' pubspec.yaml | sed 's/.*+//')
+            echo "No existing build found on App Store Connect (new app?), using pubspec.yaml build number: $NEW_BUILD_NUMBER"
+          fi
+          echo $NEW_BUILD_NUMBER > /tmp/new_build_number.txt
+      - name: Build ipa for distribution
+        script: |
+          NEW_BUILD_NUMBER=$(cat /tmp/new_build_number.txt)
+          flutter build ipa --release \
+            --build-number=$NEW_BUILD_NUMBER \
+            --dart-define-from-file=config/production.json \
+            --export-options-plist=/Users/builder/export_options.plist
+    artifacts:
+      - "**/build/ios/ipa/*.ipa"
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: false
+
+  release_ios_appstore:
+    name: iOS Release -> App Store
+    instance_type: mac_mini_m1
+    working_directory: mobile
+    integrations:
+      app_store_connect: gaskiyya
+    environment:
+      flutter: stable
+      groups:
+        - gaskiyya_app
+      vars:
+        BUNDLE_ID: "com.gaskiya.app"
+      ios_signing:
+        provisioning_profiles:
+          - gaskiyya
+        certificates:
+          - gaskiyya
+    scripts:
+      - name: Flutter pub get
+        script: |
+          flutter pub get
+      - name: Write build config from environment
+        script: |
+          node tool/write_config.mjs
+      - name: Set up code signing settings on Xcode project
+        script: |
+          xcode-project use-profiles
+      - name: Install CocoaPods
+        script: |
+          if [ -f ios/Podfile ]; then cd ios && pod install; else echo "No Podfile: Swift Package Manager"; fi
+      - name: Increment build number
+        script: |
+          #!/usr/bin/env sh
+          cd $CM_BUILD_DIR/mobile
+          if BUILD_NUMBER=$(app-store-connect get-latest-build-number "$BUNDLE_ID" 2>/dev/null); then
+            NEW_BUILD_NUMBER=$((BUILD_NUMBER + 1))
+            echo "Latest build number from App Store Connect: $BUILD_NUMBER"
+          else
+            NEW_BUILD_NUMBER=$(grep '^version:' pubspec.yaml | sed 's/.*+//')
+            echo "No existing build found on App Store Connect (new app?), using pubspec.yaml build number: $NEW_BUILD_NUMBER"
+          fi
+          echo $NEW_BUILD_NUMBER > /tmp/new_build_number.txt
+      - name: Build ipa for distribution
+        script: |
+          NEW_BUILD_NUMBER=$(cat /tmp/new_build_number.txt)
+          flutter build ipa --release \
+            --build-number=$NEW_BUILD_NUMBER \
+            --dart-define-from-file=config/production.json \
+            --export-options-plist=/Users/builder/export_options.plist
+    artifacts:
+      - "**/build/ios/ipa/*.ipa"
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: false
+        submit_to_app_store: true
