@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="diagram" viewBox="0 0 1000 800" role="img" aria-labelledby="verdict-title verdict-desc">
+<title id="verdict-title">How a verdict is decided</title>
+<desc id="verdict-desc">Each check passes the same gates in order. Only an exact, unexpired record for the checking number produces confirmed.</desc>
+<style>.bg{fill:#ffffff}
+.lane{stroke-width:1}
+.lane-bank{fill:#f3f5f8;stroke:#d8dee6}
+.lane-gk{fill:#eef8f3;stroke:#bfe3d1}
+.lane-cust{fill:#fbf6ee;stroke:#ecdcc0}
+.lane-plain{fill:#f6f6f3;stroke:#e1e1da}
+.lane-label{font:700 11px Inter,system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase}
+.lane-label.bank{fill:#4a5a6e}.lane-label.gk{fill:#0a7a55}.lane-label.cust{fill:#9a6a1c}.lane-label.plain{fill:#6b716d}
+.node{fill:#ffffff;stroke:#c9d0d8;stroke-width:1.2}
+.node.gk{stroke:#0a7a55;stroke-width:1.5}
+.node.cust{stroke:#d9a441}
+.node.bank{stroke:#8494a7}
+.node.muted{fill:#f7f7f5;stroke:#c9ccc8;stroke-dasharray:4 3}
+.node.good{fill:#e7f6ee;stroke:#0a7a55;stroke-width:1.5}
+.node.warn{fill:#fff4e5;stroke:#d9890b;stroke-width:1.5}
+.node.bad{fill:#fdecea;stroke:#c8372d;stroke-width:1.5}
+.node.dec{fill:#ffffff;stroke:#4a5a6e;stroke-width:1.3}
+.t{font:600 13.5px Inter,system-ui,sans-serif;fill:#0e1512}
+.ts{font:400 11.5px Inter,system-ui,sans-serif;fill:#59645e}
+.tm{font:500 11px "SF Mono",Menlo,Consolas,monospace;fill:#0e1512}
+.edge{fill:none;stroke:#3d4843;stroke-width:1.4}
+.edge.gk{stroke:#0a7a55}
+.edge.dash{stroke-dasharray:5 4}
+.edge.soft{stroke:#9aa39e}
+.arrow{fill:#3d4843}.arrow.gk{fill:#0a7a55}.arrow.soft{fill:#9aa39e}
+.el{font:500 11px Inter,system-ui,sans-serif;fill:#26302b}
+.elb{fill:#ffffff;opacity:.94}
+.step{fill:#0a7a55}
+.stepn{font:700 10.5px Inter,system-ui,sans-serif;fill:#ffffff}
+.life{stroke:#b9c0bc;stroke-width:1.2;stroke-dasharray:3 4}
+.act{fill:#e7f6ee;stroke:#0a7a55;stroke-width:1}
+.note{fill:#fffaf0;stroke:#e6cf9c}
+.cap{font:400 11px Inter,system-ui,sans-serif;fill:#6b716d}</style>
+<defs><marker id="verdict-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow " d="M0 0 L10 5 L0 10 z"/></marker><marker id="verdict-ink-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow " d="M0 0 L10 5 L0 10 z"/></marker><marker id="verdict-gk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow gk" d="M0 0 L10 5 L0 10 z"/></marker><marker id="verdict-gk-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow gk" d="M0 0 L10 5 L0 10 z"/></marker><marker id="verdict-soft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow soft" d="M0 0 L10 5 L0 10 z"/></marker><marker id="verdict-soft-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow soft" d="M0 0 L10 5 L0 10 z"/></marker></defs>
+<rect class="bg" x="0" y="0" width="1000" height="800"/>
+<rect class="node cust" x="180" y="24" width="300" height="58" rx="10"/>
+<text class="t" x="330" y="50" text-anchor="middle">Customer check</text>
+<text class="ts" x="330" y="66" text-anchor="middle">Digest and bank-signed token</text>
+<path class="node dec" d="M330 109 L480 150 L330 191 L180 150 Z"/>
+<text class="t" x="330" y="154.5" text-anchor="middle">Customer token valid?</text>
+<path class="edge " d="M330 82 L330 109" marker-end="url(#verdict-ink)"/>
+<rect class="node bad" x="600" y="116" width="330" height="68" rx="10"/>
+<text class="t" x="765" y="147" text-anchor="middle">Rejected</text>
+<text class="ts" x="765" y="163" text-anchor="middle">401 unauthorized</text>
+<path class="edge " d="M480 150 L600 150" marker-end="url(#verdict-ink)"/>
+<path class="node dec" d="M330 211 L480 252 L330 293 L180 252 Z"/>
+<text class="t" x="330" y="249" text-anchor="middle">Under 30 checks</text>
+<text class="t" x="330" y="264" text-anchor="middle">in the last minute?</text>
+<path class="edge " d="M330 191 L330 211" marker-end="url(#verdict-ink)"/>
+<rect class="node bad" x="600" y="218" width="330" height="68" rx="10"/>
+<text class="t" x="765" y="249" text-anchor="middle">Rejected</text>
+<text class="ts" x="765" y="265" text-anchor="middle">429 rate_limited</text>
+<path class="edge " d="M480 252 L600 252" marker-end="url(#verdict-ink)"/>
+<path class="node dec" d="M330 313 L480 354 L330 395 L180 354 Z"/>
+<text class="t" x="330" y="358.5" text-anchor="middle">Bank enrolled?</text>
+<path class="edge " d="M330 293 L330 313" marker-end="url(#verdict-ink)"/>
+<rect class="node warn" x="600" y="320" width="330" height="68" rx="10"/>
+<text class="t" x="765" y="343.5" text-anchor="middle">Cannot check right now</text>
+<text class="ts" x="765" y="359.5" text-anchor="middle">Contact the bank through</text>
+<text class="ts" x="765" y="374.5" text-anchor="middle">its app or a branch</text>
+<path class="edge " d="M480 354 L600 354" marker-end="url(#verdict-ink)"/>
+<path class="node dec" d="M330 415 L480 456 L330 497 L180 456 Z"/>
+<text class="t" x="330" y="453" text-anchor="middle">Store answered?</text>
+<text class="t" x="330" y="468" text-anchor="middle">(3 s read timeout)</text>
+<path class="edge " d="M330 395 L330 415" marker-end="url(#verdict-ink)"/>
+<rect class="node warn" x="600" y="422" width="330" height="68" rx="10"/>
+<text class="t" x="765" y="453" text-anchor="middle">Cannot check right now</text>
+<text class="ts" x="765" y="469" text-anchor="middle">Never shown as genuine</text>
+<path class="edge " d="M480 456 L600 456" marker-end="url(#verdict-ink)"/>
+<path class="node dec" d="M330 517 L480 558 L330 599 L180 558 Z"/>
+<text class="t" x="330" y="555" text-anchor="middle">Record for this number</text>
+<text class="t" x="330" y="570" text-anchor="middle">and this digest?</text>
+<path class="edge " d="M330 497 L330 517" marker-end="url(#verdict-ink)"/>
+<rect class="node bad" x="600" y="524" width="330" height="68" rx="10"/>
+<text class="t" x="765" y="547.5" text-anchor="middle">Not confirmed</text>
+<text class="ts" x="765" y="563.5" text-anchor="middle">Plus what the bank</text>
+<text class="ts" x="765" y="578.5" text-anchor="middle">really sent recently</text>
+<path class="edge " d="M480 558 L600 558" marker-end="url(#verdict-ink)"/>
+<path class="node dec" d="M330 619 L480 660 L330 701 L180 660 Z"/>
+<text class="t" x="330" y="657" text-anchor="middle">Record within</text>
+<text class="t" x="330" y="672" text-anchor="middle">its expiry?</text>
+<path class="edge " d="M330 599 L330 619" marker-end="url(#verdict-ink)"/>
+<rect class="node bad" x="600" y="626" width="330" height="68" rx="10"/>
+<text class="t" x="765" y="649.5" text-anchor="middle">Not confirmed</text>
+<text class="ts" x="765" y="665.5" text-anchor="middle">Expired records</text>
+<text class="ts" x="765" y="680.5" text-anchor="middle">do not match</text>
+<path class="edge " d="M480 660 L600 660" marker-end="url(#verdict-ink)"/>
+<rect class="node good" x="180" y="732" width="300" height="66" rx="10"/>
+<text class="t" x="330" y="754.5" text-anchor="middle">Confirmed</text>
+<text class="ts" x="330" y="770.5" text-anchor="middle">Sent by your bank, with channel,</text>
+<text class="ts" x="330" y="785.5" text-anchor="middle">date and time</text>
+<path class="edge " d="M330 701 L330 732" marker-end="url(#verdict-ink)"/>
+<text class="cap" x="330" y="826" text-anchor="middle">The AI explanation runs only after this point and cannot change the verdict.</text>
+<rect class="elb" x="527.84" y="140" width="24.32" height="22" rx="6"/>
+<text class="el" x="540" y="154" text-anchor="middle">no</text>
+<rect class="elb" x="314.76" y="191" width="30.48" height="22" rx="6"/>
+<text class="el" x="330" y="205" text-anchor="middle">yes</text>
+<rect class="elb" x="527.84" y="242" width="24.32" height="22" rx="6"/>
+<text class="el" x="540" y="256" text-anchor="middle">no</text>
+<rect class="elb" x="314.76" y="293" width="30.48" height="22" rx="6"/>
+<text class="el" x="330" y="307" text-anchor="middle">yes</text>
+<rect class="elb" x="527.84" y="344" width="24.32" height="22" rx="6"/>
+<text class="el" x="540" y="358" text-anchor="middle">no</text>
+<rect class="elb" x="314.76" y="395" width="30.48" height="22" rx="6"/>
+<text class="el" x="330" y="409" text-anchor="middle">yes</text>
+<rect class="elb" x="527.84" y="446" width="24.32" height="22" rx="6"/>
+<text class="el" x="540" y="460" text-anchor="middle">no</text>
+<rect class="elb" x="314.76" y="497" width="30.48" height="22" rx="6"/>
+<text class="el" x="330" y="511" text-anchor="middle">yes</text>
+<rect class="elb" x="527.84" y="548" width="24.32" height="22" rx="6"/>
+<text class="el" x="540" y="562" text-anchor="middle">no</text>
+<rect class="elb" x="314.76" y="599" width="30.48" height="22" rx="6"/>
+<text class="el" x="330" y="613" text-anchor="middle">yes</text>
+<rect class="elb" x="527.84" y="650" width="24.32" height="22" rx="6"/>
+<text class="el" x="540" y="664" text-anchor="middle">no</text>
+<rect class="elb" x="314.76" y="706.5" width="30.48" height="22" rx="6"/>
+<text class="el" x="330" y="720.5" text-anchor="middle">yes</text>
+</svg>

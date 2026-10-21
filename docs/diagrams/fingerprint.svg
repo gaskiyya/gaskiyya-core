@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="diagram" viewBox="0 0 1200 470" role="img" aria-labelledby="fingerprint-title fingerprint-desc">
+<title id="fingerprint-title">From message to stored record</title>
+<desc id="fingerprint-desc">The text is canonicalised and hashed by the bank and by the phone. Gaskiyya keys the digest and the number with a per-bank secret and stores neither.</desc>
+<style>.bg{fill:#ffffff}
+.lane{stroke-width:1}
+.lane-bank{fill:#f3f5f8;stroke:#d8dee6}
+.lane-gk{fill:#eef8f3;stroke:#bfe3d1}
+.lane-cust{fill:#fbf6ee;stroke:#ecdcc0}
+.lane-plain{fill:#f6f6f3;stroke:#e1e1da}
+.lane-label{font:700 11px Inter,system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase}
+.lane-label.bank{fill:#4a5a6e}.lane-label.gk{fill:#0a7a55}.lane-label.cust{fill:#9a6a1c}.lane-label.plain{fill:#6b716d}
+.node{fill:#ffffff;stroke:#c9d0d8;stroke-width:1.2}
+.node.gk{stroke:#0a7a55;stroke-width:1.5}
+.node.cust{stroke:#d9a441}
+.node.bank{stroke:#8494a7}
+.node.muted{fill:#f7f7f5;stroke:#c9ccc8;stroke-dasharray:4 3}
+.node.good{fill:#e7f6ee;stroke:#0a7a55;stroke-width:1.5}
+.node.warn{fill:#fff4e5;stroke:#d9890b;stroke-width:1.5}
+.node.bad{fill:#fdecea;stroke:#c8372d;stroke-width:1.5}
+.node.dec{fill:#ffffff;stroke:#4a5a6e;stroke-width:1.3}
+.t{font:600 13.5px Inter,system-ui,sans-serif;fill:#0e1512}
+.ts{font:400 11.5px Inter,system-ui,sans-serif;fill:#59645e}
+.tm{font:500 11px "SF Mono",Menlo,Consolas,monospace;fill:#0e1512}
+.edge{fill:none;stroke:#3d4843;stroke-width:1.4}
+.edge.gk{stroke:#0a7a55}
+.edge.dash{stroke-dasharray:5 4}
+.edge.soft{stroke:#9aa39e}
+.arrow{fill:#3d4843}.arrow.gk{fill:#0a7a55}.arrow.soft{fill:#9aa39e}
+.el{font:500 11px Inter,system-ui,sans-serif;fill:#26302b}
+.elb{fill:#ffffff;opacity:.94}
+.step{fill:#0a7a55}
+.stepn{font:700 10.5px Inter,system-ui,sans-serif;fill:#ffffff}
+.life{stroke:#b9c0bc;stroke-width:1.2;stroke-dasharray:3 4}
+.act{fill:#e7f6ee;stroke:#0a7a55;stroke-width:1}
+.note{fill:#fffaf0;stroke:#e6cf9c}
+.cap{font:400 11px Inter,system-ui,sans-serif;fill:#6b716d}</style>
+<defs><marker id="fingerprint-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow " d="M0 0 L10 5 L0 10 z"/></marker><marker id="fingerprint-ink-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow " d="M0 0 L10 5 L0 10 z"/></marker><marker id="fingerprint-gk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow gk" d="M0 0 L10 5 L0 10 z"/></marker><marker id="fingerprint-gk-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow gk" d="M0 0 L10 5 L0 10 z"/></marker><marker id="fingerprint-soft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow soft" d="M0 0 L10 5 L0 10 z"/></marker><marker id="fingerprint-soft-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow soft" d="M0 0 L10 5 L0 10 z"/></marker></defs>
+<rect class="bg" x="0" y="0" width="1200" height="470"/>
+<rect class="lane lane-plain" x="20" y="20" width="1160" height="190" rx="16"/>
+<text class="lane-label plain" x="38" y="46" text-anchor="start">Bank connector and customer device: same library, same result</text>
+<rect class="lane lane-gk" x="20" y="230" width="1160" height="220" rx="16"/>
+<text class="lane-label gk" x="38" y="256" text-anchor="start">Gaskiyya registry: per-bank key</text>
+<rect class="node " x="36" y="66" width="146" height="84" rx="10"/>
+<text class="t" x="109" y="105" text-anchor="middle">Message text</text>
+<text class="ts" x="109" y="121" text-anchor="middle">As sent or received</text>
+<rect class="node " x="202" y="66" width="146" height="84" rx="10"/>
+<text class="t" x="275" y="105" text-anchor="middle">Remove</text>
+<text class="ts" x="275" y="121" text-anchor="middle">zero-width characters</text>
+<path class="edge " d="M182 108 L202 108" marker-end="url(#fingerprint-ink)"/>
+<rect class="node " x="368" y="66" width="146" height="84" rx="10"/>
+<text class="t" x="441" y="105" text-anchor="middle">NFKC</text>
+<text class="ts" x="441" y="121" text-anchor="middle">Unicode normalisation</text>
+<path class="edge " d="M348 108 L368 108" marker-end="url(#fingerprint-ink)"/>
+<rect class="node " x="534" y="66" width="146" height="84" rx="10"/>
+<text class="t" x="607" y="97.5" text-anchor="middle">Collapse</text>
+<text class="ts" x="607" y="113.5" text-anchor="middle">whitespace runs to</text>
+<text class="ts" x="607" y="128.5" text-anchor="middle">one space</text>
+<path class="edge " d="M514 108 L534 108" marker-end="url(#fingerprint-ink)"/>
+<rect class="node " x="700" y="66" width="146" height="84" rx="10"/>
+<text class="t" x="773" y="105" text-anchor="middle">Trim</text>
+<text class="ts" x="773" y="121" text-anchor="middle">both ends</text>
+<path class="edge " d="M680 108 L700 108" marker-end="url(#fingerprint-ink)"/>
+<rect class="node " x="866" y="66" width="146" height="84" rx="10"/>
+<text class="t" x="939" y="105" text-anchor="middle">SHA-256</text>
+<text class="ts" x="939" y="121" text-anchor="middle">of the UTF-8 bytes</text>
+<path class="edge " d="M846 108 L866 108" marker-end="url(#fingerprint-ink)"/>
+<rect class="node gk" x="1032" y="66" width="146" height="84" rx="10"/>
+<text class="t" x="1105" y="105" text-anchor="middle">contentDigest</text>
+<text class="tm" x="1105" y="121" text-anchor="middle">64 hex characters</text>
+<path class="edge " d="M1012 108 L1032 108" marker-end="url(#fingerprint-ink)"/>
+<text class="cap" x="600" y="186" text-anchor="middle">Case and punctuation are kept: one hyphen or dot is the difference between a real link and a fake one.</text>
+<rect class="node " x="36" y="366" width="200" height="66" rx="10"/>
+<text class="t" x="136" y="396" text-anchor="middle">Recipient number</text>
+<text class="ts" x="136" y="412" text-anchor="middle">From the request or token</text>
+<rect class="node gk" x="300" y="278" width="250" height="66" rx="10"/>
+<text class="t" x="425" y="308" text-anchor="middle">HMAC-SHA-256</text>
+<text class="ts" x="425" y="324" text-anchor="middle">bank key, &quot;content:&quot; + digest</text>
+<rect class="node gk" x="300" y="366" width="250" height="66" rx="10"/>
+<text class="t" x="425" y="396" text-anchor="middle">HMAC-SHA-256</text>
+<text class="ts" x="425" y="412" text-anchor="middle">bank key, &quot;recipient:&quot; + number</text>
+<rect class="node gk" x="614" y="278" width="180" height="66" rx="10"/>
+<text class="t" x="704" y="308" text-anchor="middle">contentKey</text>
+<text class="ts" x="704" y="324" text-anchor="middle">Stored</text>
+<rect class="node gk" x="614" y="366" width="180" height="66" rx="10"/>
+<text class="t" x="704" y="396" text-anchor="middle">recipientKey</text>
+<text class="ts" x="704" y="412" text-anchor="middle">Stored</text>
+<rect class="node good" x="858" y="278" width="306" height="154" rx="10"/>
+<text class="t" x="1011" y="322" text-anchor="middle">Message record</text>
+<text class="ts" x="1011" y="338" text-anchor="middle">recipientKey, contentKey,</text>
+<text class="ts" x="1011" y="353" text-anchor="middle">channel, category, hasLink,</text>
+<text class="ts" x="1011" y="368" text-anchor="middle">linkDomains, sentAt, expiresAt</text>
+<text class="ts" x="1011" y="383" text-anchor="middle"></text>
+<text class="ts" x="1011" y="398" text-anchor="middle">No text. No phone number.</text>
+<path class="edge " d="M1105 150 L1105 250 L425 250 L425 278" marker-end="url(#fingerprint-ink)"/>
+<path class="edge " d="M236 399 L300 399" marker-end="url(#fingerprint-ink)"/>
+<path class="edge " d="M550 311 L614 311" marker-end="url(#fingerprint-ink)"/>
+<path class="edge " d="M550 399 L614 399" marker-end="url(#fingerprint-ink)"/>
+<path class="edge " d="M794 311 L858 311" marker-end="url(#fingerprint-ink)"/>
+<path class="edge " d="M794 399 L858 399" marker-end="url(#fingerprint-ink)"/>
+<rect class="elb" x="697.4" y="240" width="135.20000000000002" height="22" rx="6"/>
+<text class="el" x="765" y="254" text-anchor="middle">Sent to the registry</text>
+</svg>

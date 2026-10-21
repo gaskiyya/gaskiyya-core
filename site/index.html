@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Gaskiyya &middot; Every message, proven</title>
+  <meta name="description" content="Your customers can&#39;t tell your messages from a scammer&#39;s. Gaskiyya lets them check any SMS, link or call against your bank&#39;s own records in seconds. One API call when you send." />
+  <meta name="theme-color" content="#050a08" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#050a08" media="(prefers-color-scheme: dark)" />
+  <meta name="color-scheme" content="light dark" />
+  <meta property="og:title" content="Gaskiyya: every message, proven." />
+  <meta property="og:description" content="Customers check any SMS, link or call against their bank&#39;s own records in seconds. One API call when the bank sends." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="og.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500..800&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" href="video/walkthrough-poster.webp" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body class="dark-hero">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="wrap nav-in">
+      <a class="brand" href="#top" aria-label="Gaskiyya home">
+        <img src="logo.svg" width="30" height="30" alt="" class="brand-logo" />
+        <span>Gaskiyya</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#how">How it works</a>
+        <a href="#calls">Calls</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#download">The app</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <a class="btn btn-small" href="banks.html">For banks</a>
+      <button class="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span></button>
+    </div>
+    <div class="mobile-menu" id="mobile-menu" hidden>
+      <a href="#how">How it works</a><a href="#calls">Calls</a><a href="#privacy">Privacy</a><a href="#download">The app</a><a href="#faq">FAQ</a><a href="banks.html" class="btn">For banks</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="hero-bg" aria-hidden="true"><i class="grid"></i></div>
+      <div class="wrap hero-in">
+        <div class="hero-copy">
+          <h1 class="reveal" style="--d: 60ms">Every message, <span class="h1-accent">proven.</span></h1>
+          <p class="lede reveal" style="--d: 120ms">Gaskiyya lets customers check any SMS, link or call against your bank's own records in seconds. One API call when you send. Nothing changes in your messages.</p>
+          <div class="hero-actions reveal" style="--d: 180ms">
+            <a class="btn btn-glow" href="#try" data-demo-link>Try the live demo <span aria-hidden="true">&rarr;</span></a>
+            <a class="btn btn-glass" href="banks.html">Integration guide <span aria-hidden="true">&rarr;</span></a>
+          </div>
+          <dl class="stats reveal" style="--d: 240ms" aria-label="Gaskiyya in numbers">
+            <div><dt>words of message text stored</dt><dd>0</dd></div>
+            <div><dt>changed character fails a fake</dt><dd>1</dd></div>
+            <div><dt>digit code proves a call</dt><dd>4</dd></div>
+            <div><dt>API call per message</dt><dd>1</dd></div>
+          </dl>
+        </div>
+
+        <div class="core" data-core>
+          <svg class="core-wires" data-wires aria-hidden="true"></svg>
+          <div class="core-orb" aria-hidden="true">
+            <svg class="core-hud" viewBox="0 0 400 400">
+              <circle class="hud-a" cx="200" cy="200" r="196" />
+              <circle class="hud-b" cx="200" cy="200" r="182" />
+              <circle class="hud-c" cx="200" cy="200" r="168" />
+            </svg>
+            <canvas class="core-canvas" data-orb></canvas>
+          </div>
+          <div class="core-readout" aria-hidden="true">
+            <span class="core-label" data-orb-label>Gaskiyya &middot; idle</span>
+            <code class="core-code" data-orb-text>waiting for a message</code>
+            <span class="core-status" data-orb-status><i></i>Bank records online</span>
+          </div>
+
+          <div class="in in-sms" data-node="sms" aria-hidden="true">
+            <div class="ios-note">
+              <span class="ios-app msg"></span>
+              <div><span class="ios-row"><b>DemoBank</b><small>now</small></span><p data-txt>Your account has been restricted. Click to verify: demobank-restore.com</p></div>
+            </div>
+            <span class="flag warn" data-flag>Not confirmed</span>
+          </div>
+          <div class="in in-call" data-node="call" aria-hidden="true">
+            <div class="ios-island-call">
+              <span class="ava">D</span>
+              <div><small>mobile</small><b data-txt>DemoBank</b></div>
+              <span class="btn-dec"></span><span class="btn-acc"></span>
+            </div>
+            <span class="flag ok" data-flag>Calling &middot; 4821</span>
+          </div>
+          <div class="in in-link" data-node="link" aria-hidden="true">
+            <div class="ios-url"><span class="lock"></span><span data-txt>demobank.ng</span><span class="reload"></span></div>
+            <span class="flag ok" data-flag>Bank domain</span>
+          </div>
+          <p class="sr-only">An animation: Gaskiyya fingerprints a suspicious SMS and finds no record, so it is not confirmed; confirms DemoBank is calling with code 4821; and confirms a link is on DemoBank's own domain.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="film" id="film" aria-label="Gaskiyya in 30 seconds">
+      <div class="wrap">
+        <div class="section-head center">
+          <p class="eyebrow reveal">See it in 30 seconds</p>
+          <h2 class="reveal">From the bank's send to the customer's answer.</h2>
+        </div>
+        <figure class="film-frame reveal">
+          <video class="film-video" muted loop playsinline preload="metadata" poster="video/walkthrough-poster.webp" aria-label="A 30-second walkthrough of checking a message and a call with Gaskiyya. Sound is off; use the sound button to turn it on." data-hero-video>
+            <source src="video/gaskiyya-walkthrough.webm?v=3" type="video/webm" />
+            <source src="video/gaskiyya-walkthrough.mp4?v=3" type="video/mp4" />
+          </video>
+          <div class="video-controls">
+            <button class="video-btn video-sound" type="button" aria-label="Turn sound on" aria-pressed="false" data-video-sound>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path class="spk" d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z" /><path class="off" d="M16 9.5l5 5M21 9.5l-5 5" /><path class="on" d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11" /></svg>
+            </button>
+            <button class="video-btn video-toggle" type="button" aria-label="Pause video" data-video-toggle><span aria-hidden="true"></span></button>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <section class="problem" id="problem">
+      <div class="wrap narrow center">
+        <p class="eyebrow reveal">The problem</p>
+        <h2 class="reveal">A fake looks exactly like the real thing.</h2>
+        <p class="sub reveal">Fraudsters copy a bank's wording, its sender name and its tone. Often the only difference is a single character.</p>
+        <div class="lookalike reveal" aria-label="A genuine address next to a fake one">
+          <div class="addr ok"><span class="tag">Your bank</span><code>www.<b>demobank</b>.ng/app</code></div>
+          <div class="vs">vs</div>
+          <div class="addr bad"><span class="tag">A fraudster</span><code>www.<b>demo<mark>-</mark>bank</b>.ng/app</code></div>
+        </div>
+        <p class="sub small reveal">Customers can't be expected to spot that. The bank's own records can, once every message is registered with Gaskiyya.</p>
+      </div>
+    </section>
+
+    <section class="story" id="how">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow reveal">How customers check</p>
+          <h2 class="reveal">One question. A straight answer.</h2>
+          <p class="sub reveal">Inside the bank's own app through the Gaskiyya API, or in the Gaskiyya app. Either way, the answer comes from the bank's records.</p>
+        </div>
+        <div class="story-grid">
+          <div class="story-phone">
+            <div class="phone sticky-phone">
+              <div class="phone-screen" data-story-screens>
+                <picture class="on" data-step="0"><source srcset="img/dark-10_check_typed_link.webp" media="(prefers-color-scheme: dark)" /><img src="img/light-10_check_typed_link.webp" width="600" height="1301" alt="Pasting a link into Gaskiyya" loading="lazy" /></picture>
+                <picture data-step="1"><source srcset="img/dark-06_check.webp" media="(prefers-color-scheme: dark)" /><img src="img/light-06_check.webp" width="600" height="1301" alt="Recent messages from the bank" loading="lazy" /></picture>
+                <picture data-step="2"><source srcset="img/dark-07_result_confirmed.webp?v=2" media="(prefers-color-scheme: dark)" /><img src="img/light-07_result_confirmed.webp?v=2" width="600" height="1301" alt="Confirmed: sent by your bank" loading="lazy" /></picture>
+                <picture data-step="3"><source srcset="img/dark-08_result_not_confirmed.webp?v=2" media="(prefers-color-scheme: dark)" /><img src="img/light-08_result_not_confirmed.webp?v=2" width="600" height="1301" alt="Not confirmed, with what the bank really sent" loading="lazy" /></picture>
+              </div>
+            </div>
+            <div class="story-dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
+          </div>
+          <ol class="story-steps">
+            <li class="step on" data-step="0">
+              <span class="num">01</span>
+              <h3>Paste it, share it, or snap it</h3>
+              <p>Copy a suspicious SMS or WhatsApp message, share it straight from your messages app, paste a link, or send a screenshot.</p>
+            </li>
+            <li class="step" data-step="1">
+              <span class="num">02</span>
+              <h3>Fingerprinted on your phone</h3>
+              <p>Gaskiyya turns the message into a fingerprint on your phone. Only the fingerprint decides the result, never your words. To explain a result that is not confirmed, the text is sent once with long numbers hidden.</p>
+            </li>
+            <li class="step" data-step="2">
+              <span class="num">03</span>
+              <h3>Your bank's records answer</h3>
+              <p>If your bank sent that exact message to your number, you'll see <b>Sent by your bank</b>, with the channel, date and time.</p>
+            </li>
+            <li class="step" data-step="3">
+              <span class="num">04</span>
+              <h3>Not on record? You'll know why</h3>
+              <p>You'll see what your bank really sent you recently, and plain-language reasons the message looks like a scam.</p>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="try" id="try">
+      <div class="wrap">
+        <div class="section-head center">
+          <p class="eyebrow reveal">Try it</p>
+          <h2 class="reveal">Change one character. Watch it fail.</h2>
+          <p class="sub reveal">This is the real fingerprint, computed in your browser. Extra spaces don't matter. A changed letter, digit or dot does.</p>
+        </div>
+        <div class="demo reveal">
+          <div class="demo-card">
+            <div class="demo-label"><span class="chip">What DemoBank sent you</span></div>
+            <pre class="demo-msg" id="sent"></pre>
+            <div class="fp"><span>Fingerprint</span><code id="fp-sent">&hellip;</code></div>
+          </div>
+          <div class="demo-match" id="match" data-state="pending" aria-live="polite">
+            <img src="img/3d-verdict_confirmed.webp" alt="" width="120" height="120" data-ok />
+            <img src="img/3d-verdict_not_confirmed.webp" alt="" width="120" height="120" data-bad />
+            <img src="img/3d-verdict_cannot_check.webp" alt="" width="120" height="120" data-unknown />
+            <b id="verdict">&hellip;</b>
+          </div>
+          <div class="demo-card">
+            <div class="demo-label"><span class="chip">The message you received</span><span class="hint">Edit me</span></div>
+            <textarea id="got" class="demo-msg" spellcheck="false" aria-label="The message you received. Edit it to see the result change."></textarea>
+            <div class="fp"><span>Fingerprint</span><code id="fp-got">&hellip;</code></div>
+            <div class="demo-actions">
+              <button class="chip-btn" data-act="spaces">Add extra spaces</button>
+              <button class="chip-btn" data-act="link">Swap the link</button>
+              <button class="chip-btn" data-act="amount">Change the amount</button>
+              <button class="chip-btn" data-act="reset">Reset</button>
+            </div>
+          </div>
+        </div>
+        <p class="footnote reveal">In the app, the check is also tied to your phone number, so a real message forwarded to someone else will not verify for them.</p>
+      </div>
+    </section>
+
+    <section class="calls" id="calls">
+      <div class="wrap calls-grid">
+        <div class="calls-copy">
+          <p class="eyebrow reveal">Calls</p>
+          <h2 class="reveal">A code only your bank can read to you.</h2>
+          <p class="sub reveal">Caller ID can be faked. This can't. When your bank calls, Gaskiyya shows you a four-digit code at the same moment it appears on the agent's screen. If the caller can't read it, hang up.</p>
+          <ul class="list reveal">
+            <li>Notice arrives the instant the bank dials</li>
+            <li>Code expires after three minutes</li>
+            <li>No call on record? Gaskiyya tells you the bank isn't calling</li>
+          </ul>
+        </div>
+        <div class="calls-art reveal">
+          <div class="agent-card" aria-label="The bank agent's screen showing the same code">
+            <p class="agent-head"><span class="live"></span> Agent screen &middot; DemoBank</p>
+            <p class="agent-sub">Read this code to the customer</p>
+            <div class="digits" data-code-light="5059" data-code-dark="7477"></div>
+            <p class="agent-foot">Card activation &middot; valid for 2:51</p>
+          </div>
+          <div class="link-line" aria-hidden="true"><span>matches</span></div>
+          <div class="phone calls-phone">
+            <div class="phone-screen"><picture><source srcset="img/dark-14_calls_calling.webp" media="(prefers-color-scheme: dark)" /><img src="img/light-14_calls_calling.webp" width="600" height="1301" alt="Gaskiyya showing that DemoBank is calling, with the call code" loading="lazy" /></picture></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bento-wrap">
+      <div class="wrap">
+        <div class="section-head center">
+          <p class="eyebrow reveal">Everything you need</p>
+          <h2 class="reveal">Small app. Big peace of mind.</h2>
+        </div>
+        <div class="bento">
+          <article class="tile reveal">
+            <img class="tile-icon" src="img/3d-link.webp" alt="" width="220" height="220" loading="lazy" />
+            <h3>Check any link</h3>
+            <p>Lookalike addresses, shortened links and disguised characters are caught. Only your bank's registered domains pass.</p>
+          </article>
+          <article class="tile reveal" style="--d: 60ms">
+            <img class="tile-icon" src="img/3d-verdict_not_confirmed.webp" alt="" width="220" height="220" loading="lazy" />
+            <h3>Know why it's fake</h3>
+            <p>Plain-language reasons, from urgent threats to links that aren't your bank's.</p>
+            <div class="tags"><span>Urgency or threat</span><span>Link to a non-bank site</span><span>Asks you to call a number</span><span>Promises a refund</span></div>
+          </article>
+          <article class="tile reveal" style="--d: 120ms">
+            <img class="tile-icon" src="img/3d-shield.webp" alt="" width="160" height="160" loading="lazy" />
+            <h3>Never asks for secrets</h3>
+            <p>No PIN, password, card number or one-time code. Ever. If something asks, it isn't us.</p>
+          </article>
+          <article class="tile reveal">
+            <img class="tile-icon" src="img/3d-message.webp" alt="" width="220" height="220" loading="lazy" />
+            <h3>See what your bank really sent</h3>
+            <p>Your bank's recent messages to you, at a glance. Counts and types only, never the text.</p>
+          </article>
+          <article class="tile reveal" style="--d: 60ms">
+            <img class="tile-icon" src="img/3d-app_tile.webp" alt="" width="220" height="220" loading="lazy" />
+            <h3>Easy to read, day or night</h3>
+            <p>Follows your phone's light or dark setting.</p>
+          </article>
+          <article class="tile reveal" style="--d: 120ms">
+            <img class="tile-icon" src="img/3d-call.webp" alt="" width="220" height="220" loading="lazy" />
+            <h3>Know who is calling</h3>
+            <p>When your bank calls, the app says so. When it isn't calling, the app says that too.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="privacy" id="privacy">
+      <div class="wrap privacy-grid">
+        <div class="privacy-art reveal"><img src="img/3d-lock.webp" alt="" width="420" height="420" loading="lazy" /></div>
+        <div>
+          <p class="eyebrow reveal">Privacy</p>
+          <h2 class="reveal">Built so there's nothing to leak.</h2>
+          <div class="principles">
+            <div class="principle reveal"><h3>Your words stay on your phone</h3><p>Messages are fingerprinted on your device. The text is never sent or stored.</p></div>
+            <div class="principle reveal" style="--d: 60ms"><h3>No phone numbers stored</h3><p>Records hold scrambled keys only. Even a breach reveals no numbers and no messages.</p></div>
+            <div class="principle reveal" style="--d: 120ms"><h3>Only your bank confirms</h3><p>An answer of "sent by your bank" comes from an exact match in your bank's records, never from a guess or an AI.</p></div>
+            <div class="principle reveal" style="--d: 180ms"><h3>When in doubt, it says so</h3><p>If a check can't be completed, you're told plainly. Gaskiyya never guesses "genuine".</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="banks" id="banks">
+      <div class="wrap">
+        <div class="section-head center">
+          <p class="eyebrow reveal">For banks</p>
+          <h2 class="reveal">One API call. Fewer customers fooled.</h2>
+          <p class="sub reveal">Register a fingerprint when you send. Announce calls before you dial. Customers verify in your app through the Gaskiyya API, or in the Gaskiyya app. No access to core banking, accounts or transactions. Run it in your own cloud, or ours.</p>
+        </div>
+        <div class="bank-points">
+          <div class="bp reveal"><span class="bp-n">1</span><h3>Register as you send</h3><pre><code>POST /v1/messages
+{ "recipient": "+234801...",
+  "contentDigest": "3f37d7...",
+  "category": "transaction_alert" }</code></pre></div>
+          <div class="bp reveal" style="--d: 60ms"><span class="bp-n">2</span><h3>Announce outbound calls</h3><p>Your dialler opens a session; the agent reads the four-digit code from their screen.</p></div>
+          <div class="bp reveal" style="--d: 120ms"><span class="bp-n">3</span><h3>See campaigns as they start</h3><p>Customer reports are grouped into scam campaigns with a drafted advisory, sent to your fraud desk by email.</p></div>
+        </div>
+        <div class="bank-links reveal"><a class="btn" href="banks.html">Read the integration guide</a><a class="btn btn-outline" href="gaskiyya-whitepaper.pdf" target="_blank" rel="noopener">Whitepaper (PDF)</a></div>
+        <div class="center reveal" data-contact></div>
+      </div>
+    </section>
+
+    <section class="faq" id="faq">
+      <div class="wrap faq-grid">
+        <div class="faq-head">
+          <p class="eyebrow reveal">FAQ</p>
+          <h2 class="reveal">Frequently asked questions</h2>
+          <p class="sub reveal">Unsure about a message right now? Don't reply or tap anything. Contact your bank through its app or a branch.</p>
+        </div>
+        <div class="faq-list">
+        <details class="reveal"><summary>Does Gaskiyya read my SMS inbox?</summary><p>No. You choose what to check by pasting, sharing or taking a screenshot. The app never reads your messages on its own.</p></details>
+        <details class="reveal"><summary>Why might a real message show as "not confirmed"?</summary><p>Only messages your bank has registered with Gaskiyya can be confirmed. Banks enrol one message type at a time, so treat "not confirmed" as a reason to be careful, and contact your bank through its app or a branch.</p></details>
+        <details class="reveal"><summary>Can a fraudster make a fake message pass?</summary><p>Not by copying it. A confirmation needs an exact match with a record your bank created for your number. Change one character, or send it to someone else, and it won't match.</p></details>
+        <details class="reveal"><summary>Does AI decide whether a message is genuine?</summary><p>Never. The answer comes only from your bank's records. AI is used afterwards, only to explain in plain words why something looks risky.</p></details>
+        <details class="reveal"><summary>Will Gaskiyya ever ask for my PIN or a one-time code?</summary><p>Never. If anyone claiming to be Gaskiyya or your bank asks for your PIN, password, card number or a one-time code, it's a scam.</p></details>
+        <details class="reveal"><summary>Is Gaskiyya an app or a service for banks?</summary><p>Both, in that order. Gaskiyya is verification infrastructure that banks connect to their messaging and contact centre. Customers then check messages and calls in their bank's own app, or in the Gaskiyya app.</p></details>
+        <details class="reveal"><summary>Does it work with my bank?</summary><p>Only if your bank uses Gaskiyya. A message can be confirmed only when the bank registered it, so the app links your number through your bank's own login. If your bank is not on Gaskiyya yet, the app cannot confirm its messages; ask your bank to join.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <section class="download" id="download">
+      <div class="wrap">
+        <div class="cta">
+          <div class="cta-copy">
+            <img src="img/3d-logo_dark.webp" alt="" width="120" height="120" class="cta-logo" loading="lazy" />
+            <h2>Know before you act.</h2>
+            <p>The Gaskiyya app, for customers of banks on Gaskiyya. Check your next suspicious message in seconds.</p>
+            <div class="stores light" data-stores></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="foot-top">
+        <div class="foot-brand">
+          <a class="brand" href="#top"><img src="logo.svg" width="26" height="26" alt="" class="brand-logo" /><span>Gaskiyya</span></a>
+          <p>Anti-fraud verification infrastructure for banks, and an app for their customers.</p>
+          <p class="foot-note">Gaskiyya means "truth" in Hausa.</p>
+        </div>
+        <nav class="foot-col" aria-label="Product"><h2>Product</h2><a href="#how">How it works</a><a href="#try">Try a check</a><a href="#calls">Call codes</a><a href="#download">Download</a></nav>
+        <nav class="foot-col" aria-label="Trust"><h2>Trust</h2><a href="#privacy">Privacy</a><a href="#faq">FAQ</a></nav>
+        <nav class="foot-col" aria-label="Banks"><h2>For banks</h2><a href="banks.html">Integration guide</a><a href="banks.html#api">API reference</a><a href="gaskiyya-whitepaper.pdf" target="_blank" rel="noopener">Whitepaper (PDF)</a></nav>
+      </div>
+      <div class="foot-bottom">
+        <p>&copy; <span data-year>2026</span> Gaskiyya</p>
+        <p>Gaskiyya never asks for your PIN, password, card number or one-time code.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

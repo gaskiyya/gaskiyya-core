@@ -1,0 +1,1399 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Gaskiyya for Banks &middot; Integration guide</title>
+  <meta name="description" content="How a bank integrates Gaskiyya: register each message at send time, announce calls before dialling, sign customer tokens and review scam campaigns. Workflows, API reference and onboarding checklist." />
+  <meta name="theme-color" content="#F4F3EF" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0B0F0D" media="(prefers-color-scheme: dark)" />
+  <meta name="color-scheme" content="light dark" />
+  <meta property="og:title" content="Gaskiyya for banks: integration guide" />
+  <meta property="og:description" content="Four touchpoints, no core banking access, nothing changes for your customers." />
+  <meta property="og:image" content="og.png" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500..800&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/style.css" />
+  <link rel="stylesheet" href="/src/banks.css" />
+</head>
+<body class="page-banks">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav scrolled" id="nav">
+    <div class="wrap nav-in">
+      <a class="brand" href="./" aria-label="Gaskiyya home">
+        <img src="logo.svg" width="30" height="30" alt="" class="brand-logo" />
+        <span>Gaskiyya</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="./#how">How it works</a>
+        <a href="./#calls">Calls</a>
+        <a href="./#privacy">Privacy</a>
+        <a href="banks.html" aria-current="page">For banks</a>
+        <a href="./#faq">FAQ</a>
+      </nav>
+      <a class="btn btn-small" href="gaskiyya-whitepaper.pdf" target="_blank" rel="noopener">Whitepaper</a>
+      <button class="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span></button>
+    </div>
+    <div class="mobile-menu" id="mobile-menu" hidden>
+      <a href="./#how">How it works</a><a href="./#calls">Calls</a><a href="./#privacy">Privacy</a><a href="banks.html" aria-current="page">For banks</a><a href="./#faq">FAQ</a><a href="gaskiyya-whitepaper.pdf" class="btn" target="_blank" rel="noopener">Whitepaper (PDF)</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="bank-hero" id="top">
+      <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="wrap">
+        <h1 class="reveal">Integrate Gaskiyya in four touchpoints.</h1>
+        <p class="lede reveal" style="--d: 100ms">Gaskiyya is the verification layer between your bank and your customers. Register what you send, announce calls before you dial, sign a short-lived token for your logged-in customers, and let your fraud desk review scam campaigns. No access to core banking. No change to what your customers see.</p>
+        <div class="hero-actions reveal" style="--d: 160ms">
+          <a class="btn" href="gaskiyya-whitepaper.pdf" target="_blank" rel="noopener">Whitepaper (PDF)</a>
+          <a class="btn btn-ghost" href="#workflow">See the workflow</a>
+        </div>
+        <dl class="facts-grid bank-facts reveal" style="--d: 220ms">
+          <div class="fact"><dt>Touchpoints in your stack</dt><dd>4</dd></div>
+          <div class="fact"><dt>Extra API call per message</dt><dd>1</dd></div>
+          <div class="fact"><dt>Message text or numbers stored</dt><dd>0</dd></div>
+          <div class="fact"><dt>Target from send to searchable</dt><dd>2 s</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <nav class="toc" aria-label="On this page">
+      <div class="wrap toc-in">
+        <span class="toc-title">On this page</span>
+        <ol>
+          <li><a href="#overview">What you connect</a></li>
+          <li><a href="#workflow">Integration workflow</a></li>
+          <li><a href="#architecture">Architecture</a></li>
+          <li><a href="#messages">1. Register messages</a></li>
+          <li><a href="#fingerprint">The fingerprint</a></li>
+          <li><a href="#calls">2. Announce calls</a></li>
+          <li><a href="#sim-swap">SIM swap checks</a></li>
+          <li><a href="#identity">3. Customer tokens</a></li>
+          <li><a href="#receipts">Transfer receipts</a></li>
+          <li><a href="#fraud">4. Fraud desk</a></li>
+          <li><a href="#verdicts">How verdicts work</a></li>
+          <li><a href="#security">Security requirements</a></li>
+          <li><a href="#deployment">Deployment</a></li>
+          <li><a href="#api">Bank API</a></li>
+          <li><a href="#verify-api">Customer verification API</a></li>
+          <li><a href="#checklist">Onboarding checklist</a></li>
+          <li><a href="#status">What is ready</a></li>
+        </ol>
+      </div>
+    </nav>
+
+    <div class="wrap doc-grid">
+
+      <div class="doc">
+        <section id="overview">
+          <p class="eyebrow">Overview</p>
+          <h2>What you connect</h2>
+          <p class="sub">Gaskiyya is infrastructure: it connects only where your bank sends communications. It never reads balances, accounts or transactions, and needs no open banking API. Your customers verify in your own app through the customer API, or in the Gaskiyya app.</p>
+          <div class="touch-grid">
+            <article class="touch">
+              <span class="touch-n">1</span>
+              <h3>Notification service</h3>
+              <p class="touch-where">Where: the code that hands SMS and WhatsApp messages to your gateway</p>
+              <p>Compute a fingerprint of the final text and register it with the recipient's number. The message itself goes out unchanged.</p>
+              <code>POST /v1/messages</code>
+            </article>
+            <article class="touch">
+              <span class="touch-n">2</span>
+              <h3>Contact centre</h3>
+              <p class="touch-where">Where: the dialler and the agent desktop</p>
+              <p>Announce each outbound call before dialling. Show the returned four-digit code on the agent's screen.</p>
+              <code>POST /v1/calls</code>
+            </article>
+            <article class="touch">
+              <span class="touch-n">3</span>
+              <h3>Mobile banking backend</h3>
+              <p class="touch-where">Where: the service behind your app's login</p>
+              <p>Sign a short-lived token naming the customer's phone number. Publish your public keys at a stable URL.</p>
+              <code>JWT + JWKS URL</code>
+            </article>
+            <article class="touch">
+              <span class="touch-n">4</span>
+              <h3>Fraud desk</h3>
+              <p class="touch-where">Where: your fraud and security team</p>
+              <p>Receive alerts when customers report the same scam. Approve or dismiss each campaign's drafted advisory.</p>
+              <code>Console, GET /v1/campaigns</code>
+            </article>
+          </div>
+        </section>
+
+        <section id="workflow">
+          <p class="eyebrow">Workflow</p>
+          <h2>From agreement to production</h2>
+          <p class="sub">Five stages. A pilot enrols one message type for a small group of customers, measures coverage, then expands.</p>
+          <figure class="figure">
+            <div class="figure-scroll"><!-- diagram:integration-workflow --></div>
+            <figcaption><b>Integration workflow.</b> Every stage has a clear exit: the review is signed, the credentials work, the four touchpoints are live, the tests pass, and coverage is high enough to expand.</figcaption>
+          </figure>
+        </section>
+
+        <section id="architecture">
+          <p class="eyebrow">Architecture</p>
+          <h2>Where Gaskiyya sits</h2>
+          <p class="sub">Beside your systems, never in their path. Your gateway delivers every message exactly as it does today; Gaskiyya only holds a keyed fingerprint of it.</p>
+          <figure class="figure">
+            <div class="figure-scroll"><!-- diagram:architecture --></div>
+            <figcaption><b>System architecture.</b> Bank systems call the bank-facing API. Customer channels call the customer API. Numbers mark the three calls that matter most.</figcaption>
+          </figure>
+        </section>
+
+        <section id="messages">
+          <p class="eyebrow">Touchpoint 1</p>
+          <h2>Register every message</h2>
+          <p class="sub">Before or alongside hand-off to your gateway, send the fingerprint of the final text with the recipient's number. Registration runs in the background and never delays a message.</p>
+          <figure class="figure">
+            <div class="figure-scroll"><!-- diagram:message-flow --></div>
+            <figcaption><b>Registration and verification.</b> The customer's phone computes the same fingerprint and asks whether you registered it for their number.</figcaption>
+          </figure>
+
+          <h3>Choose a registration pattern</h3>
+          <figure class="figure">
+            <div class="figure-scroll"><!-- diagram:registration-patterns --></div>
+            <figcaption><b>Three patterns.</b> Pick the one your bank can change most easily. Inline is the most reliable.</figcaption>
+          </figure>
+
+          <h3>Get an access token, then register</h3>
+          <div class="code" data-copy>
+            <pre><code># 1. Exchange client credentials for a 10-minute access token
+#    200 { "access_token": "...", "token_type": "Bearer", "expires_in": 600 }
+curl -s "$GASKIYYA_URL/v1/oauth/token" \
+  -H 'content-type: application/json' \
+  -d '{"grant_type":"client_credentials","client_id":"notify-svc","client_secret":"'"$CLIENT_SECRET"'"}'
+
+# 2. Register the message you are about to send. contentDigest is the
+#    fingerprint of its final text, here "DemoBank: Debit\nAmt: NGN5,000.00\nAcc: ***5678"
+curl -s "$GASKIYYA_URL/v1/messages" \
+  -H "authorization: Bearer $ACCESS_TOKEN" \
+  -H 'content-type: application/json' \
+  -H 'idempotency-key: alert-7f3c9a' \
+  -d '{
+    "recipient": "+2348012345678",
+    "channel": "sms",
+    "contentDigest": "2c0c122ad56268258bb16e6ba85fb2f9c8bab9ce1d8ff20527060f8c3151729f",
+    "category": "transaction_alert",
+    "hasLink": false,
+    "linkDomains": [],
+    "asksCallback": false,
+    "sentAt": "2026-10-20T13:02:11Z"
+  }'
+
+# 202 Accepted (200 when the idempotency key was seen before)
+# { "recordId": "rec_...", "expiresAt": "2026-11-19T13:02:11.000Z" }</code></pre>
+          </div>
+
+          <h3>Rules for the registration path</h3>
+          <ul class="checks">
+            <li><b>Never block sending.</b> Register from a local retry queue; the message goes out regardless.</li>
+            <li><b>Hash exactly what is sent.</b> Compute the digest from the final text handed to the gateway, after templating.</li>
+            <li><b>Make retries safe.</b> Send an <code>Idempotency-Key</code> of up to 128 characters. A repeat returns the original record.</li>
+            <li><b>Be fast.</b> Aim for under two seconds from send to searchable record.</li>
+            <li><b>Batch when it helps.</b> <code>POST /v1/messages/batch</code> takes up to 500 messages; the idempotency key is suffixed with each position.</li>
+          </ul>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Field</th><th>Rule</th></tr></thead>
+              <tbody>
+                <tr><td><code>recipient</code></td><td>E.164 phone number the message is sent to</td></tr>
+                <tr><td><code>channel</code></td><td><code>sms</code>, <code>whatsapp</code>, <code>email</code> or <code>push</code></td></tr>
+                <tr><td><code>contentDigest</code></td><td>SHA-256 of the canonical text, 64 lowercase hex characters</td></tr>
+                <tr><td><code>category</code></td><td><code>otp</code>, <code>transaction_alert</code>, <code>security_notice</code>, <code>service_update</code>, <code>marketing</code> or <code>call_follow_up</code></td></tr>
+                <tr><td><code>hasLink</code>, <code>linkDomains</code></td><td>Whether the text has a link, and up to 10 of its domains</td></tr>
+                <tr><td><code>asksCallback</code></td><td>Whether the text asks the customer to call a number</td></tr>
+                <tr><td><code>sentAt</code></td><td>ISO 8601 time with offset. Records expire 30 days later by default. Refused if more than 5 minutes ahead of the registry's clock, or already older than the expiry</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="fingerprint">
+          <p class="eyebrow">Specification</p>
+          <h2>The fingerprint</h2>
+          <p class="sub">Your connector and the customer's phone must produce the same digest for the same text. Four steps, in this exact order, then SHA-256.</p>
+          <ol class="steps-list">
+            <li>Remove zero-width characters: U+200B, U+200C, U+200D, U+2060 and U+FEFF.</li>
+            <li>Apply Unicode NFKC normalisation as defined by Unicode 15.1. A code point not assigned in 15.1 is kept unchanged, and the text on each side of it is normalised separately.</li>
+            <li>Collapse every whitespace run to one space. The set is explicit: tab, line feed, vertical tab, form feed, carriage return, space, U+0085, U+00A0, U+1680, U+2000 to U+200A, U+2028, U+2029, U+202F, U+205F and U+3000.</li>
+            <li>Trim spaces at both ends. Keep letter case and punctuation.</li>
+          </ol>
+          <figure class="figure">
+            <div class="figure-scroll"><!-- diagram:fingerprint --></div>
+            <figcaption><b>From message to stored record.</b> Gaskiyya keys the digest and the number with your bank's secret, and stores neither.</figcaption>
+          </figure>
+          <div class="code" data-copy>
+            <pre><code>// TypeScript, with the shared library
+import { contentDigest } from '@gaskiya/canonical';
+
+const digest = contentDigest(finalSmsText); // 64 lowercase hex characters</code></pre>
+          </div>
+          <p class="note-line">Libraries exist in TypeScript and Dart. In any other language, implement the four steps and pass all 36 shared test vectors in <code>packages/test-vectors/vectors.json</code> before going live.</p>
+        </section>
+
+        <section id="calls">
+          <p class="eyebrow">Touchpoint 2</p>
+          <h2>Announce calls before you dial</h2>
+          <p class="sub">Caller ID can be spoofed, so Gaskiyya ignores it. Your dialler opens a session, the customer's app shows a four-digit code, and your agent reads the same code from their screen.</p>
+          <figure class="figure">
+            <div class="figure-scroll"><!-- diagram:call-flow --></div>
+            <figcaption><b>Call verification.</b> A session lasts 180 seconds unanswered. Once answered it is kept for up to two hours; ending the call closes it at once.</figcaption>
+          </figure>
+          <div class="code" data-copy>
+            <pre><code>curl -s "$GASKIYYA_URL/v1/calls" \
+  -H "authorization: Bearer $ACCESS_TOKEN" -H 'content-type: application/json' \
+  -d '{"recipient":"+2348012345678","purpose":"card_activation","agentRef":"agent-017"}'
+# 201 { "id": "call_...", "code": "4821", "status": "open", "expiresAt": "..." }
+
+curl -s -X PATCH "$GASKIYYA_URL/v1/calls/call_..." \
+  -H "authorization: Bearer $ACCESS_TOKEN" -H 'content-type: application/json' \
+  -d '{"status":"answered"}'   # later: {"status":"ended"}</code></pre>
+          </div>
+          <ul class="checks">
+            <li><b>Show the code to the agent.</b> A small panel in the agent desktop is enough.</li>
+            <li><b>Purposes are fixed:</b> <code>card_activation</code>, <code>fraud_check</code>, <code>loan_follow_up</code>, <code>account_update</code>, <code>service_follow_up</code>.</li>
+            <li><b>Close the session.</b> Mark it <code>ended</code> when the call ends so the notice disappears from the customer's phone.</li>
+          </ul>
+        </section>
+
+        <section id="sim-swap">
+          <p class="eyebrow">Optional</p>
+          <h2>Check the SIM before you send a code</h2>
+          <p class="sub">A fraudster who moves a customer's number to a new SIM receives that customer's one-time codes. Mobile networks report when a number's SIM last changed through the GSMA Open Gateway (CAMARA) SIM Swap API. Gaskiyya asks for you, with one credential for every network it is connected to.</p>
+          <div class="code" data-copy>
+            <pre><code>curl -s "$GASKIYYA_URL/v1/sim-swap/check" \
+  -H "authorization: Bearer $ACCESS_TOKEN" -H 'content-type: application/json' \
+  -d '{"phone":"+2348012345678","maxAgeHours":72}'
+# 200 { "status": "swapped", "swapped": true, "latestSimChange": "...", ... }
+# 200 { "status": "unknown", "reason": "provider_unavailable", ... }  -> treat as risky</code></pre>
+          </div>
+          <ul class="checks">
+            <li><b>Ask before a one-time code or a large transfer.</b> Hold the code, or step up to another check, when <code>status</code> is <code>swapped</code>.</li>
+            <li><b>Unknown is not "no swap".</b> When the network cannot answer, the status is <code>unknown</code>, never <code>not_swapped</code>. Treat it as risky.</li>
+            <li><b>Registration still succeeds.</b> When you register a one-time code (<code>category: "otp"</code>) to a number whose SIM changed recently, the response carries <code>simSwapWarning: true</code> so your gateway can hold the code. Nothing the customer sees changes.</li>
+            <li><b>Customers see it too.</b> A customer whose SIM changed recently gets a warning beside the verdict, which it never changes, and your fraud desk gets an email that names the customer by a keyed reference, never by number.</li>
+          </ul>
+        </section>
+
+        <section id="identity">
+          <p class="eyebrow">Touchpoint 3</p>
+          <h2>Sign customer tokens</h2>
+          <p class="sub">You stay the only party that authenticates your customers. Your backend signs a token that names the customer's number; Gaskiyya checks it against your published keys and nothing else.</p>
+          <figure class="figure">
+            <div class="figure-scroll"><!-- diagram:identity-flow --></div>
+            <figcaption><b>Customer identity.</b> Gaskiyya never receives a password, PIN or session cookie.</figcaption>
+          </figure>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Claim</th><th>Value</th></tr></thead>
+              <tbody>
+                <tr><td><code>iss</code></td><td>Your tenant id in Gaskiyya</td></tr>
+                <tr><td><code>sub</code></td><td>The customer's number in E.164 form, for example <code>+2348012345678</code></td></tr>
+                <tr><td><code>aud</code></td><td><code>gaskiya</code></td></tr>
+                <tr><td><code>iat</code></td><td>Required. Tokens issued more than 15 minutes ago are refused</td></tr>
+                <tr><td><code>exp</code></td><td>Recommended, at most 15 minutes after <code>iat</code></td></tr>
+                <tr><td><code>accts</code></td><td>Optional. The customer's own 10-digit account numbers with you, for example <code>["0123456789"]</code>. Only these accounts can be named in a <a href="#receipts">transfer-receipt check</a>; leave it out and your customers get no receipt checks. Gaskiyya never stores them</td></tr>
+                <tr><td>Algorithm</td><td>ES256, RS256 or EdDSA, with a key from your JWKS</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="code" data-copy>
+            <pre><code>// Node.js with the jose library, in your mobile banking backend
+import { SignJWT } from 'jose';
+
+const token = await new SignJWT({})
+  .setProtectedHeader({ alg: 'ES256', kid: 'bank-2026-10' })
+  .setIssuer('demobank')            // your tenant id
+  .setSubject('+2348012345678')     // the logged-in customer's number
+  .setAudience('gaskiya')
+  .setIssuedAt()
+  .setExpirationTime('10m')
+  .sign(privateKey);</code></pre>
+          </div>
+          <p class="note-line">Publish the public half at a stable HTTPS URL; it becomes your tenant's <code>tokenKeysUrl</code>. Gaskiyya caches the set for up to ten minutes, so publish a new key before you start signing with it.</p>
+          <h3>Bringing the verify screen into your app</h3>
+          <div class="opt-grid">
+            <div class="opt"><h4>API only</h4><p>Your app team builds the screen against the customer API. Least risk to the app. Recommended for a pilot.</p></div>
+            <div class="opt"><h4>Embedded Flutter module</h4><p>Fastest from the existing codebase. Adds app size and a second UI framework.</p></div>
+            <div class="opt muted"><h4>Native libraries</h4><p>Thin Android and iOS libraries with the screen and the fingerprint. Planned.</p></div>
+          </div>
+          <p class="note-line">Your customers can also use the Gaskiyya app, with no new app build: it lists every bank enrolled on the registry (<code>GET /v1/banks</code>) and signs customers in through each bank's own sign-in. To appear there, publish a <a href="#verify-api">customer sign-in endpoint</a> that returns this token after your login, and give its address to Gaskiyya as your <code>customerTokenUrl</code>.</p>
+        </section>
+
+        <section id="receipts">
+          <p class="eyebrow">Transfers</p>
+          <h2>Register transfer receipts</h2>
+          <p class="sub">Fake "I have paid you" receipts cost merchants and POS agents goods every day. When your customer's transfer completes, register its receipt; the merchant who was paid can then check it in their own bank's app before releasing goods. Decision note: <code>apps/web/docs/decisions/0015-transfer-receipts.md</code>.</p>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Field</th><th>Canonical rule</th></tr></thead>
+              <tbody>
+                <tr><td><code>beneficiaryAccount</code></td><td>The 10-digit NUBAN paid into</td></tr>
+                <tr><td><code>beneficiaryBank</code></td><td>The beneficiary bank's 6-digit NIBSS (NIP) institution code</td></tr>
+                <tr><td><code>amountKobo</code></td><td>The amount in kobo, a whole number with no leading zero</td></tr>
+                <tr><td><code>reference</code></td><td>The NIP session ID (30 digits) or your transfer reference: letters and digits, upper case; spaces and hyphens removed</td></tr>
+                <tr><td><code>valueDate</code></td><td>The value date in Africa/Lagos time, <code>YYYY-MM-DD</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The receipt digest is SHA-256 of <code>GR1|account|bank|amountKobo|reference|valueDate</code>, from <code>receiptDigest()</code> in the same library as the message fingerprint (TypeScript and Dart give identical results). Send only the digest with the beneficiary account and bank: the amount, reference and date never leave your systems. The registry keeps a keyed hash of the account and of the digest, under the beneficiary bank's key, so a receipt only ever verifies for the account it paid into. A transfer into a bank that is not enrolled is not stored.</p>
+          <p class="note-line">To let your own customers check receipts paid to them, set your tenant's <code>bankCode</code> and add the <code>accts</code> claim to their tokens.</p>
+        </section>
+
+        <section id="fraud">
+          <p class="eyebrow">Touchpoint 4</p>
+          <h2>Give your fraud desk the campaigns</h2>
+          <p class="sub">When customers report fakes, an agent groups them by shared link domain, shared callback number or similar wording, and drafts an advisory. Your analysts decide. Once a named analyst approves a warning, it appears in your customers' Gaskiyya app at once. Gaskiyya never sends an SMS to your customers: you send the warning through your own gateway, and register it like any other message, so the warning itself checks as sent by you.</p>
+          <figure class="figure">
+            <div class="figure-scroll"><!-- diagram:campaigns --></div>
+            <figcaption><b>Campaign detection.</b> Alert emails go to your fraud desk addresses for new and growing campaigns.</figcaption>
+          </figure>
+          <ul class="checks">
+            <li><code>GET /v1/campaigns</code> lists campaigns with their indicators and drafted advisories.</li>
+            <li><code>POST /v1/campaigns/{id}/approve</code> or <code>/dismiss</code> records the analyst's decision.</li>
+            <li>Approval publishes the warning to your customers' app, with one notice per device, until it expires (14 days by default) or an analyst withdraws it with <code>POST /v1/campaigns/{id}/withdraw</code>.</li>
+            <li>To send it by SMS or WhatsApp, register each warning with <code>POST /v1/messages</code> (category <code>security_notice</code>) and send the approved text unchanged. A customer who checks it sees it confirmed; a fraudster's copy sent to anyone else is not.</li>
+            <li><code>GET /v1/metrics</code> returns registrations by category and verification counts, so you can measure coverage.</li>
+          </ul>
+        </section>
+
+        <section id="verdicts">
+          <p class="eyebrow">Behaviour</p>
+          <h2>How a verdict is decided</h2>
+          <p class="sub">Every check passes the same gates in order. Only an exact, unexpired record for the checking number produces "Sent by your bank". Any failure is "Cannot check right now", never "genuine".</p>
+          <figure class="figure figure-narrow">
+            <div class="figure-scroll"><!-- diagram:verdict --></div>
+            <figcaption><b>Verdict gates.</b> The AI explanation runs only afterwards and cannot change the result.</figcaption>
+          </figure>
+        </section>
+
+        <section id="security">
+          <p class="eyebrow">Security</p>
+          <h2>Security requirements</h2>
+          <div class="req-grid">
+            <div class="req"><h4>Network</h4><p>Mutual TLS and an IP allowlist at the gateway in front of the bank-facing API.</p></div>
+            <div class="req"><h4>Clients</h4><p>One OAuth client per calling system. Secrets of at least 24 characters. Access tokens last 10 minutes.</p></div>
+            <div class="req"><h4>Keys</h4><p>One hashing key per bank, at least 32 bytes, held in your key management service, apart from the data.</p></div>
+            <div class="req"><h4>Data</h4><p>No message text, no plain numbers and no digests are stored. Only keyed hashes and descriptive fields.</p></div>
+            <div class="req"><h4>Logs</h4><p>Request bodies, query strings and authorisation headers are never logged.</p></div>
+            <div class="req"><h4>Abuse</h4><p>Customer checks are limited to 30 per minute per customer by default.</p></div>
+          </div>
+        </section>
+
+        <section id="deployment">
+          <p class="eyebrow">Deployment</p>
+          <h2>Run it in your cloud, or ours</h2>
+          <figure class="figure">
+            <div class="figure-scroll"><!-- diagram:deployment --></div>
+            <figcaption><b>Deployment options.</b> Bank-hosted is the simpler route through security review and data residency, and the likelier pilot.</figcaption>
+          </figure>
+        </section>
+
+        <section id="api">
+          <p class="eyebrow">Reference</p>
+          <h2>Bank-facing API</h2>
+          <p class="sub">What your systems call. JSON bodies, ISO 8601 times with an offset, E.164 numbers. Unknown fields are rejected. Errors share one shape: <code>{ "code": "...", "message": "..." }</code>.</p>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/oauth/token</code></h3>
+          <p class="ep-meta"><b>Auth:</b> none (client credentials in the body) &middot; <b>Success:</b> 200</p>
+          <p>Exchange your client credentials for an access token. Send it as <code>authorization: Bearer &lt;access_token&gt;</code> on every other bank call.</p>
+          <p>The Gaskiyya operator issues one client per system from the admin dashboard. The secret is shown once, at creation or rotation, and Gaskiyya keeps only a hash of it: store it in your secret manager straight away. Live secrets start <code>gsk_live_</code>, sandbox ones <code>gsk_test_</code>. A rotation can keep the old secret working for up to 24 hours so you can deploy without downtime; a revoked client, and every token it holds, stops working at once.</p>
+          <p class="code-label">Request body</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="TokenRequest">{
+  "grant_type": "client_credentials",
+  "client_id": "notify-svc",
+  "client_secret": "your-client-secret-from-onboarding"
+}</code></pre>
+          </div>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "access_token": "eyJhbGciOiJIUzI1NiJ9.example",
+  "token_type": "Bearer",
+  "expires_in": 600
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/messages</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Bank access token &middot; <b>Success:</b> 202 Accepted; 200 when the idempotency key was seen before</p>
+          <p>Register one outbound message. Optional header <code>idempotency-key</code> (1 to 128 characters) makes retries safe.</p>
+          <p class="code-label">Request body</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="RegisterMessage">{
+  "recipient": "+2348012345678",
+  "channel": "sms",
+  "contentDigest": "2c0c122ad56268258bb16e6ba85fb2f9c8bab9ce1d8ff20527060f8c3151729f",
+  "category": "transaction_alert",
+  "hasLink": false,
+  "linkDomains": [],
+  "asksCallback": false,
+  "sentAt": "2026-10-20T13:02:11Z"
+}</code></pre>
+          </div>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "recordId": "rec_5f0c2a9e1b7d4c3a8e21",
+  "expiresAt": "2026-11-19T13:02:11.000Z"
+}</code></pre>
+          </div>
+          <p class="code-label">Response: a one-time code while SIM-swap checks are on</p>
+          <p>For <code>category: "otp"</code> the response also says whether the number's SIM changed recently, so your gateway can hold the code. The record is registered either way. <code>simSwapStatus</code> is <code>swapped</code>, <code>not_swapped</code> or <code>unknown</code>.</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "recordId": "rec_7b3e1d9a2c5f4e8a6b02",
+  "expiresAt": "2026-11-19T13:02:11.000Z",
+  "simSwapWarning": true,
+  "simSwapStatus": "swapped"
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/messages/batch</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Bank access token &middot; <b>Success:</b> 202</p>
+          <p>Register 1 to 500 messages in one call. An idempotency key is suffixed with each message's position (<code>key:0</code>, <code>key:1</code>, ...).</p>
+          <p class="code-label">Request body</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="RegisterBatch">{
+  "messages": [
+    {
+      "recipient": "+2348012345678",
+      "channel": "sms",
+      "contentDigest": "2c0c122ad56268258bb16e6ba85fb2f9c8bab9ce1d8ff20527060f8c3151729f",
+      "category": "transaction_alert",
+      "hasLink": false,
+      "linkDomains": [],
+      "asksCallback": false,
+      "sentAt": "2026-10-20T13:02:11Z"
+    },
+    {
+      "recipient": "+2348098765432",
+      "channel": "sms",
+      "contentDigest": "2c0c122ad56268258bb16e6ba85fb2f9c8bab9ce1d8ff20527060f8c3151729f",
+      "category": "otp",
+      "hasLink": false,
+      "linkDomains": [],
+      "asksCallback": false,
+      "sentAt": "2026-10-20T13:02:11Z"
+    }
+  ]
+}</code></pre>
+          </div>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "records": [
+    {
+      "recordId": "rec_5f0c2a9e1b7d4c3a8e21",
+      "expiresAt": "2026-11-19T13:02:11.000Z"
+    },
+    {
+      "recordId": "rec_9a1d7e3c5b2f4a6c8d10",
+      "expiresAt": "2026-11-19T13:02:11.000Z"
+    }
+  ]
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/receipts</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Bank access token &middot; <b>Success:</b> 202 Accepted; 200 when the idempotency key was seen before, or when the beneficiary bank is not enrolled (<code>stored: false</code>)</p>
+          <p>Register one completed transfer, as the paying bank. Optional header <code>idempotency-key</code>. Kept for <code>RECEIPT_TTL_DAYS</code> (30 by default).</p>
+          <p class="code-label">Request body</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="RegisterReceipt">{
+  "receiptDigest": "ffad1da468d0b2a9ee2b94e1078ed4e8c896e1b46a830f45474f6ed037f8bf09",
+  "beneficiaryAccount": "0123456789",
+  "beneficiaryBank": "999001"
+}</code></pre>
+          </div>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "receiptId": "rct_7c1e9a2d4b6f8a0c3e5d",
+  "expiresAt": "2026-11-19T13:02:11.000Z",
+  "stored": true
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/receipts/batch</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Bank access token &middot; <b>Success:</b> 202</p>
+          <p>Register 1 to 500 transfers in one call. An idempotency key is suffixed with each receipt's position, as for messages.</p>
+          <p class="code-label">Request body</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="RegisterReceiptBatch">{
+  "receipts": [
+    {
+      "receiptDigest": "ffad1da468d0b2a9ee2b94e1078ed4e8c896e1b46a830f45474f6ed037f8bf09",
+      "beneficiaryAccount": "0123456789",
+      "beneficiaryBank": "999001"
+    }
+  ]
+}</code></pre>
+          </div>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "receipts": [
+    {
+      "receiptId": "rct_7c1e9a2d4b6f8a0c3e5d",
+      "expiresAt": "2026-11-19T13:02:11.000Z",
+      "stored": true
+    }
+  ]
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/calls</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Bank access token &middot; <b>Success:</b> 201</p>
+          <p>Open a call session before dialling. The customer's app shows the code; your agent reads the same code from <code>code</code>. <code>agentRef</code> is 1 to 64 characters.</p>
+          <p class="code-label">Request body</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="OpenCall">{
+  "recipient": "+2348012345678",
+  "purpose": "card_activation",
+  "agentRef": "agent-017"
+}</code></pre>
+          </div>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "id": "call_8c1e4b2a9f7d3e5c6a01",
+  "code": "4821",
+  "status": "open",
+  "expiresAt": "2026-10-20T13:05:11.000Z"
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-patch">PATCH</span> <code>/v1/calls/{id}</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Bank access token &middot; <b>Success:</b> 200; 404 <code>not_found</code> for an unknown id</p>
+          <p>Mark the session <code>answered</code> (kept for up to two hours) or <code>ended</code> (closed at once, and the notice leaves the customer's phone).</p>
+          <p class="code-label">Request body</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="UpdateCall">{
+  "status": "answered"
+}</code></pre>
+          </div>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "id": "call_8c1e4b2a9f7d3e5c6a01",
+  "status": "answered",
+  "expiresAt": "2026-10-20T15:02:40.000Z",
+  "code": "4821"
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/sim-swap/check</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Bank access token &middot; <b>Success:</b> 200 &middot; <b>Rate limit:</b> per bank client (429 <code>rate_limited</code>)</p>
+          <p>Has this number's SIM changed in the last <code>maxAgeHours</code> (1 to 2400, default 240)? POST only, so the number never appears in a URL. When the mobile network cannot answer, or no network is connected, <code>status</code> is <code>unknown</code>: treat that as risky, never as "not swapped".</p>
+          <p class="code-label">Request body</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="SimSwapCheck">{
+  "phone": "+2348012345678",
+  "maxAgeHours": 72
+}</code></pre>
+          </div>
+          <p class="code-label">Response: swapped</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "status": "swapped",
+  "swapped": true,
+  "latestSimChange": "2026-10-20T09:41:00.000Z",
+  "maxAgeHours": 72,
+  "checkedAt": "2026-10-20T13:02:11.000Z"
+}</code></pre>
+          </div>
+          <p class="code-label">Response: not swapped</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "status": "not_swapped",
+  "swapped": false,
+  "latestSimChange": null,
+  "maxAgeHours": 72,
+  "checkedAt": "2026-10-20T13:02:11.000Z"
+}</code></pre>
+          </div>
+          <p class="code-label">Response: the network could not answer</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "status": "unknown",
+  "reason": "provider_unavailable",
+  "maxAgeHours": 72,
+  "checkedAt": "2026-10-20T13:02:11.000Z"
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-get">GET</span> <code>/v1/campaigns</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Bank access token &middot; <b>Success:</b> 200</p>
+          <p>Campaigns built from customer reports, with indicators, link domains and a drafted advisory. Nothing is sent to customers from here.</p>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "campaigns": [
+    {
+      "id": "cmp_3d9a",
+      "tenantId": "demobank",
+      "summary": "BVN restriction lure linking to demobank-restore.com",
+      "indicators": [
+        "urgency_or_threat",
+        "non_bank_link"
+      ],
+      "linkDomains": [
+        "demobank-restore.com"
+      ],
+      "callbackKeyCount": 0,
+      "reportCount": 3,
+      "status": "new",
+      "firstSeen": "2026-10-20T09:14:00.000Z",
+      "lastSeen": "2026-10-20T11:40:00.000Z",
+      "advisory": {
+        "text": "DemoBank will never ask you to restore your account through a link.",
+        "status": "draft",
+        "approvedBy": null,
+        "approvedAt": null
+      }
+    }
+  ]
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/campaigns/{id}/approve</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Bank access token &middot; <b>Success:</b> 200; 404 <code>not_found</code></p>
+          <p>Approve the drafted advisory. The body names the analyst approving it; it is recorded as <code>approvedBy</code>, with your API client as <code>approvedByClient</code>. Without a name the request is refused (400). Your fraud desk receives an approval email when alert emails are set. <code>/dismiss</code> takes no body.</p>
+          <p>Approval publishes the advisory: it is listed for your customers by <code>GET /v1/advisories</code> until <code>advisory.expiresAt</code> (approval plus <code>ADVISORY_TTL_DAYS</code>, 14 by default), and each of your customers' app devices gets one notice, the first time only. The text must pass the same safety checks as every drafted advisory: one that asks for a PIN, password, card number or code, or claims anything is genuine, is refused with 422 <code>unsafe_advisory</code>. Nothing goes out by SMS; your gateway sends that.</p>
+          <p class="code-label">Request body</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="ApproveAdvisory">{
+  "analyst": "Aisha Bello"
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/campaigns/{id}/withdraw</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Bank access token &middot; <b>Success:</b> 200; 404 <code>not_found</code>; 409 <code>not_approved</code></p>
+          <p>Take an approved advisory down. It leaves every customer's app at once. The body names the analyst, recorded as <code>withdrawnBy</code>. Only an approved advisory can be withdrawn.</p>
+          <p class="code-label">Request body</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="WithdrawAdvisory">{
+  "analyst": "Aisha Bello"
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-get">GET</span> <code>/v1/registration-alerts</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Bank access token &middot; <b>Success:</b> 200</p>
+          <p>What the registration guard flagged, most recent first: a registered message whose declared link domain is not one of your domains, or registration volume far above its recent rate. Each new alert is also emailed to your alert addresses. Registrations are never blocked; confirm the traffic was yours, and if not, revoke the bank client named in <code>clientId</code>.</p>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "alerts": [
+    {
+      "id": "ral_3f9c0a1b2c3d4e5f6a7b",
+      "kind": "unknown_link_domain",
+      "domain": "demobank-verify.com",
+      "category": "security_notice",
+      "channel": "sms",
+      "clientId": "demobank-notify",
+      "count": 1,
+      "expected": null,
+      "windowMinutes": null,
+      "firstSeen": "2026-10-20T10:12:00.000Z",
+      "lastSeen": "2026-10-20T10:12:00.000Z"
+    }
+  ]
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-get">GET</span> <code>/v1/metrics</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Bank access token &middot; <b>Success:</b> 200</p>
+          <p>Counts only: registrations by category and channel, verification outcomes, link, call and licence checks, open call sessions and reports. <code>licenceData</code> gives the retrieval date, entry count and freshness of each licence list the licence check holds; <code>status</code> is <code>stale</code> once any list is older than the configured maximum age, and those answers become <code>cannot_check</code>. <code>coverage</code> compares what you registered with what customers checked: confirmed checks, the share of checks that were not confirmed (fakes, or genuine messages you did not register), and message checks by route.</p>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "registrations": 1240,
+  "registrationsByCategory": {
+    "transaction_alert": 1100,
+    "otp": 140
+  },
+  "verifications": {
+    "confirmed": 312,
+    "not_confirmed": 41,
+    "cannot_check": 2
+  },
+  "verificationsByChannel": {
+    "app": 330,
+    "whatsapp": 25
+  },
+  "links": {
+    "belongs": 18,
+    "not_confirmed": 9
+  },
+  "callChecks": {
+    "calling": 12,
+    "not_calling": 30
+  },
+  "licenceChecks": {
+    "licensed": 21,
+    "not_listed": 14
+  },
+  "openCalls": 1,
+  "reports": 7,
+  "simSwap": {
+    "bank_swapped": 3,
+    "bank_not_swapped": 410,
+    "bank_unknown": 2,
+    "customer_warned": 1
+  },
+  "registrationsByChannel": {
+    "sms": 1200,
+    "whatsapp": 40
+  },
+  "messageChecksByChannel": {
+    "app": 330,
+    "whatsapp": 25
+  },
+  "coverage": {
+    "registered": 1240,
+    "checked": 355,
+    "confirmed": 312,
+    "notConfirmed": 41,
+    "cannotCheck": 2,
+    "notConfirmedRate": 0.1155,
+    "cannotCheckRate": 0.0056,
+    "checksByChannel": { "app": 330, "whatsapp": 25 },
+    "registeredByChannel": { "sms": 1200, "whatsapp": 40 }
+  },
+  "licenceData": {
+    "status": "fresh",
+    "maxAgeDays": 120,
+    "sources": [
+      {
+        "id": "fccpc-digital-lenders",
+        "regulator": "FCCPC",
+        "title": "FCCPC approved digital lenders (DEON Consumer Lending Regulations 2025)",
+        "url": "https://fccpc.gov.ng/registration-of-digital-money-lenders/approvals-of-dmls/",
+        "publishedAt": null,
+        "retrievedAt": "2026-10-20",
+        "sample": false,
+        "entries": 1650,
+        "stale": false
+      }
+    ]
+  }
+}</code></pre>
+          </div>
+        </section>
+
+        <section id="verify-api">
+          <p class="eyebrow">Reference</p>
+          <h2>Customer verification API</h2>
+          <p class="sub">What your mobile app calls to verify for your customers, the same API the Gaskiyya app uses. Every call carries the customer token your backend signed (see <a href="#identity">customer tokens</a>) as <code>authorization: Bearer &lt;token&gt;</code>. The token names the bank and the number, so a check only ever confirms messages your bank sent to that customer.</p>
+          <ol class="steps-list">
+            <li>Your backend signs a customer token for the logged-in customer.</li>
+            <li>The app computes the fingerprint of the message on the device.</li>
+            <li>The app calls <code>POST /v1/verify/message</code> with the digest and shows the verdict.</li>
+          </ol>
+          <h3 class="ep"><span class="m m-get">GET</span> <code>/v1/banks</code></h3>
+          <p class="ep-meta"><b>Auth:</b> none (public) &middot; <b>Success:</b> 200</p>
+          <p>The banks (and other organisations) the Gaskiyya app can link to, and where each one signs its customers in. <code>kind</code> is <code>bank</code>, <code>agency</code> or <code>company</code>. <code>customerTokenUrl</code> is absolute, or a path on the registry for banks it hosts. <code>demoInboxUrl</code> is set for demo banks only.</p>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "banks": [
+    {
+      "id": "demobank",
+      "name": "DemoBank",
+      "kind": "bank",
+      "domains": [
+        "demobank.ng",
+        "demobank.com"
+      ],
+      "customerTokenUrl": "/sim/customer-token",
+      "demoInboxUrl": "/sim/inbox"
+    }
+  ]
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-get">GET</span> <code>/v1/organisations</code></h3>
+          <p class="ep-meta"><b>Auth:</b> none (public) &middot; <b>Success:</b> 200</p>
+          <p>Every organisation on the registry (banks, government agencies, companies) with what it publishes as its own: domains, sender IDs, official contacts and official apps. All of it is public by nature. An organisation declares these in its tenant configuration (<code>kind</code>, <code>officialContacts</code>, <code>officialApps</code>).</p>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "organisations": [
+    {
+      "id": "demobank",
+      "name": "DemoBank",
+      "kind": "bank",
+      "domains": [
+        "demobank.ng"
+      ],
+      "senderIds": [
+        "DemoBank"
+      ],
+      "officialContacts": {
+        "phones": [
+          "+2342019000000"
+        ],
+        "whatsapp": [
+          "+2349060000000"
+        ],
+        "emails": [
+          "care@demobank.ng"
+        ],
+        "social": [
+          {
+            "platform": "x",
+            "handle": "DemoBankNG"
+          }
+        ]
+      },
+      "officialApps": {
+        "android": [
+          "ng.demobank.mobile"
+        ],
+        "ios": [
+          "1234567890"
+        ]
+      },
+      "customerTokenUrl": "/sim/customer-token"
+    }
+  ]
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>{customerTokenUrl}</code></h3>
+          <p class="ep-meta"><b>Auth:</b> yours: sign the customer in your own way first &middot; <b>Success:</b> 200</p>
+          <p>Implemented by your bank, not by Gaskiyya: set its address as your tenant's <code>customerTokenUrl</code> to appear in the Gaskiyya app. After authenticating the customer, return a customer token (claims above) for their number. Never ask for a PIN, password, card number or one-time code on Gaskiyya's behalf.</p>
+          <p class="code-label">Request body</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="CustomerTokenRequest">{
+  "phone": "+2348012345678"
+}</code></pre>
+          </div>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "token": "eyJhbGciOiJFUzI1NiIsImtpZCI6ImJhbmstMjAyNi0xMCJ9.example",
+  "expiresIn": 600
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/verify/message</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Customer token &middot; <b>Success:</b> 200</p>
+          <p>Check a message. Compute the fingerprint on the device and send only the digest; the text never leaves the phone. Fails closed: any error is <code>cannot_check</code>, never <code>confirmed</code>.</p>
+          <p class="code-label">Request body</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="VerifyMessage">{
+  "contentDigest": "2c0c122ad56268258bb16e6ba85fb2f9c8bab9ce1d8ff20527060f8c3151729f",
+  "channelHint": "sms"
+}</code></pre>
+          </div>
+          <p class="code-label">Response: confirmed</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "verdict": "confirmed",
+  "channel": "sms",
+  "category": "transaction_alert",
+  "sentAt": "2026-10-20T13:02:11.000Z",
+  "bank": "DemoBank"
+}</code></pre>
+          </div>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "verdict": "not_confirmed",
+  "recentActivity": [
+    {
+      "category": "transaction_alert",
+      "channel": "sms",
+      "count": 2,
+      "anyWithLink": false
+    }
+  ],
+  "activityText": "In the last 24 hours DemoBank sent you two transaction alerts by SMS. Neither contained a link.",
+  "bank": "DemoBank"
+}</code></pre>
+          </div>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "verdict": "cannot_check"
+}</code></pre>
+          </div>
+          <p class="code-label">Response: with a SIM-swap warning</p>
+          <p>When SIM-swap checks are on and the customer's own number moved to a new SIM recently, any answer can carry <code>warnings: ["sim_swapped_recently"]</code>. A warning never changes the verdict. <code>sim_status_unknown</code> appears only on a confirmed one-time code when the network could not answer. The same field appears on <code>GET /v1/calls/open</code>.</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "verdict": "confirmed",
+  "channel": "sms",
+  "category": "otp",
+  "sentAt": "2026-10-20T13:02:11.000Z",
+  "bank": "DemoBank",
+  "warnings": ["sim_swapped_recently"]
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/verify/link</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Customer token &middot; <b>Success:</b> 200</p>
+          <p>Check a web address against your registered domains. <code>reasons</code> can include <code>shortened</code>, <code>lookalike</code>, <code>punycode</code>, <code>ip_address</code>, <code>not_http</code>, <code>not_registered</code>, <code>apk</code>, <code>fake_app</code> and <code>invalid</code>. <code>url</code> is up to 2048 characters. A Play Store or App Store page returns <code>official_app</code> only when its package or App Store ID exactly equals one in your <code>officialApps</code>; an APK download is never confirmed (<code>apk</code>, <code>fake_app</code>), and a store page whose name imitates yours under an unregistered ID carries <code>fake_app</code>. <code>app</code> describes the store link.</p>
+          <p class="code-label">Request body</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="VerifyLink">{
+  "url": "https://www.demo-bank.ng/app"
+}</code></pre>
+          </div>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "verdict": "not_confirmed",
+  "host": "www.demo-bank.ng",
+  "matchedDomain": null,
+  "reasons": [
+    "lookalike",
+    "not_registered"
+  ],
+  "bank": "DemoBank"
+}</code></pre>
+          </div>
+          <p class="code-label">Response: an official app</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "verdict": "official_app",
+  "host": "play.google.com",
+  "matchedDomain": null,
+  "reasons": [],
+  "app": {
+    "store": "play",
+    "id": "ng.demobank.mobile",
+    "official": true
+  },
+  "bank": "DemoBank"
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/verify/contact</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Customer token &middot; <b>Success:</b> 200; 404 <code>not_found</code> for an unknown <code>tenantId</code>; 422 <code>not_a_contact</code> when the text is not a phone number, email address, @handle or profile link</p>
+          <p>Is this number, email or account official? <code>contact</code> is what the customer pasted: a phone number (international, or local Nigerian such as <code>0809 555 0101</code>), an email address, an <code>@handle</code>, or a profile link (<code>wa.me/...</code>, <code>x.com/...</code>, <code>facebook.com/...</code>, <code>instagram.com/...</code>, <code>tiktok.com/@...</code>, <code>t.me/...</code>). With <code>tenantId</code> only that organisation is checked; without it, every organisation on the registry. <code>official</code> needs an exact match with a contact an organisation registered and names it (<code>as</code>: <code>phone</code>, <code>whatsapp</code>, <code>email</code> or <code>social</code>). Anything else is <code>not_official</code>, with <code>impersonation</code> when the handle or email carries an organisation&rsquo;s name. Fails closed: <code>cannot_check</code> if the registry cannot answer. Rate limited like the other checks; the contact is never stored or logged, only counted. <code>official</code> is not <code>confirmed</code>: caller ID and display names can be faked.</p>
+          <p class="code-label">Request body</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="VerifyContact">{
+  "contact": "https://wa.me/2349060000000"
+}</code></pre>
+          </div>
+          <p class="code-label">Response: official</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "verdict": "official",
+  "contact": {
+    "type": "whatsapp",
+    "value": "+2349060000000"
+  },
+  "matches": [
+    {
+      "id": "demobank",
+      "name": "DemoBank",
+      "kind": "bank",
+      "as": [
+        "whatsapp"
+      ]
+    }
+  ]
+}</code></pre>
+          </div>
+          <p class="code-label">Response: not official, imitating a name</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "verdict": "not_official",
+  "contact": {
+    "type": "handle",
+    "value": "demobank_care_desk"
+  },
+  "organisation": null,
+  "reasons": [
+    "impersonation",
+    "not_registered"
+  ],
+  "impersonates": [
+    {
+      "id": "demobank",
+      "name": "DemoBank",
+      "kind": "bank"
+    }
+  ]
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-get">GET</span> <code>/v1/official-contacts</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Customer token &middot; <b>Success:</b> 200; 503 <code>cannot_check</code> when the registry cannot answer</p>
+          <p>Your organisation&rsquo;s public identity, for the app&rsquo;s zero-click protection: your voice and WhatsApp numbers (E.164), SMS sender IDs and web domains. The phone matches callers, dialled numbers and message senders against this list itself, so no number it sees is sent to the registry. Public configuration only. Rate limited like the other checks.</p>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "bankId": "demobank",
+  "name": "DemoBank",
+  "kind": "bank",
+  "phones": [
+    "+2342019000000",
+    "+2349060000000"
+  ],
+  "senderIds": [
+    "DemoBank"
+  ],
+  "domains": [
+    "demobank.ng"
+  ],
+  "updatedAt": "2026-10-20T09:00:00.000Z"
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/verify/indicators</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Customer token &middot; <b>Success:</b> 200; 400 <code>invalid_request</code>; 503 <code>cannot_check</code> when the registry cannot answer</p>
+          <p>Scam campaign match. Up to 10 hostnames and up to 10 phone numbers the app saw in a notification or call; at least one value. Matched only against your active scam campaigns (not dismissed, advisory not withdrawn) with customer reports in the last 7 days. Numbers are compared as keyed hashes with the callback numbers in those reports; your own domains and official numbers never match. Nothing asked is stored or logged. A match is a warning, never a confirmation.</p>
+          <p class="code-label">Request body</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="VerifyIndicators">{
+  "domains": [
+    "demobank-restore.com"
+  ],
+  "phones": [
+    "+2348095550101"
+  ]
+}</code></pre>
+          </div>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "matches": [
+    {
+      "kind": "domain",
+      "value": "demobank-restore.com",
+      "campaignId": "cmp_3f9a1c2b7d4e5f60",
+      "reports": 3,
+      "lastSeen": "2026-10-20T08:12:00.000Z"
+    }
+  ]
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/verify/licence</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Customer token &middot; <b>Success:</b> 200 &middot; rate limited with the other checks</p>
+          <p>Is this lender licensed? Checks a firm&rsquo;s name, website or Android package ID (or a Play Store link) against the licence lists published by the FCCPC (approved digital lenders) and the CBN (banks, microfinance banks, finance companies, payment service providers). Matching is exact after normalisation: case, punctuation, spacing and the words Ltd, Limited, Plc and Nigeria are ignored. <code>verdict</code> is <code>licensed</code> (with the firm, regulator, category and the list&rsquo;s retrieval date), <code>not_listed</code>, or <code>cannot_check</code> when the lists are unavailable or older than the configured maximum age. There is no &ldquo;fraud&rdquo; verdict: the registry only knows a name is absent. A name very close to a listed one gives <code>not_listed</code> with <code>similarTo</code> naming the listed firm, as a warning, never as a match. Being listed does not confirm that a message or call comes from the firm. <code>query</code> is 2 to 200 characters and is neither stored nor logged.</p>
+          <p class="code-label">Request body</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="VerifyLicence">{
+  "query": "Fair Mony"
+}</code></pre>
+          </div>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "verdict": "not_listed",
+  "similarTo": {
+    "name": "FAIR MONEY MICROFINANCE BANK",
+    "regulator": "FCCPC",
+    "category": "digital_lender",
+    "status": "Full approval",
+    "source": {
+      "id": "fccpc-digital-lenders",
+      "regulator": "FCCPC",
+      "title": "FCCPC approved digital lenders (DEON Consumer Lending Regulations 2025)",
+      "url": "https://fccpc.gov.ng/registration-of-digital-money-lenders/approvals-of-dmls/",
+      "publishedAt": null,
+      "retrievedAt": "2026-10-20",
+      "sample": false
+    }
+  },
+  "regulators": [
+    { "name": "FCCPC", "url": "https://fccpc.gov.ng" },
+    { "name": "CBN", "url": "https://www.cbn.gov.ng" },
+    { "name": "SEC", "url": "https://sec.gov.ng" }
+  ],
+  "sources": []
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/verify/screenshot</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Customer token &middot; <b>Success:</b> 200 with the verify result plus <code>extractedText</code>, <code>sender</code> and <code>warnings</code> (<code>["unknown_sender"]</code> when a not-confirmed screenshot shows a sender that is not one of the bank&rsquo;s sender IDs; a matching sender never confirms anything); 422 <code>unreadable</code> when no text can be read</p>
+          <p>Check a screenshot: the text is read from the image, then fingerprinted and matched exactly like a typed message. Misread text never matches approximately. Up to 8 MB of base64.</p>
+          <p class="code-label">Request body</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="VerifyScreenshot">{
+  "imageBase64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
+  "mediaType": "image/png"
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/verify/receipt</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Customer token with <code>accts</code> &middot; <b>Success:</b> 200; 403 <code>account_not_linked</code> when the account is not in the token</p>
+          <p>Has this payment really reached my account? Send the receipt digest computed on the phone (so amount and reference never leave it), or the fields for the registry to canonicalise. <code>verdict</code> is <code>received</code> (with the paying bank and when it registered the transfer), <code>not_confirmed</code> (tell the merchant to check their balance before releasing goods) or <code>cannot_check</code>. Never <code>received</code> for an account the token does not name.</p>
+          <p class="code-label">Request body</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="VerifyReceipt">{
+  "receiptDigest": "ffad1da468d0b2a9ee2b94e1078ed4e8c896e1b46a830f45474f6ed037f8bf09",
+  "beneficiaryAccount": "0123456789"
+}</code></pre>
+          </div>
+          <div class="code" data-copy>
+            <pre><code data-schema="VerifyReceipt">{
+  "beneficiaryAccount": "0123456789",
+  "amountKobo": 2500000,
+  "reference": "000013261020130211123456789012",
+  "valueDate": "2026-10-20"
+}</code></pre>
+          </div>
+          <p class="code-label">Response: received</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "verdict": "received",
+  "bank": "DemoBank",
+  "paidFrom": "PayBank",
+  "registeredAt": "2026-10-20T13:02:11.000Z"
+}</code></pre>
+          </div>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "verdict": "not_confirmed",
+  "bank": "DemoBank"
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-get">GET</span> <code>/v1/calls/open</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Customer token &middot; <b>Success:</b> 200</p>
+          <p>Is my bank calling me? <code>verdict</code> is <code>calling</code> (with the open session and its code), <code>not_calling</code>, or <code>cannot_check</code> when the registry cannot be read. <code>calls</code> lists every open call to the number, newest first, so when two agents call one customer each agent's code is shown; <code>call</code> is the newest. A client must show "cannot check" for <code>cannot_check</code>, for any error and for any answer it cannot parse; "not calling" only for an explicit <code>not_calling</code>.</p>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "verdict": "calling",
+  "calling": true,
+  "bank": "DemoBank",
+  "call": {
+    "id": "call_8c1e4b2a9f7d3e5c6a01",
+    "purpose": "card_activation",
+    "code": "4821",
+    "status": "open",
+    "openedAt": "2026-10-20T13:02:11.000Z",
+    "expiresAt": "2026-10-20T13:05:11.000Z"
+  },
+  "calls": [
+    {
+      "id": "call_8c1e4b2a9f7d3e5c6a01",
+      "purpose": "card_activation",
+      "code": "4821",
+      "status": "open",
+      "openedAt": "2026-10-20T13:02:11.000Z",
+      "expiresAt": "2026-10-20T13:05:11.000Z"
+    }
+  ]
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-get">GET</span> <code>/v1/activity</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Customer token &middot; <b>Success:</b> 200</p>
+          <p>What your bank sent this number in the last 24 hours: counts and types only, never text.</p>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "recentActivity": [
+    {
+      "category": "transaction_alert",
+      "channel": "sms",
+      "count": 2,
+      "anyWithLink": false
+    }
+  ],
+  "activityText": "In the last 24 hours DemoBank sent you two transaction alerts by SMS. Neither contained a link.",
+  "bank": "DemoBank"
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-get">GET</span> <code>/v1/advisories</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Customer token &middot; <b>Success:</b> 200; 503 <code>cannot_check</code></p>
+          <p>Fraud warnings from the customer's bank that a named analyst approved and that have not expired or been withdrawn, newest first. The list is the same for every customer of the bank and holds nothing about the one asking. <code>linkDomains</code> are the lookalike domains the fake messages use: show them, never as tappable links. When the registry cannot be read the answer is 503, never an empty list. An open app also receives <code>advisory.published</code> and <code>advisory.withdrawn</code> on <code>GET /v1/events</code>.</p>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "bank": "DemoBank",
+  "advisories": [
+    {
+      "id": "cmp_3d9a",
+      "bank": "DemoBank",
+      "title": "Fraud warning from DemoBank",
+      "text": "DemoBank is aware of fake messages linking to demobank-restore.com that pretend to come from us. Do not click the link or call any number in these messages; check any message in the DemoBank app.",
+      "approvedAt": "2026-10-20T11:45:00.000Z",
+      "expiresAt": "2026-11-03T11:45:00.000Z",
+      "indicators": [
+        "urgency_or_threat",
+        "non_bank_link"
+      ],
+      "linkDomains": [
+        "demobank-restore.com"
+      ],
+      "asksCallback": false
+    }
+  ]
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/explain</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Customer token &middot; <b>Success:</b> 200</p>
+          <p>Plain-language reasons a not-confirmed message looks risky. Send masked text (runs of four or more digits replaced with <code>#</code>). It runs after the verdict and cannot change it. <code>language</code>: <code>en</code>, <code>pcm</code>, <code>ha</code>, <code>yo</code> or <code>ig</code>.</p>
+          <p class="code-label">Request body</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="Explain">{
+  "maskedText": "DemoBank: your account ***#### has been restricted. Verify at demobank-restore.com within 24 hours.",
+  "language": "en"
+}</code></pre>
+          </div>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "indicators": [
+    "urgency_or_threat",
+    "non_bank_link"
+  ],
+  "explanation": "The message threatens a restriction and links to a site that is not your bank.",
+  "action": "Do not reply, click or call. If you are worried, contact your bank through its app or at a branch.",
+  "source": "model"
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/reports</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Customer token &middot; <b>Success:</b> 201</p>
+          <p>Report a fake to your fraud desk with the customer's consent. Masked text only; callback numbers as SHA-256 digests of <code>tel:</code> plus digits.</p>
+          <p class="code-label">Request body</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="SubmitReport">{
+  "maskedText": "DemoBank: your account ***#### has been restricted. Verify at demobank-restore.com within 24 hours.",
+  "consent": true,
+  "indicators": [
+    "urgency_or_threat",
+    "non_bank_link"
+  ],
+  "callbackDigests": []
+}</code></pre>
+          </div>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "reportId": "rpt_4b8e2c1a9d7f3e5a6c02"
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/devices</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Customer token &middot; <b>Success:</b> 204 No Content</p>
+          <p>Register a push token so call notices reach the phone while the app is closed.</p>
+          <p class="code-label">Request body</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="RegisterDevice">{
+  "pushToken": "fcm-registration-token-from-the-device",
+  "platform": "android"
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-get">GET</span> <code>/v1/events</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Customer token &middot; <b>Success:</b> 200 <code>text/event-stream</code></p>
+          <p>Server-sent events for an open app: <code>call.opened</code> and <code>call.closed</code> arrive the moment the bank announces or ends a call.</p>
+          <h3 class="ep"><span class="m m-get">GET</span> <code>/v1/me</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Customer token &middot; <b>Success:</b> 200</p>
+          <p>Who the token names, for display, with your <code>bankCode</code> and the accounts from the token's <code>accts</code> claim (for the receipt check's account picker).</p>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "bank": {
+    "id": "demobank",
+    "name": "DemoBank",
+    "domains": [
+      "demobank.ng",
+      "demobank.com"
+    ],
+    "bankCode": "999001"
+  },
+  "phoneLast4": "5678",
+  "accounts": [
+    "0123456789"
+  ]
+}</code></pre>
+          </div>
+
+          <h3>Errors</h3>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Status</th><th>Code</th><th>Meaning</th></tr></thead>
+              <tbody>
+                <tr><td>400</td><td><code>invalid_request</code></td><td>Schema validation failed; the message names the fields, never their values. Unknown fields are rejected</td></tr>
+                <tr><td>400</td><td><code>sent_at_in_future</code>, <code>sent_at_expired</code></td><td>Registration only: <code>sentAt</code> is more than 5 minutes ahead of the registry's clock, or so old the record would already have expired. In a batch, the message names the index and nothing is stored</td></tr>
+                <tr><td>401</td><td><code>unauthorized</code></td><td>Missing or invalid access token (bank) or customer token (customer)</td></tr>
+                <tr><td>401</td><td><code>invalid_client</code></td><td>Unknown client or wrong secret</td></tr>
+                <tr><td>403</td><td><code>org_suspended</code></td><td>Bank calls and token requests while the operator has suspended your organisation. Your customers' checks answer <code>cannot_check</code> meanwhile, never confirmed</td></tr>
+                <tr><td>403</td><td><code>feature_disabled</code></td><td>That feature (messages, calls, receipts, SIM swap or advisories) is not switched on for your organisation</td></tr>
+                <tr><td>403</td><td><code>account_not_linked</code></td><td>Receipt check only: the account is not in the customer token's <code>accts</code> claim</td></tr>
+                <tr><td>404</td><td><code>not_found</code></td><td>No such call session or campaign</td></tr>
+                <tr><td>413</td><td><code>too_large</code></td><td>Body over 12 MB</td></tr>
+                <tr><td>422</td><td><code>unreadable</code></td><td>No message text could be read from a screenshot</td></tr>
+                <tr><td>429</td><td><code>rate_limited</code></td><td>More than 30 checks a minute for one customer (message, link, screenshot, receipt and explain), or, for bank calls, more than the per-minute limit the operator set for your organisation</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="checklist">
+          <p class="eyebrow">Onboarding</p>
+          <h2>Onboarding checklist</h2>
+          <ol class="check-list">
+            <li><span>Data protection review under the NDPA, and data processing terms</span><em>DPO and legal</em></li>
+            <li><span>Choose bank-hosted or shared deployment</span><em>Architecture</em></li>
+            <li><span>Organisation record: id, display and legal name, NIBSS code, official domains, sender IDs, official contacts and apps, JWKS URL, sign-in URL, fraud desk emails, technical contact. The operator enters it in the admin dashboard, starting in sandbox</span><em>Bank and operator</em></li>
+            <li><span>Per-bank hashing key of at least 32 bytes: made by the dashboard and stored encrypted, or in your KMS when you host the registry</span><em>Security</em></li>
+            <li><span>OAuth client per system, mTLS certificates, IP allowlist</span><em>Security and operator</em></li>
+            <li><span>Your fingerprint code passes all 36 shared vectors</span><em>Engineering</em></li>
+            <li><span>Registration live for the first message type</span><em>Notification team</em></li>
+            <li><span>Call announcement in the dialler, code panel for agents</span><em>Contact centre</em></li>
+            <li><span>Customer token signing and JWKS published</span><em>Mobile backend</em></li>
+            <li><span>Fraud desk trained on the console; test alert email received</span><em>Fraud team</em></li>
+          </ol>
+        </section>
+
+        <section id="status">
+          <p class="eyebrow">Status</p>
+          <h2>What is ready, and what is next</h2>
+          <div class="status-grid">
+            <div class="status-col">
+              <h4>Built and tested</h4>
+              <ul>
+                <li>Registry with batch, idempotency and expiry</li>
+                <li>Message, link and screenshot checks</li>
+                <li>Call sessions with push and live notices</li>
+                <li>Customer app, WhatsApp bot, fraud desk console</li>
+                <li>Explanations and campaign agent (Gemini or OpenAI)</li>
+                <li>Fingerprint libraries in TypeScript and Dart</li>
+                <li>A bank simulator that exercises every touchpoint</li>
+              </ul>
+            </div>
+            <div class="status-col next">
+              <h4>Planned</h4>
+              <ul>
+                <li>Key service backed by a KMS (keys come from configuration today)</li>
+                <li>Fingerprint connectors in Java, Kotlin and C#</li>
+                <li>Native Android and iOS libraries</li>
+                <li>iOS share extension and a USSD menu</li>
+                <li>Self-service bank onboarding</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <section class="download bank-cta">
+      <div class="wrap">
+        <div class="cta">
+          <div class="cta-copy">
+            <img src="img/3d-logo_dark.webp" alt="" width="120" height="120" class="cta-logo" loading="lazy" />
+            <h2>Everything in one document.</h2>
+            <p>Architecture, security model, data retention, API and configuration reference, with every diagram on this page.</p>
+            <div class="hero-actions">
+              <a class="btn btn-light" href="gaskiyya-whitepaper.pdf" target="_blank" rel="noopener">Download the whitepaper (PDF)</a>
+            </div>
+            <div class="center" data-contact></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="foot-top">
+        <div class="foot-brand">
+          <a class="brand" href="./"><img src="logo.svg" width="26" height="26" alt="" class="brand-logo" /><span>Gaskiyya</span></a>
+          <p>Anti-fraud verification infrastructure for banks, and an app for their customers.</p>
+          <p class="foot-note">Gaskiyya means "truth" in Hausa.</p>
+        </div>
+        <nav class="foot-col" aria-label="Product"><h2>Product</h2><a href="./#how">How it works</a><a href="./#try">Try a check</a><a href="./#calls">Call codes</a><a href="./#download">Download</a></nav>
+        <nav class="foot-col" aria-label="Trust"><h2>Trust</h2><a href="./#privacy">Privacy</a><a href="./#faq">FAQ</a></nav>
+        <nav class="foot-col" aria-label="Banks"><h2>For banks</h2><a href="banks.html">Integration guide</a><a href="banks.html#api">API reference</a><a href="gaskiyya-whitepaper.pdf" target="_blank" rel="noopener">Whitepaper (PDF)</a></nav>
+      </div>
+      <div class="foot-bottom">
+        <p>&copy; <span data-year>2026</span> Gaskiyya</p>
+        <p>Gaskiyya never asks for your PIN, password, card number or one-time code.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

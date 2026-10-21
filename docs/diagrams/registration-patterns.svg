@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="diagram" viewBox="0 0 1200 400" role="img" aria-labelledby="registration-patterns-title registration-patterns-desc">
+<title id="registration-patterns-title">Three ways to register messages</title>
+<desc id="registration-patterns-desc">Inline call, gateway copy or event stream. Each registers asynchronously with retries and never delays sending.</desc>
+<style>.bg{fill:#ffffff}
+.lane{stroke-width:1}
+.lane-bank{fill:#f3f5f8;stroke:#d8dee6}
+.lane-gk{fill:#eef8f3;stroke:#bfe3d1}
+.lane-cust{fill:#fbf6ee;stroke:#ecdcc0}
+.lane-plain{fill:#f6f6f3;stroke:#e1e1da}
+.lane-label{font:700 11px Inter,system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase}
+.lane-label.bank{fill:#4a5a6e}.lane-label.gk{fill:#0a7a55}.lane-label.cust{fill:#9a6a1c}.lane-label.plain{fill:#6b716d}
+.node{fill:#ffffff;stroke:#c9d0d8;stroke-width:1.2}
+.node.gk{stroke:#0a7a55;stroke-width:1.5}
+.node.cust{stroke:#d9a441}
+.node.bank{stroke:#8494a7}
+.node.muted{fill:#f7f7f5;stroke:#c9ccc8;stroke-dasharray:4 3}
+.node.good{fill:#e7f6ee;stroke:#0a7a55;stroke-width:1.5}
+.node.warn{fill:#fff4e5;stroke:#d9890b;stroke-width:1.5}
+.node.bad{fill:#fdecea;stroke:#c8372d;stroke-width:1.5}
+.node.dec{fill:#ffffff;stroke:#4a5a6e;stroke-width:1.3}
+.t{font:600 13.5px Inter,system-ui,sans-serif;fill:#0e1512}
+.ts{font:400 11.5px Inter,system-ui,sans-serif;fill:#59645e}
+.tm{font:500 11px "SF Mono",Menlo,Consolas,monospace;fill:#0e1512}
+.edge{fill:none;stroke:#3d4843;stroke-width:1.4}
+.edge.gk{stroke:#0a7a55}
+.edge.dash{stroke-dasharray:5 4}
+.edge.soft{stroke:#9aa39e}
+.arrow{fill:#3d4843}.arrow.gk{fill:#0a7a55}.arrow.soft{fill:#9aa39e}
+.el{font:500 11px Inter,system-ui,sans-serif;fill:#26302b}
+.elb{fill:#ffffff;opacity:.94}
+.step{fill:#0a7a55}
+.stepn{font:700 10.5px Inter,system-ui,sans-serif;fill:#ffffff}
+.life{stroke:#b9c0bc;stroke-width:1.2;stroke-dasharray:3 4}
+.act{fill:#e7f6ee;stroke:#0a7a55;stroke-width:1}
+.note{fill:#fffaf0;stroke:#e6cf9c}
+.cap{font:400 11px Inter,system-ui,sans-serif;fill:#6b716d}</style>
+<defs><marker id="registration-patterns-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow " d="M0 0 L10 5 L0 10 z"/></marker><marker id="registration-patterns-ink-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow " d="M0 0 L10 5 L0 10 z"/></marker><marker id="registration-patterns-gk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow gk" d="M0 0 L10 5 L0 10 z"/></marker><marker id="registration-patterns-gk-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow gk" d="M0 0 L10 5 L0 10 z"/></marker><marker id="registration-patterns-soft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow soft" d="M0 0 L10 5 L0 10 z"/></marker><marker id="registration-patterns-soft-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow soft" d="M0 0 L10 5 L0 10 z"/></marker></defs>
+<rect class="bg" x="0" y="0" width="1200" height="400"/>
+<rect class="lane lane-plain" x="20" y="20" width="372" height="330" rx="16"/>
+<text class="t" x="40" y="50" text-anchor="start">1. Inline call</text>
+<text class="cap" x="206" y="326" text-anchor="middle">Most reliable. A small change in the notification service.</text>
+<rect class="lane lane-plain" x="414" y="20" width="372" height="330" rx="16"/>
+<text class="t" x="434" y="50" text-anchor="start">2. Gateway copy</text>
+<text class="cap" x="600" y="326" text-anchor="middle">No change to bank apps. Depends on the gateway vendor.</text>
+<rect class="lane lane-plain" x="808" y="20" width="372" height="330" rx="16"/>
+<text class="t" x="828" y="50" text-anchor="start">3. Event stream</text>
+<text class="cap" x="994" y="326" text-anchor="middle">Least intrusive where a message queue already exists.</text>
+<rect class="node bank" x="40" y="90" width="140" height="58" rx="10"/>
+<text class="t" x="110" y="116" text-anchor="middle">Notification</text>
+<text class="ts" x="110" y="132" text-anchor="middle">service</text>
+<rect class="node gk" x="232" y="90" width="140" height="58" rx="10"/>
+<text class="t" x="302" y="116" text-anchor="middle">Gaskiyya</text>
+<text class="ts" x="302" y="132" text-anchor="middle">registry</text>
+<rect class="node bank" x="40" y="230" width="140" height="58" rx="10"/>
+<text class="t" x="110" y="263.5" text-anchor="middle">SMS gateway</text>
+<rect class="node cust" x="232" y="230" width="140" height="58" rx="10"/>
+<text class="t" x="302" y="256" text-anchor="middle">Customer</text>
+<text class="ts" x="302" y="272" text-anchor="middle">phone</text>
+<path class="edge " d="M180 119 L232 119" marker-end="url(#registration-patterns-ink)"/>
+<path class="edge " d="M110 148 L110 230" marker-end="url(#registration-patterns-ink)"/>
+<path class="edge " d="M180 259 L232 259" marker-end="url(#registration-patterns-ink)"/>
+<rect class="node bank" x="434" y="90" width="140" height="58" rx="10"/>
+<text class="t" x="504" y="116" text-anchor="middle">Notification</text>
+<text class="ts" x="504" y="132" text-anchor="middle">service</text>
+<rect class="node bank" x="434" y="230" width="140" height="58" rx="10"/>
+<text class="t" x="504" y="256" text-anchor="middle">SMS gateway</text>
+<text class="ts" x="504" y="272" text-anchor="middle">or aggregator</text>
+<rect class="node gk" x="626" y="90" width="140" height="58" rx="10"/>
+<text class="t" x="696" y="116" text-anchor="middle">Gaskiyya</text>
+<text class="ts" x="696" y="132" text-anchor="middle">registry</text>
+<rect class="node cust" x="626" y="230" width="140" height="58" rx="10"/>
+<text class="t" x="696" y="256" text-anchor="middle">Customer</text>
+<text class="ts" x="696" y="272" text-anchor="middle">phone</text>
+<path class="edge " d="M504 148 L504 230" marker-end="url(#registration-patterns-ink)"/>
+<path class="edge " d="M574 245 L600 245 L600 119 L626 119" marker-end="url(#registration-patterns-ink)"/>
+<path class="edge " d="M574 273 L626 273" marker-end="url(#registration-patterns-ink)"/>
+<rect class="node bank" x="828" y="90" width="140" height="58" rx="10"/>
+<text class="t" x="898" y="116" text-anchor="middle">Notification</text>
+<text class="ts" x="898" y="132" text-anchor="middle">service</text>
+<rect class="node bank" x="1020" y="90" width="140" height="58" rx="10"/>
+<text class="t" x="1090" y="116" text-anchor="middle">Message</text>
+<text class="ts" x="1090" y="132" text-anchor="middle">queue</text>
+<rect class="node bank" x="1020" y="230" width="140" height="58" rx="10"/>
+<text class="t" x="1090" y="263.5" text-anchor="middle">SMS gateway</text>
+<rect class="node gk" x="828" y="230" width="140" height="58" rx="10"/>
+<text class="t" x="898" y="256" text-anchor="middle">Gaskiyya</text>
+<text class="ts" x="898" y="272" text-anchor="middle">connector</text>
+<path class="edge " d="M968 119 L1020 119" marker-end="url(#registration-patterns-ink)"/>
+<path class="edge " d="M1090 148 L1090 230" marker-end="url(#registration-patterns-ink)"/>
+<path class="edge " d="M1040 148 L1040 200 L898 200 L898 230" marker-end="url(#registration-patterns-ink)"/>
+<text class="ts" x="600" y="382" text-anchor="middle">In every pattern: register before or alongside hand-off, retry from a local queue, reuse the idempotency key.</text>
+<rect class="elb" x="175.36" y="109" width="61.28" height="22" rx="6"/>
+<text class="el" x="206" y="123" text-anchor="middle">register</text>
+<rect class="elb" x="91.68" y="179" width="36.64" height="22" rx="6"/>
+<text class="el" x="110" y="193" text-anchor="middle">send</text>
+<rect class="elb" x="485.68" y="179" width="36.64" height="22" rx="6"/>
+<text class="el" x="504" y="193" text-anchor="middle">send</text>
+<rect class="elb" x="581.68" y="172" width="36.64" height="22" rx="6"/>
+<text class="el" x="600" y="186" text-anchor="middle">copy</text>
+<rect class="elb" x="966.44" y="109" width="55.120000000000005" height="22" rx="6"/>
+<text class="el" x="994" y="123" text-anchor="middle">publish</text>
+<rect class="elb" x="1062.44" y="179" width="55.120000000000005" height="22" rx="6"/>
+<text class="el" x="1090" y="193" text-anchor="middle">consume</text>
+<rect class="elb" x="935.28" y="190" width="67.44" height="22" rx="6"/>
+<text class="el" x="969" y="204" text-anchor="middle">subscribe</text>
+</svg>
