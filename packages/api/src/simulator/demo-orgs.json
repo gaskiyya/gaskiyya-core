@@ -1,0 +1,44 @@
+{
+  "roadsafety": {
+    "description": "DEMO ONLY. A fictional government agency. It is not any real road safety corps or agency and carries no real name, logo or trademark. Its domain is on a reserved test TLD (RFC 2606); its numbers and handles are made up.",
+    "tenant": {
+      "id": "roadsafety",
+      "name": "Road Safety Agency (demo)",
+      "kind": "agency",
+      "domains": ["roadsafety.example"],
+      "senderIds": ["RSA-DEMO"],
+      "officialContacts": {
+        "phones": ["+2342090000122"],
+        "whatsapp": ["+2349070000122"],
+        "emails": ["help@roadsafety.example"],
+        "social": [
+          { "platform": "x", "handle": "RoadSafetyDemo" },
+          { "platform": "facebook", "handle": "roadsafetydemo" }
+        ]
+      },
+      "officialApps": { "android": ["example.roadsafety.demo"] }
+    },
+    "lookalikeDomain": "roadsafety-fines.example",
+    "sampleMessage": "Road Safety Agency (demo): your vehicle licence ends on 31 Oct. Renew at https://roadsafety.example/renew or at any office.",
+    "fakeCustomerCare": { "whatsapp": "+2349015550122", "handle": "roadsafety_fines_desk" }
+  },
+  "taxoffice": {
+    "description": "DEMO ONLY. A fictional tax office. It is not any real revenue service and carries no real name, logo or trademark. Its domain is on a reserved test TLD (RFC 2606); its numbers and handles are made up.",
+    "tenant": {
+      "id": "taxoffice",
+      "name": "Tax Office (demo)",
+      "kind": "agency",
+      "domains": ["taxoffice.example"],
+      "senderIds": ["TAX-DEMO"],
+      "officialContacts": {
+        "phones": ["+2342090000133"],
+        "emails": ["support@taxoffice.example"],
+        "social": [{ "platform": "x", "handle": "TaxOfficeDemo" }]
+      },
+      "officialApps": { "android": ["example.taxoffice.demo"] }
+    },
+    "lookalikeDomain": "taxoffice-refund.example",
+    "sampleMessage": "Tax Office (demo): your annual return was received. Track it at https://taxoffice.example/track",
+    "fakeCustomerCare": { "whatsapp": "+2349015550133", "handle": "taxoffice_refunds" }
+  }
+}

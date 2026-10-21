@@ -1,0 +1,44 @@
+{
+  "demobank": {
+    "description": "The default demo bank. What it publishes as its own (official contacts and apps) is fictional: the numbers are not in service and the app IDs do not exist.",
+    "tenant": { "id": "demobank", "name": "DemoBank", "domains": ["demobank.ng", "demobank.com"], "senderIds": ["DemoBank"], "bankCode": "999001" },
+    "publishes": {
+      "kind": "bank",
+      "officialContacts": {
+        "phones": ["+2342019000000"],
+        "whatsapp": ["+2349060000000"],
+        "emails": ["care@demobank.ng"],
+        "social": [
+          { "platform": "x", "handle": "DemoBankNG" },
+          { "platform": "instagram", "handle": "demobank.ng" },
+          { "platform": "facebook", "handle": "DemoBankNG" }
+        ]
+      },
+      "officialApps": { "android": ["ng.demobank.mobile"], "ios": ["1234567890"] }
+    },
+    "lookalikeDomain": "demobank-restore.com",
+    "fakeCustomerCare": { "whatsapp": "+2349015550199", "handle": "demobank_care_desk" }
+  },
+  "zb": {
+    "description": "DEMO ONLY. A fictional bank for the Zecathon demo. It is not Zenith Bank and carries no Zenith name, logo or trademark. Its domains are on reserved test TLDs (RFC 2606) and its short code is made up.",
+    "tenant": {
+      "id": "zbdemo",
+      "name": "ZB Demo Bank (demo)",
+      "domains": ["zbdemo.example", "zbdemo-bank.test"],
+      "senderIds": ["ZBDEMO", "ZBDemoBnk", "32999"],
+      "bankCode": "999002"
+    },
+    "publishes": {
+      "kind": "bank",
+      "officialContacts": {
+        "phones": ["+2342019000032"],
+        "whatsapp": ["+2349060000032"],
+        "emails": ["care@zbdemo.example"],
+        "social": [{ "platform": "x", "handle": "ZBDemoBank" }]
+      },
+      "officialApps": { "android": ["example.zbdemo.mobile"] }
+    },
+    "lookalikeDomain": "zbdemo-restore.example",
+    "fakeCustomerCare": { "whatsapp": "+2349015550132", "handle": "zbdemo_care_desk" }
+  }
+}
