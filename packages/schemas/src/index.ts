@@ -260,6 +260,7 @@ export const WelcomeEmails = z.strictObject({
 export const RegisterDevice = z.strictObject({
   pushToken: z.string().min(8).max(4096),
   platform: z.enum(['android', 'ios', 'web']),
+  voipToken: z.string().regex(/^[0-9a-f]{64,200}$/i).optional(),
 });
 
 export interface ActivityItem {

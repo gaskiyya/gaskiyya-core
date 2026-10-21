@@ -615,6 +615,7 @@ export function buildApp(deps: AppDeps) {
       recipientKey: svc.recipientKey(tenant.id, phone),
       pushToken: body.pushToken,
       platform: body.platform,
+      ...(body.voipToken ? { voipToken: body.voipToken.toLowerCase() } : {}),
       updatedAt: svc.now().toISOString(),
     });
     return reply.code(204).send();

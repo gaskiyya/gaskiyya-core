@@ -4,7 +4,18 @@ import '../dashboard/admin.css';
 // The sign-in page is its own bundle: the dashboard's code is served only after sign-in.
 const form = document.getElementById('signin') as HTMLFormElement;
 const error = form.querySelector<HTMLElement>('[role="alert"]')!;
-const button = form.querySelector('button')!;
+const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+const password = form.elements.namedItem('password') as HTMLInputElement;
+const toggle = form.querySelector<HTMLButtonElement>('.pw-toggle')!;
+
+toggle.addEventListener('click', () => {
+  const show = password.type === 'password';
+  password.type = show ? 'text' : 'password';
+  toggle.textContent = show ? 'Hide' : 'Show';
+  toggle.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+  toggle.setAttribute('aria-pressed', String(show));
+  password.focus();
+});
 const headers = { 'content-type': 'application/json', 'x-gaskiya-admin': '1' };
 
 void fetch('/v1/admin/session', { headers }).then((r) => {
@@ -32,7 +43,7 @@ form.addEventListener('submit', async (e) => {
   } catch {
     error.textContent = 'The registry cannot be reached';
   }
-  (form.elements.namedItem('password') as HTMLInputElement).value = '';
+  password.value = '';
   error.hidden = false;
   button.disabled = false;
   button.textContent = 'Sign in';

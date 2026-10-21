@@ -1,11 +1,16 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/foundation.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart' as mlkit;
 
 import 'screenshot.dart';
 
 class MlKitTextReader implements TextReader {
+  // Simulator builds have no ML Kit (ios/Podfile).
+  static final bool _iosSimulator = !kIsWeb && Platform.isIOS && Platform.environment.containsKey('SIMULATOR_DEVICE_NAME');
+
   @override
-  bool get available => !kIsWeb && (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS);
+  bool get available => !kIsWeb && !_iosSimulator && (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS);
 
   @override
   Future<List<TextBlock>> read(String path) async {

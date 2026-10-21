@@ -11,28 +11,31 @@
     <title>Gaskiyya &middot; Platform admin sign-in</title>
   </head>
   <body>
-    <div class="signin-wrap">
-      <form class="card signin" id="signin">
-        <div class="brand">
-          <img class="brand-mark" src="/favicon.svg" alt="" />
-          <div>
-            <div class="brand-name">Gaskiyya</div>
-            <div class="brand-sub">Platform admin</div>
-          </div>
-        </div>
-        <p class="muted small">For Gaskiyya operations staff. Every action is recorded in the audit log.</p>
-        <label class="field">
-          <span class="field-label">Username</span>
-          <input name="username" autocomplete="username" autofocus required />
-        </label>
-        <label class="field">
-          <span class="field-label">Staff password</span>
-          <input name="password" type="password" autocomplete="current-password" required />
-        </label>
-        <p class="notice error" role="alert" hidden></p>
-        <button class="btn">Sign in</button>
-      </form>
-    </div>
+    <main class="signin-wrap">
+      <div class="signin-col">
+        <header class="signin-head">
+          <img class="signin-mark" src="/favicon.svg" alt="" />
+          <h1>Sign in to Gaskiyya</h1>
+          <p>Administration console</p>
+        </header>
+        <form class="card signin" id="signin">
+          <label class="field">
+            <span class="field-label">Username</span>
+            <input name="username" autocomplete="username" autofocus required />
+          </label>
+          <label class="field">
+            <span class="field-label">Password</span>
+            <span class="pw">
+              <input name="password" type="password" autocomplete="current-password" required />
+              <button type="button" class="pw-toggle" aria-label="Show password" aria-pressed="false">Show</button>
+            </span>
+          </label>
+          <p class="notice error" role="alert" hidden></p>
+          <button class="btn signin-submit" type="submit">Sign in</button>
+        </form>
+        <footer class="signin-foot">Access is restricted and monitored.</footer>
+      </div>
+    </main>
     <script type="module" src="./main.ts"></script>
   </body>
 </html>

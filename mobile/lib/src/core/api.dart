@@ -719,7 +719,8 @@ class GaskiyaClient {
     }
   }
 
-  Future<void> registerDevice(String pushToken, String platform) => _send('POST', '/v1/devices', {'pushToken': pushToken, 'platform': platform});
+  Future<void> registerDevice(String pushToken, String platform, {String? voipToken}) =>
+      _send('POST', '/v1/devices', {'pushToken': pushToken, 'platform': platform, 'voipToken': ?voipToken});
 
   Stream<Map<String, dynamic>> events() async* {
     if (kIsWeb) {

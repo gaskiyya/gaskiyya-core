@@ -142,7 +142,7 @@
     },
     "link": {
       "title": "Sign in",
-      "intro": "Choose your bank and enter your mobile number. Gaskiyya checks the messages and calls your bank sends to that number. In your bank\u2019s own app you are signed in already.",
+      "intro": "Choose your bank and enter your mobile number.",
       "mobileNumber": "Mobile number",
       "chooseBank": "Choose your bank first.",
       "enterNumber": "Enter your Nigerian mobile number, for example 0801 234 5678.",

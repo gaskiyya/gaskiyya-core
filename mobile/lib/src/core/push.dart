@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 
 import 'api.dart';
+import 'calls.dart';
 
 class FirebaseConfig {
   static const _projectId = String.fromEnvironment('FIREBASE_PROJECT_ID');
@@ -104,21 +105,25 @@ class PushService {
     final all = [?client, ...clients];
     enabled = await transport.start();
     if (!enabled || run != _run) return;
+    final calls = NativeCalls.instance;
     Future<void> register(String? token) async {
       if (token == null || token.isEmpty) return;
+      final voip = await calls.voipToken();
       for (final c in all) {
         try {
-          await c.registerDevice(token, transport.platform);
+          await c.registerDevice(token, transport.platform, voipToken: voip);
           registeredToken = token;
         } catch (_) {
         }
       }
     }
 
+    await calls.prepareAudio();
     await register(await transport.token());
     if (run != _run) return;
     _subs
       ..add(transport.tokenRefresh.listen(register))
+      ..add(calls.tokenRefresh.listen((_) => register(registeredToken)))
       ..add(transport.messages.listen(onNotice))
       ..add(transport.opened.listen(onOpened));
     final initial = await transport.launchedFrom();

@@ -219,6 +219,7 @@ Without `FIRESTORE_PROJECT_ID`, records are kept in memory and lost on restart; 
 | AI | `AI_PROVIDER` (`gemini` default, `openai`, `ollama`, `none`), `GEMINI_API_KEY`, `GEMINI_MODEL`, `GEMINI_EMBEDDING_MODEL`, `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_EMBEDDING_MODEL`, `OLLAMA_URL` (`http://127.0.0.1:11434`), `OLLAMA_MODEL` (`llama3.1:8b`), `OLLAMA_VISION_MODEL` (`gemma3:4b`), `OLLAMA_EMBEDDING_MODEL` (`nomic-embed-text`), `AI_TIMEOUT_MS` | No key: fixed fallback explanations. `ollama` runs open-weights models inside the bank's network and needs no key; if Ollama is unreachable or a model is not pulled, each call uses the fixed fallback. See [decision 0011](decisions/0011-open-source-model.md). Verdicts never depend on it Hosted defaults (checked against the provider model lists on 2026-10-20): `gemini-3.8-flash` and `gemini-embedding-001`; `gpt-5.4-mini` and `text-embedding-3-small` |
 | Campaign agent AI | `AGENT_AI_PROVIDER` (`ollama` default, `same`, `none`), `AGENT_OLLAMA_MODEL` (`qwen3:4b-instruct`), `AGENT_AI_TIMEOUT_MS` (`60000`) | The agent uses its model only to write the campaign briefing and the draft warning an analyst reviews. By default that is Qwen3 4B on the local Ollama at `OLLAMA_URL` (`ollama pull qwen3:4b-instruct`), so report text stays on the server. `same` uses `AI_PROVIDER`; `none` writes template briefings. If Ollama is unreachable or slow, the agent writes the template briefing and still groups the reports |
 | Push | `FCM_SERVICE_ACCOUNT_JSON` or `GOOGLE_APPLICATION_CREDENTIALS`, `FCM_PROJECT_ID` | See below |
+| iPhone call ringing | `APNS_KEY_P8` or `APNS_KEY_FILE`, `APNS_KEY_ID`, `APNS_TEAM_ID`, `APNS_BUNDLE_ID`, `APNS_PRODUCTION` (`false`) | See below |
 | Email | `RESEND_API_KEY`, `EMAIL_FROM`, `EMAIL_REPLY_TO`, `CONSOLE_URL` | See below |
 | WhatsApp | `WHATSAPP_VERIFY_TOKEN`, `WHATSAPP_APP_SECRET`, `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_TENANT_ID` | All four or none. Webhook URL: `https://<host>/webhooks/whatsapp` |
 | USSD | `USSD_WEBHOOK_TOKEN`, `USSD_TENANT_ID` | Empty token: route off. See below |
@@ -321,6 +322,17 @@ Used for "your bank is calling" notices: high priority, with the call code, expi
 5. Find the device token with `flutter run` (the app registers it with `POST /v1/devices`), then `pnpm check:server --push <token>`.
 
 Without push, call and advisory notices still reach an open app instantly over the live event stream.
+
+## iPhone call ringing (CallKit and APNs VoIP)
+
+On iPhone, a bank's announced call rings like a phone call: the iPhone incoming-call screen with the phone's own ringtone, on the lock screen too, with the caller shown as "DemoBank · Code 1234". Answering plays the same agent voice as the console's simulated phone ("Hello, good day. I am calling from DemoBank. Your code is" and the four digits), from the same clips in `assets/audio/agent`. Mute silences the voice, as on the console. An unanswered call stops ringing after 30 seconds, or when its code expires, and shows as a missed call in Recents. When the bank ends the session first, the app ends the call. The call screen labels it "Gaskiyya Audio": it is an internet call to the app, not a cellular call from the bank's number.
+
+The app registers a VoIP token alongside its Firebase token (`POST /v1/devices` with `voipToken`). A phone with a VoIP token gets the VoIP push instead of the "is calling you" banner; if the VoIP push fails, it gets the banner. Android and phones without a VoIP token are unchanged. Without these settings the server logs `iosCalls: off` and iPhones get the banner only.
+
+1. **Apple Developer account:** Certificates, Identifiers & Profiles > Keys > create a key with *Apple Push Notifications service (APNs)*. Download the `.p8` once. Note its Key ID and your Team ID.
+2. **Server:** put the `.p8` contents (raw or base64) in `APNS_KEY_P8`, or its path in `APNS_KEY_FILE`, plus `APNS_KEY_ID`, `APNS_TEAM_ID` and `APNS_BUNDLE_ID=com.gaskiya.app`. Pushes go to the topic `com.gaskiya.app.voip`. Builds run from Xcode use the APNs sandbox (the default); TestFlight and App Store builds need `APNS_PRODUCTION=true`.
+3. **Xcode:** enable *Push Notifications*, and *Background Modes* > *Voice over IP*, *Audio* and *Remote notifications* (already in `Info.plist`).
+4. **Phone:** a real iPhone (the Simulator cannot receive VoIP pushes), signed in with the number the console calls. Firebase must be set up for iOS as above, because the VoIP token is registered with the Firebase token. At sign-in the app asks for the microphone once, so no prompt appears during the first answered call; it never records.
 
 ## Email (Resend)
 

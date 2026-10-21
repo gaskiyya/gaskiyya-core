@@ -25,6 +25,7 @@ import { guardAdvisory } from './ai/briefing.ts';
 import { explain, type ExplainResult } from './ai/explain.ts';
 import type { ModelProvider } from './ai/provider.ts';
 import { InvalidPushTokenError, type AdvisoryNotice, type CallNotice, type EventHub, type PushProvider } from './channels/channels.ts';
+import type { VoipPush } from './channels/voip.ts';
 import { REGULATORS, type LicenceSource } from '@gaskiya/licences';
 import { contactFacts, contactPhone, parseContact, type ContactFacts } from './domain/contact.ts';
 import { decideContactVerdict, decideLicenceVerdict, decideOtpHold, decideReceiptVerdict, decideSimSwapStatus, decideSimSwapWarnings, decideVerdict, type SimSwapProbe } from './domain/verdict.ts';
@@ -145,6 +146,8 @@ export type SimSwapAnswer =
   | { status: 'unknown'; reason: 'provider_unavailable' | 'not_configured'; maxAgeHours: number; checkedAt: string };
 
 export class GaskiyaService {
+  voip: VoipPush | null = null;
+
   constructor(
     readonly tenants: Map<string, Tenant>,
     readonly store: Store,
@@ -593,16 +596,29 @@ export class GaskiyaService {
   private async notify(tenant: Tenant, c: CallSession, notice: CallNotice) {
     this.events.publish(`${tenant.id}:${c.recipientKey}`, notice);
     const devices = await this.store.devices(tenant.id, c.recipientKey);
+    const voip = this.voip;
+    const ring = (d: Device) =>
+      voip && d.voipToken && notice.type === 'call.opened' && notice.code
+        ? voip.send(d.voipToken, { callId: c.id, orgId: tenant.id, bank: tenant.name, code: notice.code, expiresAt: c.expiresAt }).then(
+            () => true,
+            (err: Error) => {
+              this.log.warn({ err: err.message }, 'voip push failed');
+              return false;
+            },
+          )
+        : Promise.resolve(false);
     await Promise.all(
-      devices.map((d) =>
-        this.push.send(d.pushToken, notice).catch(async (err: Error) => {
+      devices.map(async (d) => {
+        // An iPhone that rang through CallKit does not also get the "is calling you" banner.
+        if (await ring(d)) return;
+        await this.push.send(d.pushToken, notice).catch(async (err: Error) => {
           if (err instanceof InvalidPushTokenError) {
             await this.store.removeDevice(tenant.id, c.recipientKey, d.pushToken).catch(() => {});
           } else {
             this.log.warn({ err: err.message }, 'push failed');
           }
-        }),
-      ),
+        });
+      }),
     );
   }
 

@@ -1,16 +1,316 @@
+import AVFoundation
+import CallKit
 import Flutter
+import PushKit
 import UIKit
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
+  private let bankCalls = BankCalls()
+
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    // Before Flutter: a call push can wake the app with no engine running.
+    bankCalls.start()
+    #if DEBUG
+      bankCalls.simulateFromLaunchArguments()
+    #endif
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+    bankCalls.attach(FlutterMethodChannel(name: "ng.gaskiya/calls", binaryMessenger: engineBridge.applicationRegistrar.messenger()))
+  }
+}
+
+// Bank calls on iPhone. The bank's announced call arrives as a VoIP push and rings through
+// CallKit: the iPhone call screen and the ringtone chosen in Settings > Sounds. The caller name
+// carries the call code. Answering plays the same agent voice as the console's simulated phone.
+final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
+  private static let tokenKey = "gk.voipToken"
+  private static let ringSeconds: TimeInterval = 30
+
+  private struct Incoming {
+    let callId: String
+    let orgId: String
+    let code: String
+    var answered = false
+    var timeout: DispatchWorkItem?
+  }
+
+  private let provider: CXProvider
+  private let registry = PKPushRegistry(queue: .main)
+  private var channel: FlutterMethodChannel?
+  private var ids: [String: UUID] = [:]
+  private var calls: [UUID: Incoming] = [:]
+  private var voice: AgentVoice?
+
+  override init() {
+    let config = CXProviderConfiguration()
+    config.supportsVideo = false
+    config.maximumCallGroups = 1
+    config.maximumCallsPerCallGroup = 1
+    config.supportedHandleTypes = [.generic]
+    config.includesCallsInRecents = true
+    // ringtoneSound stays nil, so CallKit rings with the phone's own ringtone.
+    provider = CXProvider(configuration: config)
+    super.init()
+    provider.setDelegate(self, queue: nil)
+  }
+
+  func start() {
+    registry.delegate = self
+    registry.desiredPushTypes = [.voIP]
+  }
+
+  func attach(_ channel: FlutterMethodChannel) {
+    self.channel = channel
+    channel.setMethodCallHandler { [weak self] call, result in
+      switch call.method {
+      case "voipToken":
+        result(UserDefaults.standard.string(forKey: BankCalls.tokenKey))
+      case "endCall":
+        if let id = (call.arguments as? [String: Any])?["callId"] as? String { self?.end(callId: id, reason: .remoteEnded) }
+        result(nil)
+      case "prepareAudio":
+        // Asked once at sign-in, so no prompt interrupts the first answered call.
+        if #available(iOS 17.0, *) {
+          AVAudioApplication.requestRecordPermission { _ in }
+        } else {
+          AVAudioSession.sharedInstance().requestRecordPermission { _ in }
+        }
+        result(nil)
+      default:
+        result(FlutterMethodNotImplemented)
+      }
+    }
+  }
+
+  // MARK: PushKit
+
+  func pushRegistry(_ registry: PKPushRegistry, didUpdate credentials: PKPushCredentials, for type: PKPushType) {
+    let token = credentials.token.map { String(format: "%02x", $0) }.joined()
+    UserDefaults.standard.set(token, forKey: BankCalls.tokenKey)
+    channel?.invokeMethod("voipToken", arguments: token)
+  }
+
+  func pushRegistry(_ registry: PKPushRegistry, didInvalidatePushTokenFor type: PKPushType) {
+    UserDefaults.standard.removeObject(forKey: BankCalls.tokenKey)
+  }
+
+  func pushRegistry(_ registry: PKPushRegistry, didReceiveIncomingPushWith payload: PKPushPayload, for type: PKPushType, completion: @escaping () -> Void) {
+    incoming(payload.dictionaryPayload, completion: completion)
+  }
+
+  private func incoming(_ p: [AnyHashable: Any], completion: @escaping () -> Void) {
+    let callId = p["callId"] as? String ?? UUID().uuidString
+    let bank = p["bank"] as? String ?? "Your bank"
+    let code = (p["code"] as? String ?? "").filter(\.isNumber)
+    let orgId = p["orgId"] as? String ?? ""
+    let expiresAt = (p["expiresAt"] as? String).flatMap(BankCalls.parseDate)
+    let uuid = ids[callId] ?? UUID()
+    ids[callId] = uuid
+
+    let update = CXCallUpdate()
+    update.remoteHandle = CXHandle(type: .generic, value: bank)
+    update.localizedCallerName = code.isEmpty ? bank : "\(bank) · Code \(code)"
+    update.hasVideo = false
+    update.supportsHolding = false
+    update.supportsGrouping = false
+    update.supportsUngrouping = false
+    update.supportsDTMF = false
+
+    // iOS stops delivering VoIP pushes to an app that does not report each one as a call,
+    // so the call is always reported, then ended at once if its code has already expired.
+    provider.reportNewIncomingCall(with: uuid, update: update) { [weak self] error in
+      defer { completion() }
+      guard let self, error == nil else { return }
+      let ringFor = min(BankCalls.ringSeconds, expiresAt?.timeIntervalSinceNow ?? BankCalls.ringSeconds)
+      if ringFor <= 0 {
+        self.provider.reportCall(with: uuid, endedAt: nil, reason: .unanswered)
+        self.forget(uuid)
+        return
+      }
+      let timeout = DispatchWorkItem { [weak self] in self?.missed(uuid) }
+      self.calls[uuid] = Incoming(callId: callId, orgId: orgId, code: code, timeout: timeout)
+      DispatchQueue.main.asyncAfter(deadline: .now() + ringFor, execute: timeout)
+      BankCalls.trace("ringing \(update.localizedCallerName ?? "") for \(Int(ringFor))s")
+    }
+  }
+
+  #if DEBUG
+    // The Simulator cannot receive VoIP pushes. Launch with
+    // -GKTestCall demobank 1234 [answerAfterSeconds] to ring with the payload the server sends.
+    func simulateFromLaunchArguments() {
+      let args = ProcessInfo.processInfo.arguments
+      guard let i = args.firstIndex(of: "-GKTestCall"), args.count > i + 2 else { return }
+      let orgId = args[i + 1]
+      let code = args[i + 2]
+      let answerAfter = args.count > i + 3 ? Double(args[i + 3]) : nil
+      let callId = "test-\(Int(Date().timeIntervalSince1970))"
+      let payload: [AnyHashable: Any] = [
+        "callId": callId, "orgId": orgId, "bank": orgId == "demobank" ? "DemoBank" : orgId, "code": code,
+        "expiresAt": ISO8601DateFormatter().string(from: Date().addingTimeInterval(180)),
+      ]
+      DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        self.incoming(payload) {}
+        guard let answerAfter else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + answerAfter) {
+          guard let uuid = self.ids[callId] else { return }
+          CXCallController().request(CXTransaction(action: CXAnswerCallAction(call: uuid))) { error in
+            BankCalls.trace(error.map { "answer failed: \($0.localizedDescription)" } ?? "answer requested")
+          }
+        }
+      }
+    }
+  #endif
+
+  static func trace(_ message: String) {
+    #if DEBUG
+      NSLog("GKCALL %@", message)
+    #endif
+  }
+
+  // MARK: CallKit
+
+  func providerDidReset(_ provider: CXProvider) {
+    voice?.stop()
+    voice = nil
+    calls.values.forEach { $0.timeout?.cancel() }
+    calls.removeAll()
+    ids.removeAll()
+  }
+
+  func provider(_ provider: CXProvider, perform action: CXAnswerCallAction) {
+    guard var call = calls[action.callUUID] else { return action.fail() }
+    call.timeout?.cancel()
+    call.answered = true
+    calls[action.callUUID] = call
+    try? AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .voiceChat, options: [])
+    voice?.stop()
+    voice = AgentVoice(orgId: call.orgId, code: call.code)
+    action.fulfill()
+    BankCalls.trace("answered")
+  }
+
+  func provider(_ provider: CXProvider, didActivate audioSession: AVAudioSession) {
+    BankCalls.trace("audio session active")
+    voice?.start()
+  }
+
+  func provider(_ provider: CXProvider, didDeactivate audioSession: AVAudioSession) {
+    voice?.stop()
+  }
+
+  func provider(_ provider: CXProvider, perform action: CXEndCallAction) {
+    if calls[action.callUUID]?.answered == true {
+      voice?.stop()
+      voice = nil
+    }
+    forget(action.callUUID)
+    action.fulfill()
+  }
+
+  // As on the console's phone, mute silences the agent's voice.
+  func provider(_ provider: CXProvider, perform action: CXSetMutedCallAction) {
+    voice?.muted = action.isMuted
+    action.fulfill()
+  }
+
+  // MARK: Helpers
+
+  private func missed(_ uuid: UUID) {
+    guard let call = calls[uuid], !call.answered else { return }
+    provider.reportCall(with: uuid, endedAt: nil, reason: .unanswered)
+    forget(uuid)
+    BankCalls.trace("missed")
+  }
+
+  private func end(callId: String, reason: CXCallEndedReason) {
+    guard let uuid = ids[callId], let call = calls[uuid] else { return }
+    if call.answered {
+      voice?.stop()
+      voice = nil
+    }
+    provider.reportCall(with: uuid, endedAt: nil, reason: reason)
+    forget(uuid)
+  }
+
+  private func forget(_ uuid: UUID) {
+    if let call = calls.removeValue(forKey: uuid) {
+      call.timeout?.cancel()
+      ids.removeValue(forKey: call.callId)
+    } else {
+      ids = ids.filter { $0.value != uuid }
+    }
+  }
+
+  private static func parseDate(_ s: String) -> Date? {
+    let f = ISO8601DateFormatter()
+    f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    if let d = f.date(from: s) { return d }
+    f.formatOptions = [.withInternetDateTime]
+    return f.date(from: s)
+  }
+}
+
+// The agent's voice, timed like console/src/device/agentVoice.ts: the organisation's opening
+// ("Hello, good day. I am calling from DemoBank. Your code is"), then each digit of the code,
+// using the same clips (assets/audio/agent) and the pauses in voice.json.
+final class AgentVoice {
+  private let ids: [String]
+  private var pauses: (afterOpening: TimeInterval, betweenDigits: TimeInterval) = (0.38, 0.24)
+  private var players: [AVAudioPlayer] = []
+  private var started = false
+
+  var muted = false {
+    didSet { players.forEach { $0.volume = muted ? 0 : 1 } }
+  }
+
+  init(orgId: String, code: String) {
+    var clips: Set<String> = []
+    if let url = AgentVoice.asset("voice.json"),
+      let data = try? Data(contentsOf: url),
+      let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+    {
+      clips = Set((json["clips"] as? [String: Any])?.keys.map { $0 } ?? [])
+      if let p = json["pauses"] as? [String: Double] {
+        pauses = ((p["afterOpening"] ?? 380) / 1000, (p["betweenDigits"] ?? 240) / 1000)
+      }
+    }
+    let opening = clips.contains("opening-\(orgId)") ? "opening-\(orgId)" : "opening-generic"
+    let digits = Array(code)
+    ids = [opening] + digits.enumerated().map { i, d in "digit-\(d)-\(i == digits.count - 1 ? "last" : "mid")" }
+  }
+
+  func start() {
+    guard !started else { return }
+    started = true
+    let loaded = ids.compactMap { id in AgentVoice.asset("\(id).wav").flatMap { try? AVAudioPlayer(contentsOf: $0) }.map { (id, $0) } }
+    players = loaded.map(\.1)
+    guard let first = players.first else { return BankCalls.trace("voice clips missing") }
+    let now = first.deviceCurrentTime
+    var at = now + 0.6
+    for (i, (id, player)) in loaded.enumerated() {
+      player.volume = muted ? 0 : 1
+      player.prepareToPlay()
+      player.play(atTime: at)
+      BankCalls.trace(String(format: "voice %@ at +%.2fs (%.2fs)", id, at - now, player.duration))
+      at += player.duration + (i == 0 ? pauses.afterOpening : pauses.betweenDigits)
+    }
+  }
+
+  func stop() {
+    players.forEach { $0.stop() }
+    players.removeAll()
+  }
+
+  private static func asset(_ name: String) -> URL? {
+    let key = FlutterDartProject.lookupKey(forAsset: "assets/audio/agent/\(name)")
+    let url = Bundle.main.bundleURL.appendingPathComponent(key)
+    return FileManager.default.fileExists(atPath: url.path) ? url : nil
   }
 }

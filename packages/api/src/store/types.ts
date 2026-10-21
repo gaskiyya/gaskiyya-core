@@ -265,6 +265,8 @@ export interface Device {
   recipientKey: string;
   pushToken: string;
   platform: 'android' | 'ios' | 'web';
+  // iPhone PushKit token: bank calls ring through CallKit instead of a banner.
+  voipToken?: string;
   updatedAt: string;
 }
 

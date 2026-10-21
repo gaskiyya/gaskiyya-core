@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'api.dart';
+import 'calls.dart';
 import 'config.dart';
 import 'copy.dart';
 import 'push.dart';
@@ -356,6 +357,7 @@ class AppState extends ChangeNotifier {
       }
     } else if (type == 'call.closed') {
       final id = data['callId'];
+      if (id is String) unawaited(NativeCalls.instance.endCall(id));
       for (final l in from == null ? _links : [from]) {
         if (l.liveCalls.isEmpty) continue;
         final left = id == null ? const <CallSession>[] : l.liveCalls.where((c) => c.id != id).toList();

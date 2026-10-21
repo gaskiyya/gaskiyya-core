@@ -12,6 +12,7 @@ import { CamaraSimSwap, MemorySimSwap, SimulatedMno, SimSwapError, type SimSwapP
 import { DEFAULT_GUARD, RegistrationGuard, type GuardConfig } from './guard.ts';
 import { MemoryMailer, ResendMailer, type Mailer } from './channels/email.ts';
 import { FcmPush, serviceAccountFromEnv } from './channels/fcm.ts';
+import { ApnsVoipPush, apnsConfigFromEnv, type VoipPush } from './channels/voip.ts';
 import {
   EventHub,
   MemoryMessaging,
@@ -44,6 +45,7 @@ export interface SystemOptions {
   store?: Store;
   model?: ModelProvider;
   push?: PushProvider;
+  voip?: VoipPush | null;
   messaging?: Messaging;
   whatsapp?: { verifyToken: string; appSecret: string; tenantId: string } | null;
   ussd?: { token: string; tenantId: string } | null;
@@ -125,6 +127,7 @@ export function createSystem(o: SystemOptions) {
     logger,
     o.clock,
   );
+  svc.voip = o.voip ?? null;
   const emailOptions = { consoleUrl: o.consoleUrl, logoUrl: o.emailLogoUrl };
   const customerAuth = new CustomerAuth(tenants);
   const bankAuth = new BankAuth(o.tokenSecret, o.bankClients);
@@ -304,6 +307,7 @@ export interface Integrations {
   ai: string;
   agentAi: string;
   push: string;
+  iosCalls: string;
   email: string;
   whatsapp: string;
   ussd: string;
@@ -482,6 +486,14 @@ export function configFromEnv(env: NodeJS.ProcessEnv = process.env) {
     errors.push(`Firebase: ${(e as Error).message}`);
   }
 
+  let voip: ApnsVoipPush | null = null;
+  try {
+    const apns = apnsConfigFromEnv(env);
+    if (apns) voip = new ApnsVoipPush(apns);
+  } catch (e) {
+    errors.push(`APNs: ${(e as Error).message}`);
+  }
+
   let mailer: Mailer | null = null;
   if (env.RESEND_API_KEY) {
     if (!env.EMAIL_FROM) errors.push('EMAIL_FROM is required when RESEND_API_KEY is set, e.g. "Gaskiya <alerts@yourdomain.com>"');
@@ -592,6 +604,7 @@ export function configFromEnv(env: NodeJS.ProcessEnv = process.env) {
           ? `Ollama at ${agentModel.url} (${agentModel.model}), briefings time out after ${agentTimeoutMs} ms`
           : 'off: template briefings',
     push: push instanceof FcmPush ? `Firebase Cloud Messaging (project ${push.projectId})` : 'off: live in-app events only',
+    iosCalls: voip ? `CallKit ringing through APNs VoIP (${voip.topic}, ${voip.host.includes('sandbox') ? 'sandbox' : 'production'})` : 'off: iPhones get the call banner only',
     email: mailer ? (alertTenants.length ? `Resend, campaign alerts for ${alertTenants.join(', ')}` : 'Resend, but no tenant lists alertEmails') : 'off',
     whatsapp: whatsapp ? `on for ${whatsapp.tenantId}` : 'off',
     ussd: ussd ? `on for ${ussd.tenantId}` : 'off',
@@ -600,7 +613,7 @@ export function configFromEnv(env: NodeJS.ProcessEnv = process.env) {
   };
   const adminSummary = adminOn ? `on at /admin/ for ${[...admin.users.map((u) => u.username), ...(admin.plain ? [admin.plain.username] : [])].join(', ')}${masterKey ? '' : ' (GASKIYA_MASTER_KEY not set: cannot add organisations)'}` : 'off';
   const licenceSummary = `${licenceDir ? `directory ${licenceDir}` : `bundled (${BUNDLED_LICENCES.map((f) => `${f.source.id}${f.source.sample ? ' SAMPLE' : ''}`).join(', ')})`}, stale after ${licenceMaxAgeDays} days`;
-  return { tenants, keys, bankClients, tokenSecret, store, model, agentModel, agentTimeoutMs, push, mailer, whatsapp, ussd, messaging, settings, allowDemoReset, agentJobToken, rateLimiters, corsOrigins, trustProxy: env.TRUST_PROXY === 'true', licences, licenceMaxAgeDays, licenceSummary, integrations, simSwap, simSwapSettings, simSwapRateLimitPerMinute, admin, adminSummary, masterKey, adminSettings, production: env.NODE_ENV === 'production' };
+  return { tenants, keys, bankClients, tokenSecret, store, model, agentModel, agentTimeoutMs, push, voip, mailer, whatsapp, ussd, messaging, settings, allowDemoReset, agentJobToken, rateLimiters, corsOrigins, trustProxy: env.TRUST_PROXY === 'true', licences, licenceMaxAgeDays, licenceSummary, integrations, simSwap, simSwapSettings, simSwapRateLimitPerMinute, admin, adminSummary, masterKey, adminSettings, production: env.NODE_ENV === 'production' };
 }
 
 export function buildSystemFromEnv(env: NodeJS.ProcessEnv = process.env) {
@@ -615,6 +628,7 @@ export function buildSystemFromEnv(env: NodeJS.ProcessEnv = process.env) {
     agentModel: cfg.agentModel,
     agentTimeoutMs: cfg.agentTimeoutMs,
     push: cfg.push,
+    voip: cfg.voip,
     mailer: cfg.mailer,
     consoleUrl: env.CONSOLE_URL || undefined,
     emailLogoUrl: env.EMAIL_LOGO_URL || undefined,
@@ -683,6 +697,7 @@ export { AdminRegistry, AdminError } from './admin/registry.ts';
 export { AdminAuth } from './admin/session.ts';
 export { hashSecret, verifySecret } from './admin/crypto.ts';
 export { MemoryWebhookSender, HttpWebhookSender, signWebhook, type WebhookSender } from './channels/webhook.ts';
+export { ApnsVoipPush, MemoryVoipPush, apnsConfigFromEnv, type VoipPush, type VoipCall } from './channels/voip.ts';
 export { localEmbed } from './ai/provider.ts';
 export { claimsGenuine } from './ai/explain.ts';
 export { senderWarnings } from './domain/sender.ts';
