@@ -173,18 +173,9 @@ Record one full run of section 4 the day before, with the console and the phone 
 - iPhone: connect by USB, QuickTime Player > File > New Movie Recording, pick the iPhone as the camera. Or Control Centre > Screen Recording on the phone.
 - Android: `adb shell screenrecord /sdcard/demo.mp4` (stop with Ctrl+C, then `adb pull /sdcard/demo.mp4`), or `scrcpy --record demo.mp4`.
 
-### The walkthrough film (30 seconds, no live system)
+### The showcase film (one minute, no live system)
 
-The Remotion project in [`video/`](../../../video/) renders a 30-second walkthrough of checking a message and a call. It needs its generated soundtrack first:
-
-```bash
-cd video
-npm install
-npm run audio    # writes public/audio/soundtrack.wav (the film uses it)
-npm run render   # writes out/gaskiyya-walkthrough.mp4
-```
-
-`npm run studio` previews it in the browser. The landing site plays a web encoding of the same film from `apps/web/site/public/video/`.
+A one-minute film of checking a message, a call, a link and a payment on an iPhone. Download it from <https://gaskiyya-io.web.app/video/gaskiyya-showcase.mp4>; the landing page plays the same file.
 
 ### The in-browser sandbox console (no server, no network)
 
@@ -198,7 +189,7 @@ It runs the whole script, including the simulated phone, with nothing else runni
 
 ### Where to keep the fallback files
 
-`video/out/` and the rendered `gaskiyya-walkthrough.*` files are git-ignored, so they are never committed. Before the demo, copy the film and your own recording to one folder outside the repository, for example `~/Desktop/gaskiyya-demo/`, open each once to check it plays offline, and keep a second copy on a USB stick or the phone.
+Before the demo, copy the film and your own recording to one folder outside the repository, for example `~/Desktop/gaskiyya-demo/`, open each once to check it plays offline, and keep a second copy on a USB stick or the phone.
 
 ## 8. Offline demo mode
 

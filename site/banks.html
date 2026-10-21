@@ -1359,7 +1359,7 @@ const jwks = await issuer.jwks(); // publish at your tokenKeysUrl</code></pre>
             <li><span>Organisation record: id, display and legal name, NIBSS code, official domains, sender IDs, official contacts and apps, JWKS URL, sign-in URL, fraud desk emails, technical contact. The operator enters it in the admin dashboard, starting in sandbox</span><em>Bank and operator</em></li>
             <li><span>Per-bank hashing key of at least 32 bytes: made by the dashboard and stored encrypted, or in your KMS when you host the registry</span><em>Security</em></li>
             <li><span>OAuth client per system, mTLS certificates, IP allowlist</span><em>Security and operator</em></li>
-            <li><span>Your fingerprint code passes all 36 shared vectors</span><em>Engineering</em></li>
+            <li><span>Your fingerprint code passes every shared test vector</span><em>Engineering</em></li>
             <li><span>Registration live for the first message type</span><em>Notification team</em></li>
             <li><span>Call announcement in the dialler, code panel for agents</span><em>Contact centre</em></li>
             <li><span>Customer token signing and JWKS published</span><em>Mobile backend</em></li>

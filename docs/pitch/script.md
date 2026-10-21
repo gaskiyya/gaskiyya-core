@@ -2,7 +2,7 @@
 
 Two parts: a timed three-minute spoken pitch, and the 90-second live demo click path with a recovery line for each step. Figures and their sources are in [deck.md](deck.md#sources); the tags below ([S1] and so on) are not read aloud.
 
-The spoken pitch runs 3:00 on its own. The live demo is a separate 90-second block, cued at 1:20. With the demo the whole slot is 4:30 [CONFIRM: slot length and whether the demo counts inside it]. If the slot is 3:00 in total, play the 30-second walkthrough film in place of the live demo (`apps/web/docs/DEMO.md`, section 7) and cut the block marked *(cut if short)*.
+The spoken pitch runs 3:00 on its own. The live demo is a separate 90-second block, cued at 1:20. With the demo the whole slot is 4:30 [CONFIRM: slot length and whether the demo counts inside it]. If the slot is 3:00 in total, play the one-minute showcase film in place of the live demo (`apps/web/docs/DEMO.md`, section 7) and cut the block marked *(cut if short)*.
 
 Pronunciation: Gaskiyya is "gas-KEE-ya", stress on the middle syllable.
 
@@ -60,7 +60,7 @@ Set-up before going on stage (`apps/web/docs/DEMO.md`, sections 1 to 3):
 - The console at `http://localhost:8080/console/` on the projector. Press **Reset** in the console header once.
 - The phone on the same hotspot, running the app (`flutter run --dart-define=API_URL=http://<LAN-ip>:8080`), linked to DemoBank as Amina Bello (`8012345678` after `+234`). From the phone's browser, `http://<LAN-ip>:8080/health` shows `{"ok":true}`.
 - For step (e), nothing extra: `pnpm dev` sets `USSD_WEBHOOK_TOKEN` for the registry and the console when `.env` lacks one (`scripts/dev.mjs`), and the console's **USSD** page posts Africa's Talking-style callbacks for the demo code `*347*123#` through the console server, which holds the token. If the page says "USSD is off", the token is missing: stop and restart `pnpm dev`.
-- The fallback recording and the walkthrough film copied to `~/Desktop/gaskiyya-demo/` and opened once (`apps/web/docs/DEMO.md`, section 7).
+- The fallback recording and the showcase film copied to `~/Desktop/gaskiyya-demo/` and opened once (`apps/web/docs/DEMO.md`, section 7).
 
 Demo customers: Amina Bello (+2348012345678), Tunde Okafor (+2348098765432), Chidinma Eze (+2348031112222).
 

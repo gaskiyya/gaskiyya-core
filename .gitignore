@@ -7,9 +7,8 @@ coverage
 .env.*
 !.env.example
 .dart_tool/
-video/out/
-video/public/audio/
-video/.kokoro/
+# The film project is kept outside the repository.
+/video/
 
 # The SDK has its own repository: github.com/gaskiyya/gaskiyya-sdk
 /sdk/

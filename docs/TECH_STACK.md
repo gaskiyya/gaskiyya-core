@@ -141,7 +141,7 @@ The model only explains a result after the registry has decided it, or reads a s
 
 | Technology | What it is | Licence | Category | What it does in Gaskiyya | Why chosen |
 | --- | --- | --- | --- | --- | --- |
-| Remotion 4.0.533 (`remotion`, `@remotion/cli`) | Video made with React | Remotion License (free for individuals, non-profits and companies up to 3 employees; company licence above that) | source-available | Renders the walkthrough video (`video/src/Walkthrough.tsx`) | Video as code, re-renderable when the UI changes |
+| Remotion 4.0.533 (`remotion`, `@remotion/cli`) | Video made with React | Remotion License (free for individuals, non-profits and companies up to 3 employees; company licence above that) | source-available | Renders the showcase film (kept outside this repository) | Video as code, re-renderable when the UI changes |
 | `@remotion/transitions` 4.0.533 | Remotion transitions | `UNLICENSED` in package.json, no licence file; part of the Remotion monorepo, so taken as the Remotion License | source-available (unclear) | Scene transitions (`video/src/`) | Ships with Remotion |
 | `@remotion/fonts` 4.0.533 | Font loading | MIT | open source | Loads Inter in the video (`video/src/fonts.ts`) | - |
 | Soundtrack synthesiser (ours) | TypeScript audio synthesis | project code | open source | Generates the music bed and effects; no samples or licensed music (`video/scripts/soundtrack.ts`) | No third-party audio rights |
