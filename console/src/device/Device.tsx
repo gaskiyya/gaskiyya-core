@@ -287,7 +287,6 @@ export function Device({ phone, name, bank, bankId = '' }: { phone: string; name
   const updateCall = (c: PhoneCall, status: 'answered' | 'ended') => (c.kind === 'bank' ? sim.updateCall(c.id, status) : sim.updateFraudCall(c.id, status)).catch(() => {});
   const accept = async () => {
     if (!call) return;
-    // Must run inside the tap: browsers play sound only from a user gesture.
     voice.current?.start();
     setPhase('active');
     setAcceptedAt(Date.now());

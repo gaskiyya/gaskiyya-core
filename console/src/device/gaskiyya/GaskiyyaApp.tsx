@@ -30,7 +30,6 @@ try {
   const saved = JSON.parse(localStorage.getItem(SESSION_KEY) ?? '{}') as Record<string, Session>;
   for (const [k, v] of Object.entries(saved)) if (v && typeof v.phone === 'string') sessions.set(k, v);
 } catch {
-  // Storage unavailable.
 }
 export const loadSession = (devicePhone: string) => sessions.get(devicePhone) ?? null;
 export function saveSession(devicePhone: string, s: Session | null) {
@@ -39,7 +38,6 @@ export function saveSession(devicePhone: string, s: Session | null) {
   try {
     localStorage.setItem(SESSION_KEY, JSON.stringify(Object.fromEntries(sessions)));
   } catch {
-    // Storage unavailable.
   }
 }
 

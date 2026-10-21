@@ -983,7 +983,6 @@ function FraudPage({ notify }: { notify: (s: string) => void }) {
     try {
       localStorage.setItem('gaskiya.analyst', v);
     } catch {
-      // Storage unavailable.
     }
   };
 
