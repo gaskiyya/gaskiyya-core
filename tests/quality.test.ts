@@ -6,11 +6,13 @@ import { copy } from '@gaskiya/schemas';
 const files = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard'], { encoding: 'utf8' }).split('\n').filter(Boolean);
 
 describe('quality gates', () => {
-  it('Q-1: one command installs, one tests, one starts the system', () => {
+  it('Q-1: build, test, and development commands are configured', () => {
     const scripts = JSON.parse(readFileSync('package.json', 'utf8')).scripts as Record<string, string>;
     expect(scripts.dev).toMatch(/vite --mode site/);
     expect(scripts.build).toContain('typecheck');
     expect(scripts['build:ui']).toMatch(/build:site/);
+    expect(scripts.test).toMatch(/vitest run/);
+    expect(scripts.test).toMatch(/flutter\.mjs test/);
   });
 
   it('Q-2: TypeScript type checks and ESLint pass', () => {
