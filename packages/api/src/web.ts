@@ -5,7 +5,7 @@ import fastifyStatic from '@fastify/static';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { adminToken, type AdminAuth } from './admin/session.ts';
 
-export const WEB_DIST = fileURLToPath(new URL('../../web/dist', import.meta.url));
+export const WEB_DIST = fileURLToPath(new URL('../../dist', import.meta.url));
 
 export interface WebOptions {
   dir?: string;

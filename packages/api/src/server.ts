@@ -47,7 +47,7 @@ system.store
   .then(() => app.listen({ port, host }))
   .then(() => {
     const agent = system.settings.agentInProcess ? `in-process every ${system.settings.agentIntervalSeconds}s` : 'scheduled job only';
-    app.log.info({ integrations, licences: licenceSummary, admin: adminSummary + (system.adminAuth && !web.admin ? ' (UI not built: pnpm web:build)' : ''), web, agent, simulator: process.env.SIM_ENABLED === 'true' }, 'Gaskiya registry ready');
+    app.log.info({ integrations, licences: licenceSummary, admin: adminSummary + (system.adminAuth && !web.admin ? ' (admin UI files absent from WEB_DIST_DIR)' : ''), web, agent, simulator: process.env.SIM_ENABLED === 'true' }, 'Gaskiya registry ready');
     return warnIfOllamaUnready();
   }).catch((err: Error) => {
   app.log.error({ err: { message: err.message } }, 'failed to start');
