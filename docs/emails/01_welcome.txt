@@ -1,0 +1,27 @@
+Subject: Welcome to Gaskiya, DemoBank
+
+GASKIYA · WELCOME
+
+Welcome to Gaskiya, DemoBank
+
+Your customers can now check whether a message or call really came from DemoBank, and this address will hear about scam campaigns as soon as customers report them.
+
+Here is what this address will receive:
+
+- Scam campaign alerts (When reports from customers point to the same fake message, link or number)
+- Advisory approvals (A record each time an analyst approves a customer warning)
+- Activity summaries (Messages registered, customer checks and reports, on request)
+
+To get the most from Gaskiya:
+
+1. Register every outgoing message: One call from your notification service before each SMS. Coverage matters: an unregistered genuine message shows as not confirmed.
+2. Announce outbound calls: Your dialler opens a session and the agent reads the four-digit code to the customer.
+3. Review campaigns in the console: Approve or dismiss each drafted advisory. Nothing reaches customers without an analyst.
+
+Registered domains for DemoBank: demobank.ng, demobank.com. Links on any other domain are never confirmed.
+
+Open the Gaskiya console: https://console.gaskiya.ng
+
+--
+You are receiving this because this address was added to DemoBank's Gaskiya alerts.
+Gaskiya stores no phone numbers and no text of the messages banks register; customer fraud reports, sent with consent, are kept masked. Gaskiya never asks anyone for a PIN, password, card number or one-time code.

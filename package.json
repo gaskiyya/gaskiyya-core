@@ -8,14 +8,22 @@
   },
   "scripts": {
     "dev": "vite --mode site",
+    "dev:console": "vite --mode console",
+    "dev:sandbox": "vite --mode sandbox",
+    "dev:admin": "vite --mode admin",
+    "dev:admin-login": "vite --mode admin-login",
     "build": "pnpm typecheck && pnpm build:ui",
-    "build:ui": "pnpm build:site",
-    "build:site": "vite build --mode site",
+    "build:ui": "pnpm build:site && pnpm build:console && pnpm build:admin",
+    "build:site": "vite build --mode site && vite build --mode sandbox",
+    "build:console": "vite build --mode console",
+    "build:admin": "vite build --mode admin && vite build --mode admin-login",
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.app.json"
   },
   "dependencies": {
     "@gaskiya/canonical": "workspace:^",
+    "@gaskiya/licences": "workspace:^",
     "@gaskiya/schemas": "workspace:^",
+    "@noble/hashes": "1.8.0",
     "motion": "12.23.12",
     "react": "^19",
     "react-dom": "^19",
@@ -27,6 +35,7 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
     "typescript": "~5.9",
-    "vite": "^8.3.2"
+    "vite": "^8.3.2",
+    "zod": "^4"
   }
 }

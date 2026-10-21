@@ -1,0 +1,25 @@
+Subject: Registration alert: a message linking to demobank-verify.com
+
+GASKIYA · DEMOBANK REGISTRY (Check)
+
+A registered message links outside your domains
+
+Your systems registered a message that links to demobank-verify.com. Customers who check it will see it confirmed as sent by DemoBank. If this is a partner or a new domain of yours, add it to your registered domains; if not, a bank client credential may be in the wrong hands.
+
+Link domain: demobank-verify.com
+Your registered domains: demobank.ng, demobank.com
+Message type: Security notices
+Channel: SMS
+Bank client: demobank-notify
+First seen: 20 Oct 2026, 11:12 WAT
+
+1. Confirm the source: Check with the team that owns the notification service that this traffic is theirs.
+2. If it is not: Revoke the bank client named above and issue a new one. Records it registered expire on their own.
+
+The registration was not blocked. Gaskiya never sees message text, only the declared link domains and counts.
+
+Review in the console: https://console.gaskiya.ng
+
+--
+You are receiving this because you are on DemoBank's Gaskiya alerts.
+Gaskiya stores no phone numbers and no text of the messages banks register; customer fraud reports, sent with consent, are kept masked. Gaskiya never asks anyone for a PIN, password, card number or one-time code.

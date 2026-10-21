@@ -1,10 +1,12 @@
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import react from '@vitejs/plugin-react';
 import { defineConfig, type Plugin, type UserConfig } from 'vite';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const at = (p: string) => resolve(here, p);
+const API = 'http://localhost:8080';
 
 const inlineDiagrams: Plugin = {
   name: 'inline-diagrams',
@@ -15,7 +17,7 @@ const inlineDiagrams: Plugin = {
   },
 };
 
-// One build per UI: vite build --mode site.
+// One build per UI: vite build --mode site | sandbox | console | admin | admin-login.
 const apps: Record<string, UserConfig> = {
   site: {
     root: at('site'),
@@ -27,6 +29,38 @@ const apps: Record<string, UserConfig> = {
       assetsInlineLimit: 0,
       rollupOptions: { input: { main: at('site/index.html'), banks: at('site/banks.html') } },
     },
+  },
+  sandbox: {
+    root: at('console'),
+    base: './',
+    plugins: [react()],
+    define: { __SANDBOX__: 'true' },
+    resolve: { alias: { 'node:crypto': at('console/src/sandbox/node-crypto.ts'), 'node:events': at('console/src/sandbox/node-events.ts') } },
+    server: { port: 5173 },
+    build: { outDir: at('dist/site/console') },
+  },
+  console: {
+    root: at('console'),
+    base: '/console/',
+    plugins: [react()],
+    define: { __SANDBOX__: 'false' },
+    server: { port: 5171, proxy: { '/sim': API, '/v1': API } },
+    build: { outDir: at('dist/console') },
+  },
+  admin: {
+    root: at('admin/dashboard'),
+    publicDir: at('admin/public'),
+    base: '/admin/',
+    plugins: [react()],
+    server: { port: 5172, proxy: { '/v1': API, '/admin/login': API } },
+    build: { outDir: at('dist/admin') },
+  },
+  'admin-login': {
+    root: at('admin/login'),
+    publicDir: at('admin/public'),
+    base: '/admin/login/',
+    server: { port: 5174, proxy: { '/v1': API } },
+    build: { outDir: at('dist/admin-login') },
   },
 };
 

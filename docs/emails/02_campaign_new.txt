@@ -1,0 +1,28 @@
+Subject: New scam campaign: 3 customer reports
+
+GASKIYA · DEMOBANK FRAUD DESK (New)
+
+A new scam campaign is targeting your customers
+
+3 customer reports of the same fake message, pointing to demobank-restore.com. Uses links to non-bank sites, urgent threats.
+
+Customer reports: 3
+Domains used: 1
+Callback numbers: 1
+
+Link to a non-bank site, Urgency or threat, Asks for login details
+
+First seen: 20 Oct 2026, 09:14 WAT
+Last seen: 20 Oct 2026, 12:47 WAT
+Fake domains: demobank-restore.com
+
+Draft advisory (Awaiting approval):
+DemoBank is aware of fake messages linking to demobank-restore.com. We will never ask for your PIN, password, card number or one-time code. Do not click the link; check any message in the DemoBank app.
+
+Nothing has been sent to customers. Review the advisory and approve it, edit it or dismiss the campaign in the console.
+
+Review in the fraud desk: https://console.gaskiya.ng
+
+--
+You are receiving this because you are on DemoBank's Gaskiya fraud alerts.
+Gaskiya stores no phone numbers and no text of the messages banks register; customer fraud reports, sent with consent, are kept masked. Gaskiya never asks anyone for a PIN, password, card number or one-time code.

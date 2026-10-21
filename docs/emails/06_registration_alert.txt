@@ -1,0 +1,23 @@
+Subject: Registration alert: 4,210 messages registered in 5 minutes
+
+GASKIYA · DEMOBANK REGISTRY (Check)
+
+Registration volume jumped
+
+Your systems registered 4,210 messages in 5 minutes, against about 310.5 expected from the recent rate. If no campaign or batch job explains it, a bank client credential may be in the wrong hands.
+
+Registered in the last 5 minutes: 4,210
+Expected from the trailing rate: 310.5
+Bank client: demobank-notify
+First seen: 20 Oct 2026, 11:12 WAT
+
+1. Confirm the source: Check with the team that owns the notification service that this traffic is theirs.
+2. If it is not: Revoke the bank client named above and issue a new one. Records it registered expire on their own.
+
+The registration was not blocked. Gaskiya never sees message text, only the declared link domains and counts.
+
+Review in the console: https://console.gaskiya.ng
+
+--
+You are receiving this because you are on DemoBank's Gaskiya alerts.
+Gaskiya stores no phone numbers and no text of the messages banks register; customer fraud reports, sent with consent, are kept masked. Gaskiya never asks anyone for a PIN, password, card number or one-time code.

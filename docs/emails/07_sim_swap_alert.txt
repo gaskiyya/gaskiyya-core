@@ -1,0 +1,22 @@
+Subject: SIM swap: a customer's number moved to a new SIM
+
+GASKIYA · DEMOBANK SIM SWAP (Check)
+
+A checking number changed SIM recently
+
+A customer checked a message or call with Gaskiya, and the mobile network reports that their number moved to a new SIM recently. Whoever holds the new SIM receives this customer's one-time codes. If the customer did not change SIM themselves, their account may be at risk.
+
+Customer reference: 3f9a1c7e5b2d8a40
+SIM changed: 20 Oct 2026, 08:15 WAT
+Reported: 20 Oct 2026, 13:02 WAT
+
+1. Hold one-time codes: Before sending a code or approving a large transfer to this customer, ask POST /v1/sim-swap/check and hold it if the SIM changed.
+2. Reach the customer another way: Contact them through a channel that does not depend on the SIM, such as a branch or the email address on file.
+
+The reference is a keyed hash of the number; Gaskiya never sends phone numbers by email. Nothing was blocked and the customer's verdict was not changed.
+
+Open the console: https://console.gaskiya.ng
+
+--
+You are receiving this because you are on DemoBank's Gaskiya alerts.
+Gaskiya stores no phone numbers and no text of the messages banks register; customer fraud reports, sent with consent, are kept masked. Gaskiya never asks anyone for a PIN, password, card number or one-time code.
