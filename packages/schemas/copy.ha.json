@@ -1,0 +1,423 @@
+{
+  "_review": "needs native-speaker review",
+  "verdict": {
+    "confirmed": {
+      "title": "Bankinku ne ya aiko",
+      "body": "{bank} ne ya aiko da wannan sa\u0199o zuwa wannan lambar ta {channel} a ranar {date} da \u0199arfe {time}.",
+      "short": "An tabbatar"
+    },
+    "not_confirmed": {
+      "title": "Ba a tabbatar ba",
+      "body": "Babu wani bayani da ke nuna cewa {bank} ya aiko da wannan zuwa wannan lambar. Kada ku danna links, kada ku kira lambobi, kuma kada ku bayar da wata lamba (code) da ke cikinsa.",
+      "short": "Ba a tabbatar ba"
+    },
+    "cannot_check": {
+      "title": "Ba za a iya dubawa yanzu ba",
+      "body": "Ba a iya yin dubawa a yanzu. Ku tuntu\u0253i bankinku ta manhajarsa (app) ko a reshensa.",
+      "short": "Ba za a iya dubawa ba"
+    }
+  },
+  "link": {
+    "belongs": {
+      "title": "Wannan adireshin na bankinku ne",
+      "body": "{bank} ne ya yi rajistar {domain}. Wannan ba ya tabbatar da cewa sa\u0199o na gaske ne ba.",
+      "short": "Adireshin banki"
+    },
+    "not_confirmed": {
+      "title": "Ba a tabbatar ba",
+      "body": "Wannan link \u0257in ba ya kan adireshin da {bank} ya yi rajista. Kada ku bu\u0257e shi, kuma kada ku shigar da wani bayaninku."
+    },
+    "shortened": "Gajerun links suna \u0253oye inda suke kai mutum, don haka ba a ta\u0253a tabbatar da su.",
+    "lookalike": "Wannan adireshin yana kwaikwayon sunan bankinku."
+  },
+  "call": {
+    "calling": {
+      "title": "{bank} yana kiran ku yanzu",
+      "body": "Dalili: {purpose}. Ma\u2019aikacin zai karanta wannan lambar da baki. Ku kwatanta ta kafin ku ci gaba.",
+      "codeLabel": "Lambar kira"
+    },
+    "not_calling": {
+      "title": "Bankinku ba ya kiran ku",
+      "body": "Babu kira daga {bank} da ke gudana yanzu. Idan wani a waya ya ce daga bankinku yake, ku katse wayar."
+    },
+    "mismatch": "Idan mai kiran ba zai iya karanta wannan lambar daidai ba, ku katse wayar.",
+    "mismatchMany": "Idan mai kiran bai iya karanta \u0257aya daga cikin lambobin nan daidai ba, ku katse wayar."
+  },
+  "activity": {
+    "heading": "Abin da bankinku ya aiko kwanan nan"
+  },
+  "explain": {
+    "heading": "Dalilin da yasa wannan zai iya zama na bogi",
+    "fallback": "Ba mu sami wannan sa\u0199o a cikin bayanan bankinku ba. \u2019Yan damfara suna kwaikwayon salon banki don su sa mutane su danna links, su kira lambobi ko su bayar da lambobin sirri. Ku \u0257auke shi a matsayin na bogi sai dai idan manhajar bankinku ta tabbatar da shi.",
+    "action": "Kada ku amsa, kada ku danna, kada ku kira. Idan kuna da damuwa, ku tuntu\u0253i bankinku ta manhajarsa ko a reshensa.",
+    "aiNote": "Na\u2019ura ce ta rubuta wannan bayani kai tsaye, kuma ba zai iya canza sakamakon da ke sama ba."
+  },
+  "indicators": {
+    "urgency_or_threat": "Gaggawa ko barazana",
+    "credential_request": "Yana neman bayanan shiga asusu",
+    "non_bank_link": "Link zuwa shafin da ba na banki ba",
+    "callback_number": "Yana cewa ku kira wata lamba",
+    "reward_or_refund": "Yana al\u0199awarin kyauta ko maido da ku\u0257i",
+    "unknown_sender": "An aiko daga suna ko lambar da bankinku ba ya amfani da ita"
+  },
+  "categories": {
+    "otp": "lambar sirri ta lokaci \u0257aya",
+    "transaction_alert": "sanarwar hada-hadar ku\u0257i",
+    "security_notice": "sanarwar tsaro",
+    "service_update": "sabunta sabis",
+    "marketing": "talla",
+    "call_follow_up": "bin diddigin kira"
+  },
+  "channels": {
+    "sms": "SMS",
+    "whatsapp": "WhatsApp",
+    "email": "imel",
+    "push": "sanarwar manhaja",
+    "call": "kiran waya"
+  },
+  "purposes": {
+    "card_activation": "kunna kati",
+    "fraud_check": "duba wata hada-hada ta kwanan nan",
+    "loan_follow_up": "bin diddigin bashi",
+    "account_update": "sabunta asusu",
+    "service_follow_up": "bin diddigin sabis"
+  },
+  "report": {
+    "prompt": "Kuna so ku kai rahoton wannan na bogi ga sashen ya\u0199i da zamba na bankinku? Za mu aika da kwafi wanda aka \u0253oye dogayen lambobi.",
+    "consent": "Kai rahoto",
+    "thanks": "Mun gode. Rahotonku yana taimaka wa bankinku ya garga\u0257i sauran abokan hul\u0257a."
+  },
+  "bot": {
+    "welcome": "Sannu. Ku li\u0199a sa\u0199o ko ku aiko da hoton allo (screenshot) nasa, zan duba ko {bank} ne ya aiko muku da shi. Ku aiko da CALL don ku duba ko {bank} yana kiran ku. Ba zan ta\u0253a neman PIN, kalmar sirri, lambar kati ko lambar sirri ta lokaci \u0257aya ba.",
+    "otpAdvice": "Don sa\u0199onnin lambar sirri ta lokaci \u0257aya, ku duba su a manhajar bankinku domin rubutun ya zauna a wayarku.",
+    "screenshotUnread": "Ban iya karanta rubutu a wannan hoton ba. Ku li\u0199a sa\u0199on maimakon haka.",
+    "notEnrolled": "Ba a yi rajistar wannan lambar da wani banki a Gaskiyya ba."
+  },
+  "safety": {
+    "neverAsks": "Gaskiyya ba za ta ta\u0253a neman PIN, kalmar sirri, lambar kati ko lambar sirri ta lokaci \u0257aya ba."
+  },
+  "app": {
+    "common": {
+      "yourBank": "bankinku",
+      "cancel": "Soke",
+      "continue": "Ci gaba",
+      "done": "An gama",
+      "tryAgain": "Sake gwadawa"
+    },
+    "tabs": {
+      "check": "Duba",
+      "calls": "Kira",
+      "activity": "Ayyuka",
+      "settings": "Saituna"
+    },
+    "onboarding": {
+      "skip": "Tsallake",
+      "getStarted": "Fara",
+      "intro": {
+        "title": "Da gaske\nbankinku ne?",
+        "body": "Ku duba sa\u0199onni da kira da bayanan bankinku kafin ku danna, ku kira ko ku amsa."
+      },
+      "message": {
+        "eyebrow": "DUBA KOWANE SA\u0198O",
+        "title": "Ku li\u0199a.\nKu tura. Ku sani.",
+        "body": "Ku tura SMS, sa\u0199on WhatsApp ko link zuwa Gaskiyya. Ko dai bankinku ya tabbatar cewa ya aiko muku da shi, ko kuma bai aiko ba, ko Gaskiyya ta gaya muku cewa ba za a iya dubawa yanzu ba."
+      },
+      "call": {
+        "eyebrow": "KU SAN WANDA KE KIRA",
+        "title": "Lambar da bankinku\nka\u0257ai zai iya karantawa",
+        "body": "Idan bankinku ya kira, manhajar za ta nuna lamba mai lambobi hu\u0257u. Ma\u2019aikaci na gaskiya zai karanta muku wannan lambar."
+      },
+      "privacy": {
+        "eyebrow": "SIRRI DAGA TUSHE",
+        "title": "Sa\u0199onninku\nnaku ne",
+        "body": "Ana \u0257aukar alamar rubutun sa\u0199o a wayarku. Alamar ce ka\u0257ai ke yanke sakamako, ba kalmomin ba. Don bayyana sakamakon da ba a tabbatar ba, ana aika rubutun sau \u0257aya tare da \u0253oye dogayen lambobi."
+      }
+    },
+    "link": {
+      "title": "Ha\u0257a bankinku",
+      "intro": "Gaskiyya tana duba sa\u0199onnin da aka aiko zuwa lambarku. A manhajar bankinku wannan yana faruwa kai tsaye idan kun shiga.",
+      "mobileNumber": "Lambar waya",
+      "chooseBank": "Ku za\u0253i bankinku tukuna.",
+      "enterNumber": "Ku shigar da lambar wayarku ta Najeriya, misali 0801 234 5678.",
+      "cannotReachBank": "Ba a iya isa ga bankinku ba. Ku duba ha\u0257in intanet \u0257inku ku sake gwadawa.",
+      "banksUnreachable": "Ba a iya isa ga Gaskiyya don jero bankuna ba.",
+      "noBanks": "Har yanzu babu banki a Gaskiyya. Ku ro\u0199i bankinku ya shiga."
+    },
+    "check": {
+      "placeholder": "Ku li\u0199a sa\u0199o ko link",
+      "paste": "Li\u0199a",
+      "screenshot": "Hoton allo",
+      "checkLink": "Duba link",
+      "checkMessage": "Duba sa\u0199o",
+      "fingerprintNote": "Ana \u0257aukar alamar sa\u0199on a wannan wayar. Alamar ce ka\u0257ai ake aikawa don duba sa\u0199on. Idan ba a tabbatar da shi ba, ana aika rubutun, tare da \u0253oye dogayen lambobi, don bayyana dalili.",
+      "recentMessages": "Sa\u0199onnin kwanan nan",
+      "demoInbox": "Akwatin gwaji",
+      "inboxEmpty": "Sa\u0199onnin da bankinku ya aiko zuwa wannan lambar za su bayyana a nan. Kuna iya tura kowane sa\u0199o zuwa Gaskiyya daga wata manhaja."
+    },
+    "result": {
+      "linkCheck": "Duba link",
+      "messageCheck": "Duba sa\u0199o",
+      "checking": "Ana dubawa da bankinku\u2026",
+      "rateLimited": "Kun yi dubawa da yawa. Ku sake gwadawa bayan minti \u0257aya.",
+      "reportFake": "Kai rahoton wannan na bogi",
+      "screenshotText": "Rubutun da aka karanta daga hoton allo",
+      "address": "Adireshi",
+      "from": "Daga",
+      "channel": "Hanya",
+      "type": "Iri",
+      "sent": "An aiko",
+      "months": "Janairu,Fabrairu,Maris,Afrilu,Mayu,Yuni,Yuli,Agusta,Satumba,Oktoba,Nuwamba,Disamba"
+    },
+    "calls": {
+      "checkAgain": "Sake dubawa",
+      "howItWorks": "Idan bankinku ya kira, sanarwa da lamba mai lambobi hu\u0257u za su bayyana a nan nan take. Ana iya yin jabun lambar mai kira; wannan lambar ba za a iya ba.",
+      "validFor": "Lambar tana aiki na {time}"
+    },
+    "activity": {
+      "last24h": "Awa 24 da suka wuce",
+      "by": "ta {channel}",
+      "withLink": "da link",
+      "footer": "An gina wannan daga abin da bankinku ya yi rajista: iri, hanya da ko akwai link. Ba rubutun sa\u0199o ba."
+    },
+    "settings": {
+      "linked": "An ha\u0257a",
+      "privacy": "Sirri",
+      "textStays": "Ba a adana rubutun sa\u0199o. Don bayyana sakamako, ana aika rubutun sau \u0257aya tare da \u0253oye dogayen lambobi.",
+      "numbersMasked": "Ana \u0253oye dogayen lambobi koyaushe",
+      "reportsConsent": "Rahoto sai da izininku",
+      "about": "Game da",
+      "showIntro": "Nuna gabatarwa",
+      "unlink": "Cire ha\u0257in wannan wayar",
+      "unlinkConfirm": "Cire ha\u0257in wannan wayar?",
+      "unlinkBody": "Kuna iya sake ha\u0257a ta a kowane lokaci.",
+      "unlinkAction": "Cire ha\u0257i"
+    },
+    "language": {
+      "title": "Harshe",
+      "set": "Daga yanzu zan amsa muku da Hausa. Ku aiko da LANG don canzawa.",
+      "options": "Ku aiko da LANG tare da harshe: EN English, PCM Pidgin, HA Hausa, YO Yoruba, IG Igbo. Misali: LANG HA",
+      "hint": "Ku aiko da LANG don za\u0253ar harshenku: English, Pidgin, Hausa, Yoruba ko Igbo."
+    }
+  },
+  "a11y": {
+    "callCode": "Lambar kira {digits}"
+  },
+  "banks": {
+    "heading": "Bankunan da aka ha\u0257a",
+    "pickerHeading": "Daga wane banki sa\u0199on yake cewa ya fito?",
+    "add": "\u0198ara banki",
+    "linked": "An ha\u0257a",
+    "remove": "Cire",
+    "removeTitle": "Cire {bank}?",
+    "removeBody": "Gaskiyya za ta daina duba sa\u0199onni da kira daga {bank} a wannan wayar. Kuna iya sake \u0199ara shi a kowane lokaci.",
+    "cancel": "Soke",
+    "or": "{first} ko {last}"
+  },
+  "ussd": {
+    "menu": "Duba {bank}\n1. Bankina yana kirana?\n2. Sakonnin da bankina ya aiko yau",
+    "neverAsks": "Gaskiyya ba za ta taba neman PIN ko lambobin sirri ba.",
+    "calling": "{bank} yana kiran ku yanzu.\nLambar kira: {code}\nDalili: {purpose}\nIdan mai kiran ba zai iya karanta lambar ba, ku katse.",
+    "todayHeading": "{bank} ya aiko muku yau:",
+    "todayItem": "{time} {category} ta {channel}",
+    "todayNone": "{bank} bai aiko muku da sako yau ba.",
+    "todayNote": "Sakon yau da babu a nan ba a tabbatar da shi ba.",
+    "more": "98. Kari",
+    "menuOption": "0. Menu",
+    "invalid": "Zabin bai dace ba. Ku sake kira.",
+    "tooMany": "Kun yi dubawa da yawa. Ku sake gwadawa bayan minti daya."
+  },
+  "advisory": {
+    "title": "Gargadin zamba daga {bank}",
+    "section": "Sanarwa daga bankinku",
+    "none": "Babu gargadin zamba daga {bank} a yanzu.",
+    "unavailable": "Ba a iya nuna sanarwa daga {bank} a yanzu ba. Ja \u0199asa don sake gwadawa.",
+    "issued": "An fitar {date}",
+    "until": "Za a nuna har {date}",
+    "lookalikeLabel": "Shafin yanar gizo na bogi a wa\u0257annan sa\u0199onni",
+    "callbackNote": "Wa\u0257annan sa\u0199onnin bogi suna cewa ku kira wata lamba. Ku kira lambobin da ke shafin yanar gizon bankinku ko manhajarsa ka\u0257ai.",
+    "pushBody": "Bu\u0257e Gaskiyya don karanta yadda za ku gane wannan zamba.",
+    "botHeading": "Gargadin zamba daga {bank}:",
+    "botNone": "Babu gargadin zamba daga {bank} a yanzu.",
+    "botFooter": "Aiko min kowane sa\u0199o da ya ce daga {bank} ya fito, zan duba shi.",
+    "open": "Karanta gargadin"
+  },
+  "simswap": {
+    "title": "An canza SIM \u0257inku kwanan nan",
+    "body": "Kamfanin sadarwarku ya ce an mayar da wannan lambar zuwa sabon SIM kwanan nan. Idan ba ku ba ne, wani na iya kar\u0253ar lambobin sirrinku. Ku tuntu\u0253i bankinku ta manhajarsa (app) ko a reshensa yanzu.",
+    "unknownTitle": "Ba a duba matsayin SIM ba",
+    "unknownBody": "Ba mu iya ganewa daga kamfanin sadarwarku ko an mayar da wannan lambar zuwa sabon SIM ba. Kada ku ba kowa wannan lambar.",
+    "ussd": "Gargadi: an canza SIM \u0257inku kwanan nan. Ba ku ba? Ku tuntu\u0253i bankinku yanzu.",
+    "a11y": "Garga\u0257i. An canza SIM \u0257inku kwanan nan."
+  },
+  "receipt": {
+    "title": "Duba rasidin biya",
+    "subtitle": "Wani ya ce ya biya ku? Ku duba ko ku\u0257in ya shiga asusunku kafin ku ba da kaya.",
+    "account": "An biya zuwa",
+    "accountOption": "Asusun da ya \u0199are da {last4}",
+    "amount": "Adadi (naira)",
+    "amountHint": "Misali 25,000.00",
+    "reference": "Session ID ko reference",
+    "referenceHint": "Session ID mai lambobi 30 da ke kan rasidin",
+    "date": "Ranar biya",
+    "fromScreenshot": "Karanta hoton rasidi",
+    "screenshotNote": "Ana karanta hoton a wannan wayar kuma ba ya barin ta. Ku tabbata kowane bayani a \u0199asa ya yi daidai da rasidin.",
+    "check": "Duba biya",
+    "privacyNote": "Alamar wa\u0257annan bayanai da asusun da aka biya zuwa gare shi kawai ake kai wa rajistar bankinku.",
+    "noAccounts": "Bankinku bai ha\u0257a wani asusu don duba biya ba tukuna.",
+    "invalidAmount": "Ku rubuta adadin kamar yadda yake a rasidin, misali 25,000.00.",
+    "invalidReference": "Session ID ko reference yana da haruffa da lambobi 6 zuwa 64.",
+    "unreadable": "Ba a iya karanta rasidi daga wannan hoton ba. Ku rubuta abin da ke cikinsa maimakon haka.",
+    "heading": "Duba biya",
+    "registered": "An yi rajista",
+    "verdict": {
+      "received": {
+        "title": "Biyan ya shigo",
+        "body": "{payer} ya yi rajistar biyan {amount} zuwa asusunku {account} a ranar {date} da \u0199arfe {time}.",
+        "short": "Ya shigo"
+      },
+      "not_confirmed": {
+        "title": "Ba a tabbatar ba",
+        "body": "Babu bayanin cewa wannan biyan ya shiga asusunku {account}. Kada ku ba da kaya tukuna: ku fara duba ku\u0257in da ke asusunku a manhajar bankinku.",
+        "short": "Ba a tabbatar ba"
+      },
+      "cannot_check": {
+        "title": "Ba za a iya dubawa yanzu ba",
+        "body": "Ba a iya duba biya a yanzu. Ku duba ku\u0257in da ke asusunku a manhajar bankinku kafin ku ba da kaya.",
+        "short": "Ba za a iya dubawa ba"
+      }
+    }
+  },
+  "official": {
+    "org": {
+      "confirmedTitle": "{bank} ne ya aiko",
+      "cannotCheckBody": "Ba a iya yin dubawa a yanzu. Ku tuntu\u0253i {bank} ta shafinsa na hukuma ko a ofishinsa.",
+      "notCallingTitle": "{bank} ba ya kiran ku",
+      "notCallingBody": "Babu kira daga {bank} yanzu. Idan mai kira ya ce daga {bank} yake, ku katse wayar.",
+      "explainFallback": "Ba mu sami wannan sa\u0199o a cikin bayanan {bank} ba. \u2019Yan damfara suna kwaikwayon salon hukumomi don su sa mutane su danna links, su kira lambobi ko su biya ku\u0257i. Ku \u0257auke shi a matsayin na bogi sai dai idan {bank} ya tabbatar da shi ta hanyoyinsa na hukuma.",
+      "explainAction": "Kada ku amsa, kada ku danna, kada ku kira, kada ku biya. Idan kuna da damuwa, ku tuntu\u0253i {bank} ta shafinsa na hukuma ko a ofishinsa.",
+      "otpAdvice": "Don sa\u0199onnin lambar sirri ta lokaci \u0257aya, ku duba su a manhajar {bank} domin rubutun ya zauna a wayarku.",
+      "linkBelongsTitle": "Wannan adireshin na {bank} ne",
+      "linkLookalike": "Wannan adireshin yana kwaikwayon sunan {bank}.",
+      "reportPrompt": "Kuna so ku kai rahoton wannan na bogi ga sashen ya\u0199i da zamba na {bank}? Za mu aika da kwafi wanda aka \u0253oye dogayen lambobi.",
+      "reportThanks": "Mun gode. Rahotonku yana taimaka wa {bank} ya garga\u0257i sauran mutane.",
+      "activityHeading": "Abin da {bank} ya aiko kwanan nan",
+      "ussdMenu": "Duba {bank}\n1. Suna kirana?\n2. Sakonnin da suka aiko yau",
+      "ussdOption": "3. Lambarsu ce?"
+    },
+    "kinds": {
+      "bank": "banki",
+      "agency": "hukumar gwamnati",
+      "company": "kamfani"
+    },
+    "contact": {
+      "official": {
+        "title": "Lambar tuntu\u0253a ta hukuma",
+        "body": "{org} ya lissafa wannan {contact} cikin hanyoyin tuntu\u0253arsa na hukuma.",
+        "short": "Ta hukuma"
+      },
+      "not_official": {
+        "title": "Ba lambar tuntu\u0253a ta hukuma ba ce",
+        "body": "{org} bai lissafa wannan {contact} a matsayin hanyar tuntu\u0253a ta hukuma ba. Kada ku kira, kada ku aika sa\u0199o, kada ku biya, kuma kada ku bayar da wata lamba (code) gare shi.",
+        "bodyAny": "Babu wata hukuma a Gaskiyya da ta lissafa wannan {contact} a matsayin hanyar tuntu\u0253a ta hukuma. Kada ku kira, kada ku aika sa\u0199o, kada ku biya, kuma kada ku bayar da wata lamba (code) gare shi.",
+        "short": "Ba ta hukuma ba"
+      },
+      "cannotCheckBody": "Ba a iya yin dubawa a yanzu. Kada ku amince da wannan hanyar tuntu\u0253a har sai kun iya dubawa.",
+      "impersonation": "Wannan yana kwaikwayon sunan {org}. \u2019Yan damfara suna amfani da irin wa\u0257annan sunaye don sashen kula da abokan hul\u0257a na bogi.",
+      "spoofNote": "Ana iya \u0199ir\u0199irar lambar mai kira da sunan da ke bayyana. Hanyar tuntu\u0253a ta hukuma a allonku ba ta tabbatar da wanda ke \u0257aya \u0253angaren ba.",
+      "notAContact": "Wannan ba ya kama da lambar waya, adireshin email, @handle ko link na shafi.",
+      "kinds": {
+        "phone": "lambar waya",
+        "whatsapp": "lambar WhatsApp",
+        "email": "adireshin email",
+        "social": "asusun {platform}"
+      },
+      "platforms": {
+        "x": "X",
+        "facebook": "Facebook",
+        "instagram": "Instagram",
+        "tiktok": "TikTok",
+        "telegram": "Telegram"
+      }
+    },
+    "apps": {
+      "officialTitle": "Manhajar hukuma ta {org}",
+      "officialBody": "{org} ya lissafa wannan manhaja a matsayin tasa. Ku sanya ta daga kantin manhajoji na hukuma ka\u0257ai.",
+      "short": "Manhajar hukuma",
+      "apk": "Wannan fayil ne na sauke manhaja, ba shafin kantin manhajoji ba. Manhajojin da aka sanya ta wannan hanya na iya kwace wayarku. Kada ku sanya ta.",
+      "fakeApp": "{org} bai lissafa wannan manhaja ba, amma sunanta yana kwaikwayon {org}. Kada ku sanya ta."
+    },
+    "ussd": {
+      "option": "3. Lambar banki ce?",
+      "enterNumber": "Shigar da lambar da za a duba, misali 08012345678",
+      "official": "{number} lambar {bank} ce ta hukuma.\nAna iya kirkirar lambar mai kira. Kada ku bayar da code a waya.",
+      "notOfficial": "{number} ba lambar {bank} ba ce.\nKada ku kira ta, ku biya ko ku bayar da code.",
+      "badNumber": "Wannan ba lambar waya ba ce. Ku sake kira."
+    },
+    "app": {
+      "checkContact": "Duba lamba ko asusu",
+      "placeholder": "Ku li\u0199a lambar waya, email, @handle ko link na shafi",
+      "contactCheck": "Duba hanyar tuntu\u0253a",
+      "appCheck": "Duba manhaja",
+      "contact": "Hanyar tuntu\u0253a",
+      "organisation": "Hukuma"
+    }
+  },
+  "licence": {
+    "title": "Shin wannan mai ba da bashi yana da lasisi?",
+    "intro": "Duba manhajar bashi, mai ba da bashi, dandalin zuba jari ko banki a jerin lasisin da hukumomi suke wallafawa.",
+    "entryHint": "Manhajojin bashi, masu ba da bashi, tsare-tsaren zuba jari da bankuna",
+    "placeholder": "Suna, adireshin yanar gizo ko ID na manhaja",
+    "check": "Duba lasisi",
+    "checking": "Ana duba jerin lasisi\u2026",
+    "licensed": {
+      "title": "Yana cikin jerin lasisi",
+      "body": "{name} yana cikin jerin {regulator} a matsayin {category}. Wannan ba ya tabbatar da cewa sa\u0199o, kira ko tayin da kuka samu daga gare su ne.",
+      "short": "Yana cikin jeri"
+    },
+    "not_listed": {
+      "title": "Ba ya cikin wani jerin lasisi da muke da shi",
+      "body": "Ba mu sami wannan a jerin da muke da su ba. {regulators} ne suke wallafa jerin masu ba da bashi masu lasisi. Kada ku biya wani ku\u0257i a gaba.",
+      "short": "Ba ya cikin jeri"
+    },
+    "similar": "Wannan suna yana kama da {name}, wanda yake cikin jeri. 'Yan damfara suna kwaikwayon sunayen kamfanoni masu lasisi.",
+    "cannot_check": {
+      "title": "Ba za a iya dubawa yanzu ba",
+      "body": "Jerin lasisin ba sa samuwa ko sun tsufa. Ku duba shafin hukumar da kanku kafin ku biya komai.",
+      "short": "Ba za a iya dubawa ba"
+    },
+    "source": "Tushe",
+    "listDate": "Ranar jeri",
+    "regulator": "Hukuma",
+    "category": "Lasisi",
+    "status": "Matsayi",
+    "listsChecked": "Jerin da aka duba: {lists}",
+    "sample": "Bayanan gwaji: samfurin jerin ne, ba cikakken rajistar hukuma ba.",
+    "categories": {
+      "digital_lender": "mai ba da bashi ta intanet da aka amince da shi",
+      "commercial_bank": "bankin kasuwanci",
+      "merchant_bank": "bankin 'yan kasuwa (merchant bank)",
+      "non_interest_bank": "bankin da ba ya kar\u0253ar riba",
+      "microfinance_bank": "bankin \u0199ananan basussuka (microfinance)",
+      "payment_service_bank": "bankin sabis na biyan ku\u0257i",
+      "payment_service_provider": "kamfanin sabis na biyan ku\u0257i",
+      "finance_company": "kamfanin ku\u0257i",
+      "primary_mortgage_bank": "bankin lamunin gidaje (mortgage)",
+      "capital_market_operator": "mai hada-hadar kasuwar jari"
+    },
+    "bot": {
+      "hint": "Aika LOAN da suna don duba ko mai ba da bashi ko manhajar bashi yana cikin jerin lasisi.",
+      "usage": "Aika LOAN tare da sunan mai ba da bashi ko manhajar bashi, adireshin yanar gizonsa ko ID na manhajarsa."
+    },
+    "ussd": {
+      "menuOption": "4. Lasisin mai bashi",
+      "prompt": "Rubuta sunan mai ba da bashi ko manhajar bashi:",
+      "licensed": "{name} yana cikin jerin {regulator}. Wannan ba ya tabbatar da cewa kira ko sako daga gare su ne.",
+      "notListed": "Ba ya cikin jerin lasisin da muke da su. {regulators} ne ke wallafa masu lasisi. Kada ku biya kudi a gaba.",
+      "similar": "Ba ya cikin jerinmu, amma yana kama da {name} da ke cikin jeri. 'Yan damfara na kwaikwayon suna. Kada ku biya kudi a gaba.",
+      "cannotCheck": "Ba za a iya dubawa yanzu ba. Ku duba shafin hukuma kafin ku biya komai.",
+      "moreOption": "9. Karin",
+      "moreHeading": "Karin dubawa:",
+      "backOption": "0. Koma baya"
+    }
+  }
+}

@@ -1,0 +1,520 @@
+{
+  "source": {
+    "id": "cbn-finance-companies",
+    "regulator": "CBN",
+    "regulatorUrl": "https://www.cbn.gov.ng/Supervision/fi.html",
+    "title": "CBN licensed finance companies",
+    "url": "https://www.cbn.gov.ng/Supervision/Inst-FC.html",
+    "publishedAt": null,
+    "retrievedAt": "2026-10-20",
+    "format": "JSON (the page\u2019s own data endpoint)",
+    "sample": false,
+    "note": "Read from https://www.cbn.gov.ng/api/GetFCs, which the page loads. Names only; the list gives no date or licence tier."
+  },
+  "entries": [
+    {
+      "name": "AAA FINANCE & INVESTMENT COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "ADDOSSER FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "AIQ CAPITAL FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "ALC FINANCE COMPANY LTD",
+      "category": "finance_company"
+    },
+    {
+      "name": "ALLIANZBRIDGE FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "AMS FINANCE & MANAGEMENT COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "APICES FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "AQUILA LEASING LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "ARKERS FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "ASCESIA FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "BANCORP FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "BERKSHIRE FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "BRANCH INTERNATIONAL FINANCIAL SERVICES LTD",
+      "category": "finance_company"
+    },
+    {
+      "name": "BRAVEWOOD FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "C & I LEASING PLC",
+      "category": "finance_company"
+    },
+    {
+      "name": "CANDOURCREST FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "CAPITALFIELD FINANCIAL MANAGEMENT LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "CAPRI-MARTINS FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "CARBON FINANCE AND INVESTMENT LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "CASH-LINK LEASING PLC",
+      "category": "finance_company"
+    },
+    {
+      "name": "CELOX FINANCE & INVESTMENT LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "Centrum Finance Company Limited",
+      "category": "finance_company"
+    },
+    {
+      "name": "CEVIANT FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "CFS Financial Services Limited",
+      "category": "finance_company"
+    },
+    {
+      "name": "CITIHOMES FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "CO-LINK INVESTMENT MANAGEMENT COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "CONSUMER INVESTMENT LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "CORE CAPITAL LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "COUNTY FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "COWRY FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "CREDIT DIRECT LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "CREDITE CAPITAL FINANCE & INVESTMENT LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "CREDITPRO FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "CROWNWISE FINANCE & INVESTMENTS PLC",
+      "category": "finance_company"
+    },
+    {
+      "name": "CRYSTAL FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "CS ADVANCE FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "DE-REAL PEOPLE FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "DIGNITY FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "DOMINION FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "DYNAMIC FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "E-FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "ENCO FINANCE COMPANY LTD",
+      "category": "finance_company"
+    },
+    {
+      "name": "EVERDEN FINANCIAL SERVICES LTD",
+      "category": "finance_company"
+    },
+    {
+      "name": "EVIB FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "FACTORING & SUPPLY CHAIN FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "FAST CREDIT LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "FEWCHORE FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "FIDUCIA FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "FINANCE AND COMMERCIAL SERVICES LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "FINANCIAL DERIVATIVES CO. LTD",
+      "category": "finance_company"
+    },
+    {
+      "name": "FIRST CORNERSTONE FINANCE AND INVESTMENT LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "FIRST MARINA TRUST LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "FLOBAL FINANCIAL SERVICES LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "FUNDIT FINANCIAL SERVICES LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "FUNDQUEST FINANCIAL SERVICES LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "FUNDSWORTH LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "GADOL FINANCE LTD",
+      "category": "finance_company"
+    },
+    {
+      "name": "GDL FINANCE AND LEASING COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "GOODGATE FINANCE LTD",
+      "category": "finance_company"
+    },
+    {
+      "name": "GRAND TREASURERS LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "GREENBOND FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "GRIFFIN FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "Harmony Breakthrough Finance Company Limited",
+      "category": "finance_company"
+    },
+    {
+      "name": "HIDDEKEL CAPITAL LTD",
+      "category": "finance_company"
+    },
+    {
+      "name": "INITIATIVE FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "LECON FINANCIAL SERVICES COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "LIGHT HOUSE INVESTMENTS LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "LUCIDUM FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "LUKEFIELD FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "MERISTEM FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "MEZCREDIT FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "MIM FINANCE COMPANY LTD",
+      "category": "finance_company"
+    },
+    {
+      "name": "NEWEDGE FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "NICHOLE FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "NOBLESERVE CAPITAL MANAGEMENT LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "NOLT FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "NORTHQUEST FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "O3 CAPITAL LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "OKAZI FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "One-Stop Finance Company",
+      "category": "finance_company"
+    },
+    {
+      "name": "OPTICOM LEASING COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "ORANGE ONE FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "OXYGEN X FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "PAGE INTERNATIONAL FINANCIAL SERVICES LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "PARADIGM FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "PERENNIAL FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "PFI FINANCIAL LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "PILOT FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "PREFERRED FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "PROSPERIS FINNANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "QUIDPRO FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "QUITS FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "REDOAK TRUST AND INVESTMENT LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "RESOLUTION FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "ROSABON FINANCIAL SERVICES LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "ROYAL CREST FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "ROYAL EXCHANGE FINANCE AND INVESTMENT LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "SAGE GREY FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "SFS CREDITS LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "SIMPLE FINANCE LIMTED",
+      "category": "finance_company"
+    },
+    {
+      "name": "SKYSTONE CAPITAL AND INVESTMENT LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "SNOW FINANCIAL SERVICES LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "SOHCAHTOA FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "SPRING SKY FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "STILL EARTH CAPITAL FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "STIRLING TRUST COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "SUPRA FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "SYNC FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "TEKLA FACTROING AND FINANCE",
+      "category": "finance_company"
+    },
+    {
+      "name": "THE BROOK FINANCE LTD",
+      "category": "finance_company"
+    },
+    {
+      "name": "THE SCIART FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "THOMAS GILTS FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "TRANSKREDIT FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "TRINITY FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "TROPICS FINANCE AND INVESTMENT COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "TRUSTWORD FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "UNIVERSAL INVEST & DEV. CO. LTD",
+      "category": "finance_company"
+    },
+    {
+      "name": "UT FINANCIAL SERVICES NIGERIA LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "VALE FINANCE LTD",
+      "category": "finance_company"
+    },
+    {
+      "name": "VIVA FINANCE LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "WESTWOOD FINANCIAL SERVICES LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "Whitecrust Finance Company Limited",
+      "category": "finance_company"
+    },
+    {
+      "name": "WOODHALL FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "WSTC FINANCIAL SERVICES LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "XOFT FINANCE COMPANY LIMITED",
+      "category": "finance_company"
+    },
+    {
+      "name": "ZEDVANCE FINANCE LIMITED",
+      "category": "finance_company"
+    }
+  ]
+}

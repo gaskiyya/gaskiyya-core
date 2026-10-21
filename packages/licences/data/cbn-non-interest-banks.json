@@ -1,0 +1,40 @@
+{
+  "source": {
+    "id": "cbn-non-interest-banks",
+    "regulator": "CBN",
+    "regulatorUrl": "https://www.cbn.gov.ng/Supervision/fi.html",
+    "title": "CBN licensed non-interest banks",
+    "url": "https://www.cbn.gov.ng/Supervision/Inst-NI.html",
+    "publishedAt": null,
+    "retrievedAt": "2026-10-20",
+    "format": "JSON (the page\u2019s own data endpoint)",
+    "sample": false,
+    "note": "Read from https://www.cbn.gov.ng/api/GetNIBs, which the page loads. Names only; the list gives no date or licence tier."
+  },
+  "entries": [
+    {
+      "name": "Alternative Bank Limited",
+      "category": "non_interest_bank"
+    },
+    {
+      "name": "JAIZ BANK PLC",
+      "category": "non_interest_bank"
+    },
+    {
+      "name": "LOTUS BANK LTD",
+      "category": "non_interest_bank"
+    },
+    {
+      "name": "Mint Microfinance Bank Limited",
+      "category": "non_interest_bank"
+    },
+    {
+      "name": "SUMMIT BANK LIMITED",
+      "category": "non_interest_bank"
+    },
+    {
+      "name": "TAJ",
+      "category": "non_interest_bank"
+    }
+  ]
+}

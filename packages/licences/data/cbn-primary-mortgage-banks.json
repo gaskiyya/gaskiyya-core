@@ -1,0 +1,148 @@
+{
+  "source": {
+    "id": "cbn-primary-mortgage-banks",
+    "regulator": "CBN",
+    "regulatorUrl": "https://www.cbn.gov.ng/Supervision/fi.html",
+    "title": "CBN licensed primary mortgage banks",
+    "url": "https://www.cbn.gov.ng/Supervision/Inst-PMI.html",
+    "publishedAt": null,
+    "retrievedAt": "2026-10-20",
+    "format": "JSON (the page\u2019s own data endpoint)",
+    "sample": false,
+    "note": "Read from https://www.cbn.gov.ng/api/GetPMIs, which the page loads. Names only; the list gives no date or licence tier."
+  },
+  "entries": [
+    {
+      "name": "ABBEY MORTGAGE BANK",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "Adamawa Mortgage Bank Limited",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "AG HOMES",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "AKWA SAVINGS",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "ASO SAVINGS & LOANS",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "BRENT (SKYFIELD) SAVINGS",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "CENTAGE SAVINGS & LOANS",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "CITY CODE",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "COOP SAVINGS & LOANS",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "DELTA MORTGAGE FINANCE",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "FBN MORTGAGES",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "FHA HOMES LTD",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "FIRST GENERATION HOMES",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "GATEWAY SAVINGS",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "GLOBAL TRUST",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "HAGGAI MORTGAGE BANK",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "HOME-BASE MORTGAGE",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "IMPERIAL HOMES",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "INFINITY TRUST",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "JIGAWA SAVINGS & LOANS",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "JUBILEE-LIFE MORTGAGE BANK",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "KEBBI STATE HOMES",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "LAGOS BUILDING & INVESTMENT",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "MAYFRESH MORTGAGE BANK",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "MGSL MORTGAGE BANK",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "MUTUAL ALLIANCE",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "NEW PRUDENTIAL",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "NIGERIA POLICE MORTGAGE BANK",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "OMOLUABI (LIVINGSPRING",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "PLATINUM MORTGAGE BANK",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "REFUGE HOMES",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "STB BUILDING SOCIETY",
+      "category": "primary_mortgage_bank"
+    },
+    {
+      "name": "TRUSTBOND MORTGAGE BANK",
+      "category": "primary_mortgage_bank"
+    }
+  ]
+}

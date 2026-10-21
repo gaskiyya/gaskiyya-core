@@ -1,0 +1,7 @@
+{
+  "name": "@gaskiya/canonical",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts", "./nfkc": "./src/nfkc.ts", "./receipt": "./src/receipt.ts" }
+}

@@ -1,0 +1,991 @@
+{
+  "source": {
+    "id": "cbn-payment-service-providers",
+    "regulator": "CBN",
+    "regulatorUrl": "https://www.cbn.gov.ng/PaymentsSystem/PSPs.html",
+    "title": "CBN licensed payment service providers (mobile money, switching, payment solutions, terminals, super-agents)",
+    "url": "https://www.cbn.gov.ng/PaymentsSystem/PSPs.html",
+    "publishedAt": null,
+    "retrievedAt": "2026-10-20",
+    "format": "HTML tables",
+    "sample": false,
+    "note": "Every licensee in the page\u2019s tables, with the licence category heading as status. \"Formerly\" names are dropped."
+  },
+  "entries": [
+    {
+      "name": "3Line Card Management Limited",
+      "category": "payment_service_provider",
+      "status": "CARD/PAYMENT SCHEMES"
+    },
+    {
+      "name": "Afrigo Financial Services Limited",
+      "category": "payment_service_provider",
+      "status": "CARD/PAYMENT SCHEMES"
+    },
+    {
+      "name": "American Express International",
+      "category": "payment_service_provider",
+      "status": "CARD/PAYMENT SCHEMES"
+    },
+    {
+      "name": "Mastercard International",
+      "category": "payment_service_provider",
+      "status": "CARD/PAYMENT SCHEMES"
+    },
+    {
+      "name": "Payattitude",
+      "category": "payment_service_provider",
+      "status": "CARD/PAYMENT SCHEMES"
+    },
+    {
+      "name": "Unionpay International",
+      "category": "payment_service_provider",
+      "status": "CARD/PAYMENT SCHEMES"
+    },
+    {
+      "name": "Verve International",
+      "category": "payment_service_provider",
+      "status": "CARD/PAYMENT SCHEMES"
+    },
+    {
+      "name": "Visa International Service Association",
+      "category": "payment_service_provider",
+      "status": "CARD/PAYMENT SCHEMES"
+    },
+    {
+      "name": "Abeg Technologies Limited",
+      "category": "payment_service_provider",
+      "status": "MOBILE MONEY OPERATOR LICENCE CATEGORY"
+    },
+    {
+      "name": "Chams Mobile",
+      "category": "payment_service_provider",
+      "status": "MOBILE MONEY OPERATOR LICENCE CATEGORY"
+    },
+    {
+      "name": "eTranzact International Limited",
+      "category": "payment_service_provider",
+      "status": "MOBILE MONEY OPERATOR LICENCE CATEGORY"
+    },
+    {
+      "name": "Fortis Mobile Money Limited",
+      "category": "payment_service_provider",
+      "status": "MOBILE MONEY OPERATOR LICENCE CATEGORY"
+    },
+    {
+      "name": "Funds And Electronic Transfer (FETS) Limited",
+      "category": "payment_service_provider",
+      "status": "MOBILE MONEY OPERATOR LICENCE CATEGORY"
+    },
+    {
+      "name": "Hedonmark Management Services Limited",
+      "category": "payment_service_provider",
+      "status": "MOBILE MONEY OPERATOR LICENCE CATEGORY"
+    },
+    {
+      "name": "KongaPay Technologies Limited",
+      "category": "payment_service_provider",
+      "status": "MOBILE MONEY OPERATOR LICENCE CATEGORY"
+    },
+    {
+      "name": "Mkudi Limited",
+      "category": "payment_service_provider",
+      "status": "MOBILE MONEY OPERATOR LICENCE CATEGORY"
+    },
+    {
+      "name": "NowNow Digital Systems Limited",
+      "category": "payment_service_provider",
+      "status": "MOBILE MONEY OPERATOR LICENCE CATEGORY"
+    },
+    {
+      "name": "Opay Digital Services Limited",
+      "category": "payment_service_provider",
+      "status": "MOBILE MONEY OPERATOR LICENCE CATEGORY"
+    },
+    {
+      "name": "Pagatech Limited",
+      "category": "payment_service_provider",
+      "status": "MOBILE MONEY OPERATOR LICENCE CATEGORY"
+    },
+    {
+      "name": "PalmPay Limited",
+      "category": "payment_service_provider",
+      "status": "MOBILE MONEY OPERATOR LICENCE CATEGORY"
+    },
+    {
+      "name": "Parkway Projects Limited",
+      "category": "payment_service_provider",
+      "status": "MOBILE MONEY OPERATOR LICENCE CATEGORY"
+    },
+    {
+      "name": "Teasy International Company Ltd",
+      "category": "payment_service_provider",
+      "status": "MOBILE MONEY OPERATOR LICENCE CATEGORY"
+    },
+    {
+      "name": "Visual ICT Limited",
+      "category": "payment_service_provider",
+      "status": "MOBILE MONEY OPERATOR LICENCE CATEGORY"
+    },
+    {
+      "name": "VTNetwork Limited",
+      "category": "payment_service_provider",
+      "status": "MOBILE MONEY OPERATOR LICENCE CATEGORY"
+    },
+    {
+      "name": "Xpress MTS Limited",
+      "category": "payment_service_provider",
+      "status": "MOBILE MONEY OPERATOR LICENCE CATEGORY"
+    },
+    {
+      "name": "Arca Payments Company Limited",
+      "category": "payment_service_provider",
+      "status": "SWITCHING & PROCESSING LICENCE CATEGORY"
+    },
+    {
+      "name": "Belema Financial Technology Limited",
+      "category": "payment_service_provider",
+      "status": "SWITCHING & PROCESSING LICENCE CATEGORY"
+    },
+    {
+      "name": "Chamswitch Limited",
+      "category": "payment_service_provider",
+      "status": "SWITCHING & PROCESSING LICENCE CATEGORY"
+    },
+    {
+      "name": "Coralpay Technology Nigeria Limited",
+      "category": "payment_service_provider",
+      "status": "SWITCHING & PROCESSING LICENCE CATEGORY"
+    },
+    {
+      "name": "Flutterwave Technology Solutions Limited",
+      "category": "payment_service_provider",
+      "status": "SWITCHING & PROCESSING LICENCE CATEGORY"
+    },
+    {
+      "name": "Habaripay Limited",
+      "category": "payment_service_provider",
+      "status": "SWITCHING & PROCESSING LICENCE CATEGORY"
+    },
+    {
+      "name": "Hydrogen Payment Services Limited",
+      "category": "payment_service_provider",
+      "status": "SWITCHING & PROCESSING LICENCE CATEGORY"
+    },
+    {
+      "name": "Interswitch Limited",
+      "category": "payment_service_provider",
+      "status": "SWITCHING & PROCESSING LICENCE CATEGORY"
+    },
+    {
+      "name": "Network International",
+      "category": "payment_service_provider",
+      "status": "SWITCHING & PROCESSING LICENCE CATEGORY"
+    },
+    {
+      "name": "Paystack Payment Limited",
+      "category": "payment_service_provider",
+      "status": "SWITCHING & PROCESSING LICENCE CATEGORY"
+    },
+    {
+      "name": "Remita Payment Service Limited",
+      "category": "payment_service_provider",
+      "status": "SWITCHING & PROCESSING LICENCE CATEGORY"
+    },
+    {
+      "name": "Say Switch Limited",
+      "category": "payment_service_provider",
+      "status": "SWITCHING & PROCESSING LICENCE CATEGORY"
+    },
+    {
+      "name": "Teamapt Limited",
+      "category": "payment_service_provider",
+      "status": "SWITCHING & PROCESSING LICENCE CATEGORY"
+    },
+    {
+      "name": "Terra Switching & Processing Company Limited",
+      "category": "payment_service_provider",
+      "status": "SWITCHING & PROCESSING LICENCE CATEGORY"
+    },
+    {
+      "name": "Unified Payment Services Limited",
+      "category": "payment_service_provider",
+      "status": "SWITCHING & PROCESSING LICENCE CATEGORY"
+    },
+    {
+      "name": "Uniswitch Technology Limited",
+      "category": "payment_service_provider",
+      "status": "SWITCHING & PROCESSING LICENCE CATEGORY"
+    },
+    {
+      "name": "Zone Payment Network Limited",
+      "category": "payment_service_provider",
+      "status": "SWITCHING & PROCESSING LICENCE CATEGORY"
+    },
+    {
+      "name": "AccessPower Payments Solutions Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Afara Partners Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Akupay Services Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Alaje Technology Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Aliancepay Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Angala Financial Technologies Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Appglobal Technologies Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Appmart Integrated Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Aspapay Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Bestaff Payment Solutions Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Betastack Technology Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Billzone Solutions Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Bluesalt Financial Services Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "BT Payments Services Nigeria Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Bud Infrastructure Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Bvnk Services Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Callphone Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Capricorn Digital Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "CBI Technologies Ltd",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Cellulant Nigeria Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Centric Gateway Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Ceviant Payments Nigeria Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Clane Company Nig. Ltd",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Cyberpay Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Demerge Nigeria Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Dot Financial Inclusion Technologies Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Duplo Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Easypay International Services Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Echezona Digital Gateway Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Egole Pay Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Elipa Payments Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "End2end Technologies Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Epic Payment Technologies Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Ercas Integrated Solutions Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "E-Settlement Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Eyowo Integrated Payments Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Fairsure Payments Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Figours Innovation Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Fincra Technologies Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Fountain Payment Systems Solution",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Futurepay Tech Solutions Nigeria Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Gemspay Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Global Accelerex Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Gpay Instant Solution Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "GTP Client Services Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Hea-Dew Solutions Nigeria Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Hellopay Africa Integrated Service Ltd",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Huiospay Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "ICAD Concord Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Infiniti Segments Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Integrated Revenue Collection and Management Solution(IRCMS) Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Irecharge Technology Innovations Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Irofit Technologies LimitedD",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Itex Integrated Services Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Jupiter Payment Services Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Karrabo Financial Solutions Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Katsu Network Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Klasha Technologies Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Konetpay Nigeria Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Kora Payments",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Moment Nigeria Pay2 Ltd",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Moneta Technology Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Montra Technology Solutions Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Msia Oculus Technologies Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Multigate Payment Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Netapps Technologies Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Netplusdotcom Nigeria Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Nomba Financial Services Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Novac Payment Solutions Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Okra Technologies Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Olive Payment Solutions Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Payfixy Nigeria Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Payinvert Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Paymi Solutions Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Paysure Technologies Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Payu Payments Nigeria Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Pethahiah Rehoboth International Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Pixelplay Systems Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Qrios Networks Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Redtech Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Resident Fintech Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Rexel Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "R-Lab Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Saanapay Corporate Investments Management Limited (SAANACORP",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Shago Payments Ltd",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "SID Digital Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Simplify International Synergy Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Smile Identity Nigeria Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Soft Alliance & Resources Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Spay Business Solutions Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Spout Payment Solutions",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Swift Link-NZ Global Services Ltd",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Swift Paygate Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "SWWIPE Financial Services Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Teinnovate Capital Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Traction Payments Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Transactworld Digital Services Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Unlimint Nigeria Ltd",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Upperlink Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Value Payment Solutions Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Venture Garden Nigeria Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Voguepay Web Solution Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Waya Multilinks Technologies Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Wingtip Flow Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "Zest Payments Limited (Stanbic Financial Services Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT SOLUTION SERVICE PROVIDER (PSSP) AUTHORISATION"
+    },
+    {
+      "name": "3gee Pay Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT TERMINAL SERVICES PROVIDER (PTSP) AUTHORISATION"
+    },
+    {
+      "name": "3Line Card Management",
+      "category": "payment_service_provider",
+      "status": "PAYMENT TERMINAL SERVICES PROVIDER (PTSP) AUTHORISATION"
+    },
+    {
+      "name": "Bizzdesk Global Solutions Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT TERMINAL SERVICES PROVIDER (PTSP) AUTHORISATION"
+    },
+    {
+      "name": "Blusalt Financial Services Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT TERMINAL SERVICES PROVIDER (PTSP) AUTHORISATION"
+    },
+    {
+      "name": "Citiserve Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT TERMINAL SERVICES PROVIDER (PTSP) AUTHORISATION"
+    },
+    {
+      "name": "Computer Warehouse Group",
+      "category": "payment_service_provider",
+      "status": "PAYMENT TERMINAL SERVICES PROVIDER (PTSP) AUTHORISATION"
+    },
+    {
+      "name": "C24 Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT TERMINAL SERVICES PROVIDER (PTSP) AUTHORISATION"
+    },
+    {
+      "name": "Etop Nigeria Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT TERMINAL SERVICES PROVIDER (PTSP) AUTHORISATION"
+    },
+    {
+      "name": "Funds Konnect Limited Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT TERMINAL SERVICES PROVIDER (PTSP) AUTHORISATION"
+    },
+    {
+      "name": "Fidesic Nigeria Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT TERMINAL SERVICES PROVIDER (PTSP) AUTHORISATION"
+    },
+    {
+      "name": "Intergrated Revenue Collection and Management Solution (IRCMS) Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT TERMINAL SERVICES PROVIDER (PTSP) AUTHORISATION"
+    },
+    {
+      "name": "Irofit Technologies Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT TERMINAL SERVICES PROVIDER (PTSP) AUTHORISATION"
+    },
+    {
+      "name": "Netop Business Systems Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT TERMINAL SERVICES PROVIDER (PTSP) AUTHORISATION"
+    },
+    {
+      "name": "Nomba Financial Services Limited (Fromerly Cosmic Intelligence Lab Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT TERMINAL SERVICES PROVIDER (PTSP) AUTHORISATION"
+    },
+    {
+      "name": "Reedpriceman Technologies Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT TERMINAL SERVICES PROVIDER (PTSP) AUTHORISATION"
+    },
+    {
+      "name": "Soti Investments Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENT TERMINAL SERVICES PROVIDER (PTSP) AUTHORISATION"
+    },
+    {
+      "name": "Wi-Pay",
+      "category": "payment_service_provider",
+      "status": "PAYMENT TERMINAL SERVICES PROVIDER (PTSP) AUTHORISATION"
+    },
+    {
+      "name": "5554 Technologies Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Accelerex Networks Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Africa Mama Atm Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Africave Technologies Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Airtel Mobile Commerce Nigeria Limited (Airtel",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Allstream Information Technology Solutions Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "ATN Wayya Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Cicoserve Payments Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Connectpoint Technology Solutions Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Crowd Force Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Errand P Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Fucil Datatech Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Gwills Payments Service Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Horizonpay Nigeria Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Interswitch Financial Inclusion Services Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Liberty Pay Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Microsystems Investment And Development Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Moneymaster Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Nigerian Postal Service (NIPOST",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Olivepeak International Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Paycluster Technology Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Paygo Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Supplysmart Nigeria Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Traction Payments Ltd",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Transbill Solution Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Vatebra Pay Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Waxed Mobile Nigeria Ltd",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Xchange Box Solutions Limited",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Y'ello Digital Financial Services",
+      "category": "payment_service_provider",
+      "status": "SUPER-AGENT AUTHORISATION"
+    },
+    {
+      "name": "Interswitch PSHC Nigeria Limited",
+      "category": "payment_service_provider",
+      "status": "PAYMENTS SERVICE HOLDING CATEGORY"
+    },
+    {
+      "name": "Nigeria Inter-Bank Settlement System PLC",
+      "category": "payment_service_provider",
+      "status": "PAYMENTS TERMINAL SERVICE AGGREGATOR CATEGORY"
+    }
+  ]
+}

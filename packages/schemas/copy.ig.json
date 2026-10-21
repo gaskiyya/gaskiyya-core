@@ -1,0 +1,423 @@
+{
+  "_review": "needs native-speaker review",
+  "verdict": {
+    "confirmed": {
+      "title": "\u1ecc b\u1ee5 \u1ee5l\u1ecd ak\u1ee5 g\u1ecb zitere ya",
+      "body": "{bank} zitere ozi a na n\u1ecdmba a site na {channel} na {date} n\u2019elekere {time}.",
+      "short": "E kwadoro ya"
+    },
+    "not_confirmed": {
+      "title": "Ekwadogh\u1ecb ya",
+      "body": "Enwegh\u1ecb ndek\u1ecd na {bank} zitere nke a na n\u1ecdmba a. Ap\u1ecbla link \u1ecd b\u1ee5la, akp\u1ecdla n\u1ecdmba \u1ecd b\u1ee5la, ekenyekwala koodu \u1ecd b\u1ee5la d\u1ecb n\u2019ime ya.",
+      "short": "Ekwadogh\u1ecb ya"
+    },
+    "cannot_check": {
+      "title": "Any\u1ecb enwegh\u1ecb ike \u1ecblele ya ugbu a",
+      "body": "Nlele ad\u1ecbgh\u1ecb ugbu a. Kp\u1ecdt\u1ee5r\u1ee5 \u1ee5l\u1ecd ak\u1ee5 g\u1ecb site na ngwa (app) ya ma \u1ecd b\u1ee5 n\u2019alaka ya.",
+      "short": "Enwegh\u1ecb ike \u1ecblele"
+    }
+  },
+  "link": {
+    "belongs": {
+      "title": "Domain a b\u1ee5 nke \u1ee5l\u1ecd ak\u1ee5 g\u1ecb",
+      "body": "\u1ecc b\u1ee5 {bank} debanyere {domain}. Nke a anagh\u1ecb akwado na ozi \u1ecd b\u1ee5la sitere n\u2019\u1ee5l\u1ecd ak\u1ee5 g\u1ecb.",
+      "short": "Domain \u1ee5l\u1ecd ak\u1ee5"
+    },
+    "not_confirmed": {
+      "title": "Ekwadogh\u1ecb ya",
+      "body": "Link a ad\u1ecbgh\u1ecb na domain {bank} debanyere. Emepela ya, etinyekwala nk\u1ecdwa g\u1ecb \u1ecd b\u1ee5la."
+    },
+    "shortened": "Link nd\u1ecb e mere ka ha d\u1ecb mkp\u1ee5mkp\u1ee5 na-ezo ebe ha na-eduga, ya mere anagh\u1ecb akwado ha mgbe \u1ecd b\u1ee5la.",
+    "lookalike": "Adrees\u1ecb a na-e\u1e45omi aha \u1ee5l\u1ecd ak\u1ee5 g\u1ecb."
+  },
+  "call": {
+    "calling": {
+      "title": "{bank} na-akp\u1ecd g\u1ecb ugbu a",
+      "body": "Ebumnuche: {purpose}. Onye \u1ecdr\u1ee5 ah\u1ee5 ga-ag\u1ee5p\u1ee5ta koodu a n\u2019olu. T\u1ee5lee ya tupu \u1ecb gaa n\u2019ihu.",
+      "codeLabel": "Koodu oku"
+    },
+    "not_calling": {
+      "title": "\u1ee4l\u1ecd ak\u1ee5 g\u1ecb anagh\u1ecb akp\u1ecd g\u1ecb",
+      "body": "Enwegh\u1ecb oku sitere na {bank} na-aga ugbu a. \u1ecc b\u1ee5r\u1ee5 na onye n\u1ecd na ekwent\u1ecb ekwuo na o si n\u2019\u1ee5l\u1ecd ak\u1ee5 g\u1ecb, kw\u1ee5s\u1ecb oku ah\u1ee5."
+    },
+    "mismatch": "\u1ecc b\u1ee5r\u1ee5 na onye na-akp\u1ecd oku enwegh\u1ecb ike \u1ecbg\u1ee5 koodu a kp\u1ecdmkwem, kw\u1ee5s\u1ecb oku ah\u1ee5.",
+    "mismatchMany": "\u1ecc b\u1ee5r\u1ee5 na onye na-akp\u1ecd oku enwegh\u1ecb ike \u1ecbg\u1ee5 otu n\u2019ime koodu nd\u1ecb a kp\u1ecdmkwem, kw\u1ee5s\u1ecb oku ah\u1ee5."
+  },
+  "activity": {
+    "heading": "Ihe \u1ee5l\u1ecd ak\u1ee5 g\u1ecb zitere n\u2019oge na-ad\u1ecbbegh\u1ecb anya"
+  },
+  "explain": {
+    "heading": "Ihe mere nke a ji nwee ike \u1ecbb\u1ee5 ad\u1ecbgboroja",
+    "fallback": "Any\u1ecb ah\u1ee5gh\u1ecb ozi a n\u2019ime ndek\u1ecd \u1ee5l\u1ecd ak\u1ee5 g\u1ecb. Nd\u1ecb wayo na-e\u1e45omi \u1ee5d\u1ecb \u1ee5l\u1ecd ak\u1ee5 si ede ka ha mee ka nd\u1ecb mmad\u1ee5 p\u1ecba link, kp\u1ecd\u1ecd n\u1ecdmba ma \u1ecd b\u1ee5 kesaa koodu. Were ya d\u1ecb ka ad\u1ecbgboroja ma \u1ecd b\u1ee5r\u1ee5 na ngwa \u1ee5l\u1ecd ak\u1ee5 g\u1ecb akwadogh\u1ecb ya.",
+    "action": "Azaghachila, ap\u1ecbala, akp\u1ecdkwala. \u1ecc b\u1ee5r\u1ee5 na \u1ecd na-echegbu g\u1ecb, kp\u1ecdt\u1ee5r\u1ee5 \u1ee5l\u1ecd ak\u1ee5 g\u1ecb site na ngwa ya ma \u1ecd b\u1ee5 n\u2019alaka ya.",
+    "aiNote": "Igwe dere nk\u1ecdwa a na-akpagh\u1ecb aka, \u1ecd p\u1ee5gh\u1ecbkwa \u1ecbgbanwe nsonaaz\u1ee5 d\u1ecb n\u2019elu."
+  },
+  "indicators": {
+    "urgency_or_threat": "\u1ecc na-eme \u1ecds\u1ecd \u1ecds\u1ecd ma \u1ecd b\u1ee5 na-eyi egwu",
+    "credential_request": "\u1ecc na-ar\u1ecb\u1ecd nk\u1ecdwa nbanye",
+    "non_bank_link": "Link gaa na sa\u1ecbt\u1ecb na-ab\u1ee5gh\u1ecb nke \u1ee5l\u1ecd ak\u1ee5",
+    "callback_number": "\u1ecc na-agwa g\u1ecb ka \u1ecb kp\u1ecd\u1ecd n\u1ecdmba",
+    "reward_or_refund": "\u1ecc na-ekwe nkwa onyinye ma \u1ecd b\u1ee5 nkw\u1ee5ghachi ego",
+    "unknown_sender": "Ezitere ya site n\u2019aha ma \u1ecd b\u1ee5 n\u1ecdmba \u1ee5l\u1ecd ak\u1ee5 g\u1ecb anagh\u1ecb eji"
+  },
+  "categories": {
+    "otp": "koodu otu ugboro",
+    "transaction_alert": "\u1ecdkwa az\u1ee5mah\u1ecba",
+    "security_notice": "\u1ecdkwa nchekwa",
+    "service_update": "mmelite \u1ecdr\u1ee5",
+    "marketing": "mgbasa ozi",
+    "call_follow_up": "nsochi oku"
+  },
+  "channels": {
+    "sms": "SMS",
+    "whatsapp": "WhatsApp",
+    "email": "email",
+    "push": "\u1ecdkwa ngwa",
+    "call": "oku ekwent\u1ecb"
+  },
+  "purposes": {
+    "card_activation": "ime ka kaad\u1ecb r\u1ee5\u1ecd \u1ecdr\u1ee5",
+    "fraud_check": "\u1ecblele az\u1ee5mah\u1ecba na-ad\u1ecbbegh\u1ecb anya",
+    "loan_follow_up": "nsochi mbinye ego",
+    "account_update": "mmelite akaa\u1ee5nt\u1ee5",
+    "service_follow_up": "nsochi \u1ecdr\u1ee5"
+  },
+  "report": {
+    "prompt": "\u1eca ch\u1ecdr\u1ecd \u1ecbk\u1ecdr\u1ecd nd\u1ecb otu na-al\u1ee5so wayo \u1ecdg\u1ee5 n\u2019\u1ee5l\u1ecd ak\u1ee5 g\u1ecb maka ad\u1ecbgboroja a? Any\u1ecb ga-eziga mbip\u1ee5ta nke e zochiri n\u1ecdmba nd\u1ecb toro ogologo.",
+    "consent": "K\u1ecd\u1ecd ya",
+    "thanks": "Daal\u1ee5. Ak\u1ee5k\u1ecd g\u1ecb na-enyere \u1ee5l\u1ecd ak\u1ee5 g\u1ecb aka \u1ecbd\u1ecd nd\u1ecb ah\u1ecba nd\u1ecb \u1ecdz\u1ecd aka na nt\u1ecb."
+  },
+  "bot": {
+    "welcome": "Ndewo. Mado ozi ma \u1ecd b\u1ee5 ziga foto ihuenyo (screenshot) ya, m ga-elele ma \u1ecd b\u1ee5 {bank} zitere g\u1ecb ya. Ziga CALL ka \u1ecbmara ma {bank} na-akp\u1ecd g\u1ecb. Agagh\u1ecb m ar\u1ecb\u1ecd g\u1ecb PIN, okwunt\u1ee5ghe, n\u1ecdmba kaad\u1ecb ma \u1ecd b\u1ee5 koodu otu ugboro g\u1ecb mgbe \u1ecd b\u1ee5la.",
+    "otpAdvice": "Maka ozi koodu otu ugboro, lelee ha n\u2019ime ngwa \u1ee5l\u1ecd ak\u1ee5 g\u1ecb ka ederede ah\u1ee5 n\u1ecdr\u1ecd na ekwent\u1ecb g\u1ecb.",
+    "screenshotUnread": "Enwegh\u1ecb m ike \u1ecbg\u1ee5 ederede \u1ecd b\u1ee5la na foto ah\u1ee5. Mado ozi ah\u1ee5 kama.",
+    "notEnrolled": "Edebanyegh\u1ecb n\u1ecdmba a na \u1ee5l\u1ecd ak\u1ee5 \u1ecd b\u1ee5la na Gaskiyya."
+  },
+  "safety": {
+    "neverAsks": "Gaskiyya anagh\u1ecb ar\u1ecb\u1ecd PIN, okwunt\u1ee5ghe, n\u1ecdmba kaad\u1ecb ma \u1ecd b\u1ee5 koodu otu ugboro g\u1ecb mgbe \u1ecd b\u1ee5la."
+  },
+  "app": {
+    "common": {
+      "yourBank": "\u1ee5l\u1ecd ak\u1ee5 g\u1ecb",
+      "cancel": "Kagbuo",
+      "continue": "Gaa n\u2019ihu",
+      "done": "\u1ecc d\u1ecbla",
+      "tryAgain": "Nwaa \u1ecdz\u1ecd"
+    },
+    "tabs": {
+      "check": "Lelee",
+      "calls": "Oku",
+      "activity": "Ihe mere",
+      "settings": "Nt\u1ecdala"
+    },
+    "onboarding": {
+      "skip": "Wuf\u1ee5",
+      "getStarted": "Malite",
+      "intro": {
+        "title": "\u1ecc b\u1ee5 n\u2019ezie\n\u1ee5l\u1ecd ak\u1ee5 g\u1ecb?",
+        "body": "Lelee ozi na oku megide ndek\u1ecd \u1ee5l\u1ecd ak\u1ee5 g\u1ecb tupu \u1ecb p\u1ecba, kp\u1ecd\u1ecd ma \u1ecd b\u1ee5 zaghachi."
+      },
+      "message": {
+        "eyebrow": "LELEE OZI \u1eccB\u1ee4LA",
+        "title": "Mado ya.\nKesaa ya. Mara.",
+        "body": "Kesaa SMS, ozi WhatsApp ma \u1ecd b\u1ee5 link na Gaskiyya. \u1ee4l\u1ecd ak\u1ee5 g\u1ecb ga-akwado na o zitere g\u1ecb ya, ma \u1ecd b\u1ee5 na o zigh\u1ecb ya, ma \u1ecd b\u1ee5 Gaskiyya ag\u1ecda g\u1ecb na o nwegh\u1ecb ike ilele ya ugbu a."
+      },
+      "call": {
+        "eyebrow": "MARA ONYE NA-AKP\u1ecc",
+        "title": "Koodu naan\u1ecb \u1ee5l\u1ecd ak\u1ee5 g\u1ecb\nnwere ike \u1ecbg\u1ee5",
+        "body": "Mgbe \u1ee5l\u1ecd ak\u1ee5 g\u1ecb kp\u1ecdr\u1ecd, ngwa ah\u1ee5 ga-egosi koodu nwere \u1ecdn\u1ee5\u1ecdg\u1ee5g\u1ee5 an\u1ecd. Ezigbo onye \u1ecdr\u1ee5 ga-ag\u1ee5r\u1ee5 g\u1ecb otu koodu ah\u1ee5."
+      },
+      "privacy": {
+        "eyebrow": "NZUZO SITE NA MBIDO",
+        "title": "Ozi g\u1ecb\nb\u1ee5 nke g\u1ecb",
+        "body": "A na-ewere mkp\u1ecdr\u1ecdka ederede ozi na ekwent\u1ecb g\u1ecb. \u1ecc b\u1ee5 naan\u1ecb mkp\u1ecdr\u1ecdka ah\u1ee5 na-ekpebi nsonaaz\u1ee5, \u1ecd b\u1ee5gh\u1ecb okwu nd\u1ecb ah\u1ee5. Iji kow\u1ee5ta nsonaaz\u1ee5 a na-akwadogh\u1ecb, a na-eziga ederede ah\u1ee5 otu ugboro, ebe e zoro ogologo n\u1ecdmba."
+      }
+    },
+    "link": {
+      "title": "J\u1ee5 \u1ee5l\u1ecd ak\u1ee5 g\u1ecb",
+      "intro": "Gaskiyya na-elele ozi ezitere na n\u1ecdmba g\u1ecb. N\u2019ime ngwa \u1ee5l\u1ecd ak\u1ee5 g\u1ecb, nke a na-eme onwe ya mgbe \u1ecb banyere.",
+      "mobileNumber": "N\u1ecdmba ekwent\u1ecb",
+      "chooseBank": "Buru \u1ee5z\u1ecd h\u1ecdr\u1ecd \u1ee5l\u1ecd ak\u1ee5 g\u1ecb.",
+      "enterNumber": "Tinye n\u1ecdmba ekwent\u1ecb Na\u1ecbjir\u1ecba g\u1ecb, d\u1ecbka 0801 234 5678.",
+      "cannotReachBank": "Any\u1ecb enwegh\u1ecb ike iru \u1ee5l\u1ecd ak\u1ee5 g\u1ecb. Lelee njik\u1ecd g\u1ecb ma nwaa \u1ecdz\u1ecd.",
+      "banksUnreachable": "Any\u1ecb enwegh\u1ecb ike iru Gaskiyya \u1ecbdep\u1ee5ta \u1ee5l\u1ecd ak\u1ee5 nd\u1ecb ah\u1ee5.",
+      "noBanks": "Enwebegh\u1ecb \u1ee5l\u1ecd ak\u1ee5 \u1ecd b\u1ee5la na Gaskiyya. Gwa \u1ee5l\u1ecd ak\u1ee5 g\u1ecb ka o sonye."
+    },
+    "check": {
+      "placeholder": "Mado ozi ma \u1ecd b\u1ee5 link",
+      "paste": "Mado",
+      "screenshot": "Foto ihuenyo",
+      "checkLink": "Lelee link",
+      "checkMessage": "Lelee ozi",
+      "fingerprintNote": "A na-ewere mkp\u1ecdr\u1ecdka ozi ah\u1ee5 na ekwent\u1ecb a. \u1ecc b\u1ee5 naan\u1ecb mkp\u1ecdr\u1ecdka ah\u1ee5 ka a na-eziga iji lelee ozi ah\u1ee5. \u1ecc b\u1ee5r\u1ee5 na a kwadogh\u1ecb ya, a na-eziga ederede ah\u1ee5, ebe e zoro ogologo n\u1ecdmba, iji kow\u1ee5ta ihe kpatara ya.",
+      "recentMessages": "Ozi nd\u1ecb na-ad\u1ecbbegh\u1ecb anya",
+      "demoInbox": "Igbe nnwale",
+      "inboxEmpty": "Ozi \u1ee5l\u1ecd ak\u1ee5 g\u1ecb zitere na n\u1ecdmba a ga-egosi ebe a. \u1eca nwekwara ike kesaa ozi \u1ecd b\u1ee5la na Gaskiyya site na ngwa \u1ecdz\u1ecd."
+    },
+    "result": {
+      "linkCheck": "Nlele link",
+      "messageCheck": "Nlele ozi",
+      "checking": "Any\u1ecb na-elele ya na \u1ee5l\u1ecd ak\u1ee5 g\u1ecb\u2026",
+      "rateLimited": "\u1eca lelechala ihe kar\u1ecba \u1ecdn\u1ee5. Nwaa \u1ecdz\u1ecd mgbe otu nkeji gachara.",
+      "reportFake": "K\u1ecd\u1ecd ad\u1ecbgboroja a",
+      "screenshotText": "Ederede a g\u1ee5r\u1ee5 na foto ihuenyo",
+      "address": "Adrees\u1ecb",
+      "from": "Site na",
+      "channel": "\u1ee4z\u1ecd",
+      "type": "\u1ee4d\u1ecb",
+      "sent": "Ezitere",
+      "months": "Jen\u1ee5wari,Febr\u1ee5wari,Maach\u1ecb,Eprel,Mee,Juun,Jula\u1ecb,\u1eccg\u1ecd\u1ecdst,Septemba,\u1eccktoba,Novemba,Disemba"
+    },
+    "calls": {
+      "checkAgain": "Lelee \u1ecdz\u1ecd",
+      "howItWorks": "Mgbe \u1ee5l\u1ecd ak\u1ee5 g\u1ecb kp\u1ecdr\u1ecd, \u1ecdkwa na koodu nwere \u1ecdn\u1ee5\u1ecdg\u1ee5g\u1ee5 an\u1ecd ga-egosi ebe a ozugbo. E nwere ike \u1ecbme n\u1ecdmba onye na-akp\u1ecd ka \u1ecd d\u1ecb ka nke ezi; koodu a enwegh\u1ecb ike.",
+      "validFor": "Koodu ga-ar\u1ee5 \u1ecdr\u1ee5 maka {time}"
+    },
+    "activity": {
+      "last24h": "Awa 24 gara aga",
+      "by": "site na {channel}",
+      "withLink": "nwere link",
+      "footer": "E wuru nke a site n\u2019ihe \u1ee5l\u1ecd ak\u1ee5 g\u1ecb debanyere: \u1ee5d\u1ecb, \u1ee5z\u1ecd na ma o nwere link. \u1ecc b\u1ee5gh\u1ecb ederede ozi ah\u1ee5."
+    },
+    "settings": {
+      "linked": "Ejik\u1ecdtara",
+      "privacy": "Nzuzo",
+      "textStays": "A anagh\u1ecb echekwa ederede ozi. Iji kow\u1ee5ta nsonaaz\u1ee5, a na-eziga ederede ah\u1ee5 otu ugboro, ebe e zoro ogologo n\u1ecdmba.",
+      "numbersMasked": "A na-ezochi n\u1ecdmba toro ogologo mgbe niile",
+      "reportsConsent": "Ak\u1ee5k\u1ecd naan\u1ecb site n\u2019ikike g\u1ecb",
+      "about": "Gbasara",
+      "showIntro": "Gosi mmalite",
+      "unlink": "Wep\u1ee5 ekwent\u1ecb a",
+      "unlinkConfirm": "Wep\u1ee5 ekwent\u1ecb a?",
+      "unlinkBody": "\u1eca nwere ike \u1ecbj\u1ee5kw\u1ecdta ya ozugbo \u1ecb ch\u1ecdr\u1ecd.",
+      "unlinkAction": "Wep\u1ee5"
+    },
+    "language": {
+      "title": "As\u1ee5s\u1ee5",
+      "set": "Site ugbu a, m ga-azaghachi g\u1ecb n\u2019Igbo. Ziga LANG ka \u1ecbgbanwe ya.",
+      "options": "Ziga LANG na as\u1ee5s\u1ee5: EN English, PCM Pidgin, HA Hausa, YO Yoruba, IG Igbo. D\u1ecbka: LANG IG",
+      "hint": "Ziga LANG ka \u1ecbh\u1ecdr\u1ecd as\u1ee5s\u1ee5 g\u1ecb: English, Pidgin, Hausa, Yoruba ma \u1ecd b\u1ee5 Igbo."
+    }
+  },
+  "a11y": {
+    "callCode": "Koodu oku {digits}"
+  },
+  "banks": {
+    "heading": "\u1ee4l\u1ecd ak\u1ee5 ejik\u1ecdtara",
+    "pickerHeading": "\u1ee4l\u1ecd ak\u1ee5 ole ka ozi ah\u1ee5 si na ya bia?",
+    "add": "Tinye \u1ee5l\u1ecd ak\u1ee5",
+    "linked": "Ejik\u1ecdtara",
+    "remove": "Wep\u1ee5",
+    "removeTitle": "Wep\u1ee5 {bank}?",
+    "removeBody": "Gaskiyya ga-akw\u1ee5s\u1ecb ilele ozi na oku sitere na {bank} na ekwent\u1ecb a. \u1eca nwere ike \u1ecbtinyeghachi ya mgbe \u1ecd b\u1ee5la.",
+    "cancel": "Kagbuo",
+    "or": "{first} ma \u1ecd b\u1ee5 {last}"
+  },
+  "ussd": {
+    "menu": "Nlele {bank}\n1. Ulo aku m na-akpo m?\n2. Ozi ulo aku m zitere m taa",
+    "neverAsks": "Gaskiyya anaghi ario PIN ma o bu koodu gi mgbe obula.",
+    "calling": "{bank} na-akpo gi ugbu a.\nKoodu oku: {code}\nEbumnuche: {purpose}\nO buru na onye na-akpo enweghi ike igu koodu a, kwusi oku.",
+    "todayHeading": "{bank} zitere gi taa:",
+    "todayItem": "{time} {category} site na {channel}",
+    "todayNone": "{bank} ezitebeghi gi ozi obula taa.",
+    "todayNote": "Ozi taa na-anoghi ebe a ekwadoghi ya.",
+    "more": "98. Ndi ozo",
+    "menuOption": "0. Menu",
+    "invalid": "Nhoro ezighi ezi. Biko kpoo ozo.",
+    "tooMany": "I leleela ihe kariri onu. Nwaa ozo mgbe otu nkeji gachara."
+  },
+  "advisory": {
+    "title": "Nd\u1ee5m\u1ecd d\u1ee5 aghugho sitere na {bank}",
+    "section": "Nd\u1ee5m\u1ecd d\u1ee5 sitere n'\u1ee5l\u1ecd ak\u1ee5 g\u1ecb",
+    "none": "Enwegh\u1ecb nd\u1ee5m\u1ecd d\u1ee5 aghugho sitere na {bank} ugbu a.",
+    "unavailable": "Any\u1ecb enwegh\u1ecb ike igosi nd\u1ee5m\u1ecd d\u1ee5 sitere na {bank} ugbu a. D\u1ecdkp\u1ee5\u1ecd ala ka \u1ecb nwaa \u1ecdz\u1ecd.",
+    "issued": "E zipuru ya {date}",
+    "until": "A ga-egosi ya ruo {date}",
+    "lookalikeLabel": "Weeb\u1ee5sa\u1ecbt\u1ecb adigboroja d\u1ecb n'ozi nd\u1ecba",
+    "callbackNote": "Ozi adigboroja nd\u1ecba na-ag\u1ee5 g\u1ecb ka \u1ecb kp\u1ecd\u1ecd otu n\u1ecd\u1ecdmba. Kp\u1ecd\u1ecd naan\u1ecb n\u1ecd\u1ecdmba d\u1ecb na weeb\u1ee5sa\u1ecbt\u1ecb ma \u1ecd b\u1ee5 app nke \u1ee5l\u1ecd ak\u1ee5 g\u1ecb.",
+    "pushBody": "Mepee Gaskiyya ka \u1ecb g\u1ee5\u1ecd otu \u1ecb ga-esi mata aghugho a.",
+    "botHeading": "Nd\u1ee5m\u1ecd d\u1ee5 aghugho sitere na {bank}:",
+    "botNone": "Enwegh\u1ecb nd\u1ee5m\u1ecd d\u1ee5 aghugho sitere na {bank} ugbu a.",
+    "botFooter": "Ziga m ozi \u1ecd b\u1ee5la na-ekwu na \u1ecd sitere na {bank}, m ga-enyocha ya.",
+    "open": "G\u1ee5\u1ecd nd\u1ee5m\u1ecd d\u1ee5 ah\u1ee5"
+  },
+  "simswap": {
+    "title": "Agbanwere SIM g\u1ecb n\u2019oge na-ad\u1ecbbegh\u1ecb anya",
+    "body": "Netw\u1ecdk ekwent\u1ecb g\u1ecb kwuru na a kwagara n\u1ecdmba a na SIM \u1ecdh\u1ee5r\u1ee5 n\u2019oge na-ad\u1ecbbegh\u1ecb anya. \u1ecc b\u1ee5r\u1ee5 na \u1ecd b\u1ee5gh\u1ecb g\u1ecb mere ya, onye \u1ecdz\u1ecd nwere ike \u1ecbna-enweta koodu g\u1ecb. Kp\u1ecdt\u1ee5r\u1ee5 \u1ee5l\u1ecd ak\u1ee5 g\u1ecb site na ngwa (app) ya ma \u1ecd b\u1ee5 n\u2019alaka ya ugbu a.",
+    "unknownTitle": "Elelebegh\u1ecb \u1ecdn\u1ecdd\u1ee5 SIM",
+    "unknownBody": "Any\u1ecb enwegh\u1ecb ike \u1ecbmata site na netw\u1ecdk g\u1ecb ma a kwagara n\u1ecdmba a na SIM \u1ecdh\u1ee5r\u1ee5. Egosila onye \u1ecd b\u1ee5la koodu a.",
+    "ussd": "\u1ecad\u1ecd aka na nt\u1ecb: agbanwere SIM g\u1ecb na nso nso a. \u1ecc b\u1ee5gh\u1ecb g\u1ecb? Kp\u1ecdt\u1ee5r\u1ee5 \u1ee5l\u1ecd ak\u1ee5 g\u1ecb ugbu a.",
+    "a11y": "\u1ecad\u1ecd aka na nt\u1ecb. Agbanwere SIM g\u1ecb n\u2019oge na-ad\u1ecbbegh\u1ecb anya."
+  },
+  "receipt": {
+    "title": "Lelee akw\u1ee5kw\u1ecd nnata ugwo",
+    "subtitle": "Onye kwuru na \u1ecd kw\u1ee5\u1ecdla g\u1ecb ego? Lelee ma ego ah\u1ee5 abatala n\u2019ak\u1ee5\u1ee5 g\u1ecb tupu \u1ecb nye ngwa ah\u1ecba.",
+    "account": "E tinyere na",
+    "accountOption": "Ak\u1ee5\u1ee5 nke na-ejedebe na {last4}",
+    "amount": "Ego ole (naira)",
+    "amountHint": "D\u1ecb ka 25,000.00",
+    "reference": "Session ID ma \u1ecd b\u1ee5 reference",
+    "referenceHint": "Session ID nwere \u1ecdn\u1ee5\u1ecdg\u1ee5g\u1ee5 30 d\u1ecb n\u2019akw\u1ee5kw\u1ecd nnata ah\u1ee5",
+    "date": "\u1ee4b\u1ecdch\u1ecb a kw\u1ee5r\u1ee5 ugwo",
+    "fromScreenshot": "G\u1ee5\u1ecd foto ihuenyo akw\u1ee5kw\u1ecd nnata",
+    "screenshotNote": "A na-eg\u1ee5 foto ah\u1ee5 na ekwent\u1ecb a, \u1ecd naghi ap\u1ee5 ya. H\u1ee5 na ihe niile d\u1ecb n\u2019okpuru kwek\u1ecdr\u1ecdr\u1ecd na akw\u1ee5kw\u1ecd nnata ah\u1ee5.",
+    "check": "Lelee ugwo",
+    "privacyNote": "\u1ecc b\u1ee5 naan\u1ecb mkp\u1ecdr\u1ecdka ihe ndi a na ak\u1ee5\u1ee5 e tinyere ego na ya na-aga na ndek\u1ecd \u1ee5l\u1ecd ak\u1ee5 g\u1ecb.",
+    "noAccounts": "\u1ee4l\u1ecd ak\u1ee5 g\u1ecb ejik\u1ecdbegh\u1ecb ak\u1ee5\u1ee5 \u1ecd b\u1ee5la maka nlele ugwo.",
+    "invalidAmount": "Dee ego ah\u1ee5 d\u1ecb ka \u1ecd d\u1ecb n\u2019akw\u1ee5kw\u1ecd nnata, d\u1ecb ka 25,000.00.",
+    "invalidReference": "Session ID ma \u1ecd b\u1ee5 reference nwere mkp\u1ee5r\u1ee5edemede na \u1ecdn\u1ee5\u1ecdg\u1ee5g\u1ee5 6 ruo 64.",
+    "unreadable": "Enwegh\u1ecb ike \u1ecbg\u1ee5 akw\u1ee5kw\u1ecd nnata site na foto a. Pinye ihe d\u1ecb na ya kama.",
+    "heading": "Nlele ugwo",
+    "registered": "E debanyere ya",
+    "verdict": {
+      "received": {
+        "title": "Ego abatala",
+        "body": "{payer} debanyere ugwo {amount} n\u2019ak\u1ee5\u1ee5 g\u1ecb {account} na {date} n\u2019elekere {time}.",
+        "short": "\u1ecc batara"
+      },
+      "not_confirmed": {
+        "title": "Ekwadogh\u1ecb ya",
+        "body": "Enwegh\u1ecb ndek\u1ecd na ugwo a batara n\u2019ak\u1ee5\u1ee5 g\u1ecb {account}. Enyela ngwa ah\u1ecba ugbu a: buru \u1ee5z\u1ecd lelee ego d\u1ecb n\u2019ak\u1ee5\u1ee5 g\u1ecb na ngwa \u1ee5l\u1ecd ak\u1ee5 g\u1ecb.",
+        "short": "Ekwadogh\u1ecb ya"
+      },
+      "cannot_check": {
+        "title": "Any\u1ecb enwegh\u1ecb ike \u1ecblele ya ugbu a",
+        "body": "Nlele ugwo ad\u1ecbgh\u1ecb ugbu a. Lelee ego d\u1ecb n\u2019ak\u1ee5\u1ee5 g\u1ecb na ngwa \u1ee5l\u1ecd ak\u1ee5 g\u1ecb tupu \u1ecb nye ngwa ah\u1ecba.",
+        "short": "Enwegh\u1ecb ike \u1ecblele"
+      }
+    }
+  },
+  "official": {
+    "org": {
+      "confirmedTitle": "\u1ecc b\u1ee5 {bank} zitere ya",
+      "cannotCheckBody": "Nlele ad\u1ecbgh\u1ecb ugbu a. Kp\u1ecdt\u1ee5r\u1ee5 {bank} site na webusaiti nke \u1ecdr\u1ee5 ya ma \u1ecd b\u1ee5 n\u2019\u1ee5l\u1ecd \u1ecdr\u1ee5 ya.",
+      "notCallingTitle": "{bank} anagh\u1ecb akp\u1ecd g\u1ecb",
+      "notCallingBody": "Enwegh\u1ecb oku sitere na {bank} ugbu a. \u1ecc b\u1ee5r\u1ee5 na onye na-akp\u1ecd ekwuo na o si na {bank}, kw\u1ee5s\u1ecb oku ah\u1ee5.",
+      "explainFallback": "Any\u1ecb ah\u1ee5gh\u1ecb ozi a n\u2019ime ndek\u1ecd {bank}. Nd\u1ecb wayo na-e\u1e45omi \u1ee5d\u1ecb nzuk\u1ecd si ede ka ha mee ka nd\u1ecb mmad\u1ee5 p\u1ecba link, kp\u1ecd\u1ecd n\u1ecdmba, kw\u1ee5\u1ecd ego ma \u1ecd b\u1ee5 kesaa koodu. Were ya d\u1ecb ka ad\u1ecbgboroja ma \u1ecd b\u1ee5r\u1ee5 na {bank} akwadogh\u1ecb ya site n\u2019\u1ee5z\u1ecd ya.",
+      "explainAction": "Azaghachila, ap\u1ecbala, akp\u1ecdkwala, akw\u1ee5kwala ego. \u1ecc b\u1ee5r\u1ee5 na \u1ecd na-echegbu g\u1ecb, kp\u1ecdt\u1ee5r\u1ee5 {bank} site na webusaiti ya ma \u1ecd b\u1ee5 n\u2019\u1ee5l\u1ecd \u1ecdr\u1ee5 ya.",
+      "otpAdvice": "Maka ozi koodu otu ugboro, lelee ha n\u2019ime ngwa {bank} ka ederede ah\u1ee5 n\u1ecdr\u1ecd na ekwent\u1ecb g\u1ecb.",
+      "linkBelongsTitle": "Domain a b\u1ee5 nke {bank}",
+      "linkLookalike": "Adrees\u1ecb a na-e\u1e45omi aha {bank}.",
+      "reportPrompt": "\u1eca ch\u1ecdr\u1ecd \u1ecbk\u1ecdr\u1ecd nd\u1ecb otu na-al\u1ee5so wayo \u1ecdg\u1ee5 na {bank} maka ad\u1ecbgboroja a? Any\u1ecb ga-eziga mbip\u1ee5ta nke e zochiri n\u1ecdmba nd\u1ecb toro ogologo.",
+      "reportThanks": "Daal\u1ee5. Ak\u1ee5k\u1ecd g\u1ecb na-enyere {bank} aka \u1ecbd\u1ecd nd\u1ecb \u1ecdz\u1ecd aka na nt\u1ecb.",
+      "activityHeading": "Ihe {bank} zitere n\u2019oge na-ad\u1ecbbegh\u1ecb anya",
+      "ussdMenu": "Nlele {bank}\n1. Ha na-akpo m?\n2. Ozi ha zitere m taa",
+      "ussdOption": "3. Nomba ha?"
+    },
+    "kinds": {
+      "bank": "\u1ee5l\u1ecd ak\u1ee5",
+      "agency": "\u1ee5l\u1ecd \u1ecdr\u1ee5 g\u1ecd\u1ecdment\u1ecb",
+      "company": "\u1ee5l\u1ecd \u1ecdr\u1ee5"
+    },
+    "contact": {
+      "official": {
+        "title": "K\u1ecdntakt\u1ecb nke \u1ecdr\u1ee5",
+        "body": "{org} dep\u1ee5tara {contact} a d\u1ecbka otu n\u2019ime k\u1ecdntakt\u1ecb ya nke \u1ecdr\u1ee5.",
+        "short": "Nke \u1ecdr\u1ee5"
+      },
+      "not_official": {
+        "title": "\u1ecc b\u1ee5gh\u1ecb k\u1ecdntakt\u1ecb nke \u1ecdr\u1ee5",
+        "body": "{org} edep\u1ee5tagh\u1ecb {contact} a d\u1ecbka k\u1ecdntakt\u1ecb nke \u1ecdr\u1ee5. Akp\u1ecdla ya, ezitela ya ozi, akw\u1ee5la ya ego, ekenyekwala ya koodu \u1ecd b\u1ee5la.",
+        "bodyAny": "Enwegh\u1ecb nzuk\u1ecd \u1ecd b\u1ee5la na Gaskiyya dep\u1ee5tara {contact} a d\u1ecbka k\u1ecdntakt\u1ecb nke \u1ecdr\u1ee5. Akp\u1ecdla ya, ezitela ya ozi, akw\u1ee5la ya ego, ekenyekwala ya koodu \u1ecd b\u1ee5la.",
+        "short": "\u1ecc b\u1ee5gh\u1ecb nke \u1ecdr\u1ee5"
+      },
+      "cannotCheckBody": "Nlele ad\u1ecbgh\u1ecb ugbu a. At\u1ee5kwas\u1ecbla k\u1ecdntakt\u1ecb a obi ruo mgbe \u1ecb ga-enwe ike ilele ya.",
+      "impersonation": "Nke a na-e\u1e45omi aha {org}. Nd\u1ecb wayo na-eji aha d\u1ecb otu a maka nd\u1ecb \u1ecdr\u1ee5 ah\u1ecba ad\u1ecbgboroja.",
+      "spoofNote": "Enwere ike ime ad\u1ecbgboroja n\u1ecdmba onye na-akp\u1ecd na aha a na-egosi. K\u1ecdntakt\u1ecb nke \u1ecdr\u1ee5 na ihuenyo g\u1ecb egosigh\u1ecb onye n\u1ecd n\u2019ak\u1ee5k\u1ee5 nke \u1ecdz\u1ecd.",
+      "notAContact": "Nke a ad\u1ecbgh\u1ecb ka n\u1ecdmba ekwent\u1ecb, adrees\u1ecb email, @handle ma \u1ecd b\u1ee5 link profa\u1ecbl\u1ee5.",
+      "kinds": {
+        "phone": "n\u1ecdmba ekwent\u1ecb",
+        "whatsapp": "n\u1ecdmba WhatsApp",
+        "email": "adrees\u1ecb email",
+        "social": "aka\u1ee5nt\u1ee5 {platform}"
+      },
+      "platforms": {
+        "x": "X",
+        "facebook": "Facebook",
+        "instagram": "Instagram",
+        "tiktok": "TikTok",
+        "telegram": "Telegram"
+      }
+    },
+    "apps": {
+      "officialTitle": "Ngwa nke \u1ecdr\u1ee5 nke {org}",
+      "officialBody": "{org} dep\u1ee5tara ngwa a d\u1ecbka nke ya. W\u1ee5nye ya naan\u1ecb site n\u2019\u1ee5l\u1ecd ah\u1ecba ngwa nke \u1ecdr\u1ee5.",
+      "short": "Ngwa nke \u1ecdr\u1ee5",
+      "apk": "Nke a b\u1ee5 fa\u1ecbl\u1ee5 nbudata ngwa, \u1ecd b\u1ee5gh\u1ecb peeji \u1ee5l\u1ecd ah\u1ecba ngwa. Ngwa e w\u1ee5nyere otu a nwere ike iweghara ekwent\u1ecb g\u1ecb. Ew\u1ee5nyela ya.",
+      "fakeApp": "{org} edep\u1ee5tagh\u1ecb ngwa a, mana aha ya na-e\u1e45omi {org}. Ew\u1ee5nyela ya."
+    },
+    "ussd": {
+      "option": "3. Lelee nomba",
+      "enterNumber": "Tinye nomba i choro ilele, dika 08012345678",
+      "official": "{number} bu nomba {bank} nke oru.\nEnwere ike ime adigboroja nomba onye na-akpo. Ekenyela koodu na oku.",
+      "notOfficial": "{number} abughi nomba {bank}.\nAkpoghachila ya, akwula ya ego, ekenyela ya koodu.",
+      "badNumber": "Nke a abughi nomba ekwenti. Biko kpoo ozo."
+    },
+    "app": {
+      "checkContact": "Lelee n\u1ecdmba ma \u1ecd b\u1ee5 aka\u1ee5nt\u1ee5",
+      "placeholder": "Mado n\u1ecdmba ekwent\u1ecb, email, @handle ma \u1ecd b\u1ee5 link profa\u1ecbl\u1ee5",
+      "contactCheck": "Nlele k\u1ecdntakt\u1ecb",
+      "appCheck": "Nlele ngwa",
+      "contact": "K\u1ecdntakt\u1ecb",
+      "organisation": "Nzuk\u1ecd"
+    }
+  },
+  "licence": {
+    "title": "Onye mgbazinye ego a nwere ikike?",
+    "intro": "Lelee ngwa mgbazinye ego, onye mgbazinye ego, ikpo okwu itinye ego ma \u1ecd b\u1ee5 \u1ee5l\u1ecd ak\u1ee5 na ndep\u1ee5ta ikike nd\u1ecb na-ach\u1ecbkwa ego na-ebip\u1ee5ta.",
+    "entryHint": "Ngwa mgbazinye ego, nd\u1ecb mgbazinye ego, at\u1ee5mat\u1ee5 itinye ego na \u1ee5l\u1ecd ak\u1ee5",
+    "placeholder": "Aha, weeb\u1ee5sa\u1ecbt\u1ecb ma \u1ecd b\u1ee5 ID ngwa",
+    "check": "Lelee ikike",
+    "checking": "Any\u1ecb na-elele ndep\u1ee5ta ikike\u2026",
+    "licensed": {
+      "title": "\u1eccd\u1ecb na ndep\u1ee5ta ikike",
+      "body": "{name} d\u1ecb na ndep\u1ee5ta {regulator} d\u1ecb ka {category}. Nke a egosigh\u1ecb na ozi, oku ma \u1ecd b\u1ee5 onyinye si n'aka ha.",
+      "short": "\u1eccd\u1ecb na ndep\u1ee5ta"
+    },
+    "not_listed": {
+      "title": "\u1eccn\u1ecdgh\u1ecb na ndep\u1ee5ta ikike \u1ecd b\u1ee5la any\u1ecb nwere",
+      "body": "Any\u1ecb ah\u1ee5gh\u1ecb ya na ndep\u1ee5ta any\u1ecb nwere. {regulators} na-edep\u1ee5ta nd\u1ecb mgbazinye ego nwere ikike. Akw\u1ee5la ego \u1ecd b\u1ee5la tupu oge eruo.",
+      "short": "\u1eccn\u1ecdgh\u1ecb na ndep\u1ee5ta"
+    },
+    "similar": "Aha a yiri {name} nke ukwuu, nke d\u1ecb na ndep\u1ee5ta. Nd\u1ecb agh\u1ee5gh\u1ecd na-e\u1e45omi aha \u1ee5l\u1ecd \u1ecdr\u1ee5 nwere ikike.",
+    "cannot_check": {
+      "title": "Any\u1ecb enwegh\u1ecb ike \u1ecblele ya ugbu a",
+      "body": "Ndep\u1ee5ta ikike ad\u1ecbgh\u1ecb ma \u1ecd b\u1ee5 ha agaala ochie. Lelee weeb\u1ee5sa\u1ecbt\u1ecb onye na-ach\u1ecbkwa tupu \u1ecb kw\u1ee5\u1ecd ihe \u1ecd b\u1ee5la.",
+      "short": "Enwegh\u1ecb ike \u1ecblele"
+    },
+    "source": "Isi mmalite",
+    "listDate": "\u1ee4b\u1ecdch\u1ecb ndep\u1ee5ta",
+    "regulator": "Onye na-ach\u1ecbkwa",
+    "category": "Ikike",
+    "status": "\u1eccn\u1ecdd\u1ee5",
+    "listsChecked": "Ndep\u1ee5ta any\u1ecb lere: {lists}",
+    "sample": "Data ngosi: \u1ecd b\u1ee5 ak\u1ee5k\u1ee5 ndep\u1ee5ta, \u1ecd b\u1ee5gh\u1ecb ndebanye aha g\u1ecd\u1ecdment\u1ecb zuru ezu.",
+    "categories": {
+      "digital_lender": "onye mgbazinye ego n'\u1ecbntanet\u1ecb akwadoro",
+      "commercial_bank": "\u1ee5l\u1ecd ak\u1ee5 az\u1ee5mah\u1ecba",
+      "merchant_bank": "\u1ee5l\u1ecd ak\u1ee5 nd\u1ecb ah\u1ecba (merchant bank)",
+      "non_interest_bank": "\u1ee5l\u1ecd ak\u1ee5 na-anagh\u1ecb ana \u1ecdm\u1ee5r\u1ee5 nwa",
+      "microfinance_bank": "\u1ee5l\u1ecd ak\u1ee5 obere ego (microfinance)",
+      "payment_service_bank": "\u1ee5l\u1ecd ak\u1ee5 \u1ecdr\u1ee5 \u1ecbkw\u1ee5 \u1ee5gw\u1ecd",
+      "payment_service_provider": "\u1ee5l\u1ecd \u1ecdr\u1ee5 \u1ecbkw\u1ee5 \u1ee5gw\u1ecd",
+      "finance_company": "\u1ee5l\u1ecd \u1ecdr\u1ee5 ego",
+      "primary_mortgage_bank": "\u1ee5l\u1ecd ak\u1ee5 mgbazinye \u1ee5l\u1ecd (mortgage)",
+      "capital_market_operator": "onye \u1ecdr\u1ee5 ah\u1ecba isi ego"
+    },
+    "bot": {
+      "hint": "Ziga LOAN na aha iji lelee ma onye mgbazinye ego ma \u1ecd b\u1ee5 ngwa mgbazinye ego d\u1ecb na ndep\u1ee5ta ikike.",
+      "usage": "Ziga LOAN na aha onye mgbazinye ego ma \u1ecd b\u1ee5 ngwa mgbazinye ego, weeb\u1ee5sa\u1ecbt\u1ecb ya ma \u1ecd b\u1ee5 ID ngwa ya."
+    },
+    "ussd": {
+      "menuOption": "4. Ikike onye mgbazinye",
+      "prompt": "Dee aha onye mgbazinye ego ma o bu ngwa ya:",
+      "licensed": "{name} di na ndeputa {regulator}. Nke a egosighi na oku ma o bu ozi si n'aka ha.",
+      "notListed": "O noghi na ndeputa ikike anyi nwere. {regulators} na-edeputa ndi nwere ikike. Akwula ego o bula tupu oge.",
+      "similar": "O noghi na ndeputa anyi, mana o yiri {name} di na ndeputa. Ndi aghugho na-enomi aha. Akwula ego tupu oge.",
+      "cannotCheck": "Anyi enweghi ike ilele ugbu a. Lelee weebusaiti onye na-achikwa tupu i kwuo ugwo.",
+      "moreOption": "9. Ndi ozo",
+      "moreHeading": "Nlele ndi ozo:",
+      "backOption": "0. Laghachi"
+    }
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "source": {
+    "id": "cbn-commercial-banks",
+    "regulator": "CBN",
+    "regulatorUrl": "https://www.cbn.gov.ng/Supervision/fi.html",
+    "title": "CBN licensed commercial banks",
+    "url": "https://www.cbn.gov.ng/Supervision/Inst-DM.html",
+    "publishedAt": null,
+    "retrievedAt": "2026-10-20",
+    "format": "JSON (the page\u2019s own data endpoint)",
+    "sample": false,
+    "note": "Read from https://www.cbn.gov.ng/api/GetDMBs, which the page loads. Names only; the list gives no date or licence tier."
+  },
+  "entries": [
+    {
+      "name": "Access Bank Plc",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Alpha Morgan Bank Limited",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Citibank Nigeria Limited",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Ecobank Nigeria Plc",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Fidelity Bank Plc",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "First Bank Nigeria Limited",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "First City Monument Bank Plc",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Globus Bank Limited",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Guaranty Trust Bank Plc",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Keystone Bank Limited",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Nova Commercial Bank Limited",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Optimus Bank",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Parallex Bank Ltd",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Polaris Bank Plc",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Premium Trust Bank",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Providus Bank",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Signature Bank Limited",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Stanbic IBTC Bank Plc",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Standard Chartered Bank Nigeria Ltd",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Sterling Bank Plc",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "SunTrust Bank Nigeria Limited",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Tatum Bank Limited",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Titan Trust Bank Ltd",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Union Bank of Nigeria Plc",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "United Bank For Africa Plc",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Unity Bank Plc",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Wema Bank Plc",
+      "category": "commercial_bank"
+    },
+    {
+      "name": "Zenith Bank Plc",
+      "category": "commercial_bank"
+    }
+  ]
+}

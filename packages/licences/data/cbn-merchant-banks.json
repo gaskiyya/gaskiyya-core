@@ -1,0 +1,36 @@
+{
+  "source": {
+    "id": "cbn-merchant-banks",
+    "regulator": "CBN",
+    "regulatorUrl": "https://www.cbn.gov.ng/Supervision/fi.html",
+    "title": "CBN licensed merchant banks",
+    "url": "https://www.cbn.gov.ng/Supervision/Inst-MB.html",
+    "publishedAt": null,
+    "retrievedAt": "2026-10-20",
+    "format": "JSON (the page\u2019s own data endpoint)",
+    "sample": false,
+    "note": "Read from https://www.cbn.gov.ng/api/GetMBs, which the page loads. Names only; the list gives no date or licence tier."
+  },
+  "entries": [
+    {
+      "name": "CORONATION MERCHANT BANK",
+      "category": "merchant_bank"
+    },
+    {
+      "name": "FSDH MERCHANT BANK",
+      "category": "merchant_bank"
+    },
+    {
+      "name": "GREENWICH MERCHANT BANK",
+      "category": "merchant_bank"
+    },
+    {
+      "name": "QUEST MERCHANT BANK",
+      "category": "merchant_bank"
+    },
+    {
+      "name": "RAND MERCHANT BANK",
+      "category": "merchant_bank"
+    }
+  ]
+}

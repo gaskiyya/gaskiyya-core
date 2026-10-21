@@ -1,0 +1,423 @@
+{
+  "_review": "needs native-speaker review",
+  "verdict": {
+    "confirmed": {
+      "title": "Banki r\u1eb9 lo fi ran\u1e63\u1eb9",
+      "body": "{bank} lo fi if\u00edran\u1e63\u1eb9 yii ran\u1e63\u1eb9 si n\u1ecdmba yii nipas\u1eb9 {channel} ni {date} ni aago {time}.",
+      "short": "A ti fidi r\u1eb9 mul\u1eb9"
+    },
+    "not_confirmed": {
+      "title": "A ko fidi r\u1eb9 mul\u1eb9",
+      "body": "Ko si ak\u1ecdsil\u1eb9 pe {bank} fi eyi ran\u1e63\u1eb9 si n\u1ecdmba yii. Ma \u1e63e t\u1eb9 link kankan, ma \u1e63e pe n\u1ecdmba kankan, ma si \u1e63e fi koodu kankan ti o wa ninu r\u1eb9 fun \u1eb9nik\u1eb9ni.",
+      "short": "A ko fidi r\u1eb9 mul\u1eb9"
+    },
+    "cannot_check": {
+      "title": "A ko le \u1e63ay\u1eb9wo r\u1eb9 bayii",
+      "body": "Ay\u1eb9wo ko \u1e63ee \u1e63e l\u1ecdw\u1ecdl\u1ecdw\u1ecd. Kan si banki r\u1eb9 nipas\u1eb9 app r\u1eb9 tabi ni \u1eb9ka banki.",
+      "short": "Ko \u1e63ee \u1e63ay\u1eb9wo"
+    }
+  },
+  "link": {
+    "belongs": {
+      "title": "Domain yii j\u1eb9 ti banki r\u1eb9",
+      "body": "{bank} lo foruk\u1ecdsil\u1eb9 {domain}. Eyi ko j\u1eb9risi pe ifiran\u1e63\u1eb9 kan wa lati \u1ecdd\u1ecd banki r\u1eb9.",
+      "short": "Domain banki"
+    },
+    "not_confirmed": {
+      "title": "A ko fidi r\u1eb9 mul\u1eb9",
+      "body": "Link yii ko si lori domain ti {bank} foruk\u1ecdsil\u1eb9. Ma \u1e63e \u1e63i i, ma si \u1e63e t\u1eb9 alaye r\u1eb9 kankan sinu r\u1eb9."
+    },
+    "shortened": "Aw\u1ecdn link kukuru maa n fi ibi ti w\u1ecdn n l\u1ecd pam\u1ecd, nitorina a ki i fidi w\u1ecdn mul\u1eb9 rara.",
+    "lookalike": "Adir\u1eb9si yii n \u1e63e afarawe oruk\u1ecd banki r\u1eb9."
+  },
+  "call": {
+    "calling": {
+      "title": "{bank} n pe \u1ecd bayii",
+      "body": "Idi: {purpose}. O\u1e63i\u1e63\u1eb9 banki yoo ka koodu yii soke. Fi wera ki o to t\u1eb9siwaju.",
+      "codeLabel": "Koodu ipe"
+    },
+    "not_calling": {
+      "title": "Banki r\u1eb9 ko pe \u1ecd",
+      "body": "Ko si ipe kankan lati \u1ecdd\u1ecd {bank} l\u1ecdw\u1ecdl\u1ecdw\u1ecd. Ti \u1eb9nikan lori foonu ba s\u1ecd pe oun wa lati banki r\u1eb9, ge ipe naa."
+    },
+    "mismatch": "Ti olupe ko ba le ka koodu yii g\u1eb9g\u1eb9 bi o ti ri, ge ipe naa.",
+    "mismatchMany": "Ti olupe ko ba le ka \u1ecdkan ninu aw\u1ecdn koodu yii g\u1eb9g\u1eb9 bi o ti ri, ge ipe naa."
+  },
+  "activity": {
+    "heading": "Ohun ti banki r\u1eb9 fi ran\u1e63\u1eb9 laip\u1eb9"
+  },
+  "explain": {
+    "heading": "Idi ti eyi fi le j\u1eb9 ayederu",
+    "fallback": "A ko ri ifiran\u1e63\u1eb9 yii ninu ak\u1ecdsil\u1eb9 banki r\u1eb9. Aw\u1ecdn onijibiti maa n \u1e63e afarawe \u1ecdna ti banki n gba k\u1ecd nnkan lati mu ki eniyan t\u1eb9 link, pe n\u1ecdmba tabi fi koodu han. Ka a si ayederu ayafi ti app banki r\u1eb9 ba fidi r\u1eb9 mul\u1eb9.",
+    "action": "Ma \u1e63e fesi, ma \u1e63e t\u1eb9 \u1eb9, ma si \u1e63e pe n\u1ecdmba naa. Ti o ba n \u1e63e aniyan, kan si banki r\u1eb9 nipas\u1eb9 app r\u1eb9 tabi ni \u1eb9ka banki.",
+    "aiNote": "\u1eb8r\u1ecd lo \u1e63e alaye yii laif\u1ecdw\u1ecdyi, ko si le yi abajade ti o wa loke pada."
+  },
+  "indicators": {
+    "urgency_or_threat": "Ikanju tabi id\u1eb9ruba",
+    "credential_request": "O n beere alaye iw\u1ecdle",
+    "non_bank_link": "Link si ibi ti kii \u1e63e ti banki",
+    "callback_number": "O ni ki o pe n\u1ecdmba kan",
+    "reward_or_refund": "O \u1e63e ileri \u1eb9bun tabi idapada owo",
+    "unknown_sender": "Lati oruk\u1ecd tabi n\u1ecdmba ti banki r\u1eb9 ki i lo"
+  },
+  "categories": {
+    "otp": "koodu \u1eb9\u1eb9kan",
+    "transaction_alert": "itaniji idunadura",
+    "security_notice": "akiyesi aabo",
+    "service_update": "imudojuiw\u1ecdn i\u1e63\u1eb9",
+    "marketing": "ipolowo",
+    "call_follow_up": "at\u1eb9le ipe"
+  },
+  "channels": {
+    "sms": "SMS",
+    "whatsapp": "WhatsApp",
+    "email": "imeeli",
+    "push": "ifitonileti app",
+    "call": "ipe foonu"
+  },
+  "purposes": {
+    "card_activation": "mimu kaadi \u1e63i\u1e63\u1eb9",
+    "fraud_check": "\u1e63i\u1e63ay\u1eb9wo idunadura kan laip\u1eb9",
+    "loan_follow_up": "at\u1eb9le awin",
+    "account_update": "imudojuiw\u1ecdn akanti",
+    "service_follow_up": "at\u1eb9le i\u1e63\u1eb9"
+  },
+  "report": {
+    "prompt": "\u1e62e o f\u1eb9 fi ayederu yii to \u1eb9gb\u1eb9 to n gbogun ti jibiti ni banki r\u1eb9 leti? A o fi \u1eb9da kan ran\u1e63\u1eb9 ti a ti bo aw\u1ecdn n\u1ecdmba gigun.",
+    "consent": "Fi to w\u1ecdn leti",
+    "thanks": "O \u1e63eun. Ijab\u1ecd r\u1eb9 n ran banki r\u1eb9 l\u1ecdw\u1ecd lati kil\u1ecd fun aw\u1ecdn onibara miiran."
+  },
+  "bot": {
+    "welcome": "\u1eb8 n l\u1eb9. L\u1eb9 ifiran\u1e63\u1eb9 kan tabi fi aworan iboju (screenshot) r\u1eb9 ran\u1e63\u1eb9, emi yoo \u1e63ay\u1eb9wo boya {bank} lo fi ran\u1e63\u1eb9 si \u1ecd. Fi CALL ran\u1e63\u1eb9 lati m\u1ecd boya {bank} n pe \u1ecd. Emi ki yoo beere PIN, \u1ecdr\u1ecd igbaniw\u1ecdle, n\u1ecdmba kaadi tabi koodu \u1eb9\u1eb9kan r\u1eb9 laelae.",
+    "otpAdvice": "Fun ifiran\u1e63\u1eb9 koodu \u1eb9\u1eb9kan, \u1e63ay\u1eb9wo w\u1ecdn ninu app banki r\u1eb9 ki \u1ecdr\u1ecd naa le wa lori foonu r\u1eb9.",
+    "screenshotUnread": "Mi o le ka \u1ecdr\u1ecd kankan ninu aworan y\u1eb9n. L\u1eb9 ifiran\u1e63\u1eb9 naa dipo.",
+    "notEnrolled": "A ko foruk\u1ecd n\u1ecdmba yii sil\u1eb9 p\u1eb9lu banki kankan lori Gaskiyya."
+  },
+  "safety": {
+    "neverAsks": "Gaskiyya ki i beere PIN, \u1ecdr\u1ecd igbaniw\u1ecdle, n\u1ecdmba kaadi tabi koodu \u1eb9\u1eb9kan r\u1eb9 laelae."
+  },
+  "app": {
+    "common": {
+      "yourBank": "banki r\u1eb9",
+      "cancel": "Fagil\u00e9",
+      "continue": "T\u1eb9siwaju",
+      "done": "O ti pari",
+      "tryAgain": "Gbiyanju l\u1eb9\u1eb9kansi"
+    },
+    "tabs": {
+      "check": "\u1e62ay\u1eb9wo",
+      "calls": "Ipe",
+      "activity": "I\u1e63\u1eb9l\u1eb9",
+      "settings": "Eto"
+    },
+    "onboarding": {
+      "skip": "Fo o",
+      "getStarted": "B\u1eb9r\u1eb9",
+      "intro": {
+        "title": "\u1e62e banki r\u1eb9\nni loot\u1ecd?",
+        "body": "\u1e62ay\u1eb9wo ifiran\u1e63\u1eb9 ati ipe p\u1eb9lu ak\u1ecdsil\u1eb9 banki r\u1eb9 ki o to t\u1eb9, pe tabi fesi."
+      },
+      "message": {
+        "eyebrow": "\u1e62AY\u1eb8WO IFIRAN\u1e62\u1eb8 KANKAN",
+        "title": "L\u1eb9 \u1eb9.\nPin \u1eb9. M\u1ecd \u1eb9.",
+        "body": "Pin SMS, ifiran\u1e63\u1eb9 WhatsApp tabi link si Gaskiyya. Yala banki r\u1eb9 j\u1eb9risi pe oun lo fi ran\u1e63\u1eb9 si \u1ecd, tabi ko j\u1eb9 b\u1eb9\u1eb9, tabi Gaskiyya s\u1ecd fun \u1ecd pe ko le \u1e63ay\u1eb9wo r\u1eb9 bayii."
+      },
+      "call": {
+        "eyebrow": "M\u1ecc \u1eb8NI TO N PE \u1ecc",
+        "title": "Koodu ti banki r\u1eb9\nnikan le ka",
+        "body": "Nigba ti banki r\u1eb9 ba pe, app yoo fi koodu oni-nomba m\u1eb9rin han. O\u1e63i\u1e63\u1eb9 gidi yoo ka koodu kan naa fun \u1ecd."
+      },
+      "privacy": {
+        "eyebrow": "A\u1e62IRI LATI IPIL\u1eb8",
+        "title": "Aw\u1ecdn ifiran\u1e63\u1eb9 r\u1eb9\nj\u1eb9 tir\u1eb9",
+        "body": "A n ya at\u1eb9ka \u1ecdr\u1ecd ifiran\u1e63\u1eb9 lori foonu r\u1eb9. At\u1eb9ka naa nikan lo n pinnu abajade, kii \u1e63e aw\u1ecdn \u1ecdr\u1ecd. Lati \u1e63alaye abajade ti a ko j\u1eb9risi, a n fi \u1ecdr\u1ecd naa ran\u1e63\u1eb9 l\u1eb9\u1eb9kan p\u1eb9lu aw\u1ecdn n\u1ecdmba gigun ti a fi pam\u1ecd."
+      }
+    },
+    "link": {
+      "title": "So banki r\u1eb9 p\u1ecd",
+      "intro": "Gaskiyya n \u1e63ay\u1eb9wo aw\u1ecdn ifiran\u1e63\u1eb9 ti a fi ran\u1e63\u1eb9 si n\u1ecdmba r\u1eb9. Ninu app banki r\u1eb9, eyi n \u1e63\u1eb9l\u1eb9 laif\u1ecdw\u1ecdyi nigba ti o ba w\u1ecdle.",
+      "mobileNumber": "N\u1ecdmba foonu",
+      "chooseBank": "K\u1ecdk\u1ecd yan banki r\u1eb9.",
+      "enterNumber": "T\u1eb9 n\u1ecdmba foonu Naijiria r\u1eb9, f\u00fan ap\u1eb9\u1eb9r\u1eb9 0801 234 5678.",
+      "cannotReachBank": "A ko le de \u1ecdd\u1ecd banki r\u1eb9. \u1e62ay\u1eb9wo asop\u1ecd r\u1eb9 ki o si gbiyanju l\u1eb9\u1eb9kansi.",
+      "banksUnreachable": "A ko le de \u1ecdd\u1ecd Gaskiyya lati to aw\u1ecdn banki.",
+      "noBanks": "Ko si banki kankan lori Gaskiyya sib\u1eb9. Ni ki banki r\u1eb9 darap\u1ecd."
+    },
+    "check": {
+      "placeholder": "L\u1eb9 ifiran\u1e63\u1eb9 tabi link",
+      "paste": "L\u1eb9 \u1eb9",
+      "screenshot": "Aworan iboju",
+      "checkLink": "\u1e62ay\u1eb9wo link",
+      "checkMessage": "\u1e62ay\u1eb9wo ifiran\u1e63\u1eb9",
+      "fingerprintNote": "A n ya at\u1eb9ka ifiran\u1e63\u1eb9 naa lori foonu yii. At\u1eb9ka naa nikan ni a n fi ran\u1e63\u1eb9 lati \u1e63ay\u1eb9wo ifiran\u1e63\u1eb9 naa. Ti a ko ba j\u1eb9risi r\u1eb9, a o fi \u1ecdr\u1ecd naa ran\u1e63\u1eb9, p\u1eb9lu aw\u1ecdn n\u1ecdmba gigun ti a fi pam\u1ecd, lati \u1e63alaye idi.",
+      "recentMessages": "Aw\u1ecdn ifiran\u1e63\u1eb9 aip\u1eb9",
+      "demoInbox": "Apoti idanwo",
+      "inboxEmpty": "Aw\u1ecdn ifiran\u1e63\u1eb9 ti banki r\u1eb9 fi ran\u1e63\u1eb9 si n\u1ecdmba yii yoo han nibi. O tun le pin ifiran\u1e63\u1eb9 eyikeyi si Gaskiyya lati app miiran."
+    },
+    "result": {
+      "linkCheck": "Ay\u1eb9wo link",
+      "messageCheck": "Ay\u1eb9wo ifiran\u1e63\u1eb9",
+      "checking": "A n \u1e63ay\u1eb9wo p\u1eb9lu banki r\u1eb9\u2026",
+      "rateLimited": "O ti \u1e63ay\u1eb9wo ju. Gbiyanju l\u1eb9\u1eb9kansi l\u1eb9yin i\u1e63\u1eb9ju kan.",
+      "reportFake": "Fi ayederu yii to w\u1ecdn leti",
+      "screenshotText": "\u1ecc\u0300r\u1ecd ti a ka lati aworan iboju",
+      "address": "Adir\u1eb9si",
+      "from": "Lati \u1ecdd\u1ecd",
+      "channel": "\u1ecc\u0300na",
+      "type": "Iru",
+      "sent": "Ti fi ran\u1e63\u1eb9",
+      "months": "\u1e62\u1eb9\u1eb9r\u1eb9,Erele,\u1eb8r\u1eb9na,Igbe,\u1eb8bibi,Okudu,Ag\u1eb9m\u1ecd,Ogun,Owewe,\u1ecc\u0300wara,Belu,\u1ecc\u0300p\u1eb9"
+    },
+    "calls": {
+      "checkAgain": "\u1e62ay\u1eb9wo l\u1eb9\u1eb9kansi",
+      "howItWorks": "Nigba ti banki r\u1eb9 ba pe, akiyesi ati koodu oni-nomba m\u1eb9rin yoo han nibi l\u1eb9s\u1eb9k\u1eb9s\u1eb9. A le \u1e63e ayederu n\u1ecdmba olupe; a ko le \u1e63e ayederu koodu yii.",
+      "validFor": "Koodu yoo \u1e63i\u1e63\u1eb9 fun {time}"
+    },
+    "activity": {
+      "last24h": "Wakati 24 s\u1eb9yin",
+      "by": "nipas\u1eb9 {channel}",
+      "withLink": "p\u1eb9lu link",
+      "footer": "A k\u1ecd eyi lati inu ohun ti banki r\u1eb9 foruk\u1ecdsil\u1eb9: iru, \u1ecdna ati boya link wa. Kii \u1e63e \u1ecdr\u1ecd ifiran\u1e63\u1eb9 rara."
+    },
+    "settings": {
+      "linked": "Ti so p\u1ecd",
+      "privacy": "A\u1e63iri",
+      "textStays": "A ko t\u1ecdju \u1ecdr\u1ecd ifiran\u1e63\u1eb9. Lati \u1e63alaye abajade, a n fi \u1ecdr\u1ecd naa ran\u1e63\u1eb9 l\u1eb9\u1eb9kan p\u1eb9lu aw\u1ecdn n\u1ecdmba gigun ti a fi pam\u1ecd.",
+      "numbersMasked": "A maa n bo aw\u1ecdn n\u1ecdmba gigun nigbagbogbo",
+      "reportsConsent": "Ijab\u1ecd p\u1eb9lu ifohunsi r\u1eb9 nikan",
+      "about": "Nipa",
+      "showIntro": "Fi ifihan han",
+      "unlink": "Ya foonu yii kuro",
+      "unlinkConfirm": "Ya foonu yii kuro?",
+      "unlinkBody": "O le so o p\u1ecd l\u1eb9\u1eb9kansi nigbakugba.",
+      "unlinkAction": "Ya kuro"
+    },
+    "language": {
+      "title": "Ede",
+      "set": "Lati isisiyi, emi yoo maa fesi ni ede Yoruba. Fi LANG ran\u1e63\u1eb9 lati yi i pada.",
+      "options": "Fi LANG ran\u1e63\u1eb9 p\u1eb9lu ede kan: EN English, PCM Pidgin, HA Hausa, YO Yoruba, IG Igbo. Ap\u1eb9\u1eb9r\u1eb9: LANG YO",
+      "hint": "Fi LANG ran\u1e63\u1eb9 lati yan ede r\u1eb9: English, Pidgin, Hausa, Yoruba tabi Igbo."
+    }
+  },
+  "a11y": {
+    "callCode": "Koodu ipe {digits}"
+  },
+  "banks": {
+    "heading": "Aw\u1ecdn banki ti o ti so p\u1ecd",
+    "pickerHeading": "Banki wo ni if\u00edran\u1e63\u1eb9 naa s\u1ecd pe o ti wa?",
+    "add": "\u1e62afikun banki",
+    "linked": "Ti so p\u1ecd",
+    "remove": "Y\u1ecd kuro",
+    "removeTitle": "Y\u1ecd {bank} kuro?",
+    "removeBody": "Gaskiyya yoo d\u1eb9kun \u1e63i\u1e63ay\u1eb9wo ifiran\u1e63\u1eb9 ati ipe lati \u1ecdd\u1ecd {bank} lori foonu yii. O le tun fi kun nigbakugba.",
+    "cancel": "Fagil\u00e9",
+    "or": "{first} tabi {last}"
+  },
+  "ussd": {
+    "menu": "Ayewo {bank}\n1. Se banki mi n pe mi?\n2. Ifiranse ti banki mi fi ranse loni",
+    "neverAsks": "Gaskiyya ki i beere PIN tabi koodu re laelae.",
+    "calling": "{bank} n pe o bayii.\nKoodu ipe: {code}\nIdi: {purpose}\nTi olupe ko ba le ka koodu yii, ge ipe naa.",
+    "todayHeading": "{bank} fi ranse si o loni:",
+    "todayItem": "{time} {category} nipase {channel}",
+    "todayNone": "{bank} ko fi ifiranse kankan ranse si o loni.",
+    "todayNote": "Ifiranse oni ti ko si nibi ko ni ifidimule.",
+    "more": "98. Si i",
+    "menuOption": "0. Akojo",
+    "invalid": "Asayan ko to. Jowo tun pe.",
+    "tooMany": "O ti sayewo ju. Gbiyanju leyin iseju kan."
+  },
+  "advisory": {
+    "title": "Ikil\u1ecd j\u00ecb\u00ect\u00ec l\u00e1ti {bank}",
+    "section": "Ikil\u1ecd l\u00e1ti b\u00e1\u00e0nk\u00ec r\u1eb9",
+    "none": "K\u00f2 s\u00ed ikil\u1ecd j\u00ecb\u00ect\u00ec l\u00e1ti {bank} b\u00e1y\u00ec\u00ed.",
+    "unavailable": "A k\u00f2 le \u1e63\u00e0fih\u00e0n ikil\u1ecd l\u00e1ti {bank} b\u00e1y\u00ec\u00ed. Fa s\u00edl\u1eb9\u0300 l\u00e1ti gb\u00ecy\u00e0nj\u00fa l\u1eb9\u1eb9\u0300kan si.",
+    "issued": "A gb\u00e9 e j\u00e1de {date}",
+    "until": "A \u00f3 fi h\u00e0n t\u00edt\u00ed {date}",
+    "lookalikeLabel": "Oj\u00fa \u00ecw\u00e9 \u00ecr\u00f2 n\u00edn\u00fa \u00e0w\u1ecdn \u00ecfir\u00e0n\u1e63\u1eb9\u0301 w\u1ecd\u0300nyi",
+    "callbackNote": "\u00c0w\u1ecdn \u00ecfir\u00e0n\u1e63\u1eb9\u0301 \u00ecr\u00f2 w\u1ecd\u0300nyi n\u00ed k\u00ed o pe n\u1ecd\u0301mb\u00e0 kan. Pe \u00e0w\u1ecdn n\u1ecd\u0301mb\u00e0 t\u00f3 w\u00e0 l\u00f3r\u00ed oj\u00fa \u00ecw\u00e9 t\u00e0b\u00ed app b\u00e1\u00e0nk\u00ec r\u1eb9 n\u00edkan.",
+    "pushBody": "\u1e62\u00ed Gaskiyya l\u00e1ti ka b\u00ed o \u1e63e l\u00e8 m\u1ecd\u0300 j\u00ecb\u00ect\u00ec y\u00ec\u00ed.",
+    "botHeading": "Ikil\u1ecd j\u00ecb\u00ect\u00ec l\u00e1ti {bank}:",
+    "botNone": "K\u00f2 s\u00ed ikil\u1ecd j\u00ecb\u00ect\u00ec l\u00e1ti {bank} b\u00e1y\u00ec\u00ed.",
+    "botFooter": "Fi \u00ecfir\u00e0n\u1e63\u1eb9\u0301 \u00e8y\u00edk\u00e9y\u00ec t\u00f3 s\u1ecd p\u00e9 \u00f3 w\u00e1 l\u00e1ti {bank} r\u00e1n\u1e63\u1eb9\u0301 s\u00ed mi, m\u00e0 \u00e1 \u1e63\u00e0y\u1eb9\u0300w\u00f2 r\u1eb9\u0300.",
+    "open": "Ka ikil\u1ecd n\u00e1\u00e0"
+  },
+  "simswap": {
+    "title": "W\u1ecdn ti yi SIM r\u1eb9 pada laip\u1eb9",
+    "body": "Ile-i\u1e63\u1eb9 n\u1eb9tiw\u1ecd\u1ecdki r\u1eb9 s\u1ecd pe w\u1ecdn ti gbe n\u1ecdmba yii l\u1ecd si SIM tuntun laip\u1eb9. Ti kii ba \u1e63e iw\u1ecd, \u1eb9lomiran le maa gba aw\u1ecdn koodu r\u1eb9. Kan si banki r\u1eb9 nipas\u1eb9 app r\u1eb9 tabi ni \u1eb9ka banki bayii.",
+    "unknownTitle": "A ko \u1e63ay\u1eb9wo ipo SIM",
+    "unknownBody": "A ko le m\u1ecd lati \u1ecdd\u1ecd n\u1eb9tiw\u1ecd\u1ecdki r\u1eb9 boya w\u1ecdn ti gbe n\u1ecdmba yii l\u1ecd si SIM tuntun. Ma\u1e63e fi koodu yii han \u1eb9nik\u1eb9ni.",
+    "ussd": "Ikilo: w\u1ecdn ti yi SIM r\u1eb9 pada laip\u1eb9. Kii \u1e63e iw\u1ecd? Kan si banki r\u1eb9 bayii.",
+    "a11y": "Ikil\u1ecd. W\u1ecdn ti yi SIM r\u1eb9 pada laip\u1eb9."
+  },
+  "receipt": {
+    "title": "\u1e62ay\u1eb9wo iwe-\u1eb9ri isanwo",
+    "subtitle": "\u1eb8nikan s\u1ecd pe oun ti san owo fun \u1ecd? \u1e62ay\u1eb9wo boya owo naa ti w\u1ecdle sinu ak\u00e1\u00e0nt\u00ec r\u1eb9 ki o to fun un ni \u1ecdja.",
+    "account": "Ti san sinu",
+    "accountOption": "Ak\u00e1\u00e0nt\u00ec to pari si {last4}",
+    "amount": "Iye owo (naira)",
+    "amountHint": "Fun ap\u1eb9\u1eb9r\u1eb9 25,000.00",
+    "reference": "Session ID tabi reference",
+    "referenceHint": "Session ID oni-nomba 30 to wa lori iwe-\u1eb9ri naa",
+    "date": "\u1eccj\u1ecd ti a san",
+    "fromScreenshot": "Ka aworan iboju iwe-\u1eb9ri",
+    "screenshotNote": "A n ka aworan naa lori foonu yii, ko si kuro nibi. Rii daju pe gbogbo alaye ni isal\u1eb9 baamu iwe-\u1eb9ri naa.",
+    "check": "\u1e62ay\u1eb9wo isanwo",
+    "privacyNote": "At\u1eb9ka alaye wonyi ati ak\u00e1\u00e0nt\u00ec ti a san owo si nikan lo n lo si iforukosil\u1eb9 banki r\u1eb9.",
+    "noAccounts": "Banki r\u1eb9 ko tii so ak\u00e1\u00e0nt\u00ec kankan p\u1ecd fun ay\u1eb9wo isanwo.",
+    "invalidAmount": "K\u1ecd iye owo bi o \u1e63e wa lori iwe-\u1eb9ri, fun ap\u1eb9\u1eb9r\u1eb9 25,000.00.",
+    "invalidReference": "Session ID tabi reference ni l\u00e9t\u00e0 ati nomba 6 si 64.",
+    "unreadable": "A ko le ka iwe-\u1eb9ri kankan lati aworan yii. T\u1eb9 ohun to wa lori r\u1eb9 dipo.",
+    "heading": "Ay\u1eb9wo isanwo",
+    "registered": "A for\u00fak\u1ecd r\u1eb9 sil\u1eb9",
+    "verdict": {
+      "received": {
+        "title": "Owo ti w\u1ecdle",
+        "body": "{payer} for\u00fak\u1ecd isanwo {amount} sil\u1eb9 sinu ak\u00e1\u00e0nt\u00ec r\u1eb9 {account} ni {date} ni aago {time}.",
+        "short": "O ti w\u1ecdle"
+      },
+      "not_confirmed": {
+        "title": "A ko fidi r\u1eb9 mul\u1eb9",
+        "body": "Ko si ak\u1ecdsil\u1eb9 pe isanwo yii w\u1ecdle sinu ak\u00e1\u00e0nt\u00ec r\u1eb9 {account}. Ma \u1e63e fun \u1eb9nik\u1eb9ni ni \u1ecdja sib\u1eb9: k\u1ecdk\u1ecd \u1e63ay\u1eb9wo iye owo to wa ninu ak\u00e1\u00e0nt\u00ec r\u1eb9 ninu app banki r\u1eb9.",
+        "short": "A ko fidi r\u1eb9 mul\u1eb9"
+      },
+      "cannot_check": {
+        "title": "A ko le \u1e63ay\u1eb9wo r\u1eb9 bayii",
+        "body": "Ay\u1eb9wo isanwo ko \u1e63ee \u1e63e l\u1ecdw\u1ecdl\u1ecdw\u1ecd. \u1e62ay\u1eb9wo iye owo to wa ninu ak\u00e1\u00e0nt\u00ec r\u1eb9 ninu app banki r\u1eb9 ki o to fun \u1eb9nik\u1eb9ni ni \u1ecdja.",
+        "short": "Ko \u1e63ee \u1e63ay\u1eb9wo"
+      }
+    }
+  },
+  "official": {
+    "org": {
+      "confirmedTitle": "{bank} lo fi ran\u1e63\u1eb9",
+      "cannotCheckBody": "Ay\u1eb9wo ko \u1e63ee \u1e63e l\u1ecdw\u1ecdl\u1ecdw\u1ecd. Kan si {bank} nipas\u1eb9 oju opo w\u1eb9\u1eb9bu osise r\u1eb9 tabi \u1ecdfiisi r\u1eb9.",
+      "notCallingTitle": "{bank} ko pe \u1ecd",
+      "notCallingBody": "Ko si ipe lati \u1ecdd\u1ecd {bank} l\u1ecdw\u1ecdl\u1ecdw\u1ecd. Ti olupe ba s\u1ecd pe oun wa lati {bank}, ge ipe naa.",
+      "explainFallback": "A ko ri ifiran\u1e63\u1eb9 yii ninu ak\u1ecdsil\u1eb9 {bank}. Aw\u1ecdn onijibiti maa n \u1e63e afarawe \u1ecdna ti aj\u1ecd kan n gba k\u1ecd nnkan lati mu ki eniyan t\u1eb9 link, pe n\u1ecdmba, san owo tabi fi koodu han. Ka a si ayederu ayafi ti {bank} ba fidi r\u1eb9 mul\u1eb9 nipas\u1eb9 aw\u1ecdn \u1ecdna osise r\u1eb9.",
+      "explainAction": "Ma \u1e63e fesi, ma \u1e63e t\u1eb9 \u1eb9, ma \u1e63e pe, ma si \u1e63e san owo. Ti o ba n \u1e63e aniyan, kan si {bank} nipas\u1eb9 oju opo w\u1eb9\u1eb9bu osise r\u1eb9 tabi \u1ecdfiisi r\u1eb9.",
+      "otpAdvice": "Fun ifiran\u1e63\u1eb9 koodu \u1eb9\u1eb9kan, \u1e63ay\u1eb9wo w\u1ecdn ninu app {bank} ki \u1ecdr\u1ecd naa le wa lori foonu r\u1eb9.",
+      "linkBelongsTitle": "Domain yii j\u1eb9 ti {bank}",
+      "linkLookalike": "Adir\u1eb9si yii n \u1e63e afarawe oruk\u1ecd {bank}.",
+      "reportPrompt": "\u1e62e o f\u1eb9 fi ayederu yii to \u1eb9gb\u1eb9 to n gbogun ti jibiti ni {bank} leti? A o fi \u1eb9da kan ran\u1e63\u1eb9 ti a ti bo aw\u1ecdn n\u1ecdmba gigun.",
+      "reportThanks": "O \u1e63eun. Ijab\u1ecd r\u1eb9 n ran {bank} l\u1ecdw\u1ecd lati kil\u1ecd fun aw\u1ecdn eniyan miiran.",
+      "activityHeading": "Ohun ti {bank} fi ran\u1e63\u1eb9 laip\u1eb9",
+      "ussdMenu": "Ayewo {bank}\n1. Se won n pe mi?\n2. Ifiranse ti won fi ranse loni",
+      "ussdOption": "3. Se nomba won ni?"
+    },
+    "kinds": {
+      "bank": "banki",
+      "agency": "ile-i\u1e63\u1eb9 ijoba",
+      "company": "ile-i\u1e63\u1eb9"
+    },
+    "contact": {
+      "official": {
+        "title": "Olubas\u1ecdr\u1ecd osise",
+        "body": "{org} ka {contact} yii si \u1ecdkan lara aw\u1ecdn \u1ecdna olubas\u1ecdr\u1ecd osise r\u1eb9.",
+        "short": "Osise"
+      },
+      "not_official": {
+        "title": "Kii \u1e63e olubas\u1ecdr\u1ecd osise",
+        "body": "{org} ko ka {contact} yii si \u1ecdna olubas\u1ecdr\u1ecd osise. Ma \u1e63e pe e, ma \u1e63e fi ifiran\u1e63\u1eb9 ran\u1e63\u1eb9 si i, ma \u1e63e san owo si i, ma si \u1e63e fi koodu kankan fun un.",
+        "bodyAny": "Ko si aj\u1ecd kankan lori Gaskiyya ti o ka {contact} yii si \u1ecdna olubas\u1ecdr\u1ecd osise. Ma \u1e63e pe e, ma \u1e63e fi ifiran\u1e63\u1eb9 ran\u1e63\u1eb9 si i, ma \u1e63e san owo si i, ma si \u1e63e fi koodu kankan fun un.",
+        "short": "Kii \u1e63e osise"
+      },
+      "cannotCheckBody": "Ay\u1eb9wo ko \u1e63ee \u1e63e l\u1ecdw\u1ecdl\u1ecdw\u1ecd. Ma \u1e63e gb\u1eb9k\u1eb9le olubas\u1ecdr\u1ecd yii titi ti o fi le \u1e63ay\u1eb9wo r\u1eb9.",
+      "impersonation": "Eyi n \u1e63e afarawe oruk\u1ecd {org}. Aw\u1ecdn onijibiti maa n lo iru oruk\u1ecd yii fun i\u1e63\u1eb9 onibara ayederu.",
+      "spoofNote": "A le \u1e63e ayederu n\u1ecdmba olupe ati oruk\u1ecd ti o han. Olubas\u1ecdr\u1ecd osise lori iboju r\u1eb9 ko fi \u1eb9ni ti o wa ni apa keji han.",
+      "notAContact": "Eyi ko j\u1ecd n\u1ecdmba foonu, adir\u1eb9si email, @handle tabi link oju-iwe.",
+      "kinds": {
+        "phone": "n\u1ecdmba foonu",
+        "whatsapp": "n\u1ecdmba WhatsApp",
+        "email": "adir\u1eb9si email",
+        "social": "ak\u1ecd\u1ecdl\u1eb9 {platform}"
+      },
+      "platforms": {
+        "x": "X",
+        "facebook": "Facebook",
+        "instagram": "Instagram",
+        "tiktok": "TikTok",
+        "telegram": "Telegram"
+      }
+    },
+    "apps": {
+      "officialTitle": "App osise ti {org}",
+      "officialBody": "{org} ka app yii si tir\u1eb9. Fi s\u1ecdri lati ile itaja app osise nikan.",
+      "short": "App osise",
+      "apk": "Eyi j\u1eb9 faili igbasil\u1eb9 app, kii \u1e63e oju-iwe ile itaja app. Aw\u1ecdn app ti a fi s\u1ecdri b\u1eb9\u1eb9 le gba foonu r\u1eb9. Ma \u1e63e fi s\u1ecdri.",
+      "fakeApp": "{org} ko ka app yii si tir\u1eb9, \u1e63ugb\u1ecdn oruk\u1ecd r\u1eb9 n \u1e63e afarawe {org}. Ma \u1e63e fi s\u1ecdri."
+    },
+    "ussd": {
+      "option": "3. Nomba banki mi ni?",
+      "enterNumber": "Te nomba ti o fe sayewo, bi apeere 08012345678",
+      "official": "{number} je nomba osise {bank}.\nA le se ayederu nomba olupe. Ma se fi koodu fun eniyan lori ipe.",
+      "notOfficial": "{number} kii se nomba {bank}.\nMa se pe e pada, ma san owo, ma si fi koodu fun un.",
+      "badNumber": "Eyi kii se nomba foonu. Jowo tun pe."
+    },
+    "app": {
+      "checkContact": "\u1e62ay\u1eb9wo n\u1ecdmba tabi ak\u1ecd\u1ecdl\u1eb9",
+      "placeholder": "L\u1eb9 n\u1ecdmba foonu, email, @handle tabi link oju-iwe",
+      "contactCheck": "Ay\u1eb9wo olubas\u1ecdr\u1ecd",
+      "appCheck": "Ay\u1eb9wo app",
+      "contact": "Olubas\u1ecdr\u1ecd",
+      "organisation": "Aj\u1ecd"
+    }
+  },
+  "licence": {
+    "title": "\u1e62e ayanilowo yii ni iwe-a\u1e63\u1eb9?",
+    "intro": "\u1e62ay\u1eb9wo app awin, ayanilowo, p\u1eb9p\u1eb9 idokowo tabi banki lori atok\u1ecd iwe-a\u1e63\u1eb9 ti aw\u1ecdn aj\u1ecd ala\u1e63\u1eb9 n t\u1eb9jade.",
+    "entryHint": "Aw\u1ecdn app awin, ayanilowo, eto idokowo ati banki",
+    "placeholder": "Oruk\u1ecd, oju opo w\u1eb9\u1eb9bu tabi ID app",
+    "check": "\u1e62ay\u1eb9wo iwe-a\u1e63\u1eb9",
+    "checking": "A n \u1e63ay\u1eb9wo atok\u1ecd iwe-a\u1e63\u1eb9\u2026",
+    "licensed": {
+      "title": "O wa lori atok\u1ecd iwe-a\u1e63\u1eb9",
+      "body": "{name} wa lori atok\u1ecd {regulator} g\u1eb9g\u1eb9 bi {category}. Eyi ko fidi r\u1eb9 mul\u1eb9 pe ifiran\u1e63\u1eb9, ipe tabi ifunni kan wa lati \u1ecdd\u1ecd w\u1ecdn.",
+      "short": "Wa lori atok\u1ecd"
+    },
+    "not_listed": {
+      "title": "Ko si lori atok\u1ecd iwe-a\u1e63\u1eb9 kankan ti a ni",
+      "body": "A ko ri i lori aw\u1ecdn atok\u1ecd ti a ni. {regulators} ni o n \u1e63e atok\u1ecd aw\u1ecdn ayanilowo to ni iwe-a\u1e63\u1eb9. Ma \u1e63e san owo kankan \u1e63aaju.",
+      "short": "Ko si lori atok\u1ecd"
+    },
+    "similar": "Oruk\u1ecd yii j\u1ecd {name} pup\u1ecd, eyi to wa lori atok\u1ecd. Aw\u1ecdn onijibiti maa n daak\u1ecd oruk\u1ecd aw\u1ecdn ile-i\u1e63\u1eb9 to ni iwe-a\u1e63\u1eb9.",
+    "cannot_check": {
+      "title": "A ko le \u1e63ay\u1eb9wo r\u1eb9 bayii",
+      "body": "Aw\u1ecdn atok\u1ecd iwe-a\u1e63\u1eb9 ko si tabi w\u1ecdn ti p\u1eb9 ju. \u1e62ay\u1eb9wo oju opo w\u1eb9\u1eb9bu aj\u1ecd ala\u1e63\u1eb9 funra r\u1eb9 ki o to san ohunkohun.",
+      "short": "Ko \u1e63ee \u1e63ay\u1eb9wo"
+    },
+    "source": "Orisun",
+    "listDate": "\u1eccj\u1ecd atok\u1ecd",
+    "regulator": "Aj\u1ecd ala\u1e63\u1eb9",
+    "category": "Iwe-a\u1e63\u1eb9",
+    "status": "Ipo",
+    "listsChecked": "Aw\u1ecdn atok\u1ecd ti a \u1e63ay\u1eb9wo: {lists}",
+    "sample": "Data idanwo: ap\u1eb9\u1eb9r\u1eb9 atok\u1ecd ni, kii \u1e63e iforuk\u1ecdsil\u1eb9 o\u1e63i\u1e63\u1eb9 kikun.",
+    "categories": {
+      "digital_lender": "ayanilowo ori ayelujara ti a f\u1ecdw\u1ecdsi",
+      "commercial_bank": "banki i\u1e63owo",
+      "merchant_bank": "banki oni\u1e63owo (merchant bank)",
+      "non_interest_bank": "banki ti ko gba ele",
+      "microfinance_bank": "banki kekere (microfinance)",
+      "payment_service_bank": "banki i\u1e63\u1eb9 isanwo",
+      "payment_service_provider": "ile-i\u1e63\u1eb9 isanwo",
+      "finance_company": "ile-i\u1e63\u1eb9 inawo",
+      "primary_mortgage_bank": "banki ile (mortgage)",
+      "capital_market_operator": "oni\u1e63\u1eb9 \u1ecdja olu"
+    },
+    "bot": {
+      "hint": "Fi LOAN ati oruk\u1ecd ran\u1e63\u1eb9 lati \u1e63ay\u1eb9wo boya ayanilowo tabi app awin wa lori atok\u1ecd iwe-a\u1e63\u1eb9.",
+      "usage": "Fi LOAN ran\u1e63\u1eb9 p\u1eb9lu oruk\u1ecd ayanilowo tabi app awin, oju opo w\u1eb9\u1eb9bu r\u1eb9 tabi ID app r\u1eb9."
+    },
+    "ussd": {
+      "menuOption": "4. Iwe-ase ayanilowo",
+      "prompt": "Te oruko ayanilowo tabi app awin:",
+      "licensed": "{name} wa lori atoko {regulator}. Eyi ko fihan pe ipe tabi ifiranse wa lati odo won.",
+      "notListed": "Ko si lori atoko iwe-ase ti a ni. {regulators} lo n se atoko awon to ni iwe-ase. Ma se san owo kankan saaju.",
+      "similar": "Ko si lori atoko wa, sugbon o jo {name} to wa lori atoko. Awon onijibiti n daako oruko. Ma se san owo saaju.",
+      "cannotCheck": "A ko le sayewo bayii. Sayewo oju opo ajo alase ki o to san ohunkohun.",
+      "moreOption": "9. Siwaju",
+      "moreHeading": "Awon ayewo miiran:",
+      "backOption": "0. Pada"
+    }
+  }
+}

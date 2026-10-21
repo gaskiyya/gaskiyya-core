@@ -1,0 +1,423 @@
+{
+  "_review": "needs native-speaker review",
+  "verdict": {
+    "confirmed": {
+      "title": "Na your bank send am",
+      "body": "{bank} send this message to this number by {channel} on {date} at {time}.",
+      "short": "Confirmed"
+    },
+    "not_confirmed": {
+      "title": "E no confirm",
+      "body": "{bank} no get any record say dem send this one to this number. No click any link, no call any number and no share any code wey dey inside am.",
+      "short": "E no confirm"
+    },
+    "cannot_check": {
+      "title": "We no fit check am now",
+      "body": "The check no dey work now. Contact your bank through im app or for branch.",
+      "short": "No fit check"
+    }
+  },
+  "link": {
+    "belongs": {
+      "title": "This domain na your bank own",
+      "body": "Na {bank} register {domain}. This one no confirm say any message na from your bank.",
+      "short": "Bank domain"
+    },
+    "not_confirmed": {
+      "title": "E no confirm",
+      "body": "This link no dey on any domain wey {bank} register. No open am and no put any of your details."
+    },
+    "shortened": "Short link dey hide where e dey carry you go, so we no dey ever confirm am.",
+    "lookalike": "This address dey copy your bank name."
+  },
+  "call": {
+    "calling": {
+      "title": "{bank} dey call you now",
+      "body": "Wetin the call be for: {purpose}. The agent go read this code out. Compare am before you continue.",
+      "codeLabel": "Call code"
+    },
+    "not_calling": {
+      "title": "Your bank no dey call you",
+      "body": "No call from {bank} dey go on now. If anybody for phone talk say dem come from your bank, cut the call."
+    },
+    "mismatch": "If the person wey dey call no fit read this exact code, cut the call.",
+    "mismatchMany": "If the person wey dey call no fit read one of these codes exactly, cut the call."
+  },
+  "activity": {
+    "heading": "Wetin your bank send recently"
+  },
+  "explain": {
+    "heading": "Why this one fit be fake",
+    "fallback": "We no see this message for your bank records. Fraudsters dey copy bank style make people click link, call number or share code. Treat am as fake unless your bank app confirm am.",
+    "action": "No reply, no click, no call. If e dey worry you, contact your bank through im app or for branch.",
+    "aiNote": "Na computer write this explanation by imself, and e no fit change the result wey dey up."
+  },
+  "indicators": {
+    "urgency_or_threat": "E dey rush you or threaten you",
+    "credential_request": "E dey ask for your login details",
+    "non_bank_link": "Link wey no be bank own",
+    "callback_number": "E dey tell you make you call number",
+    "reward_or_refund": "E dey promise reward or refund",
+    "unknown_sender": "E come from name or number wey your bank no dey use"
+  },
+  "categories": {
+    "otp": "one-time code",
+    "transaction_alert": "transaction alert",
+    "security_notice": "security notice",
+    "service_update": "service update",
+    "marketing": "promo",
+    "call_follow_up": "call follow-up"
+  },
+  "channels": {
+    "sms": "SMS",
+    "whatsapp": "WhatsApp",
+    "email": "email",
+    "push": "app notification",
+    "call": "phone call"
+  },
+  "purposes": {
+    "card_activation": "to activate card",
+    "fraud_check": "to check one transaction wey just happen",
+    "loan_follow_up": "loan follow-up",
+    "account_update": "account update",
+    "service_follow_up": "service follow-up"
+  },
+  "report": {
+    "prompt": "You wan report this fake one give your bank fraud team? We go send copy wey we don hide the long numbers.",
+    "consent": "Report am",
+    "thanks": "Thank you. Your report dey help your bank warn other customers."
+  },
+  "bot": {
+    "welcome": "How far. Paste message or send screenshot of am and I go check whether {bank} send am give you. Send CALL to check whether {bank} dey call you. I no go ever ask for your PIN, password, card number or one-time code.",
+    "otpAdvice": "For one-time code message, check am inside your bank app so the text go stay for your phone.",
+    "screenshotUnread": "I no fit read any text for that picture. Paste the message instead.",
+    "notEnrolled": "This number no dey enrolled with any bank on Gaskiyya."
+  },
+  "safety": {
+    "neverAsks": "Gaskiyya no dey ever ask for your PIN, password, card number or one-time code."
+  },
+  "app": {
+    "common": {
+      "yourBank": "your bank",
+      "cancel": "Cancel",
+      "continue": "Continue",
+      "done": "Done",
+      "tryAgain": "Try again"
+    },
+    "tabs": {
+      "check": "Check",
+      "calls": "Calls",
+      "activity": "Activity",
+      "settings": "Settings"
+    },
+    "onboarding": {
+      "skip": "Skip",
+      "getStarted": "Make we start",
+      "intro": {
+        "title": "Na your bank\nfor real?",
+        "body": "Check messages and calls against your bank own records before you click, call or reply."
+      },
+      "message": {
+        "eyebrow": "CHECK ANY MESSAGE",
+        "title": "Paste am.\nShare am. Know.",
+        "body": "Share SMS, WhatsApp message or link give Gaskiyya. Your bank go either confirm say e send am give you, or e no send am, or Gaskiyya go tell you say e no fit check am now."
+      },
+      "call": {
+        "eyebrow": "KNOW WHO DEY CALL",
+        "title": "Code wey only your\nbank fit read",
+        "body": "When your bank call you, the app go show four-digit code. Real agent go read the same code give you."
+      },
+      "privacy": {
+        "eyebrow": "PRIVATE FROM THE START",
+        "title": "Your messages\nna your own",
+        "body": "Na for your phone we dey fingerprint message text. Na only the fingerprint dey decide the result, never the words. To explain result wey no confirm, we go send the text one time with long numbers hidden."
+      }
+    },
+    "link": {
+      "title": "Link your bank",
+      "intro": "Gaskiyya dey check messages wey dem send to your number. Inside your bank app, e dey happen by imself when you sign in.",
+      "mobileNumber": "Mobile number",
+      "chooseBank": "Choose your bank first.",
+      "enterNumber": "Put your Nigerian mobile number, like 0801 234 5678.",
+      "cannotReachBank": "We no fit reach your bank. Check your connection and try again.",
+      "banksUnreachable": "We no fit reach Gaskiyya to list the banks.",
+      "noBanks": "No bank dey on Gaskiyya yet. Tell your bank make dem join."
+    },
+    "check": {
+      "placeholder": "Paste message or link",
+      "paste": "Paste",
+      "screenshot": "Screenshot",
+      "checkLink": "Check link",
+      "checkMessage": "Check message",
+      "fingerprintNote": "Na for this phone we dey fingerprint the message. Na only the fingerprint we dey send to check the message. If e no confirm, we go send the text, with long numbers hidden, to explain why.",
+      "recentMessages": "Recent messages",
+      "demoInbox": "Demo inbox",
+      "inboxEmpty": "Messages wey your bank send to this number go show here. You fit also share any message give Gaskiyya from another app."
+    },
+    "result": {
+      "linkCheck": "Link check",
+      "messageCheck": "Message check",
+      "checking": "We dey check with your bank\u2026",
+      "rateLimited": "You don check too many times. Try again after one minute.",
+      "reportFake": "Report this fake one",
+      "screenshotText": "Text wey we read from the screenshot",
+      "address": "Address",
+      "from": "From",
+      "channel": "Channel",
+      "type": "Type",
+      "sent": "Sent",
+      "months": "January,February,March,April,May,June,July,August,September,October,November,December"
+    },
+    "calls": {
+      "checkAgain": "Check again",
+      "howItWorks": "When your bank call you, notice and four-digit code go show here sharp sharp. People fit fake caller ID; dem no fit fake this code.",
+      "validFor": "Code go work for {time}"
+    },
+    "activity": {
+      "last24h": "Last 24 hours",
+      "by": "by {channel}",
+      "withLink": "with link",
+      "footer": "We build this from wetin your bank register: type, channel and whether link dey inside. Never the message text."
+    },
+    "settings": {
+      "linked": "Linked",
+      "privacy": "Privacy",
+      "textStays": "We no dey store message text. To explain result, we go send the text one time with long numbers hidden.",
+      "numbersMasked": "We dey always hide long numbers",
+      "reportsConsent": "We dey report only when you agree",
+      "about": "About",
+      "showIntro": "Show the introduction",
+      "unlink": "Unlink this phone",
+      "unlinkConfirm": "Unlink this phone?",
+      "unlinkBody": "You fit link am again any time.",
+      "unlinkAction": "Unlink"
+    },
+    "language": {
+      "title": "Language",
+      "set": "I go dey reply you for Pidgin from now. Send LANG to change am.",
+      "options": "Send LANG plus language: EN English, PCM Pidgin, HA Hausa, YO Yoruba, IG Igbo. Example: LANG HA",
+      "hint": "Send LANG to choose your language: English, Pidgin, Hausa, Yoruba or Igbo."
+    }
+  },
+  "a11y": {
+    "callCode": "Call code {digits}"
+  },
+  "banks": {
+    "heading": "Banks wey you don link",
+    "pickerHeading": "Which bank the message talk say e come from?",
+    "add": "Add bank",
+    "linked": "Linked",
+    "remove": "Remove",
+    "removeTitle": "Remove {bank}?",
+    "removeBody": "Gaskiyya go stop to check messages and calls from {bank} for this phone. You fit add am again any time.",
+    "cancel": "Cancel",
+    "or": "{first} or {last}"
+  },
+  "ussd": {
+    "menu": "{bank} check\n1. My bank dey call me?\n2. Messages wey my bank send me today",
+    "neverAsks": "Gaskiyya no dey ever ask for your PIN or codes.",
+    "calling": "{bank} dey call you now.\nCall code: {code}\nWetin e be for: {purpose}\nIf the caller no fit read this code, cut am.",
+    "todayHeading": "{bank} send you today:",
+    "todayItem": "{time} {category} by {channel}",
+    "todayNone": "{bank} never send you any message today.",
+    "todayNote": "Any message from today wey no dey this list no confirm.",
+    "more": "98. More",
+    "menuOption": "0. Menu",
+    "invalid": "Wrong choice. Abeg dial again.",
+    "tooMany": "You don check too many times. Try again after one minute."
+  },
+  "advisory": {
+    "title": "Fraud warning from {bank}",
+    "section": "Alerts from your bank",
+    "none": "{bank} no get fraud warning now.",
+    "unavailable": "We no fit load alerts from {bank} now. Pull down make you try again.",
+    "issued": "E comot {date}",
+    "until": "We go show am reach {date}",
+    "lookalikeLabel": "Fake website wey dey these messages",
+    "callbackNote": "These fake messages dey tell you make you call one number. Call only the numbers wey dey your bank own website or app.",
+    "pushBody": "Open Gaskiyya make you read how to sabi this scam.",
+    "botHeading": "Fraud warnings from {bank}:",
+    "botNone": "{bank} no get fraud warning now.",
+    "botFooter": "Send me any message wey talk say e from {bank} come, I go check am.",
+    "open": "Read the warning"
+  },
+  "simswap": {
+    "title": "Your SIM don change recently",
+    "body": "Your network talk say dem don move this number go new SIM recently. If no be you do am, another person fit dey collect your codes. Contact your bank through im app or for branch now now.",
+    "unknownTitle": "We no fit check your SIM",
+    "unknownBody": "We no fit find out from your network whether dem move this number go new SIM. No share this code with anybody.",
+    "ussd": "Warning: your SIM don change recently. No be you? Contact your bank now.",
+    "a11y": "Warning. Your SIM don change recently."
+  },
+  "receipt": {
+    "title": "Check payment receipt",
+    "subtitle": "Person talk say e don pay you? Check whether the money don enter your account before you give am goods.",
+    "account": "Enter which account",
+    "accountOption": "Account wey end with {last4}",
+    "amount": "How much (naira)",
+    "amountHint": "Like 25,000.00",
+    "reference": "Session ID or reference",
+    "referenceHint": "The 30-digit session ID wey dey the receipt",
+    "date": "Day wey dem pay",
+    "fromScreenshot": "Read receipt screenshot",
+    "screenshotNote": "Na for this phone we dey read the screenshot, e no dey comot. Make sure say everything wey dey down here match the receipt.",
+    "check": "Check payment",
+    "privacyNote": "Na only fingerprint of these things and the account wey dem pay enter dey go your bank registry.",
+    "noAccounts": "Your bank never link any account for payment check.",
+    "invalidAmount": "Write the amount as e show for the receipt, like 25,000.00.",
+    "invalidReference": "Session ID or reference get 6 to 64 letters and numbers.",
+    "unreadable": "We no fit read any receipt from that picture. Type wetin e show instead.",
+    "heading": "Payment check",
+    "registered": "Dem register am",
+    "verdict": {
+      "received": {
+        "title": "Payment don land",
+        "body": "{payer} register payment of {amount} wey enter your account {account} on {date} at {time}.",
+        "short": "E don land"
+      },
+      "not_confirmed": {
+        "title": "E no confirm",
+        "body": "No record say this payment enter your account {account}. No release goods yet: check your balance for your own bank app first.",
+        "short": "E no confirm"
+      },
+      "cannot_check": {
+        "title": "We no fit check am now",
+        "body": "Payment check no dey work now. Check your balance for your own bank app before you release goods.",
+        "short": "No fit check"
+      }
+    }
+  },
+  "official": {
+    "org": {
+      "confirmedTitle": "Na {bank} send am",
+      "cannotCheckBody": "The check no dey work now. Contact {bank} through dem official website or office.",
+      "notCallingTitle": "{bank} no dey call you",
+      "notCallingBody": "No call from {bank} dey go on now. If caller talk say dem come from {bank}, cut the call.",
+      "explainFallback": "We no see this message for {bank} records. Fraudsters dey copy how organisation dey write make people click link, call number, pay money or share code. Treat am as fake unless {bank} confirm am through dem official channels.",
+      "explainAction": "No reply, no click, no call, no pay. If e dey worry you, contact {bank} through dem official website or office.",
+      "otpAdvice": "For one-time code message, check am inside {bank} app so the text go stay for your phone.",
+      "linkBelongsTitle": "This domain na {bank} own",
+      "linkLookalike": "This address dey copy {bank} name.",
+      "reportPrompt": "You wan report this fake one give {bank} fraud team? We go send copy wey we don hide the long numbers.",
+      "reportThanks": "Thank you. Your report dey help {bank} warn other people.",
+      "activityHeading": "Wetin {bank} send recently",
+      "ussdMenu": "{bank} check\n1. Dem dey call me?\n2. Messages wey dem send me today",
+      "ussdOption": "3. Na dem number be dis?"
+    },
+    "kinds": {
+      "bank": "bank",
+      "agency": "government agency",
+      "company": "company"
+    },
+    "contact": {
+      "official": {
+        "title": "Official contact",
+        "body": "{org} list this {contact} as one of dem official contacts.",
+        "short": "Official"
+      },
+      "not_official": {
+        "title": "No be official contact",
+        "body": "{org} no list this {contact} as official contact. No call am, no message am, no pay am, and no share any code with am.",
+        "bodyAny": "No organisation for Gaskiyya list this {contact} as official contact. No call am, no message am, no pay am, and no share any code with am.",
+        "short": "No be official"
+      },
+      "cannotCheckBody": "The check no dey work now. No trust this contact until you fit check am.",
+      "impersonation": "This one dey copy {org} name. Fraudsters dey use name like this for fake customer care.",
+      "spoofNote": "People fit fake caller ID and display name. Official contact for your screen no prove who dey the other side.",
+      "notAContact": "This one no be phone number, email address, @handle or profile link.",
+      "kinds": {
+        "phone": "phone number",
+        "whatsapp": "WhatsApp number",
+        "email": "email address",
+        "social": "{platform} account"
+      },
+      "platforms": {
+        "x": "X",
+        "facebook": "Facebook",
+        "instagram": "Instagram",
+        "tiktok": "TikTok",
+        "telegram": "Telegram"
+      }
+    },
+    "apps": {
+      "officialTitle": "{org} official app",
+      "officialBody": "{org} list this app as dem own. Install am only from the official app store.",
+      "short": "Official app",
+      "apk": "This na app download file, no be app store page. App wey you install like this fit take over your phone. No install am.",
+      "fakeApp": "{org} no list this app, but im name dey copy {org}. No install am."
+    },
+    "ussd": {
+      "option": "3. Check bank number",
+      "enterNumber": "Put the number wey you wan check, like 08012345678",
+      "official": "{number} na official {bank} number.\nPeople fit fake caller ID. No ever share code for call.",
+      "notOfficial": "{number} no be {bank} number.\nNo call am back, no pay am, no share code with am.",
+      "badNumber": "Dis one no be phone number. Abeg dial again."
+    },
+    "app": {
+      "checkContact": "Check number or account",
+      "placeholder": "Paste phone number, email, @handle or profile link",
+      "contactCheck": "Contact check",
+      "appCheck": "App check",
+      "contact": "Contact",
+      "organisation": "Organisation"
+    }
+  },
+  "licence": {
+    "title": "Dis lender get licence?",
+    "intro": "Check loan app, lender, investment platform or bank for di licence lists wey regulators dey publish.",
+    "entryHint": "Loan apps, lenders, investment schemes and banks",
+    "placeholder": "Name, website or app ID",
+    "check": "Check licence",
+    "checking": "We dey check di licence lists\u2026",
+    "licensed": {
+      "title": "E dey for licence list",
+      "body": "{name} dey for {regulator} list as {category}. Dis one no mean say message, call or offer wey you get really come from dem.",
+      "short": "E dey list"
+    },
+    "not_listed": {
+      "title": "E no dey any licence list wey we get",
+      "body": "We no see am for di lists wey we get. Na {regulators} dey list licensed lenders. No pay any money upfront.",
+      "short": "E no dey list"
+    },
+    "similar": "Dis name resemble {name} wey dey list. Fraudsters dey copy di names of licensed companies.",
+    "cannot_check": {
+      "title": "We no fit check am now",
+      "body": "Di licence lists no dey available or dem don old. Check di regulator website by yourself before you pay anything.",
+      "short": "No fit check"
+    },
+    "source": "Source",
+    "listDate": "Date of di list",
+    "regulator": "Regulator",
+    "category": "Licence",
+    "status": "Status",
+    "listsChecked": "Lists wey we check: {lists}",
+    "sample": "Demo data: na sample of di list, no be di full official register.",
+    "categories": {
+      "digital_lender": "approved digital lender",
+      "commercial_bank": "commercial bank",
+      "merchant_bank": "merchant bank",
+      "non_interest_bank": "non-interest bank",
+      "microfinance_bank": "microfinance bank",
+      "payment_service_bank": "payment service bank",
+      "payment_service_provider": "payment company",
+      "finance_company": "finance company",
+      "primary_mortgage_bank": "mortgage bank",
+      "capital_market_operator": "capital market operator"
+    },
+    "bot": {
+      "hint": "Send LOAN plus name to check if lender or loan app dey licence list.",
+      "usage": "Send LOAN plus di name of di lender or loan app, im website or im app ID."
+    },
+    "ussd": {
+      "menuOption": "4. Lender get licence?",
+      "prompt": "Type di name of di lender or loan app:",
+      "licensed": "{name} dey {regulator} list. E no prove say call or message come from dem.",
+      "notListed": "E no dey any licence list wey we get. Na {regulators} dey list licensed lenders. No ever pay money upfront.",
+      "similar": "E no dey our lists, but e resemble {name} wey dey list. Fraudsters dey copy names. No pay money upfront.",
+      "cannotCheck": "We no fit check now. Check di regulator website before you pay anything.",
+      "moreOption": "9. More",
+      "moreHeading": "More checks:",
+      "backOption": "0. Go back"
+    }
+  }
+}

@@ -1,0 +1,3160 @@
+{
+  "source": {
+    "id": "cbn-microfinance-banks",
+    "regulator": "CBN",
+    "regulatorUrl": "https://www.cbn.gov.ng/Supervision/fi.html",
+    "title": "CBN licensed microfinance banks",
+    "url": "https://www.cbn.gov.ng/Supervision/Inst-MF.html",
+    "publishedAt": null,
+    "retrievedAt": "2026-10-20",
+    "format": "JSON (the page\u2019s own data endpoint)",
+    "sample": false,
+    "note": "Read from https://www.cbn.gov.ng/api/GetMFBs, which the page loads. Names only; the list gives no date or licence tier."
+  },
+  "entries": [
+    {
+      "name": "1Trust Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "5TT Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "AACB Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "AB Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Abia State University Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Abigi Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Above Only Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Abubakar Tafawa Balewa University (ATBU) Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Abucoop Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Abulesoro Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Accion Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ACE Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Achina Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ADA Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Adazi-Enu Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Adazi-Nnukwu Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Addosser Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Adeyemi College Staff Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Adike Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Advancly Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Afekhafe Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Afemai Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Afole Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Agosasa Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Ahmadu Bello University Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Aibio Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Ajewole Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Ajose Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Ajuta Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Akalabo Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Akata Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Akokwa Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Akpo Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Aku Diewa Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Akuchukwu Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Al'Hikma Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Al-Barakah Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Al-Hayat Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Albasu Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Alekun Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Alert Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Algreb Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Aliero Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "All Workers Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Alor Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Alpha Kapital Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Alvana Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "AMAC Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Amazu Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Amegy Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "AMJU-Unique Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "AMML Microfinance Bank Limited (Abuja Markets Management Ltd",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Ampersand Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Ample Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Amucha Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Anchorage Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Aniocha Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Annointed Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Aogo Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Apa Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Apex Trust Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Aramoko Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Aris Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Asha Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Aspire Microfinance Bank LImited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Asset Matrix Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Assets Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Astra Polaris Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Auchi Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Auchi Polytechnic Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "AVE MARIA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Avest Microfinance bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Avunegbe Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "AVVIC MICROFINANCE BANK LIMITED",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Awe Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "AWESOME MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Awka-Etiti Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Awkuzu Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "AZSA Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "B C Kash Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Babba Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Babcock Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Babura Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BAIGE MICROFINANCE BANK LIMITED",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Baines Credit Microfinance bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Balera Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Balogun Fulani Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Balogun Gambari Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Bam Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Banex Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Bankeasy Microfinance bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Baobab Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Barnawa Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BATAGWARA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Bauchi CFA Mirofinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Bauchi Investment Corporation MFB Limited (BIC",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BAURE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Bawyi Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Bayajidda Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Bayero University Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Bayetin Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Benue Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Benysta Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Berachah Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Best Star Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Bethel Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Better Life Microfinace Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Bichi Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Bida Polytechnic Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BKD NEW Microfinance bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Bloc Microfinance bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Blooms Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BLUCON MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BLUE RIDGE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BLUEPRINT INVESTMENTS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BOCTRUST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BOI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BOJI BOJI MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BOKKOS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Bold Microfinance bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BONGHE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Boost Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BORGU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BORNO RENAISSANCE MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BOROMU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BORSTAL MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BOSAK MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BOWEN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BOWMAN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BRETHREN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BRIGHTWAY MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BROADVIEW MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BROOKS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BUBAYERO MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BUNDI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BUNGUDU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BUNKASA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BUNKURE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "BWAY Microfinance bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CANAAN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CAPITALMETRIQ SWIFT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CAPSTONE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CARBON MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CARETAKER MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Casa Microfinance bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CASH RITE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CASHCONNECT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CASHWISE MICROFINANCE BANK LIMITED",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CASTLE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CATLAND MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CEDAR MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Cedrus Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CHALLENGE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CHANGAN RTS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Charis Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CHASE MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CHEVRON EMPLOYEE CO-OPERATIVE MFB (CEMCS",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CHIBUEZE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CHIKUM MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CHRISORE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CHRONICLES MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CHUKWUNENYE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CINTRUST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CIT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CITIZEN TRUST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CITY MISSION METHODIST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CIVIC MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CLOVERLEAF MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "COAL CAMP MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "COASTLINE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "COEMINNA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CONFIDENCE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CONSISTENT TRUST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CONSUMER MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Cool Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CORESTEP MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "COVENANT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CRESCENT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CREST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CROSSRIVER MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CRUTECH MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CSD MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "CUSTODIAN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Dabtikir Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "DAILY-TRUST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "DAL MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "DAMBATTA- MAKODA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Dash Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Davenport Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "DAVODANI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "DAWAKIN KUDU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "DAYLIGHT MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "DEC-ENUGU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "DESTINY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "DIOBU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "DOGUWA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "DOLPHIN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "DORBEN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "DSC Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "DUTSE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "DUTSIN-MA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Duxbank Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "e-BARCS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EAGLE FLIGHT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EARNWELL MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EAST GATE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EASTMAN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EASY ACCESS MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EBEDI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EBONYI STATE UNIVERSITY MFB (EBSU",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EDFIN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EDO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Edusoko Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EGBE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EGBEMOHA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EGWAFIN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Ehinoma Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EJINDU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EK-RELIABLE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EKIMOGUN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EKONDO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EKWULOBIA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Ellington Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ELO-EMEDE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EMERALD MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EMPIRE TRUST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ENDWELL MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ENEDE MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ENRICH MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EQUATOR MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EQUINOX MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ESO-E MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EVERGREEN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EWT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EXCEL MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "EZEBO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FAIDA MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FAIRMONEY MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FAME MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FAST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FCMB MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FECETU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FEDERAL POLYTECHNIC, NEKEDE MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FEDETH CO-OP MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FEDPOLY NASARAWA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FFS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FIDFUND MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FIMS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FINATRUST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FINCA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FINEX MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FIRMUS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FIRST ACCESS MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FIRST HERITAGE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FIRST LOW-LAND MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FIRST MUTUAL MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FIRST OPTION MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FIRST ROYAL MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Flexi Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FLOURISH MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FORESIGHT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FORTRESS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FORWARD MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FTA FUNTUA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FUD MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Fullrange Microfinance Bank Ltd",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FUT MINNA",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "FUTO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GAA AKANBI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GABASAWA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GAMAWA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GAREWA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GARKI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GARU MALLAM MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GASHUA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GAYA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GBEDE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GIANT STRIDE MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Gidauniya Alheri MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GIGINYA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GIREI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GIWA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GLOBAL INITIATIVE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GLORY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GMB MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GOBARAU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GOLDEN CHOICE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GOLDMAN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GOMBE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GOOD NEIGHBOURS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GOOD NEWS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GOOD SHEPHERD MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GOWANS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GRANTS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GRANULE MICROFINANCE BANK",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GREEN ACRES MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GREEN ENERGY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GREEN-BANK MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GREENVILLE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GROOMING MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GTI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GUDUSISA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GULFARE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "GWONG MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "HADEIJA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "HALAL CREDIT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "HALLOWED MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "HAMADA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "HAMDA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "HASAL MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "HEADWAY MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "HEDGE MICROFINANCE BANK LIMITED",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "HIGHLAND MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "HINACHE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "HONEY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "HOPE ALIVE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "I-Care Microfinance Bank Ltd",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IBETO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IBILE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IBOLO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IBOM FADAMA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IBRAHIM BADAMASI BABANGIDA UNIVERSITY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IBU-AJE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ICHI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IDEATO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IDEMILI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IFEDAPO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IFELODUN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IGBO-UKWU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IGBOORA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IHIALA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IJARE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IJEBU IFE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IKENNE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Ikere Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IKIRE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IKORODU DIVISION MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IKOYI-ILE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IKOYI-OSUN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ILARO POLYTECHNIC MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ILE-OLUJI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ILISAN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ILOBU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ILOFFA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ILORA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ILORIN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ILUDUN ORO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ILUTUNTUN-OSORO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IMO STATE MICROFINANCE BANK",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IMODI-IMOSAN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IMOPOLY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IMOWO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IMSU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IMT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Indulge Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "INFINITY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "INSIGHT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IPAPO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IPERU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IRL MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ISALE OYO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ISHIAGU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ISHIE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Isi-Ego Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ISI-UZO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ISLAND MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ISUA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ISUOFIA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IWA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IWOYE-IJESA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IYA-ZAKARI (MASHI) MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IYAMOYE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IYERU OKIN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IYIN EKITI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "IZON MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "JANZAMA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "JEN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "JESSEFIELD MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "JEWEL COOP MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KABO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KADPOLY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KADUPE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Kaizen Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KANKARA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KANKIA MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KANO-WEST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KATAGUM MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Katsu Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KAYVEE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KC MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KCMB MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KENECHUKWU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KHB MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KINGDOM COLLEGE MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KISI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KKU Microfinance",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KMC MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Koboweb Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Koins Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Kolisa Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KONTAGORA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KOPO-KOPE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KREDI MONEY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KUDA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KUMBOTSO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KUNAGABA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KUNCHI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KURA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KUSALLA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KWACOFOCUS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KWARA POLYTECHNIC MICROFINANCE BANK LIMITED",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KWASU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "KWATASHI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "LA FAYETTE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Ladder Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "LANDGOLD MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "LAPO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "LAVENDER",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "LAWYERS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "LAYELU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "LEADCITY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "LEGACY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "LEGEND MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "LETSHEGO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "LEVITE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "LIFEGATE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "LIGHT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Lightway Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "LINKS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "LIVING SPRING MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "LOBREM MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "LOVONUS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "M & M MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MAB ALLIANZ MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MACROD MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MADELYN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MADOBI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MAGAJIN-GIRI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MAGNET MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MAIGATARI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MAIN TRUST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MAINLAND MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MAINSTREET MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MALACHY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MAPOLY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MARITIME MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MATAZU MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MAXITRUST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MAYDEN MICROFINANCE BANK",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MBAITOLI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MBAWULU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MEGA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MEGAPRAISE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MEMENTO MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MEMPHIS MICROFINANCE BANK LIMITED",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MERIDIAN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MGBIDI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Mia Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MICHEAL OKPARA UNIVERSITY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MICROVIS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MIDLAND MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MKOBO MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Moddibo Adama University Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MODEL MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MODIYA YEKOKPE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MOLUSI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MONARCH MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MONEYTRONICS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Moneytrust MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Moniepoint MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Movasco-Op Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MOYOFADE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MOZFIN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Muamala Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MULTIVEST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MUTUAL BENEFIT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "MUTUAL TRUST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NAGARTA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NAISA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NAKOWA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NAMODA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NASARAWA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NDIOLU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NDIORAH MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NENZIT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NEPTUNE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NEW DAWN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NEW ERA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NEW GOLDEN PASTURES MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NEW WOMEN'S MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Nexton Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NGBO MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NICE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NIGERIAN NAVY MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NIGERIAN PRISONS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NINGI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NIRSAL MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NKPA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NKPOLOGWU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NKPOLU-UST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NNOKWA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NOBLE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NOMASE MICROFINANCE BANK LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NOUN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NOVEL MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Novus Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NPF MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NRI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NSU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NSUK MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NSUKKA TOWNSHIP MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NUGGETS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NUMO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NUN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NUT OKEBOLA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "NWANNEGADI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OAKLAND MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OBA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OBAFEMI AWOLOWO UNIVERSITY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OBELEDU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OBODOUKWU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OBOKUN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OBOLLO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OCHE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OCON SUCCESS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OCTOPUS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ODOAKPU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ODU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Oganiru Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OGBERURU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OGBETE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OGBOEFERE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OGIGE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OGIYAN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OHAFIA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OHHA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OJOKORO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Okada Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OKE- ARO OREDEGBE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OKEAGBE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OKENGWE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OKO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OKPE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OKPOFE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OKPOGA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OKUKU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OKUTA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OKWO-OHA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OLABISI ONABANJO UNIVERSITY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OLIVE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Olomu Aperan Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OLOWOLAGBA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OLU-BASIRI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OLUCHUKWU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OMAK MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OMIYE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OMUMA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Onewallet Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ONIBU-ORE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OPAY MFB LIMITEd",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Optimum Global Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ORAUKWU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ORILONISE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ORISUN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ORITA BASORUN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OROKAM MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ORSU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OSANTA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OSCT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OSI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OSOMHE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OSPOLY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OSUMENYI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OTUO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OURS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OWOTUTU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OYAN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "OYE VERSITY MICROFINANCE BANK LIMITED",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PACT MICROFINANCE BANK",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PALMCOAST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PALMERA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PANA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Paragon Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PARKWAY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PATHFINDER MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PATRICKGOLD MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Payrep Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PEACE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PECAN TRUST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PENINSULA MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PENNYWISE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PENTECOST MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PERSONAL TRUST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PETRA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PHOENIX MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PILLAR MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Pioneer Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Platinum Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Plusone Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Pointone Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "POLYBADAN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "POLYUNWANNA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PREEMINENT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Premier Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PRESTIGE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PRISCO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PRISTINE DIVITIS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PROJECTS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PROSPECTS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PROSPERITY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PRUDENT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "PYRAMID MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "QUBE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "QUICKFUND MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "RAHAMA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "RAKIB MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "RAMILOWO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "RANDALPHA",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "RANO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "REFINED BENEFITS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "REGENT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "REHOBOTH MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "RELIANCE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "RENMONEY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "REPHIDIM MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "RIC MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "RICHWAY MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Ricia Capital Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "RIGO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "RIMA GROWTH PATHWAY MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "RIMA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "RIVERSIDE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ROCKSHIELD MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ROYAL BLUE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Royal Excellent Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ROYAL EXCHANGE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ROYAL LIFE KEY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ROYAL MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "RUBIES MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Run Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SABI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SABON YELWA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SABUWA MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SAFANA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SAFE HAVEN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SAFELINE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SAGAMU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SANDAMU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SAPIDA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SARKIN KUDU MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Savesimple Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SEAL MICROFINANCE BANK LIMITED",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SEAP MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SEEDVEST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SENCHI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Shalom MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SHEPHERD TRUST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SHIELD MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Shine Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SHONGOM MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Silverend Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SINCERE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SLS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SMARTMICRO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SNOW MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SOLID ALLIANZ MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SOLID ROCK MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Solid Trust MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SOROMAN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Sosa Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SOURCE MICROFINANCE BANK LIMITED",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SPARKLE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SPECTRUM MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Springfield Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Springville Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "STANDARD MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "STATESIDE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "STELLAS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "STEP BY STEP MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "STILLWATERS MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "STOCKCORP MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SULSPAP MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SUNBEAM MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Suntop Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SUPPORT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "SURE ANCHOR MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Swifttrust Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "TANADI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "TANGALE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Tangerine Money Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "TASUED MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "TCF MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "TEERUS MICROFINANCE BANK LIMITED",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Tellerone FI Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Tenn Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "TF MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "The Millennium MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "TOP RATE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "TOPCLASS MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "TOTAL TRUST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "TOUCHGOLD MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "TOWNSERVE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Transpay Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "TREASURES MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "TRIDENT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "TRIPPLE A MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "TRIUMPHANT MICROFINANCE BANK LIMITED",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "TRUST MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "TRUSTBANC J6",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "TRUSTFUND MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "TUDUNWADA MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "U & C MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UBJ Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UCB MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UDA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UDOKA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Uforo Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UGA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UGBORIMILI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UHURU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UKPOR MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UKWALA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ULTIMATE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Ultraviolet Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UMMAH MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UMUAWULU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UMUCHINEMERE PROCREDIT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UMUCHUKWU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UMUNNACHI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Umunri Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UMUOJI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UMYU Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UNAAB MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UNGOGO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UNIBADAN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UNICAL MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Unicorn Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UNIFUND MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UNILAG MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UNILORIN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UNIMAID MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UNITED CAPITAL MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UNIUYO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UNIVERSITY OF BENIN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UNN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UNUBI MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "URBAN MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "URE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UTAKO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UTUH MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UVUOMA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UVURU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "UZONDU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Vangel Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "VCL MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "VFD MFB LTD",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "VICTORY MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "VISA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "VISCOUNT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Vista Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "WAILA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Wallet Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "WAYA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "WE MICROFINANCE BANK LIMITED",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "WELFARE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Weston-Charis Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "WETLAND MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Willows Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "WOLIWO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "WOMEN DEVELOPMENT MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "WRA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "WUDIL MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "XSLNCE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "YABO MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Yankari MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "YAURI EMIRATES MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "YCT Microfinance Bank",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "YES MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "YOBE STATE MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ZAZZAU MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ZEFA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ZIKORA MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ZION MFB",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Zircon Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "Zitra Microfinance Bank Limited",
+      "category": "microfinance_bank"
+    },
+    {
+      "name": "ZURMI MFB",
+      "category": "microfinance_bank"
+    }
+  ]
+}

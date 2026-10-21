@@ -1,0 +1,5147 @@
+{
+  "source": {
+    "id": "fccpc-digital-lenders",
+    "regulator": "FCCPC",
+    "regulatorUrl": "https://fccpc.gov.ng/registration-of-digital-money-lenders/",
+    "title": "FCCPC approved digital lenders (DEON Consumer Lending Regulations 2025)",
+    "url": "https://fccpc.gov.ng/registration-of-digital-money-lenders/approvals-of-dmls/",
+    "publishedAt": null,
+    "retrievedAt": "2026-10-20",
+    "format": "HTML tables",
+    "sample": false,
+    "note": "Full approval, conditional approval and CBN-licensed waiver tables. Company names with their app names as aliases. The watchlist and delisted tables are not imported."
+  },
+  "entries": [
+    {
+      "name": "CREDITCLAN TECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CLAN"
+      ]
+    },
+    {
+      "name": "ACETECH FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KASHOUT",
+        "FLASHCREDIT",
+        "FLASHALART",
+        "SWIFTCREDIT",
+        "RAPIDLOANS",
+        "ACECREDIT",
+        "ACELOAN",
+        "RAPIDALART"
+      ]
+    },
+    {
+      "name": "LETSHEGO MICROFINANCE BANK LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LETSGO",
+        "LETSHEGO DIGITAL"
+      ]
+    },
+    {
+      "name": "NEXTPAYDAY LIMIT",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NEXTPAYDAY"
+      ]
+    },
+    {
+      "name": "ALADDIN SCHEME LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ALADDIN DIGITAL"
+      ]
+    },
+    {
+      "name": "KOBOGO NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KOBOGO"
+      ]
+    },
+    {
+      "name": "SINGULARITY TECHNOLOGY NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "OXLOAN PRO"
+      ]
+    },
+    {
+      "name": "GROLA TECH CREDIT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LIONCASH",
+        "LAIRAPLUS",
+        "LCASH",
+        "CASHLION",
+        "TRUENAIRA",
+        "CAYCREDIT",
+        "NAIRAPLUS",
+        "CRANCASH"
+      ]
+    },
+    {
+      "name": "FAST POINT INTEGRATED LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MYCASHIER MOBILE",
+        "FAST POINT"
+      ]
+    },
+    {
+      "name": "PAYLATER HUB LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PAYLATER"
+      ]
+    },
+    {
+      "name": "TRADE DEPOT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SHOPTOPUP"
+      ]
+    },
+    {
+      "name": "PENNEE TECHNOLOGIES LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PENNEE"
+      ]
+    },
+    {
+      "name": "OTP INTERNET TECHNOLOGY",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "9CREDIT",
+        "NCASH"
+      ]
+    },
+    {
+      "name": "ALTRACRED FINANCE INVESTMENT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "VKASH",
+        "SWIFTKASH"
+      ]
+    },
+    {
+      "name": "RED HARBOUR FINTECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "RED HARBOUR"
+      ]
+    },
+    {
+      "name": "MENACRED COMPANY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MENACRED"
+      ]
+    },
+    {
+      "name": "CREVANCE CREDIT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CREVANCE.COM"
+      ]
+    },
+    {
+      "name": "CSENSE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CSENSE"
+      ]
+    },
+    {
+      "name": "SUPREME HELP CO-OPERATIVE SOCIETY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SUPREME HELP CO-OPERATIVE SOCIETY"
+      ]
+    },
+    {
+      "name": "FLOWOOD LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CASHRUN",
+        "MINTCREDIT",
+        "CREDITNOW"
+      ]
+    },
+    {
+      "name": "FINTRADE SOLUTIONS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PLENTYCASH",
+        "LIFELINE",
+        "STEADYKASH"
+      ]
+    },
+    {
+      "name": "TRIVISTA CAPITAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TRIVISTA"
+      ]
+    },
+    {
+      "name": "COMMERCEMEN TRADING CO. LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "AIRMONI",
+        "HAPPIMONI"
+      ]
+    },
+    {
+      "name": "INSTAWAVE INTERNET TECHNOLOGY",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "VIBECREDIT",
+        "SECUCASH"
+      ]
+    },
+    {
+      "name": "FINNEW FINTECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NCREDIT",
+        "NMONEY",
+        "FITLOAN",
+        "SWIFTNAIRA",
+        "BGLOAN"
+      ]
+    },
+    {
+      "name": "UMBA DIGITAL SOLUTIONS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "UMBA",
+        "UMBA WEB"
+      ]
+    },
+    {
+      "name": "ATIMI LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "GOLOAN"
+      ]
+    },
+    {
+      "name": "SYCAMORE INTEGRATED SOLUTIONS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SYCAMORE"
+      ]
+    },
+    {
+      "name": "BRANCH INTERNATIONAL FINANCIAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "BRANCH"
+      ]
+    },
+    {
+      "name": "PIVO TECHNOLOGY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PIVO"
+      ]
+    },
+    {
+      "name": "FLUNA CAPITAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FLUNA"
+      ]
+    },
+    {
+      "name": "PROVEST LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PROVEST"
+      ]
+    },
+    {
+      "name": "MAGNET LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TOPCHANCE",
+        "GOGETCREDIT",
+        "LILYCASH",
+        "CONSTANT CASH",
+        "LITE CASH"
+      ]
+    },
+    {
+      "name": "ALLAWEE TECHNOLOGIES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ALLAWEE"
+      ]
+    },
+    {
+      "name": "DOT MICROFINANCE BANK LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "DOTBANK"
+      ]
+    },
+    {
+      "name": "MAVEN FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FLOATR"
+      ]
+    },
+    {
+      "name": "OXYMON SOLUTIONS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "OXYMON"
+      ]
+    },
+    {
+      "name": "CREDITVILLE MICROFINANCE BANK LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CREDITVILLE"
+      ]
+    },
+    {
+      "name": "NEO-LINK TECHNOLOGY COMPANY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NEWLENDING"
+      ]
+    },
+    {
+      "name": "P2VEST TECHNOLOGY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "P2VEST"
+      ]
+    },
+    {
+      "name": "YESCREDIT COMPANY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "YESCREDIT"
+      ]
+    },
+    {
+      "name": "LANTANA TECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CRIMSON"
+      ]
+    },
+    {
+      "name": "HOLLANDALE NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TIGER CREDIT",
+        "KKCASH",
+        "ZCASH",
+        "EASYKASH"
+      ]
+    },
+    {
+      "name": "PRIMERA MICROFINANCE BANK",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KOINS BY PRIMERA"
+      ]
+    },
+    {
+      "name": "FINESET LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "GO LOAN"
+      ]
+    },
+    {
+      "name": "KIREDI ROCK COMPANY LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NAIRABOX"
+      ]
+    },
+    {
+      "name": "POCKETFUEL FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "POCKETFUEL"
+      ]
+    },
+    {
+      "name": "BERLY SPRING GLOBAL",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "IUSTUS",
+        "SNAPPY CREDIT"
+      ]
+    },
+    {
+      "name": "CREDITECH TECHNOLOGY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TAP CASH",
+        "CREDIT POCKET",
+        "C LOAN",
+        "CREDIBLE LOAN"
+      ]
+    },
+    {
+      "name": "OMALEND SERVICE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "OMAFIN"
+      ]
+    },
+    {
+      "name": "PRINCEPS CREDIT SYSTEM LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CREDIT WALLET"
+      ]
+    },
+    {
+      "name": "BESTFIN NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ICREDIT"
+      ]
+    },
+    {
+      "name": "FUBRI CENTURY COMPANY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "HIFUND"
+      ]
+    },
+    {
+      "name": "BLACKCOPPER SERVICE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "BLACKCOPPER"
+      ]
+    },
+    {
+      "name": "DOJA LEMAIRE GLOBAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SWIFUND"
+      ]
+    },
+    {
+      "name": "CITYGATE GLOBAL INVESTMENT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MONEE"
+      ]
+    },
+    {
+      "name": "PAYDAYHUB ONLINE NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PAYDAY LOAN"
+      ]
+    },
+    {
+      "name": "SWIPEBILL TECHNOLOGIES NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FLOAT -CASH"
+      ]
+    },
+    {
+      "name": "FAIR MONEY MICROFINANCE BANK",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FAIRMONEY"
+      ]
+    },
+    {
+      "name": "LIGHTING FINANCE TECHNOLOGY NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "OKILOCASH",
+        "LUMOSLOAN"
+      ]
+    },
+    {
+      "name": "WINDVILLE FINANCIALS NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PROCASH",
+        "QCASH",
+        "MY CASH",
+        "HCASH"
+      ]
+    },
+    {
+      "name": "LIBERTY ASSURED LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LIBERTYCRED"
+      ]
+    },
+    {
+      "name": "RENMONEY MICROFINANCE BANK",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "RENMONEY INSTANT CASH LOAN"
+      ]
+    },
+    {
+      "name": "MIM FINANCE COMPANY",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MONEY IN MINUTES"
+      ]
+    },
+    {
+      "name": "UGT TECHNOLOGIES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "URGENT10K"
+      ]
+    },
+    {
+      "name": "PASSECO TECHNOLOGY NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "E4MONI"
+      ]
+    },
+    {
+      "name": "MOBLASPAY NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NOWCREDIT",
+        "CORRECTLOAN",
+        "PALMCREDIT PLUS AP"
+      ]
+    },
+    {
+      "name": "APPLINK CAPITAL NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "HIKASH",
+        "PAPKASH",
+        "NEWCASH",
+        "ALIKASH",
+        "DOHCASH",
+        "YOHCASH"
+      ]
+    },
+    {
+      "name": "RANK CAPITAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MONI",
+        "MONI AFRICA"
+      ]
+    },
+    {
+      "name": "TAJOW INVESTMENT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TOPCREDIT.COM.NG"
+      ]
+    },
+    {
+      "name": "ORCOM AND ORCOM BUSINESS SUPPORT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MONEYSPACE",
+        "REALCREDIT",
+        "SHARPCREDIT",
+        "NAIRABOX"
+      ]
+    },
+    {
+      "name": "AFROWIDE DEVELOPMENT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "IMONEY"
+      ]
+    },
+    {
+      "name": "RED PLANET NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KASH LOAN",
+        "CREDIT LOAN",
+        "NAIRALOAN"
+      ]
+    },
+    {
+      "name": "IBS GOLDEN INVESTMENT COMPANY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CREDITINN.COM.NG"
+      ]
+    },
+    {
+      "name": "HOIL INVESTMENT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ADASHE"
+      ]
+    },
+    {
+      "name": "GLOSH TECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "HALOWALLET"
+      ]
+    },
+    {
+      "name": "CLEM FRESH CO. LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WINLOAN"
+      ]
+    },
+    {
+      "name": "FEZOTECH NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PONYCASH",
+        "WAYACREDIT",
+        "TRADECREDIT",
+        "VOICEMONEY",
+        "NEWCREDIT"
+      ]
+    },
+    {
+      "name": "MENO FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MENOFUND"
+      ]
+    },
+    {
+      "name": "TOMX CREDIT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "RAPAID AFRICA"
+      ]
+    },
+    {
+      "name": "AFROFIRST MOBILE AND TECHNOLOGY COMPANY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CREDITGO",
+        "EASY MONEY LOAN"
+      ]
+    },
+    {
+      "name": "ELITEFIN NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "USHINE CASH",
+        "CREDITEASE",
+        "NAIRABOOST"
+      ]
+    },
+    {
+      "name": "TA PRIME LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TRACTIONAPP"
+      ]
+    },
+    {
+      "name": "NEWGRY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MONEYTREE"
+      ]
+    },
+    {
+      "name": "RACEOVA NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CASHBUS"
+      ]
+    },
+    {
+      "name": "PAYFINANCIALS TECHNOLOGY SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PAYFI"
+      ]
+    },
+    {
+      "name": "PAPICHOU TECHNOLOGY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "EASYFUND",
+        "ROYALCREDIT",
+        "NICECREDIT",
+        "IK CREDIT",
+        "WARM LENDING"
+      ]
+    },
+    {
+      "name": "GOHARVEST INTERNATIONAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PASA",
+        "BONZER LOAN",
+        "PASE CLUB"
+      ]
+    },
+    {
+      "name": "SKITLONE NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TWALELOAN"
+      ]
+    },
+    {
+      "name": "NEW CREDAGE NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SOMEMONI"
+      ]
+    },
+    {
+      "name": "RUBYSTAR GLOBAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LOANNAIRA",
+        "AJELOAN",
+        "BOOST LENDING",
+        "AJE HOMES"
+      ]
+    },
+    {
+      "name": "TED ROCKET LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CASHOWOMI",
+        "LENDNOW",
+        "CASHPULSE",
+        "CASHPULSE UPDATE"
+      ]
+    },
+    {
+      "name": "PENAID LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PENAID.NG"
+      ]
+    },
+    {
+      "name": "HOMETOWN FINTECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "HOMETOWN"
+      ]
+    },
+    {
+      "name": "GIASUN TECHNOLOGY NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TLOAN",
+        "NICENAIRA",
+        "TCREDIT",
+        "PALMCASH",
+        "GREENCREDIT"
+      ]
+    },
+    {
+      "name": "BE RESOURCES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LENDME"
+      ]
+    },
+    {
+      "name": "MINO SPARKS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WEKASH"
+      ]
+    },
+    {
+      "name": "REGXTA GLOBAL SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "REGXTA"
+      ]
+    },
+    {
+      "name": "MUSKA TECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NAIRAGO"
+      ]
+    },
+    {
+      "name": "SHARA TECHNOLOGY MANAGEMENT NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SHARA"
+      ]
+    },
+    {
+      "name": "DASH INNOVATION BUSINESS LINKS WEST AFRICA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "INSTANTCRED"
+      ]
+    },
+    {
+      "name": "STELLER FINANCE COMPANY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "STARCREDIT"
+      ]
+    },
+    {
+      "name": "UNI TECHNOLOGY NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "HCWALLET",
+        "PRIME PAY"
+      ]
+    },
+    {
+      "name": "UTHINKING NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FASTCENT",
+        "INTSWALLET"
+      ]
+    },
+    {
+      "name": "AELLA FINANCIAL SOLUTIONS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "AELLA"
+      ]
+    },
+    {
+      "name": "PHOENIX PAYMENT SOLUTION LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MINTBAG"
+      ]
+    },
+    {
+      "name": "TRAFALGAR ASSOCIATION LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KWIKPAY CREDIT"
+      ]
+    },
+    {
+      "name": "VALUE DRIVER TECHNOLOGY SOLUTION LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "VALUE CREDIT"
+      ]
+    },
+    {
+      "name": "KIOWOPE CAPITAL LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KIOWOPE"
+      ]
+    },
+    {
+      "name": "KEENEST TECH SERVICE LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KASHPAL",
+        "MINICREDIT"
+      ]
+    },
+    {
+      "name": "ROCKIT LENDERS NIG. LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ROCKIT",
+        "FLEXI CASH",
+        "CASHVINE",
+        "CASHBEE",
+        "CASHLAND"
+      ]
+    },
+    {
+      "name": "PAYHIPPO LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PAYHIPPO"
+      ]
+    },
+    {
+      "name": "PROSPERITY ARCHIPELAGO LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "GOCASH"
+      ]
+    },
+    {
+      "name": "YEGON TECH LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "GALAXY CREDIT"
+      ]
+    },
+    {
+      "name": "VEENDHQ LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "VEEND"
+      ]
+    },
+    {
+      "name": "CROSSROAD E-PAYMENT SYSTEMS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "UNLOCKCASH",
+        "SUNQUOTA",
+        "MASSIVE CARD"
+      ]
+    },
+    {
+      "name": "HIGHCREDIT NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "RUSHCREDIT"
+      ]
+    },
+    {
+      "name": "JM RUBINUS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "RUBIMONI"
+      ]
+    },
+    {
+      "name": "FINTCRED INNOVATIONS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CREDITFAST"
+      ]
+    },
+    {
+      "name": "PISKA TECHNOLOGY NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ULTRA CASH",
+        "ULTRA NAIRA"
+      ]
+    },
+    {
+      "name": "AFROSAY FINTECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "GETCREDIT"
+      ]
+    },
+    {
+      "name": "CORNERBLOCKS SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "BANK ONE",
+        "CBSL CREDIT"
+      ]
+    },
+    {
+      "name": "TRUST CEN. LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "POCASH"
+      ]
+    },
+    {
+      "name": "CREDNET TECHNOLOGIES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CREDPAL"
+      ]
+    },
+    {
+      "name": "CASH ADVANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CASHADVANCE"
+      ]
+    },
+    {
+      "name": "QUARK FINANCIALS NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CASHPADDIE",
+        "9MONEY",
+        "PAYNAIRA",
+        "GBOBLOAN",
+        "ONEMONEY",
+        "FRIMONI"
+      ]
+    },
+    {
+      "name": "LENDVISERY SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LENDQUICK"
+      ]
+    },
+    {
+      "name": "TRADE LENDA COM LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TRADE LENDA"
+      ]
+    },
+    {
+      "name": "MAYWOOD LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TOP CREDIT",
+        "HI CREDIT",
+        "BEST CASH"
+      ]
+    },
+    {
+      "name": "A1 CAPITAL SOLUTION LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "A1 CREDIT"
+      ]
+    },
+    {
+      "name": "IRORUN TECHNOLOGIES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "IRORUN IRORUN WEB"
+      ]
+    },
+    {
+      "name": "CARBON MICROFINANCE BANK LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CARBON"
+      ]
+    },
+    {
+      "name": "PAYCREDIT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PAYCREDIT"
+      ]
+    },
+    {
+      "name": "CWH SUCCESS NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SUPERMONEY",
+        "MONEYHUB",
+        "CASHHOP",
+        "CREDITLAB",
+        "CASHOP"
+      ]
+    },
+    {
+      "name": "MICRO-CASH NIG. LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MICROMONEY"
+      ]
+    },
+    {
+      "name": "CAELUM TECHNOLOGIES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "1-HOUR LOAN"
+      ]
+    },
+    {
+      "name": "DOVER CREDIT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "DOCREDIT",
+        "CARE FINANCE"
+      ]
+    },
+    {
+      "name": "APEX LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "APEX LOAN"
+      ]
+    },
+    {
+      "name": "RAGEKAY GLOBAL INVESTMENT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "OYESCREDIT"
+      ]
+    },
+    {
+      "name": "LINKPARK TECHNOLOGY NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "OK CASH",
+        "PEARL CASH"
+      ]
+    },
+    {
+      "name": "ARVE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "QUICKCHECK"
+      ]
+    },
+    {
+      "name": "CREDITWAVE FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WEB PORTAL."
+      ]
+    },
+    {
+      "name": "UCPLUS ADVANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "UC SALARY LOAN",
+        "KASHNOW"
+      ]
+    },
+    {
+      "name": "RENNERS INVESTMENT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "RENNERS"
+      ]
+    },
+    {
+      "name": "ZUVY TECHNOLOGIES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ZUVY.CO"
+      ]
+    },
+    {
+      "name": "EASYCHECK FINANCE INVESTMENT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LUCKYLOAN",
+        "ONECASH",
+        "RITECASH",
+        "FLYCASH",
+        "OMEGALOAN"
+      ]
+    },
+    {
+      "name": "TOPMOST FINTECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "OKILO LOAN",
+        "FLAME LOAN",
+        "POPPOKKET",
+        "LOAN PART"
+      ]
+    },
+    {
+      "name": "REVENT GLOBAL FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "VYBECASH"
+      ]
+    },
+    {
+      "name": "BIMZU LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "BIMZUKASH"
+      ]
+    },
+    {
+      "name": "DYNAMIQUE CREDIT SYSTEM LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "DYNAMIQUEIOS",
+        "BANKBOOK.CLOUD"
+      ]
+    },
+    {
+      "name": "REXCREDIT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "REXAFRICA"
+      ]
+    },
+    {
+      "name": "SIPAN FINANCE NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "VIDUS LOAN",
+        "EARLY LOAN",
+        "HOPE LOAN"
+      ]
+    },
+    {
+      "name": "TRUSTROCK FINTECH NIG LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NAIRAMAX",
+        "GETNAIRA"
+      ]
+    },
+    {
+      "name": "BRIDGE ADVANCE LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "BALL"
+      ]
+    },
+    {
+      "name": "RENMONEY LENDING COMPANY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "RENMONEY INSTANT CASH LOAN"
+      ]
+    },
+    {
+      "name": "WHITE HORSE SUCESSS NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CREDITMONEY"
+      ]
+    },
+    {
+      "name": "FOX LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LOANMATE"
+      ]
+    },
+    {
+      "name": "PARKCROWDY NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "OURPASS"
+      ]
+    },
+    {
+      "name": "NATURE LENDING NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FUTURECASH"
+      ]
+    },
+    {
+      "name": "COMPETENCE ASSET MANAGEMENT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "EDIKE"
+      ]
+    },
+    {
+      "name": "FULCRUM SIGMA ENTERPRISE LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FULCRUMMONEY",
+        "SIGMAMONEY LOAN",
+        "TOKCASH LOAN"
+      ]
+    },
+    {
+      "name": "NEWRGY LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MONIGO",
+        "SAPA JUMP",
+        "SHARP COLLECT",
+        "TOGAIN",
+        "STREAM SAPA"
+      ]
+    },
+    {
+      "name": "XTRA MFS NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "EXTRA CASH",
+        "QUICKTELLER"
+      ]
+    },
+    {
+      "name": "SALAD TECHNOLOGIES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SALAD AFRICA"
+      ]
+    },
+    {
+      "name": "LEEBURG TECHNOLOGY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "EDONENTER",
+        "CREDIT-MOI"
+      ]
+    },
+    {
+      "name": "SUMMIT FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "9JIACASHPOOL",
+        "9JKASH"
+      ]
+    },
+    {
+      "name": "ECON CREDIT FINTECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ECON MART",
+        "HUBCASH",
+        "NEAR MONEY"
+      ]
+    },
+    {
+      "name": "FLICKWHEEL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FLICKWHEEL"
+      ]
+    },
+    {
+      "name": "THE DATASEED COMPANY LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SEEDFI",
+        "FUNDME"
+      ]
+    },
+    {
+      "name": "KIYA BITS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KIAKIA P2P",
+        "KIYA"
+      ]
+    },
+    {
+      "name": "REXEN FINTECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SUPERWALLET",
+        "GOSLING",
+        "SPENDMONEY",
+        "FORTUNE TREASURE",
+        "GOLD SOURCE"
+      ]
+    },
+    {
+      "name": "BLACKSTONE CAPITAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KLIKSAVE"
+      ]
+    },
+    {
+      "name": "CARE CREDIT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CARE CREDIT"
+      ]
+    },
+    {
+      "name": "SLASH FINANCES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.SLASHFINANCES.COM"
+      ]
+    },
+    {
+      "name": "SILKROAD FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ROCKETLEND-FASTMONEY",
+        "SILKLOAN-QUICKCASH LOAN"
+      ]
+    },
+    {
+      "name": "DE FINTEK NIGERIA INVESTMENT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "INSTANT LOAN",
+        "FLASH SILVER",
+        "CREDIT CUBE",
+        "GOOSE WALLET",
+        "URGENT MONEY"
+      ]
+    },
+    {
+      "name": "SAVINGS BOX GLOBAL IMPACT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SAVINGSBOX"
+      ]
+    },
+    {
+      "name": "FEWCHORE FINANCE COMPANY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FEWCHORE PAY"
+      ]
+    },
+    {
+      "name": "STASH FINTECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "STASH"
+      ]
+    },
+    {
+      "name": "BUSIYARD LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "BUSIYARD CREDIT"
+      ]
+    },
+    {
+      "name": "NAIJASYNC COMPANY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "OLA CREDIT",
+        "JARA CASH",
+        "OPP CASH",
+        "CHEDDAR"
+      ]
+    },
+    {
+      "name": "INDIE FINANCE COMPANY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "YANZU AFRIKA"
+      ]
+    },
+    {
+      "name": "ONE PAYOUT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "YANZU KREDIT"
+      ]
+    },
+    {
+      "name": "ERIC VSTA LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LINKCREDIT",
+        "URKASH",
+        "POWERKASH"
+      ]
+    },
+    {
+      "name": "ZEMEKT NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ZEMCASH",
+        "WAKACASH"
+      ]
+    },
+    {
+      "name": "AIBANC TECHNOLOGIES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "AIBANC"
+      ]
+    },
+    {
+      "name": "COOLBUCK LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.COOLBUCKSNG.COM"
+      ]
+    },
+    {
+      "name": "HIZO TECHNOLOGY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "HIZO.AFRICA"
+      ]
+    },
+    {
+      "name": "PITCH CAPITAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PITCH CREDIT",
+        "PAYPOINT"
+      ]
+    },
+    {
+      "name": "ZELIA SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ZELIA"
+      ]
+    },
+    {
+      "name": "MINIOMA INVESTMENT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MINIOMA",
+        "SNOWPAY"
+      ]
+    },
+    {
+      "name": "ELEPHANT GLOBE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ELEPHANT"
+      ]
+    },
+    {
+      "name": "LITTLE ANT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ALEND"
+      ]
+    },
+    {
+      "name": "FIRMUS RETAIL SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FIRMUS MONIE"
+      ]
+    },
+    {
+      "name": "PROSPERITY LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LOANNOW",
+        "RAPIDLEND",
+        "IKASHPRO",
+        "EASYLEND"
+      ]
+    },
+    {
+      "name": "SMARTLOANS INTEGRATED SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "HOVER LOAN",
+        "KORRECT KASH",
+        "LEND SAFE",
+        "LEND JOINT",
+        "DISTRO KASH"
+      ]
+    },
+    {
+      "name": "LINTH INTEGRATED SERVICES LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PHASTMONEY"
+      ]
+    },
+    {
+      "name": "INCHOI TECHNOLOGY NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FASTCASH",
+        "MCASH"
+      ]
+    },
+    {
+      "name": "KLUMP TECHNOLOGY COMPANY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KLUMP"
+      ]
+    },
+    {
+      "name": "SHARP CREDIT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.SHARPCREDITING.COM"
+      ]
+    },
+    {
+      "name": "WAKANDA CREDIT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CREDITJET-SAFE & FAST LOAN",
+        "TIFI SLICE-FAST CASH LOAN"
+      ]
+    },
+    {
+      "name": "KENDA LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CENTURY",
+        "ROCKET LOAN"
+      ]
+    },
+    {
+      "name": "JALISCO LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CASHWISE LOAN"
+      ]
+    },
+    {
+      "name": "RIPLEY NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MONEY TAP",
+        "VIBECASH"
+      ]
+    },
+    {
+      "name": "CASHIGO INTERNATIONAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LCREDIT"
+      ]
+    },
+    {
+      "name": "ENTOURAGE INTEGRATED TRUST LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.ENTOURAGELOANS.COM"
+      ]
+    },
+    {
+      "name": "DIRECT BRIDGE NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.DIRECTBRIDGENG.COM"
+      ]
+    },
+    {
+      "name": "GRIT-TECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "GRIT-TECH LOAN"
+      ]
+    },
+    {
+      "name": "EDGEPLUS CAPITAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FACTORWISE",
+        "RENTMATA"
+      ]
+    },
+    {
+      "name": "CASHXPRESS NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CASHX"
+      ]
+    },
+    {
+      "name": "LQTY NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.ONELIQUIDITY.COM"
+      ]
+    },
+    {
+      "name": "GAP CREDIT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "GAP-GAP FINANCE FOR INDIVIDUAL",
+        "GAP BUSINESS-GAP BUSINESS FOR BUSINESS ENTHUSIASTS"
+      ]
+    },
+    {
+      "name": "BLUEONE NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "OMNIKASH",
+        "RAPIDNAIRA"
+      ]
+    },
+    {
+      "name": "BLAZELOAN LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "BLAZELOAN",
+        "FLASHCREDIT",
+        "NINECASH-QUICK MONEY",
+        "MONEY99-SAFE & FAST CASH",
+        "MONEY-FAST CASH LOAN"
+      ]
+    },
+    {
+      "name": "DIGITAL CHEETAH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.LOANPRONI.COM",
+        "TOP CREDIT",
+        "HI CREDIT",
+        "BEST CASH"
+      ]
+    },
+    {
+      "name": "SUNNY CYBER TECHNOLOGY NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SUNNYCREDIT",
+        "CREDIT PLUS"
+      ]
+    },
+    {
+      "name": "SIXTH PENGUIN LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SIXTH PENGUIN LOAN"
+      ]
+    },
+    {
+      "name": "GBOWY CAPITAL AND INVESTMENT SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.GBOWY.NET"
+      ]
+    },
+    {
+      "name": "FLOODLIGHTS TECHNOLOGY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SMARTNAIRA",
+        "PRIMECASH"
+      ]
+    },
+    {
+      "name": "BRIDGENEXT INNOVATIONS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LOANSTAR",
+        "QUICKASH"
+      ]
+    },
+    {
+      "name": "COREINNOVATE DIGITAL SOLUTIONS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "QUICKMONI",
+        "TRUSTKASH",
+        "NICENAIRA PLUS"
+      ]
+    },
+    {
+      "name": "LOANBOOK LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LB CREDIT",
+        "LB CASH"
+      ]
+    },
+    {
+      "name": "NOLT FINANCE COMPANY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NOLT"
+      ]
+    },
+    {
+      "name": "SEESPRING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KULU",
+        "FEGSOL"
+      ]
+    },
+    {
+      "name": "QIHU FINTECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NAIRAMAX",
+        "INCASH"
+      ]
+    },
+    {
+      "name": "FINSPA INVESTMENT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FINSPA"
+      ]
+    },
+    {
+      "name": "HADI AFRICA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "HADI FINANCE"
+      ]
+    },
+    {
+      "name": "AVENTRAFUSSION NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ZOOMCASH",
+        "TRUSTLOAN"
+      ]
+    },
+    {
+      "name": "MYEAZI TECHNOLOGY SERVICES",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "EAZIPAY"
+      ]
+    },
+    {
+      "name": "WIAM NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LENDSWAP"
+      ]
+    },
+    {
+      "name": "GLOBAL SPREAD INVESTMENT & COMMERCIAL SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "GLOBAL MONEY",
+        "SALARY LOAN"
+      ]
+    },
+    {
+      "name": "CASTILLO CREDIT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "HAPPYLOAN",
+        "HAPPYCREDIT",
+        "INSTANTLOAN",
+        "FIRSTLOAN",
+        "FIRSTCREDIT"
+      ]
+    },
+    {
+      "name": "DEERLEAP TECH COMPANY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FUN BOX",
+        "CREDIT LOANS"
+      ]
+    },
+    {
+      "name": "CAPITALWISE DYNAMIC PAY C LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CAPITALWISE PAYMENT"
+      ]
+    },
+    {
+      "name": "ANDES NETWORK SPA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NINIMONEY-FAST CASH LOAN",
+        "ANDES LOAN",
+        "JOLLOF CASH-FAST LOAN",
+        "XLOAN-QUICK MONEY",
+        "JIMO LOANS"
+      ]
+    },
+    {
+      "name": "ANTPAY INTERNATIONAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ANTPAY"
+      ]
+    },
+    {
+      "name": "DOMINION MERCHANTS & PARTNERS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "DOMINION MERCHANTS"
+      ]
+    },
+    {
+      "name": "PLANO LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "OKADANAIRA",
+        "OKADALOAN"
+      ]
+    },
+    {
+      "name": "PRIME FISCUS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PRIMEEX",
+        "FISCUS"
+      ]
+    },
+    {
+      "name": "SAMUED TECH NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TRUE MONEY",
+        "CASH9JA"
+      ]
+    },
+    {
+      "name": "KUDI PALLY TECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TRUE LOAN",
+        "EASELEND"
+      ]
+    },
+    {
+      "name": "MINICLOUD SOLUTION LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NICEKASH",
+        "MAXMONI",
+        "TRUSTNAIRA",
+        "YESLOAN",
+        "BOOMCASH"
+      ]
+    },
+    {
+      "name": "NEWFORTUNES CREDIT SERVICE",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "INSTANTMULA"
+      ]
+    },
+    {
+      "name": "CREDILITY FIN SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CASHGO",
+        "CREDNOW"
+      ]
+    },
+    {
+      "name": "CONRADO LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FASTFUND",
+        "CASHEASE",
+        "MONEYBRIDGE",
+        "FLEXIFUND",
+        "SWIFTLOAN"
+      ]
+    },
+    {
+      "name": "DOKU TECHNOLOGY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "DOKUCREDIT",
+        "EGOEASY",
+        "QUICKEGO",
+        "LUCKYEGO",
+        "HAPPYEGO"
+      ]
+    },
+    {
+      "name": "MULTI-LEVEL FIN SOLUTIONS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FLEXILOAN",
+        "EASYCREDIT"
+      ]
+    },
+    {
+      "name": "CREDPAY FINTECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MONILOAN",
+        "KASHLOAN"
+      ]
+    },
+    {
+      "name": "HERMONEY FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "HERMONEY"
+      ]
+    },
+    {
+      "name": "ECO PAY GLOBE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ECOPAY"
+      ]
+    },
+    {
+      "name": "HORIZON LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LINELEND",
+        "LINELOAN",
+        "LINECREDIT",
+        "LINECASH"
+      ]
+    },
+    {
+      "name": "IVY CRED LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "IVY CREDIT",
+        "IVY PAY",
+        "IVY BUSSINESS"
+      ]
+    },
+    {
+      "name": "GRAYSVILLE TRADING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LENDMAX",
+        "CASHWAY",
+        "INSTANTKASH",
+        "SAFECASH"
+      ]
+    },
+    {
+      "name": "ELECTRONIC FOX LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NAIRA CUP",
+        "CREDITBAG"
+      ]
+    },
+    {
+      "name": "M-KOPA LOANS NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "M-KOPA"
+      ]
+    },
+    {
+      "name": "EAGER WING NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FLASH LOAN",
+        "EAGER LOAN"
+      ]
+    },
+    {
+      "name": "AVENIR TECH CREDIT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "QUICKNAIRA",
+        "KASHMORE"
+      ]
+    },
+    {
+      "name": "BETHEONE LENDING NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "EASYNAIRA",
+        "ONENAIRA"
+      ]
+    },
+    {
+      "name": "IKASA NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.IKASALTD.COM"
+      ]
+    },
+    {
+      "name": "LENDOCREDIT INVESTMENT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LENDOCREDIT NANO LENDING",
+        "LENDOCREDIT MERCHANT LENDING"
+      ]
+    },
+    {
+      "name": "GAPH CREDIT & LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "GAPHCREDIT.COM.NG"
+      ]
+    },
+    {
+      "name": "FUELCREDIT COM LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FUELCREDIT",
+        "WWW.MYFUELCREDIT.COM"
+      ]
+    },
+    {
+      "name": "BERYLS MANAGEMENT LIMTED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "BERYLS FINANCIALS"
+      ]
+    },
+    {
+      "name": "RHYTHMTECH FINANCIALS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CRAFT",
+        "MONEY SOLVE",
+        "SWEET CREDIT",
+        "QUICKACESS LOAN",
+        "GUARANTEE LOAN"
+      ]
+    },
+    {
+      "name": "RELIANCE ECONOMIC ADVANCEMENT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "REAL"
+      ]
+    },
+    {
+      "name": "TRUSTY FINANCIAL TECHNOLOGIES",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TRUSTY"
+      ]
+    },
+    {
+      "name": "CREDLOCK NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CREDLOCK BUSSINESS",
+        "CREDLOCK PAY"
+      ]
+    },
+    {
+      "name": "O2 INTERNATIONAL DYNAMIC CONCEPT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "O2 FINANCE"
+      ]
+    },
+    {
+      "name": "MAXBLUE INTERNATIONAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "BETA NAIRA"
+      ]
+    },
+    {
+      "name": "MULTI OPT-IN TECH SOLUTION",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LEM-EF"
+      ]
+    },
+    {
+      "name": "OPTIMA NEXUS FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "HAWKLEAP-CREDIT LOAN",
+        "LUMOCASH-INSTANT LOAN",
+        "AFROCREDIT-TRUSTED LOANS"
+      ]
+    },
+    {
+      "name": "KADAVRA CREDIT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KADAVRAGROUP.COM",
+        "CREDIT"
+      ]
+    },
+    {
+      "name": "QUICKCRED NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "QUICKCRED PERSONAL LOAN",
+        "QUICKCRED SALARY LOAN",
+        "QUICKCRED BNPL LOAN"
+      ]
+    },
+    {
+      "name": "HERVEST FOR WOMEN LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "HERVEST"
+      ]
+    },
+    {
+      "name": "CREDIT365 NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CASHX INSTANT LOANS",
+        "CREDIT 365",
+        "LENDPLUS"
+      ]
+    },
+    {
+      "name": "PROXIMA FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PROXIMA FINANCE",
+        "WWW.PROXIMAFINACE.COM.NG"
+      ]
+    },
+    {
+      "name": "RIPPLES J&MLJ INVESTMENT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "RIPPLES FINANCE"
+      ]
+    },
+    {
+      "name": "CHENVASA INTEGRATED CONCEPT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "OGACASH"
+      ]
+    },
+    {
+      "name": "BCBL FINTECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MONIEMIZE",
+        "MONIESTREAM"
+      ]
+    },
+    {
+      "name": "CRESTDIGITAL TECHNOLOGY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "DIGITCASH",
+        "FLASHCREST"
+      ]
+    },
+    {
+      "name": "TECHECHO INNOVATIONS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ECHOLOAN",
+        "SWIFTECHO"
+      ]
+    },
+    {
+      "name": "TECHEDGE DIGITAL SOLUTIONS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "EDGELOAN",
+        "FRIMONI PLUS"
+      ]
+    },
+    {
+      "name": "CRESTBEAM NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FINECREDIT",
+        "WELEND"
+      ]
+    },
+    {
+      "name": "STREMVANS INVESTMENT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "STREMVANS"
+      ]
+    },
+    {
+      "name": "KERO GLOBAL LENDAS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KERO FAST CASH"
+      ]
+    },
+    {
+      "name": "GREEN TECH INNOVATIONS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "APLINCREDIT",
+        "NAIRANEST",
+        "GENCREDIT"
+      ]
+    },
+    {
+      "name": "ECONOVA TECHNOLOGY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LENDIFY",
+        "LEAPCREDIT",
+        "HATCHPAY"
+      ]
+    },
+    {
+      "name": "HILLSIDE LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PEAKASH",
+        "APEXNAIRA",
+        "CLIMBKASH"
+      ]
+    },
+    {
+      "name": "ASOSO GLOBA-TECH",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "OWOCREDIT",
+        "AJOMONI"
+      ]
+    },
+    {
+      "name": "CORESTONE TECHNOLOGY NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "HIWALLET",
+        "PROPAY"
+      ]
+    },
+    {
+      "name": "ANTSEE NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "STARCASH"
+      ]
+    },
+    {
+      "name": "ISHOWMESK ENTERPRISES LLP",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "COMFORT LOAN",
+        "LUMEN LOAN"
+      ]
+    },
+    {
+      "name": "DIGITALDELIGHT INTEGRATED SUPPORT SERVICE LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PURE CASH",
+        "CHECK LOAN"
+      ]
+    },
+    {
+      "name": "SUPPORTHOB GLOBAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LENDME",
+        "MOOLAH"
+      ]
+    },
+    {
+      "name": "YOUCARE TEAM SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "GRAND NAIRA",
+        "LARGE NAIRA"
+      ]
+    },
+    {
+      "name": "FLASHCREDIT NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SPEEDYFINANCE",
+        "FLASHFUND"
+      ]
+    },
+    {
+      "name": "LENDU SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LENDU"
+      ]
+    },
+    {
+      "name": "THE LENDERS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "THE LENDERS"
+      ]
+    },
+    {
+      "name": "MYHIVES DEVELOPMENT FOUNDATION LTD/GTE",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MYHIVES"
+      ]
+    },
+    {
+      "name": "BOLDSWITCH SOFTWARE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "BOLD"
+      ]
+    },
+    {
+      "name": "NIKDEL CAPITAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NIKDEL FAST CASH",
+        "NIKDEL LOANS"
+      ]
+    },
+    {
+      "name": "RIMWORLD CAPITAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "RIMWORLD",
+        "WWW.RIMWORLD.COM"
+      ]
+    },
+    {
+      "name": "PURPLE-PEARL GLOBAL NIG. LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PURPLE-PEARL"
+      ]
+    },
+    {
+      "name": "DATAPOWER GLOBAL SERVICES LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "AI CREDIT",
+        "AI CREDIT INSIGHT"
+      ]
+    },
+    {
+      "name": "SINOFIN LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FINCREDIT",
+        "FINKASH"
+      ]
+    },
+    {
+      "name": "FLEX FINANCIAL TECHNOLOGIES",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FLEXFINANCE"
+      ]
+    },
+    {
+      "name": "PISI TECHNOLOGIES",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "BETA FINANCE"
+      ]
+    },
+    {
+      "name": "FIN SERVER LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FIN SERVER"
+      ]
+    },
+    {
+      "name": "COWRY FINANCE COMPANY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "COWRY WEALTH",
+        "COWRY BANK",
+        "COWRY PAY"
+      ]
+    },
+    {
+      "name": "FUNDBOX FINANCIAL SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FUNDBOX FSL",
+        "LENDEASE"
+      ]
+    },
+    {
+      "name": "MONA FINANCE LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MONA",
+        "MONA FINANCE"
+      ]
+    },
+    {
+      "name": "PACT OWOH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SNAP CREDIT",
+        "ONLINE LOAN",
+        "EZLOAN"
+      ]
+    },
+    {
+      "name": "NEWDUCKS NIG LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "APPCREDIT"
+      ]
+    },
+    {
+      "name": "GREEN FAMILY LOAN LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FAMILY"
+      ]
+    },
+    {
+      "name": "UNIQUE JMK LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.UNIQUELTD.COM",
+        "UNIQUEJMK"
+      ]
+    },
+    {
+      "name": "RENDA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SCALE BY RENDA FOR INDIVIDUALS",
+        "SCALE BY RENDA BUSSINESS"
+      ]
+    },
+    {
+      "name": "PIVOTALIZ INNOVATION LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SUNBAY CREDIT LOAN",
+        "X-ORAVEST CAPITAL LOAN",
+        "OKLIN CREDIT LOAN"
+      ]
+    },
+    {
+      "name": "CREDITMAX LENDING LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CREDITMAX",
+        "FILLMORE"
+      ]
+    },
+    {
+      "name": "FINSERVE INVESTMENT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FINSERVE"
+      ]
+    },
+    {
+      "name": "FLEETWOOD LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KWIKVAULT",
+        "SUREFUND",
+        "LOANTECH",
+        "CREDITFLEX",
+        "RAPIDFUNDS"
+      ]
+    },
+    {
+      "name": "DANEIZO TRADE AFRICA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "DANEIZO CREDIT",
+        "WWW.DANEIZOTRADEAFRICA.COM"
+      ]
+    },
+    {
+      "name": "VELASCO LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KASHFLEX",
+        "KASHKREDIT"
+      ]
+    },
+    {
+      "name": "WAXDALE LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NAIRAPOCKET",
+        "NAIRA EXP",
+        "PICKNAIRA"
+      ]
+    },
+    {
+      "name": "TOPECA LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FLEXIVAULT",
+        "KASHVAULT",
+        "NAIRAVAULT"
+      ]
+    },
+    {
+      "name": "RAIZ DIGITAL SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "RAIZ"
+      ]
+    },
+    {
+      "name": "GROWISE FORT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ZEAL CREDIT LOAN",
+        "MYCREDIT LOAN",
+        "ZEALCASH",
+        "ZAELCASH"
+      ]
+    },
+    {
+      "name": "TRANSACTIUM LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TOPLEND LOAN",
+        "EYLOAN LOAN"
+      ]
+    },
+    {
+      "name": "NAIJA TRANSACT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LENDSPHERE LOAN",
+        "LADDER LOAN"
+      ]
+    },
+    {
+      "name": "FORTUNE FISH INTERNATIONAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "AFROLOAN",
+        "AFROKASH"
+      ]
+    },
+    {
+      "name": "NOVALUX TECHNOLOGY LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PROSPERA LOAN",
+        "FUNDIFY LOAN"
+      ]
+    },
+    {
+      "name": "TAGORA FINANCE SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TAGORA LOAN"
+      ]
+    },
+    {
+      "name": "PANAXIA LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ZIPCASH LOAN",
+        "LITELOAN",
+        "PROLOAN"
+      ]
+    },
+    {
+      "name": "LARKLOAN NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.LARKLOAN .COM",
+        "KREVUS5 LOAN"
+      ]
+    },
+    {
+      "name": "KRESTON FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FLASHLEND LOAN",
+        "PIVOT LOAN"
+      ]
+    },
+    {
+      "name": "SKYBYTE INNOVATION NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SKYLEND",
+        "RITENAIRA"
+      ]
+    },
+    {
+      "name": "ESSENTIAL FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LENDSQR"
+      ]
+    },
+    {
+      "name": "APEXN PATH TECH LIMITED COMPANY",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SUPERCASH",
+        "CASHME"
+      ]
+    },
+    {
+      "name": "AKILAAH SOLUTION LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "AKILAAH"
+      ]
+    },
+    {
+      "name": "CREDX NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CREDX"
+      ]
+    },
+    {
+      "name": "ABADI TECHNOLOGY LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SINGA LOAN",
+        "SINGACASH LOAN",
+        "SINGAFAST LOAN"
+      ]
+    },
+    {
+      "name": "DT ONE NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "E-WALLET"
+      ]
+    },
+    {
+      "name": "CREDIO BANCO LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TRUSTCASH",
+        "CREDIOCASH"
+      ]
+    },
+    {
+      "name": "MCO PENNY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MCO PENNY"
+      ]
+    },
+    {
+      "name": "FUNDSFLOW INTEGRATED SYSTEMS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FUNDSFLOW"
+      ]
+    },
+    {
+      "name": "PILLA TECHNOLOGY RESOURCE LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PILLA"
+      ]
+    },
+    {
+      "name": "PURPLE PIXEL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PYPA LOAN",
+        "PAMPAM LOAN",
+        "TERREIRA LOAN",
+        "X-PETA LOAN",
+        "TWINKATE MONEY LOAN"
+      ]
+    },
+    {
+      "name": "DESHAVEN LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "DESHAVEN FAST CASH",
+        "DESHAVEN LOANS"
+      ]
+    },
+    {
+      "name": "SPARKLING WAVE INVESTMENT COMPANY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SPARKWAVE CREDIT",
+        "SPARKWAVE CAPITAL"
+      ]
+    },
+    {
+      "name": "OYSTER LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "OYSTERLOAN",
+        "ADOLOAN"
+      ]
+    },
+    {
+      "name": "TOPLIFTERS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.TOPLIFTERSLIMITED.COM"
+      ]
+    },
+    {
+      "name": "FORTUNELINK LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FUNDFLOW",
+        "NEXALOAN"
+      ]
+    },
+    {
+      "name": "BRIGHTPULSE TELECOMS LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PADICREDIT LOAN",
+        "DASHNAIRA LOAN"
+      ]
+    },
+    {
+      "name": "FLAMING HORIZON GLOBAL SERVICES LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ZIPLEAD LOAN",
+        "FASTKUDI LOAN"
+      ]
+    },
+    {
+      "name": "SIGMA PLUS TECH LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ZAP LOAN",
+        "NAIRASURE LOAN"
+      ]
+    },
+    {
+      "name": "WEFINANCE SOLUTION LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.WEFINANCENG.COM"
+      ]
+    },
+    {
+      "name": "PAYSKUL LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.PAYSKUL.COM",
+        "PAYSKUL"
+      ]
+    },
+    {
+      "name": "KUDO TRUST LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MICREDIT",
+        "NAIRANEW",
+        "CASHNOW"
+      ]
+    },
+    {
+      "name": "BULLION VOULT MOBILE LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.BULLIONVOULT.COM"
+      ]
+    },
+    {
+      "name": "WEALTHY-SUM TECH & GLOBAL LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CASHFILLY",
+        "WALLETFILLY"
+      ]
+    },
+    {
+      "name": "TRUEPOINT TOP LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TOPCASHNOW",
+        "TOPKASH"
+      ]
+    },
+    {
+      "name": "VERIZON-BEEN TECHNOLOGY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "VZCREDIT",
+        "RITLEND"
+      ]
+    },
+    {
+      "name": "CRUST DEW LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CRUSTCASH",
+        "CRUSTNAIRA"
+      ]
+    },
+    {
+      "name": "GRACEMONI LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "GRACEMONI"
+      ]
+    },
+    {
+      "name": "CAPIVAL INVESTMENT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CAPIVAL"
+      ]
+    },
+    {
+      "name": "JEJELY ULTIMATE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "GOGO CREDIT",
+        "FAIRLONER",
+        "LIFEO LENDING",
+        "INSTALLKASH",
+        "QKASH"
+      ]
+    },
+    {
+      "name": "FASTCASH GLOBAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FASTCASHMOBILE"
+      ]
+    },
+    {
+      "name": "BRIGHTPATH CREDIT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "BRIGHTPATH CREDIT"
+      ]
+    },
+    {
+      "name": "EVANDALE LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NAIJACRED",
+        "JARAMONI",
+        "CREDITPULSE",
+        "MOBIEASE"
+      ]
+    },
+    {
+      "name": "REDFIELD LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LOANSPRING",
+        "VERILOAN"
+      ]
+    },
+    {
+      "name": "KAJCO LENDING SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KAJCO CREDIT"
+      ]
+    },
+    {
+      "name": "CREDVERSE COMMS LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CREDITEAGLE",
+        "MONIMATE"
+      ]
+    },
+    {
+      "name": "CROWN TECK NIG LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ZAPCASH",
+        "GOMONEY"
+      ]
+    },
+    {
+      "name": "VELTRIX COMMS LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FUNDZONE",
+        "BIGNAME"
+      ]
+    },
+    {
+      "name": "TRANSKREDIT FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TRANSKREDIT LOAN",
+        "INVESTMENT"
+      ]
+    },
+    {
+      "name": "DGNRAVEPAY NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "RAVELOAN"
+      ]
+    },
+    {
+      "name": "IFEROX FILEX NIGERIA LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FINJARA"
+      ]
+    },
+    {
+      "name": "WSTC FINANCIAL SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WSTC"
+      ]
+    },
+    {
+      "name": "STEM CREDIT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.STEMCREDITLTD.COM"
+      ]
+    },
+    {
+      "name": "EXQUISITE SHOWERS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WKASH",
+        "KASH LENDING",
+        "CAREMONEY",
+        "FUNDINGCLUBS",
+        "HMONI"
+      ]
+    },
+    {
+      "name": "AUTOCHECK FINANCING SPV NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "AUTOCHEK"
+      ]
+    },
+    {
+      "name": "EAZY CREDIT & ASSET LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "EASY CREDIT"
+      ]
+    },
+    {
+      "name": "FLAGLA LENDING LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "OBICREDIT",
+        "KASYKREDIT",
+        "ZAMANILOAN"
+      ]
+    },
+    {
+      "name": "BENFORD LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "POCKETPESA",
+        "SWIFTJETKASH",
+        "FLASHFUNDSNG",
+        "EZMONEYNG",
+        "BORROWLYPOCKET"
+      ]
+    },
+    {
+      "name": "BRI CAPITAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "BRICAPITAL"
+      ]
+    },
+    {
+      "name": "TECHFUSION AFRICA TECHNOLOGIES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FUSE GO",
+        "30PLUS"
+      ]
+    },
+    {
+      "name": "STRATOVERTEX LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ZUIR LOAN",
+        "JOLLO LOAN"
+      ]
+    },
+    {
+      "name": "BLUVERTEX LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "DUMAPAY",
+        "BLUECASH"
+      ]
+    },
+    {
+      "name": "REGAL STALLION LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "EASYPAYPHONE",
+        "OWNMYPHONE"
+      ]
+    },
+    {
+      "name": "BLUPRIMVERTEX LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CHOPACREDIT",
+        "CHOPAPAY"
+      ]
+    },
+    {
+      "name": "CREDLANCHE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.CREDLANCHE.COM"
+      ]
+    },
+    {
+      "name": "DENVON LENDING LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NAIRAZOOM",
+        "LOANJETNG",
+        "KREDITKLICK",
+        "SUPERVALLEY",
+        "SUPERCHERISHLOAN"
+      ]
+    },
+    {
+      "name": "NEXORA TELECOMS SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PAYPROMPT",
+        "QUICKFUND"
+      ]
+    },
+    {
+      "name": "MAXIMERGE FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PRIMECREDIT",
+        "POCKETLOAN",
+        "CREDITMORE",
+        "ADVANCE LOAN",
+        "BOOMCREDIT"
+      ]
+    },
+    {
+      "name": "SOAR-GLOBAL TECH SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "UNI KASH",
+        "UNI LOAN"
+      ]
+    },
+    {
+      "name": "TRANQUILUX-TECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ECO KASH",
+        "ECO LOAN"
+      ]
+    },
+    {
+      "name": "ADVANCLY TECHNOLOGIES NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ADVANCLY"
+      ]
+    },
+    {
+      "name": "MYPY TECHNOLOGY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "BEASTKASH",
+        "LOANPULSE",
+        "NAIRARISE",
+        "ZPOCASH",
+        "CREDIQUICK"
+      ]
+    },
+    {
+      "name": "ROSAQUILLA MULTI-TECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NOK"
+      ]
+    },
+    {
+      "name": "WINNORIZON TECH SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "EYO CREDIT",
+        "EYO KASH"
+      ]
+    },
+    {
+      "name": "JMC ALLIANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "JMC-TAMARA",
+        "JMC-PADI"
+      ]
+    },
+    {
+      "name": "POCKET SOLUTIONS AFRICA LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CREDLINE"
+      ]
+    },
+    {
+      "name": "VIOTRIM TECH HUB LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KLINKNAIRA LOAN",
+        "GAPLEAP LOAN",
+        "ZELTRO LOAN",
+        "TRYMONI LOAN",
+        "BASHLUME LOAN"
+      ]
+    },
+    {
+      "name": "COSMOTRIBE TECHNOLOGY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KOLOMONEY"
+      ]
+    },
+    {
+      "name": "GILGAL FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TUSH CREDIT",
+        "SINPA CREDIT",
+        "TUSELA CREDIT",
+        "GIMIDA LOAN"
+      ]
+    },
+    {
+      "name": "FFS FRONTIER SERVICES NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KAR2KASH",
+        "USEFFS"
+      ]
+    },
+    {
+      "name": "QUANTIMO SOLUTION LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TROO CREDIT",
+        "PLOTO CREDIT LOAN",
+        "TARI LOAN",
+        "GUAVEX LOAN"
+      ]
+    },
+    {
+      "name": "COOPVEST DIGITAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "COOPMONI"
+      ]
+    },
+    {
+      "name": "NOVALEND LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CASHNOVA",
+        "DASHME"
+      ]
+    },
+    {
+      "name": "LENDELA TECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LENDZA",
+        "LENDELAEGO",
+        "TARI LOAN",
+        "GUAVEX LOAN"
+      ]
+    },
+    {
+      "name": "SUREPURSE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KWIKPURSE",
+        "PURSENAIJA"
+      ]
+    },
+    {
+      "name": "SUPLIAS TECHNOLOGIES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "OBTAINLY"
+      ]
+    },
+    {
+      "name": "SERVICEFIRST NG LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CASHDASH",
+        "CASHGRAP"
+      ]
+    },
+    {
+      "name": "THE SWIFT-FLOW INTEGRATED SERVICE LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LOANBEE",
+        "CASHVIBE"
+      ]
+    },
+    {
+      "name": "CLARITYCARE NG LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CASHKOLO",
+        "CASHTOP"
+      ]
+    },
+    {
+      "name": "KREDIKOPA NG LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NAIJAQLOAN",
+        "NAIRAKOPA"
+      ]
+    },
+    {
+      "name": "FLEXI INNOVATION HUB LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "QUICKNAIRA",
+        "MONEYWAVE"
+      ]
+    },
+    {
+      "name": "ARZIKI BRIDGE TECHNOLOGY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CALM CREDIT",
+        "CLEARLOAN"
+      ]
+    },
+    {
+      "name": "CAREFREE TECHNOLOGY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "UBER CREDI",
+        "SIMI CASH"
+      ]
+    },
+    {
+      "name": "GREATCOSMOS NG LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NAIJALEND",
+        "LENDFAST CREDIT"
+      ]
+    },
+    {
+      "name": "ACORN LENDING LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ACORNCREDIT",
+        "ZUBALOAN"
+      ]
+    },
+    {
+      "name": "LITTLE ANT TECHNOLOGY CO. LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "REPEAT CASH",
+        "PRESENT LOAN"
+      ]
+    },
+    {
+      "name": "ALEEZAH NIG. LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ALEEZAH"
+      ]
+    },
+    {
+      "name": "LAMBDA CREDIT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LAMBDA"
+      ]
+    },
+    {
+      "name": "KREDITEK STRIDE LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KREDITEK"
+      ]
+    },
+    {
+      "name": "BRICKBRIDGE COMPANY LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "GETKASH",
+        "LENDKASH"
+      ]
+    },
+    {
+      "name": "CAPIMORE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CAPIMORE"
+      ]
+    },
+    {
+      "name": "UBUNTU LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CASHMATE",
+        "FUNDGO"
+      ]
+    },
+    {
+      "name": "SPROUTLY TECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SPROUTLY"
+      ]
+    },
+    {
+      "name": "GREATFIN LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ICREDIT-NG",
+        "ICREDIT-PRO"
+      ]
+    },
+    {
+      "name": "CUSTOMERCRAFT LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CASHLINK",
+        "CASHHIVE"
+      ]
+    },
+    {
+      "name": "HEAT FINANCE AND INVESTMENTS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "HEATMONEY.COM.NG",
+        "HEATFINANCIALS.COM"
+      ]
+    },
+    {
+      "name": "SHEKEL MOBILITY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SHEKEL",
+        "POCKET DEALER"
+      ]
+    },
+    {
+      "name": "NIGERIA LBEV LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MONI TAP",
+        "MONI BIZ",
+        "SHARPMONI"
+      ]
+    },
+    {
+      "name": "KILOFE NIG. LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "BAFF"
+      ]
+    },
+    {
+      "name": "NEFERTITI ASSETS & INVESTMENT LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WATU SIMU"
+      ]
+    },
+    {
+      "name": "SPRONTLY TECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SPRONTLY"
+      ]
+    },
+    {
+      "name": "SEAMLESSHR.COM LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "BREEZE",
+        "SEAMLESS HRMS"
+      ]
+    },
+    {
+      "name": "LUMORA EDGE LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NAIJAKASH",
+        "FTCREDIT"
+      ]
+    },
+    {
+      "name": "CORELITH TECH LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NAIRARUSH",
+        "KASHBEE"
+      ]
+    },
+    {
+      "name": "CIRCLEFUNDME DIGITAL SAVINGS & LOAN COOP. SOCIETY LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CIRCLEFUNDME"
+      ]
+    },
+    {
+      "name": "ZEPPHYREDGE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ZEPHYRCASH",
+        "ZEPHYRCREDIT"
+      ]
+    },
+    {
+      "name": "BULLIONMONIE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "BULLIONMONIE LOAN"
+      ]
+    },
+    {
+      "name": "ZARADERA CREDIT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "RIGHTPOINT",
+        "ZCMONEY"
+      ]
+    },
+    {
+      "name": "ABOTTMAX LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ABOTTMAX"
+      ]
+    },
+    {
+      "name": "LUMINARY ASSIST LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SHAGOLOAN",
+        "LENDJET"
+      ]
+    },
+    {
+      "name": "MAJATECH NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "XCASH",
+        "XCROSSCASH",
+        "PALMCREDIT PLUS",
+        "TAKICREDIT"
+      ]
+    },
+    {
+      "name": "S & CO.TECH PARTNERS LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "99CREDIT",
+        "CASH4U"
+      ]
+    },
+    {
+      "name": "EASTDIGITAL FINANCE TECHNOLOGIES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MG LOAN",
+        "ED CREDIT"
+      ]
+    },
+    {
+      "name": "EKRUZ SOLUTION LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "EKRUZ SWIFE LOAN",
+        "KRUZCREDIT"
+      ]
+    },
+    {
+      "name": "BLOCKA TECHNOLOGIES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "BLOCKA CASH"
+      ]
+    },
+    {
+      "name": "VENBENCARE LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KUDIGO",
+        "ZIPPACASH"
+      ]
+    },
+    {
+      "name": "FUTURECREST INTERNET TECHNOLOGY LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "EASE CASH"
+      ]
+    },
+    {
+      "name": "HASTELLOY ADVANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.HASTELLOYADVANCE.COM"
+      ]
+    },
+    {
+      "name": "YALO TECHNOLOGIES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "YALO"
+      ]
+    },
+    {
+      "name": "STARPOST ADVANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "STARPOST ADVANCE"
+      ]
+    },
+    {
+      "name": "LANCE BUSSINESS INNOVATION TECHNOLOGIES",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LANCE CREDIT"
+      ]
+    },
+    {
+      "name": "OHERE TECHNOLOGIES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "OHERE"
+      ]
+    },
+    {
+      "name": "TARAFIN SERVICE LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TARACREDIT",
+        "ABATCREDIT"
+      ]
+    },
+    {
+      "name": "PRUVIA TRADING INTERNATIONAL",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PRUVIA MONI",
+        "MARS"
+      ]
+    },
+    {
+      "name": "ZEPHYREDGE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ZEPHYRCASH",
+        "ZEPHYCREDIT"
+      ]
+    },
+    {
+      "name": "CATALYST CARE LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MONIESURE",
+        "KREDIGO"
+      ]
+    },
+    {
+      "name": "FIRST PRIMUS SYSTEMS LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "EZZYMEANS",
+        "EZZYMEANS WEB"
+      ]
+    },
+    {
+      "name": "TIVA FINANCE SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "TIVA"
+      ]
+    },
+    {
+      "name": "FIRST MARINA TRUST FINANCE COMPANY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FMTSPACE INVESTMENT"
+      ]
+    },
+    {
+      "name": "ZIP WAVE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ZIPWAVEMAX",
+        "ZIPWAVE GO"
+      ]
+    },
+    {
+      "name": "AMANA VENTURE LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "AMANACASH",
+        "GENZEECASH"
+      ]
+    },
+    {
+      "name": "EMPATHY DESK LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "OYAKUDI",
+        "KUSIVAULT"
+      ]
+    },
+    {
+      "name": "ANDRAY FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ANDRAY FINANCE"
+      ]
+    },
+    {
+      "name": "GLITCHGUARD LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MONEYXPRESS",
+        "YISHARE PAY"
+      ]
+    },
+    {
+      "name": "AFRICOINSPHERE TECHNOLOGIES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "OKCOIN"
+      ]
+    },
+    {
+      "name": "EATONHIL INVESTMENT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "VENDOR CREDIT"
+      ]
+    },
+    {
+      "name": "SUMMIT LENDING LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CASHNAIJA",
+        "OWOTRUST",
+        "KUDISWIFT."
+      ]
+    },
+    {
+      "name": "OZE NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.GETOZE.COM",
+        "OZE"
+      ]
+    },
+    {
+      "name": "CREDITACCESS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "YT FINANCE"
+      ]
+    },
+    {
+      "name": "BLUEHARBOR CAPITAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "BHLOAN",
+        "EAGLELOAN",
+        "DOPESA"
+      ]
+    },
+    {
+      "name": "CREDITZE NIG LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CREDITZE"
+      ]
+    },
+    {
+      "name": "NOWLENDI SOLUTIONS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MEGA NAIRA",
+        "NOW LENDI"
+      ]
+    },
+    {
+      "name": "BRIDGEPOINT FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FUBRO AN CREDOZA"
+      ]
+    },
+    {
+      "name": "MAIMART NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.MAMIMART.COM.NG"
+      ]
+    },
+    {
+      "name": "OPEN SPACE FINANCIAL SERVICES LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "OPENSPACE"
+      ]
+    },
+    {
+      "name": "MAXSERVE SUPPORT LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "HYPER LOAN",
+        "AOC LOAN"
+      ]
+    },
+    {
+      "name": "DIGITAL DELIGHT INTEGRATED SUPPORT SERVICE LTD",
+      "category": "digital_lender",
+      "status": "Full approval"
+    },
+    {
+      "name": "GROMONEE INVESTMENT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "UNION MONEE",
+        "GROMONEE"
+      ]
+    },
+    {
+      "name": "ZOJAPA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.ZOJAPAY.COM",
+        "ZOJAPAY"
+      ]
+    },
+    {
+      "name": "BEYOND CREDIT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "BEYOND CREDIT",
+        "HODARI"
+      ]
+    },
+    {
+      "name": "OVVAR NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "OVVAR"
+      ]
+    },
+    {
+      "name": "MULLIGAN FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval"
+    },
+    {
+      "name": "VALE FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "VALE",
+        "VALE.NG"
+      ]
+    },
+    {
+      "name": "NEW EXTENSION ALLROUND TRUST LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NEAT LOAN"
+      ]
+    },
+    {
+      "name": "NAIRAFLOW FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NAIRAKASH"
+      ]
+    },
+    {
+      "name": "CREDO TECH NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CREDIFY",
+        "LENDEX"
+      ]
+    },
+    {
+      "name": "VANTAGE LIQUIDITY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LIGUIDSPEND",
+        "DAIFANG CASH"
+      ]
+    },
+    {
+      "name": "GMT TECHNOLOGIES LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "GMT TECH",
+        "GMTTECHNOLOGIESLTD.COM"
+      ]
+    },
+    {
+      "name": "ASHARAMI INNOVATIONS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PAY-"
+      ]
+    },
+    {
+      "name": "DE VALUEGUARD LTD",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ONECASH",
+        "IFLEX"
+      ]
+    },
+    {
+      "name": "MYSTASHTECHNOLOGIES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LIVEWAECS.MYSTASHAPP.COM"
+      ]
+    },
+    {
+      "name": "CENTURION IDEAS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "BOROMI"
+      ]
+    },
+    {
+      "name": "ANCHOR POINT LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "POINT CREDIT",
+        "VIEW CREDIT"
+      ]
+    },
+    {
+      "name": "KLAS NINE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KKLOAN",
+        "BECASH"
+      ]
+    },
+    {
+      "name": "PREMIUM LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PREMIUM-LENDING"
+      ]
+    },
+    {
+      "name": "ADX CREDIT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ADX CREDIT",
+        "ADXCREDIT.COM"
+      ]
+    },
+    {
+      "name": "KALABASH TECHNOLOGY SOLUTIONS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "KALABASH"
+      ]
+    },
+    {
+      "name": "SUPPORTHUB GLOBAL LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "LENDME",
+        "MOOLAH"
+      ]
+    },
+    {
+      "name": "EVERGLOW TECHNOLOGY NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CHEERCENT",
+        "VIVFUND"
+      ]
+    },
+    {
+      "name": "SAPPHIRE VIRTUAL NETWORKS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SENTINEL 3.0"
+      ]
+    },
+    {
+      "name": "SUREWORD INVESTMENT AND CREDIT LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SUREWORDCREDIT.COM.NG"
+      ]
+    },
+    {
+      "name": "MONIBAC LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MONIBAC"
+      ]
+    },
+    {
+      "name": "CAFIN TECHNOLOGY COMPANY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "CACREDIT",
+        "CACASH"
+      ]
+    },
+    {
+      "name": "CRYSTAL AMBER LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SEC LOAN",
+        "CASH AID"
+      ]
+    },
+    {
+      "name": "STELLAR COSMOS TECHNOLOGY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FAST LOAN",
+        "LINK CASH"
+      ]
+    },
+    {
+      "name": "LUCIAXX LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "SOHELP",
+        "FASTHELP"
+      ]
+    },
+    {
+      "name": "PIXE FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "POCKETBUY",
+        "POCKETSPLIT"
+      ]
+    },
+    {
+      "name": "LENDVILLE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "WWW.LENDVILLE.NG"
+      ]
+    },
+    {
+      "name": "PODLINE TECHNOLOGY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "PODMOBILE"
+      ]
+    },
+    {
+      "name": "GENER8 INTEGRATED SERVICES",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "GIVO"
+      ]
+    },
+    {
+      "name": "MONYWAVE FINANCIAL SOLUTIONS LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "MONYNEST.NG",
+        "MONYNEST.AFRICA"
+      ]
+    },
+    {
+      "name": "SANTUS HIVE TRADING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "FLASHNAIRA",
+        "HIVENOW"
+      ]
+    },
+    {
+      "name": "DIGITMONIE LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "DIGITMONIE.COM"
+      ]
+    },
+    {
+      "name": "ROJA TECHNOLOGIES LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ROJA"
+      ]
+    },
+    {
+      "name": "CREDISURGE LENDING LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "ROCKETCASH",
+        "ROCKETMONI"
+      ]
+    },
+    {
+      "name": "LIFEFINNY LIMITED",
+      "category": "digital_lender",
+      "status": "Full approval",
+      "aliases": [
+        "NOVOMONIE",
+        "KASHORA"
+      ]
+    },
+    {
+      "name": "LIFESTALIA LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "LIFES TALIA"
+      ]
+    },
+    {
+      "name": "KIAKIA BITS LTD",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "KIA KIA P2P"
+      ]
+    },
+    {
+      "name": "RETAIL BOOSTERS LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "RETAIL BOOSTERS"
+      ]
+    },
+    {
+      "name": "LIDYA GLOBAL LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "LIDYA WEB"
+      ]
+    },
+    {
+      "name": "ZIPPY CAPITAL LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "ZIPPY"
+      ]
+    },
+    {
+      "name": "FEDHA LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "DOLE"
+      ]
+    },
+    {
+      "name": "TRIPODBASE LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "TASERE LOAN"
+      ]
+    },
+    {
+      "name": "THE PLATFORM DIGITAL NETWORK LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "GROWLY"
+      ]
+    },
+    {
+      "name": "OLIVERMEAD INVESTMENT LTD",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "AVRO"
+      ]
+    },
+    {
+      "name": "HELPPO AFRICA LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "HELPPO"
+      ]
+    },
+    {
+      "name": "NODENS NIGERIA LTD",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "NODCREDIT"
+      ]
+    },
+    {
+      "name": "SOKO LOAN",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "9JA CASH",
+        "GET CASH",
+        "FAST MONEY",
+        "GO CASH"
+      ]
+    },
+    {
+      "name": "LENDER EDGE LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "LENDING",
+        "YOUTHCORPER"
+      ]
+    },
+    {
+      "name": "ROCKSHIELD",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "ROCKSHIELD DIGITAL SAVING"
+      ]
+    },
+    {
+      "name": "LENDHA TECHNOLOGIES LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "LENDHA.COM"
+      ]
+    },
+    {
+      "name": "OWOFARA FINTECH SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "OWOAFARA.COM"
+      ]
+    },
+    {
+      "name": "KWABA INTERNATIONAL LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "KWABA"
+      ]
+    },
+    {
+      "name": "ZENNAL INTERNATIONAL LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "MYZENNAL.COM"
+      ]
+    },
+    {
+      "name": "FOX LENDING",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "LOANMATEAPP"
+      ]
+    },
+    {
+      "name": "LUCRED TECHNOLOGY LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "LUCRED"
+      ]
+    },
+    {
+      "name": "CREDITPRO BUSINESS SUPPORT SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "LOAN247 PAYLIST"
+      ]
+    },
+    {
+      "name": "PEBBLE FINANCIAL TECHNOLOGIES LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "PEBBLECRED"
+      ]
+    },
+    {
+      "name": "EATONHILL INVESTMENT LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "VENDOR CREDIT"
+      ]
+    },
+    {
+      "name": "RIVERBANK PARTNERS LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "RIVERMONEY"
+      ]
+    },
+    {
+      "name": "RIVERBRAND TECHNOLOGY LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "RIVERBRAND"
+      ]
+    },
+    {
+      "name": "FINPADI TECHNOLOGIES LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "FINPADI"
+      ]
+    },
+    {
+      "name": "RETAIL BOOSTER LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "RETAIL BOOSTERS"
+      ]
+    },
+    {
+      "name": "PRIME AVIS INVESTMENT SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "LENDA",
+        "PRIME PAY"
+      ]
+    },
+    {
+      "name": "X3 LEASING LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "XERO ACCOUNTING",
+        "FINRATUS"
+      ]
+    },
+    {
+      "name": "LEADSTACK LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "LEADSTACK"
+      ]
+    },
+    {
+      "name": "DEVTAGE FINANCIAL SERVICES LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "DEVTAGE"
+      ]
+    },
+    {
+      "name": "SOLIDFIN TECHNOLOGY LIMITED",
+      "category": "digital_lender",
+      "status": "Conditional approval",
+      "aliases": [
+        "CASHMART"
+      ]
+    },
+    {
+      "name": "FASTCREDIT LIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)"
+    },
+    {
+      "name": "GREENBOND FINANCE COMPANY LIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)"
+    },
+    {
+      "name": "BAINES MICROFINANCE BANK LIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)"
+    },
+    {
+      "name": "EKONDO MICROFINANCE BANK LIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "EK-PAY"
+      ]
+    },
+    {
+      "name": "ACCION MICROFINANCE BANK LTD",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)"
+    },
+    {
+      "name": "PALMPAY LIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "PALMPAY",
+        "PALMPAY AGENT",
+        "PALMPAY BUSSINESS"
+      ]
+    },
+    {
+      "name": "NEWEDGE FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "EASYBUY"
+      ]
+    },
+    {
+      "name": "SHEPHERD TRUST MICROFINANCE BANK",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "NEO CASH"
+      ]
+    },
+    {
+      "name": "FIRMUS MICROFINANCE BANK LIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "FIRMUS"
+      ]
+    },
+    {
+      "name": "CASHBRIDGE DIGITAL LIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)"
+    },
+    {
+      "name": "STEP BY STEP MICROFINANCE BANK LIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "KASHPIT",
+        "MONIFIX",
+        "DOVEKASH",
+        "AWOOFKASH",
+        "FRESHMONI"
+      ]
+    },
+    {
+      "name": "CORESTEPMICROFINANCE BANKLIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "COREBANK",
+        "COREBANKBUSSINESS"
+      ]
+    },
+    {
+      "name": "OXYGEN X FINANCE COMPANY LIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "OXYGEN X MOBILE APPLICATION",
+        "OXYGEN X WEB APPLICATION"
+      ]
+    },
+    {
+      "name": "ISHIAGU MICROFINANCE BANK LIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "AIDACREDIT",
+        "AIDAMONI"
+      ]
+    },
+    {
+      "name": "BLOOMS MICROFINANCE BANK LIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "PAL LOAN"
+      ]
+    },
+    {
+      "name": "FLEXI MICROFINANCE COMPANY LIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "FLEXIBANK",
+        "FLEXICREDIT",
+        "FLEXIMFB"
+      ]
+    },
+    {
+      "name": "TRUSTBANC J6 MICROFINANCE BANK",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "TRUSTBANC PRIME",
+        "INTERNET BANKING"
+      ]
+    },
+    {
+      "name": "ZEDVANCE FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "ZEDVANCE BUSINESS",
+        "ZEDVANCE"
+      ]
+    },
+    {
+      "name": "GTI MICROFINANCE BANK LTD",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "SAHA"
+      ]
+    },
+    {
+      "name": "STERLING BANK LTD",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "SPECTA"
+      ]
+    },
+    {
+      "name": "MADOBI MICROFINANCE BANK LIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "IUBANK",
+        "WWW.MADOBIMFB.NG"
+      ]
+    },
+    {
+      "name": "CREDINOVA MICROFINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "CASHNOVA",
+        "CREDINAIJA"
+      ]
+    },
+    {
+      "name": "TENN MICROFINANCE BANK LIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "TENN-MOBILE BANKING",
+        "TENN-CREDIT"
+      ]
+    },
+    {
+      "name": "KREDI MONEY MICROFINANCE BANK",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "KREDI BANK",
+        "KREDI BIZPAY-MERCHANT POS"
+      ]
+    },
+    {
+      "name": "PERENNIAL FINANCE LIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "PALMCREDIT"
+      ]
+    },
+    {
+      "name": "CHASE MICROFINANCE BANK LTD",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "CHASE"
+      ]
+    },
+    {
+      "name": "KOINS MICROFINANCE BANK LTD",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "KOINS BANKING"
+      ]
+    },
+    {
+      "name": "OPAY MICROFINANCE BANK LTD",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "EASEMONI",
+        "OKASH"
+      ]
+    },
+    {
+      "name": "KOLOMONI MICROFINANCE BANK LIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "KOLOMONI PERSONAL BANKING",
+        "KOLOMONI BUSSINES BANKING"
+      ]
+    },
+    {
+      "name": "ARM MICROFINANCE BANK LTD",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "ADVANA"
+      ]
+    },
+    {
+      "name": "FIRST MIDAS MICROFINANCE BANK",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "FMPAY"
+      ]
+    },
+    {
+      "name": "BAOBAB MICROFINANCE BANK NIGERIA LIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "JOLLOF+",
+        "BAOBAB"
+      ]
+    },
+    {
+      "name": "TURBO MICROFINANCE BANK LIMITED",
+      "category": "digital_lender",
+      "status": "Waiver (licensed by the CBN)",
+      "aliases": [
+        "TURBO FINANCE"
+      ]
+    }
+  ]
+}

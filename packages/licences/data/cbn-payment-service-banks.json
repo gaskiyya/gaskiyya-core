@@ -1,0 +1,36 @@
+{
+  "source": {
+    "id": "cbn-payment-service-banks",
+    "regulator": "CBN",
+    "regulatorUrl": "https://www.cbn.gov.ng/Supervision/fi.html",
+    "title": "CBN licensed payment service banks",
+    "url": "https://www.cbn.gov.ng/Supervision/Inst-PSB.html",
+    "publishedAt": null,
+    "retrievedAt": "2026-10-20",
+    "format": "JSON (the page\u2019s own data endpoint)",
+    "sample": false,
+    "note": "Read from https://www.cbn.gov.ng/api/GetPSBs, which the page loads. Names only; the list gives no date or licence tier."
+  },
+  "entries": [
+    {
+      "name": "9 PSB Ltd",
+      "category": "payment_service_bank"
+    },
+    {
+      "name": "Hope PSB Ltd",
+      "category": "payment_service_bank"
+    },
+    {
+      "name": "MOMO PAYMENT SERVICE BANK",
+      "category": "payment_service_bank"
+    },
+    {
+      "name": "Moneymaster PSB Ltd",
+      "category": "payment_service_bank"
+    },
+    {
+      "name": "SMARTCASH PSB LIMITED",
+      "category": "payment_service_bank"
+    }
+  ]
+}
