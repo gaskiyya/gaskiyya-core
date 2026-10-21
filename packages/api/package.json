@@ -9,7 +9,10 @@
     "@gaskiya/licences": "workspace:^",
     "@gaskiya/schemas": "workspace:^",
     "@google-cloud/firestore": "^9.3.1",
+    "@google/genai": "^2.27.0",
     "jose": "^6.2.12",
+    "openai": "^7.28.0",
+    "resend": "^6.32.0",
     "zod": "^4"
   }
 }
