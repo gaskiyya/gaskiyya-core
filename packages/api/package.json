@@ -9,6 +9,7 @@
     "@gaskiya/licences": "workspace:^",
     "@gaskiya/schemas": "workspace:^",
     "@google-cloud/firestore": "^9.3.1",
+    "jose": "^6.2.12",
     "zod": "^4"
   }
 }
