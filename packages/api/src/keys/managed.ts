@@ -26,15 +26,15 @@ export class ManagedKeyService implements KeyService {
   load(entries: ManagedKeyEntry[]) {
     const extra = new Map<string, Map<number, Version>>();
     const retired = new Map<string, Set<number>>();
-    for (const entry of entries) {
-      if (entry.retired) {
-        if (!retired.has(entry.tenantId)) retired.set(entry.tenantId, new Set());
-        retired.get(entry.tenantId)!.add(entry.version);
+    for (const e of entries) {
+      if (e.retired) {
+        if (!retired.has(e.tenantId)) retired.set(e.tenantId, new Set());
+        retired.get(e.tenantId)!.add(e.version);
         continue;
       }
-      if (!entry.key) continue;
-      if (!extra.has(entry.tenantId)) extra.set(entry.tenantId, new Map());
-      extra.get(entry.tenantId)!.set(entry.version, { key: entry.key, activatesAt: entry.activatesAt });
+      if (!e.key) continue;
+      if (!extra.has(e.tenantId)) extra.set(e.tenantId, new Map());
+      extra.get(e.tenantId)!.set(e.version, { key: e.key, activatesAt: e.activatesAt });
     }
     this.extra = extra;
     this.retired = retired;
@@ -52,23 +52,21 @@ export class ManagedKeyService implements KeyService {
     this.extra.get(tenantId)?.delete(version);
   }
 
-  private isRetired(tenantId: string, version: number) {
-    return this.retired.get(tenantId)?.has(version) ?? false;
+  private isRetired(tenantId: string, v: number) {
+    return this.retired.get(tenantId)?.has(v) ?? false;
   }
 
   private baseVersions(tenantId: string): number[] {
-    return this.base.has(tenantId) ? this.base.versions(tenantId).filter((version) => !this.isRetired(tenantId, version)) : [];
+    return this.base.has(tenantId) ? this.base.versions(tenantId).filter((v) => !this.isRetired(tenantId, v)) : [];
   }
 
   describe(tenantId: string): { version: number; source: 'env' | 'admin'; activatesAt: number | null; current: boolean }[] {
     const versions = new Map<number, { source: 'env' | 'admin'; activatesAt: number | null }>();
-    for (const version of this.baseVersions(tenantId)) versions.set(version, { source: 'env', activatesAt: null });
-    for (const [version, value] of this.extra.get(tenantId) ?? []) versions.set(version, { source: 'admin', activatesAt: value.activatesAt });
+    for (const v of this.baseVersions(tenantId)) versions.set(v, { source: 'env', activatesAt: null });
+    for (const [v, x] of this.extra.get(tenantId) ?? []) versions.set(v, { source: 'admin', activatesAt: x.activatesAt });
     if (versions.size === 0) return [];
     const current = this.currentVersion(tenantId);
-    return [...versions.entries()]
-      .sort((a, b) => b[0] - a[0])
-      .map(([version, value]) => ({ version, ...value, current: version === current }));
+    return [...versions.entries()].sort((a, b) => b[0] - a[0]).map(([version, x]) => ({ version, ...x, current: version === current }));
   }
 
   retiredVersions(tenantId: string): number[] {
@@ -76,12 +74,8 @@ export class ManagedKeyService implements KeyService {
   }
 
   highestVersion(tenantId: string): number {
-    const versions = [
-      ...(this.base.has(tenantId) ? this.base.versions(tenantId) : []),
-      ...(this.extra.get(tenantId)?.keys() ?? []),
-      ...(this.retired.get(tenantId) ?? []),
-    ];
-    return versions.length ? Math.max(...versions) : 0;
+    const all = [...(this.base.has(tenantId) ? this.base.versions(tenantId) : []), ...(this.extra.get(tenantId)?.keys() ?? []), ...(this.retired.get(tenantId) ?? [])];
+    return all.length ? Math.max(...all) : 0;
   }
 
   has(tenantId: string) {
@@ -90,13 +84,9 @@ export class ManagedKeyService implements KeyService {
 
   currentVersion(tenantId: string) {
     const now = this.clock().getTime();
-    const active = [...(this.extra.get(tenantId) ?? [])]
-      .filter(([, value]) => value.activatesAt <= now)
-      .map(([version]) => version);
+    const active = [...(this.extra.get(tenantId) ?? [])].filter(([, x]) => x.activatesAt <= now).map(([v]) => v);
     const base = this.baseVersions(tenantId);
-    const baseCurrent = base.length && this.base.has(tenantId) && !this.isRetired(tenantId, this.base.currentVersion(tenantId))
-      ? this.base.currentVersion(tenantId)
-      : null;
+    const baseCurrent = base.length && this.base.has(tenantId) && !this.isRetired(tenantId, this.base.currentVersion(tenantId)) ? this.base.currentVersion(tenantId) : null;
     const best = active.length ? Math.max(...active) : null;
     if (best !== null && (baseCurrent === null || best > baseCurrent)) return best;
     if (baseCurrent !== null) return baseCurrent;
@@ -115,10 +105,10 @@ export class ManagedKeyService implements KeyService {
   }
 
   keyed(tenantId: string, purpose: KeyPurpose, value: string, version?: number): string {
-    const selected = version ?? this.currentVersion(tenantId);
-    if (this.isRetired(tenantId, selected)) throw new Error('no hashing key of that version for tenant');
-    const managed = this.extra.get(tenantId)?.get(selected);
-    if (managed) return createHmac('sha256', managed.key).update(`${purpose}:${value}`).digest('hex');
-    return this.base.keyed(tenantId, purpose, value, selected);
+    const v = version ?? this.currentVersion(tenantId);
+    if (this.isRetired(tenantId, v)) throw new Error('no hashing key of that version for tenant');
+    const own = this.extra.get(tenantId)?.get(v);
+    if (own) return createHmac('sha256', own.key).update(`${purpose}:${value}`).digest('hex');
+    return this.base.keyed(tenantId, purpose, value, v);
   }
 }

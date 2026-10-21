@@ -66,6 +66,9 @@ importers:
       '@gaskiya/schemas':
         specifier: workspace:^
         version: link:../schemas
+      '@fastify/cors':
+        specifier: ^11.3.0
+        version: 11.3.0
       '@fastify/static':
         specifier: ^10.1.5
         version: 10.1.5
@@ -87,6 +90,9 @@ importers:
       resend:
         specifier: ^6.32.0
         version: 6.32.0
+      tsx:
+        specifier: ^4.23.15
+        version: 4.23.15
       zod:
         specifier: ^4
         version: 4.6.7

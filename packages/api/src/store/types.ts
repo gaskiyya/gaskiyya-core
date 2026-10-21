@@ -39,10 +39,8 @@ export interface Tenant {
   customerTokenUrl?: string;
   demoInboxUrl?: string;
   bankCode?: string;
-  // Registered name and integration contact, recorded at onboarding (decision 0020).
   legalName?: string;
   technicalContact?: { name: string; email: string; phone?: string };
-  // Set by the admin dashboard (decision 0020). Absent means active, live, every feature on.
   status?: OrgStatus;
   mode?: OrgMode;
   features?: Partial<Record<OrgFeature, boolean>>;
@@ -63,7 +61,6 @@ export interface OrgLimits {
 export const featureOn = (t: Pick<Tenant, 'features'>, f: OrgFeature) => t.features?.[f] !== false;
 export const isSuspended = (t: Pick<Tenant, 'status'> | undefined) => t?.status === 'suspended';
 
-// A secret encrypted at rest with GASKIYA_MASTER_KEY (AES-256-GCM).
 export interface Sealed {
   iv: string;
   tag: string;
@@ -73,8 +70,6 @@ export interface Sealed {
 export interface OrgRecord {
   id: string;
   source: 'admin' | 'env';
-  // Full profile for organisations made in the dashboard; for ones configured in the
-  // environment, an edited copy that replaces the environment profile, or null.
   profile: Omit<Tenant, 'status' | 'mode' | 'features' | 'limits' | 'webhookUrl'> | null;
   status: OrgStatus;
   mode: OrgMode;
@@ -97,12 +92,10 @@ export interface ApiClientRecord {
   label: string;
   source: 'admin' | 'env';
   status: 'active' | 'revoked';
-  // scrypt hash of the secret; the secret itself is never stored.
   secretHash: string | null;
   secretHint: string | null;
   previousSecretHash: string | null;
   previousSecretExpiresAt: string | null;
-  // Bank access tokens carry this number; raising it cuts off every token issued before.
   tokenGeneration: number;
   createdAt: string;
   createdBy: string;
@@ -115,7 +108,6 @@ export interface ApiClientRecord {
 export interface TenantKeyRecord {
   tenantId: string;
   version: number;
-  // null for a version that lives in GASKIYA_TENANT_KEYS and was only retired here.
   sealed: Sealed | null;
   source: 'admin' | 'env';
   createdAt: string;
@@ -341,8 +333,6 @@ export interface Store {
     simSwap: Record<string, number>;
   }>;
 
-  // Platform administration (decision 0020). Kept apart from registry data:
-  // reset() and resetTenant() leave it alone.
   listOrgs(): Promise<OrgRecord[]>;
   getOrg(id: string): Promise<OrgRecord | null>;
   putOrg(org: OrgRecord): Promise<void>;
@@ -351,7 +341,6 @@ export interface Store {
   putApiClient(client: ApiClientRecord): Promise<void>;
   touchApiClient(clientId: string, at: string): Promise<void>;
   listTenantKeys(): Promise<TenantKeyRecord[]>;
-  // false when that version already exists for the tenant.
   createTenantKey(key: TenantKeyRecord): Promise<boolean>;
   putTenantKey(key: TenantKeyRecord): Promise<void>;
   putAudit(entry: AuditEntry): Promise<void>;

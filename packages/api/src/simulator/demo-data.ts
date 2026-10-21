@@ -84,7 +84,6 @@ export const FAKE_TEMPLATES = [
   (bank: string) => `${bank}: Congratulations! You have won NGN250,000 in our anniversary promo. Call 0809 555 0101 to claim your reward today.`,
 ];
 
-// Made up: 999xxx codes are not issued to banks.
 export const DEMO_BANK_CODE = '999001';
 
 export const demoAccount = (phone: string) => phone.replace(/\D/g, '').slice(-10);

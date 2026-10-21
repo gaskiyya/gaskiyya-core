@@ -89,7 +89,6 @@ export function checkLink(raw: string, bankDomains: string[], bankName: string, 
   const url = parse(raw);
   if (!url) return { verdict: 'not_confirmed', host: null, matchedDomain: null, reasons: ['invalid'] };
 
-  // WHATWG URL converts Unicode hosts to punycode, so homoglyph domains surface as xn--.
   const host = url.hostname.toLowerCase().replace(/\.$/, '');
   const reasons: LinkReason[] = [];
   if (url.protocol !== 'https:' && url.protocol !== 'http:') reasons.push('not_http');

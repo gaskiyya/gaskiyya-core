@@ -19,10 +19,10 @@ export function adminUsersFromEnv(env: NodeJS.ProcessEnv, errors: string[]): { u
       errors.push('ADMIN_USERS must be valid JSON: [{ "username": "...", "passwordHash": "scrypt$..." }]');
     }
     if (parsed !== undefined && !Array.isArray(parsed)) errors.push('ADMIN_USERS must be a JSON list');
-    for (const user of Array.isArray(parsed) ? parsed as Partial<AdminUser>[] : []) {
-      if (!user || typeof user.username !== 'string' || !USERNAME_RE.test(user.username)) errors.push('every ADMIN_USERS entry needs a username of letters, digits and . _ @ -');
-      else if (!isSecretHash(user.passwordHash)) errors.push(`ADMIN_USERS ${user.username}: passwordHash must come from pnpm admin:hash`);
-      else users.push({ username: user.username, passwordHash: user.passwordHash });
+    for (const u of Array.isArray(parsed) ? (parsed as Partial<AdminUser>[]) : []) {
+      if (!u || typeof u.username !== 'string' || !USERNAME_RE.test(u.username)) errors.push('every ADMIN_USERS entry needs a username of letters, digits and . _ @ -');
+      else if (!isSecretHash(u.passwordHash)) errors.push(`ADMIN_USERS ${u.username}: passwordHash must come from pnpm admin:hash`);
+      else users.push({ username: u.username, passwordHash: u.passwordHash });
     }
   }
   let plain: { username: string; password: string } | null = null;
@@ -31,7 +31,7 @@ export function adminUsersFromEnv(env: NodeJS.ProcessEnv, errors: string[]): { u
     else if (env.ADMIN_PASSWORD.length < 12) errors.push('ADMIN_PASSWORD must be at least 12 characters');
     else plain = { username: 'admin', password: env.ADMIN_PASSWORD };
   }
-  if (new Set(users.map((user) => user.username)).size !== users.length) errors.push('ADMIN_USERS lists a username twice');
+  if (new Set(users.map((u) => u.username)).size !== users.length) errors.push('ADMIN_USERS lists a username twice');
   return { users, plain };
 }
 
@@ -46,25 +46,25 @@ export interface AdminAuthOptions {
 export class AdminAuth {
   private users: Promise<AdminUser[]>;
 
-  constructor(private options: AdminAuthOptions) {
-    const plain = options.plain;
+  constructor(private o: AdminAuthOptions) {
+    const plain = o.plain;
     this.users = plain
-      ? hashSecret(plain.password).then((passwordHash) => [...options.users.filter((user) => user.username !== plain.username), { username: plain.username, passwordHash }])
-      : Promise.resolve(options.users);
+      ? hashSecret(plain.password).then((passwordHash) => [...o.users.filter((u) => u.username !== plain.username), { username: plain.username, passwordHash }])
+      : Promise.resolve(o.users);
   }
 
   get enabled() {
-    return this.options.users.length > 0 || Boolean(this.options.plain);
+    return this.o.users.length > 0 || Boolean(this.o.plain);
   }
 
   async login(username: string, password: string): Promise<{ token: string; username: string; expiresAt: string } | null> {
-    const user = (await this.users).find((entry) => entry.username === username);
+    const user = (await this.users).find((u) => u.username === username);
     if (!user) return burnSecretCheck(password).then(() => null);
     if (!(await verifySecret(password, user.passwordHash))) return null;
     const token = `gsa_${randomBytes(32).toString('base64url')}`;
-    const now = this.options.clock();
-    const expiresAt = new Date(now.getTime() + this.options.sessionHours * 3600_000).toISOString();
-    await this.options.store.putAdminSession({ idHash: sha256Hex(token), username: user.username, createdAt: now.toISOString(), expiresAt });
+    const now = this.o.clock();
+    const expiresAt = new Date(now.getTime() + this.o.sessionHours * 3600_000).toISOString();
+    await this.o.store.putAdminSession({ idHash: sha256Hex(token), username: user.username, createdAt: now.toISOString(), expiresAt });
     return { token, username: user.username, expiresAt };
   }
 
@@ -75,14 +75,14 @@ export class AdminAuth {
   async checkToken(token: string): Promise<{ username: string; expiresAt: string; idHash: string } | null> {
     if (!token.startsWith('gsa_')) return null;
     const idHash = sha256Hex(token);
-    const session = await this.options.store.getAdminSession(idHash);
-    if (!session || Date.parse(session.expiresAt) <= this.options.clock().getTime()) return null;
-    if (!(await this.users).some((user) => user.username === session.username)) return null;
-    return { username: session.username, expiresAt: session.expiresAt, idHash };
+    const s = await this.o.store.getAdminSession(idHash);
+    if (!s || Date.parse(s.expiresAt) <= this.o.clock().getTime()) return null;
+    if (!(await this.users).some((u) => u.username === s.username)) return null;
+    return { username: s.username, expiresAt: s.expiresAt, idHash };
   }
 
   async logout(idHash: string) {
-    await this.options.store.deleteAdminSession(idHash);
+    await this.o.store.deleteAdminSession(idHash);
   }
 }
 
