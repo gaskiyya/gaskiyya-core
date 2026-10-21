@@ -1,0 +1,508 @@
+{
+  "_note": "The single source of fixed customer-facing text (CH-4). Every verdict screen and bot reply reads from here. Changing verdict wording needs a decision note in apps/web/docs/decisions.",
+  "verdict": {
+    "confirmed": {
+      "title": "Sent by your bank",
+      "body": "{bank} sent this message to this number by {channel} on {date} at {time}.",
+      "short": "Confirmed"
+    },
+    "not_confirmed": {
+      "title": "Not confirmed",
+      "body": "There is no record of {bank} sending this to this number. Do not click links, call numbers or share codes from it.",
+      "short": "Not confirmed"
+    },
+    "cannot_check": {
+      "title": "Cannot check right now",
+      "body": "The check is unavailable. Contact your bank through its app or at a branch.",
+      "short": "Cannot check"
+    }
+  },
+  "link": {
+    "belongs": {
+      "title": "This domain belongs to your bank",
+      "body": "{domain} is registered by {bank}. This does not confirm that a message is genuine.",
+      "short": "Bank domain"
+    },
+    "not_confirmed": {
+      "title": "Not confirmed",
+      "body": "This link is not on a domain {bank} has registered. Do not open it or enter any details."
+    },
+    "shortened": "Shortened links hide where they lead, so they are never confirmed.",
+    "lookalike": "This address imitates your bank's name."
+  },
+  "call": {
+    "calling": {
+      "title": "{bank} is calling you now",
+      "body": "Purpose: {purpose}. The agent will read this code aloud. Compare it before you continue.",
+      "codeLabel": "Call code"
+    },
+    "not_calling": {
+      "title": "Your bank is not calling you",
+      "body": "There is no call from {bank} in progress. If someone on the phone says they are from your bank, hang up."
+    },
+    "mismatch": "If the caller cannot read this exact code, hang up.",
+    "mismatchMany": "If the caller cannot read one of these codes exactly, hang up."
+  },
+  "activity": {
+    "heading": "What your bank sent recently",
+    "none": "In the last 24 hours {bank} sent you no messages.",
+    "summary": "In the last 24 hours {bank} sent you {items}.",
+    "linkNone": "None contained a link.",
+    "linkNeither": "Neither contained a link.",
+    "linkNoneOne": "It did not contain a link.",
+    "linkOne": "It contained a link.",
+    "linkSome": "{count} of them contained a link."
+  },
+  "explain": {
+    "heading": "Why this might be a fake",
+    "fallback": "We could not find this message in your bank's records. Fraudsters copy a bank's style to get people to click links, call numbers or share codes. Treat it as fake unless your bank's app confirms it.",
+    "action": "Do not reply, click or call. If you are worried, contact your bank through its app or at a branch.",
+    "aiNote": "This explanation is generated automatically and cannot change the result above."
+  },
+  "indicators": {
+    "urgency_or_threat": "Urgency or threat",
+    "credential_request": "Asks for login details",
+    "non_bank_link": "Link to a non-bank site",
+    "callback_number": "Asks you to call a number",
+    "reward_or_refund": "Promises a reward or refund",
+    "unknown_sender": "Sent from a name or number your bank does not use"
+  },
+  "categories": {
+    "otp": "one-time code",
+    "transaction_alert": "transaction alert",
+    "security_notice": "security notice",
+    "service_update": "service update",
+    "marketing": "promotion",
+    "call_follow_up": "call follow-up"
+  },
+  "channels": {
+    "sms": "SMS",
+    "whatsapp": "WhatsApp",
+    "email": "email",
+    "push": "app notification",
+    "call": "phone call"
+  },
+  "purposes": {
+    "card_activation": "card activation",
+    "fraud_check": "checking a recent transaction",
+    "loan_follow_up": "loan follow-up",
+    "account_update": "account update",
+    "service_follow_up": "service follow-up"
+  },
+  "report": {
+    "prompt": "Report this fake to your bank's fraud team? We send a masked copy with long numbers hidden.",
+    "consent": "Report it",
+    "thanks": "Thank you. Your report helps your bank warn other customers."
+  },
+  "bot": {
+    "welcome": "Hello. Paste a message or send a screenshot of it and I will check whether {bank} sent it to you. Send CALL to check whether {bank} is calling you. I will never ask for your PIN, password, card number or one-time code.",
+    "otpAdvice": "For one-time code messages, check them in your bank's app so the text stays on your phone.",
+    "screenshotUnread": "I could not read text in that image. Paste the message instead.",
+    "notEnrolled": "This number is not enrolled with a bank on Gaskiyya."
+  },
+  "safety": {
+    "neverAsks": "Gaskiyya never asks for your PIN, password, card number or one-time code."
+  },
+  "app": {
+    "common": {
+      "yourBank": "your bank",
+      "cancel": "Cancel",
+      "continue": "Continue",
+      "done": "Done",
+      "tryAgain": "Try again"
+    },
+    "tabs": {
+      "check": "Check",
+      "calls": "Calls",
+      "activity": "Activity",
+      "settings": "Settings"
+    },
+    "onboarding": {
+      "skip": "Skip",
+      "getStarted": "Get started",
+      "intro": {
+        "title": "Is it really\nyour bank?",
+        "body": "Check messages and calls against your bank\u2019s own records before you click, call or reply."
+      },
+      "message": {
+        "eyebrow": "CHECK ANY MESSAGE",
+        "title": "Paste it.\nShare it. Know.",
+        "body": "Share an SMS, WhatsApp message or link to Gaskiyya. Your bank either confirms it sent it to you or it didn\u2019t, or Gaskiyya tells you it cannot check right now."
+      },
+      "call": {
+        "eyebrow": "KNOW WHO\u2019S CALLING",
+        "title": "A code only your\nbank can read",
+        "body": "When your bank calls, the app shows a four-digit code. A real agent reads the same code to you."
+      },
+      "privacy": {
+        "eyebrow": "PRIVATE BY DESIGN",
+        "title": "Your messages\nstay yours",
+        "body": "Message text is fingerprinted on your phone. Only the fingerprint decides the result, never the words. To explain a result that is not confirmed, the text is sent once with long numbers hidden."
+      }
+    },
+    "link": {
+      "title": "Sign in",
+      "intro": "Choose your bank and enter your mobile number. Gaskiyya checks the messages and calls your bank sends to that number. In your bank\u2019s own app you are signed in already.",
+      "mobileNumber": "Mobile number",
+      "chooseBank": "Choose your bank first.",
+      "enterNumber": "Enter your Nigerian mobile number, for example 0801 234 5678.",
+      "cannotReachBank": "Could not reach your bank. Check your connection and try again.",
+      "banksUnreachable": "Could not reach Gaskiyya to list the banks.",
+      "noBanks": "No banks are on Gaskiyya yet. Ask your bank to join."
+    },
+    "check": {
+      "placeholder": "Paste a message or a link",
+      "paste": "Paste",
+      "screenshot": "Screenshot",
+      "checkLink": "Check link",
+      "checkMessage": "Check message",
+      "fingerprintNote": "The message is fingerprinted on this phone. Only the fingerprint is sent to check the message. If it is not confirmed, the text, with long numbers hidden, is sent to explain why.",
+      "recentMessages": "Recent messages",
+      "demoInbox": "Demo inbox",
+      "inboxEmpty": "Messages your bank sends to this number appear here. You can also share any message to Gaskiyya from another app."
+    },
+    "result": {
+      "linkCheck": "Link check",
+      "messageCheck": "Message check",
+      "checking": "Checking with your bank\u2026",
+      "rateLimited": "Too many checks. Try again in a minute.",
+      "reportFake": "Report this fake",
+      "screenshotText": "Text read from the screenshot",
+      "address": "Address",
+      "from": "From",
+      "channel": "Channel",
+      "type": "Type",
+      "sent": "Sent",
+      "months": "January,February,March,April,May,June,July,August,September,October,November,December"
+    },
+    "calls": {
+      "checkAgain": "Check again",
+      "howItWorks": "When your bank calls, a notice and a four-digit code appear here instantly. Caller ID can be faked; this code cannot.",
+      "validFor": "Code valid for {time}"
+    },
+    "activity": {
+      "last24h": "Last 24 hours",
+      "by": "by {channel}",
+      "withLink": "with a link",
+      "footer": "Built from what your bank registered: type, channel and whether there was a link. Never the message text."
+    },
+    "settings": {
+      "linked": "Linked",
+      "privacy": "Privacy",
+      "textStays": "Message text is not stored. To explain a result, the text is sent once with long numbers hidden.",
+      "numbersMasked": "Long numbers are always masked",
+      "reportsConsent": "Reports only with your consent",
+      "about": "About",
+      "showIntro": "Show the introduction",
+      "unlink": "Unlink this phone",
+      "unlinkConfirm": "Unlink this phone?",
+      "unlinkBody": "You can link it again at any time.",
+      "unlinkAction": "Unlink"
+    },
+    "language": {
+      "title": "Language",
+      "set": "I will reply in English from now on. Send LANG to change it.",
+      "options": "Send LANG and a language: EN English, PCM Pidgin, HA Hausa, YO Yoruba, IG Igbo. For example: LANG HA",
+      "hint": "Send LANG to choose your language: English, Pidgin, Hausa, Yoruba or Igbo.",
+      "names": {
+        "en": "English",
+        "pcm": "Naij\u00e1 (Pidgin)",
+        "ha": "Hausa",
+        "yo": "Yor\u00f9b\u00e1",
+        "ig": "Igbo"
+      }
+    }
+  },
+  "a11y": {
+    "callCode": "Call code {digits}"
+  },
+  "banks": {
+    "heading": "Linked banks",
+    "pickerHeading": "Which bank is the message from?",
+    "add": "Add a bank",
+    "linked": "Linked",
+    "remove": "Remove",
+    "removeTitle": "Remove {bank}?",
+    "removeBody": "Gaskiyya will stop checking messages and calls from {bank} on this phone. You can add it again at any time.",
+    "cancel": "Cancel",
+    "or": "{first} or {last}"
+  },
+  "ussd": {
+    "menu": "{bank} check\n1. Is my bank calling me?\n2. Messages my bank sent me today",
+    "neverAsks": "Gaskiyya never asks for your PIN or codes.",
+    "calling": "{bank} is calling you now.\nCall code: {code}\nPurpose: {purpose}\nIf the caller cannot read this code, hang up.",
+    "todayHeading": "{bank} sent you today:",
+    "todayItem": "{time} {category} by {channel}",
+    "todayNone": "{bank} has sent you no messages today.",
+    "todayNote": "A message from today that is not listed is not confirmed.",
+    "more": "98. More",
+    "menuOption": "0. Menu",
+    "invalid": "Invalid choice. Please dial again.",
+    "tooMany": "Too many checks. Try again in a minute."
+  },
+  "advisory": {
+    "_note": "Fraud warnings a bank's named analyst approved (decision 0018). The warning text itself is the bank's; these are the words around it.",
+    "title": "Fraud warning from {bank}",
+    "section": "Alerts from your bank",
+    "none": "No fraud warnings from {bank} right now.",
+    "unavailable": "Alerts from {bank} cannot be loaded right now. Pull down to try again.",
+    "issued": "Issued {date}",
+    "until": "Shown until {date}",
+    "lookalikeLabel": "Fake website in these messages",
+    "callbackNote": "These fake messages ask you to call a number. Call only the numbers on your bank's own website or app.",
+    "pushBody": "Open Gaskiyya to read how to spot this scam.",
+    "botHeading": "Fraud warnings from {bank}:",
+    "botNone": "{bank} has no fraud warnings right now.",
+    "botFooter": "Send me any message that claims to be from {bank} and I will check it.",
+    "open": "Read the warning"
+  },
+  "simswap": {
+    "title": "Your SIM changed recently",
+    "body": "Your mobile network says this number moved to a new SIM recently. If you did not do this, someone else may be getting your codes. Contact your bank through its app or at a branch now.",
+    "unknownTitle": "SIM status not checked",
+    "unknownBody": "We could not check with your mobile network whether this number moved to a new SIM. Do not share this code with anyone.",
+    "ussd": "Warning: your SIM changed recently. Not you? Contact your bank now.",
+    "a11y": "Warning. Your SIM changed recently."
+  },
+  "receipt": {
+    "title": "Check a payment receipt",
+    "subtitle": "Someone says they have paid you? See if the money reached your account before you hand over goods.",
+    "account": "Paid into",
+    "accountOption": "Account ending {last4}",
+    "amount": "Amount (naira)",
+    "amountHint": "For example 25,000.00",
+    "reference": "Session ID or reference",
+    "referenceHint": "The 30-digit session ID printed on the receipt",
+    "date": "Date paid",
+    "fromScreenshot": "Read a receipt screenshot",
+    "screenshotNote": "The screenshot is read on this phone and never leaves it. Make sure every detail below matches the receipt.",
+    "check": "Check payment",
+    "privacyNote": "Only a fingerprint of these details and the account it was paid into go to your bank\u2019s registry.",
+    "noAccounts": "Your bank has not linked an account for payment checks yet.",
+    "invalidAmount": "Write the amount as it shows on the receipt, for example 25,000.00.",
+    "invalidReference": "The session ID or reference has 6 to 64 letters and digits.",
+    "unreadable": "No receipt could be read from that image. Type what it shows instead.",
+    "heading": "Payment check",
+    "registered": "Registered",
+    "verdict": {
+      "received": {
+        "title": "Payment received",
+        "body": "{payer} registered a payment of {amount} into your account {account} on {date} at {time}.",
+        "short": "Received"
+      },
+      "not_confirmed": {
+        "title": "Not confirmed",
+        "body": "There is no record of this payment reaching your account {account}. Do not release goods yet: check your balance in your own banking app first.",
+        "short": "Not confirmed"
+      },
+      "cannot_check": {
+        "title": "Cannot check right now",
+        "body": "The payment check is unavailable. Check your balance in your own banking app before you release goods.",
+        "short": "Cannot check"
+      }
+    }
+  },
+  "official": {
+    "org": {
+      "confirmedTitle": "Sent by {bank}",
+      "cannotCheckBody": "The check is unavailable. Contact {bank} through its official website or an office.",
+      "notCallingTitle": "{bank} is not calling you",
+      "notCallingBody": "No call from {bank} is in progress. If a caller says they are from {bank}, hang up.",
+      "explainFallback": "We could not find this message in the records of {bank}. Fraudsters copy an organisation's style to get people to click links, call numbers, pay or share codes. Treat it as fake unless {bank} confirms it through its official channels.",
+      "explainAction": "Do not reply, click, call or pay. If you are worried, contact {bank} through its official website or an office.",
+      "otpAdvice": "For one-time code messages, check them in the {bank} app so the text stays on your phone.",
+      "linkBelongsTitle": "This domain belongs to {bank}",
+      "linkLookalike": "This address imitates the name of {bank}.",
+      "reportPrompt": "Report this fake to the fraud team of {bank}? We send a masked copy with long numbers hidden.",
+      "reportThanks": "Thank you. Your report helps {bank} warn other people.",
+      "activityHeading": "What {bank} sent recently",
+      "ussdMenu": "{bank} check\n1. Are they calling me?\n2. Messages they sent me today",
+      "ussdOption": "3. Is this number theirs?"
+    },
+    "kinds": {
+      "bank": "bank",
+      "agency": "government agency",
+      "company": "company"
+    },
+    "contact": {
+      "official": {
+        "title": "Official contact",
+        "body": "{org} lists this {contact} as one of its official contacts.",
+        "short": "Official"
+      },
+      "not_official": {
+        "title": "Not an official contact",
+        "body": "{org} does not list this {contact} as an official contact. Do not call, message or pay it, and do not share codes with it.",
+        "bodyAny": "No organisation on Gaskiyya lists this {contact} as an official contact. Do not call, message or pay it, and do not share codes with it.",
+        "short": "Not official"
+      },
+      "cannotCheckBody": "The check is unavailable. Do not trust this contact until you can check it.",
+      "impersonation": "This imitates the name of {org}. Fraudsters use names like this for fake customer care.",
+      "spoofNote": "Caller ID and display names can be faked. An official contact on your screen does not prove who is on the other end.",
+      "notAContact": "That does not look like a phone number, email address, @handle or profile link.",
+      "kinds": {
+        "phone": "phone number",
+        "whatsapp": "WhatsApp number",
+        "email": "email address",
+        "social": "{platform} account"
+      },
+      "platforms": {
+        "x": "X",
+        "facebook": "Facebook",
+        "instagram": "Instagram",
+        "tiktok": "TikTok",
+        "telegram": "Telegram"
+      }
+    },
+    "apps": {
+      "officialTitle": "Official app of {org}",
+      "officialBody": "{org} lists this app as its own. Install it only from the official app store.",
+      "short": "Official app",
+      "apk": "This is an app download file, not an app store page. Apps installed this way can take over your phone. Do not install it.",
+      "fakeApp": "This app is not one {org} lists, but its name imitates {org}. Do not install it."
+    },
+    "ussd": {
+      "option": "3. Is this number my bank's?",
+      "enterNumber": "Enter the number to check, for example 08012345678",
+      "official": "{number} is an official {bank} number.\nCaller ID can be faked. Never share codes on a call.",
+      "notOfficial": "{number} is not a {bank} number.\nDo not call it back, pay it or share codes with it.",
+      "badNumber": "That is not a phone number. Please dial again."
+    },
+    "app": {
+      "checkContact": "Check a number or account",
+      "placeholder": "Paste a phone number, email, @handle or profile link",
+      "contactCheck": "Contact check",
+      "appCheck": "App check",
+      "contact": "Contact",
+      "organisation": "Organisation"
+    }
+  },
+  "licence": {
+    "title": "Is this lender licensed?",
+    "intro": "Check a loan app, lender, investment platform or bank against the licence lists that regulators publish.",
+    "entryHint": "Loan apps, lenders, investment schemes and banks",
+    "placeholder": "Name, website or app ID",
+    "check": "Check licence",
+    "checking": "Checking the licence lists\u2026",
+    "licensed": {
+      "title": "On a licence list",
+      "body": "{name} is on the {regulator} list as {category}. This does not confirm that a message, call or offer really comes from them.",
+      "short": "Listed"
+    },
+    "not_listed": {
+      "title": "Not on any licence list we hold",
+      "body": "We found no match on the lists we hold. Licensed lenders are listed by {regulators}. Do not pay any upfront fee.",
+      "short": "Not listed"
+    },
+    "similar": "This name is very close to {name}, which is listed. Fraudsters copy the names of licensed firms.",
+    "cannot_check": {
+      "title": "Cannot check right now",
+      "body": "The licence lists are unavailable or out of date. Check the regulator's own website before you pay anything.",
+      "short": "Cannot check"
+    },
+    "source": "Source",
+    "listDate": "List date",
+    "regulator": "Regulator",
+    "category": "Licence",
+    "status": "Status",
+    "listsChecked": "Lists checked: {lists}",
+    "sample": "Demo data: a sample of the list, not the full official register.",
+    "categories": {
+      "digital_lender": "an approved digital lender",
+      "commercial_bank": "a commercial bank",
+      "merchant_bank": "a merchant bank",
+      "non_interest_bank": "a non-interest bank",
+      "microfinance_bank": "a microfinance bank",
+      "payment_service_bank": "a payment service bank",
+      "payment_service_provider": "a payment service provider",
+      "finance_company": "a finance company",
+      "primary_mortgage_bank": "a primary mortgage bank",
+      "capital_market_operator": "a capital market operator"
+    },
+    "bot": {
+      "hint": "Send LOAN and a name to check whether a lender or loan app is on a licence list.",
+      "usage": "Send LOAN followed by the name of the lender or loan app, its website or its app ID."
+    },
+    "ussd": {
+      "menuOption": "4. Is a lender licensed?",
+      "prompt": "Type the name of the lender or loan app:",
+      "licensed": "{name} is on the {regulator} list. This does not prove a call or message is from them.",
+      "notListed": "Not on any licence list we hold. Licensed lenders are listed by {regulators}. Never pay an upfront fee.",
+      "similar": "Not on any list we hold, but close to {name}, which is listed. Fraudsters copy names. Never pay an upfront fee.",
+      "cannotCheck": "Cannot check right now. Check the regulator's website before you pay anything.",
+      "moreOption": "9. More",
+      "moreHeading": "More checks:",
+      "backOption": "0. Back"
+    }
+  },
+  "shield": {
+    "settingsTitle": "Automatic protection",
+    "settingsIntro": "On Android, Gaskiyya can check calls and messages from your bank the moment they arrive, so you do not need to open the app. Message text never leaves your phone.",
+    "androidOnly": "Automatic protection works on Android phones only.",
+    "on": "On",
+    "turnOn": "Turn on",
+    "perm": {
+      "calls": {
+        "title": "Check incoming calls",
+        "body": "Set Gaskiyya as your caller ID and spam app."
+      },
+      "dialled": {
+        "title": "Check numbers you dial",
+        "body": "Gaskiyya warns you before you call a number that is not your bank\u2019s."
+      },
+      "overlay": {
+        "title": "Show warnings over other apps",
+        "body": "Lets Gaskiyya show its answer on top of the call screen."
+      },
+      "messages": {
+        "title": "Check new SMS and WhatsApp messages",
+        "body": "Allow notification access. Gaskiyya looks only at messages that seem to come from a bank, and only on your phone."
+      }
+    },
+    "call": {
+      "really": {
+        "title": "{bank} is really calling you",
+        "body": "Call code {code}. Ask the caller to read it to you. If they cannot, hang up."
+      },
+      "notCalling": {
+        "title": "{bank} is NOT calling you",
+        "body": "This number belongs to {bank}, but {bank} has no call open to you. Someone may be faking the number. Hang up and do not share any code."
+      },
+      "cannotCheck": {
+        "title": "Cannot check this call right now",
+        "body": "Do not share any code. If in doubt, hang up and call {bank} on the number on the back of your card."
+      }
+    },
+    "message": {
+      "notConfirmedBody": "Do not click a link, call a number or share any code from this message.",
+      "open": "Open Gaskiyya for details."
+    },
+    "creditAlert": {
+      "title": "Fake credit alert",
+      "body": "{bank} has no record of sending you this credit alert. The money has not arrived. Check your balance in your bank\u2019s app before you release any goods."
+    },
+    "otp": {
+      "title": "Your bank never asks for this code",
+      "body": "A one-time code arrived while you are on a call your bank did not announce. Do not read it to anyone. Hang up now."
+    },
+    "link": {
+      "title": "This link is not {bank}\u2019s website",
+      "body": "Do not open it or enter any details."
+    },
+    "number": {
+      "title": "This number is not {bank}\u2019s",
+      "body": "The number {number} in this message is not one {bank} lists as its own. Do not call it."
+    },
+    "dialled": {
+      "title": "This is not {bank}\u2019s number",
+      "body": "{bank} does not list {number} as its own. Its real number is {official}.",
+      "reportedBody": "{number} appeared in scam messages that pretended to be {bank}. Do not share any code on this call."
+    },
+    "campaign": {
+      "title": "This matches a reported scam",
+      "body": "{count} customers reported a scam like this in the last 7 days. Do not click, call or share any code."
+    },
+    "close": "Close",
+    "channelName": "Automatic protection"
+  }
+}

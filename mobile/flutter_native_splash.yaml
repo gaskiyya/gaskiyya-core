@@ -1,0 +1,23 @@
+# Native launch screens for Android and iOS, shown until Flutter draws its
+# first frame. Colours match the app's background (AppColors.bg) so the hand-off
+# is seamless. Regenerate after changing this file or the artwork:
+#   dart run flutter_native_splash:create
+# Artwork in assets/splash is rendered from the brand mark (brand/gaskiya-logo.svg).
+flutter_native_splash:
+  color: "#F4F3EF"
+  image: assets/splash/splash_light.png
+  color_dark: "#000000"
+  image_dark: assets/splash/splash_dark.png
+
+  # Android 12+ uses the system splash API: the mark in the app icon's green circle.
+  android_12:
+    image: assets/splash/splash_android12.png
+    icon_background_color: "#0A7A55"
+    color: "#F4F3EF"
+    image_dark: assets/splash/splash_android12.png
+    icon_background_color_dark: "#0A7A55"
+    color_dark: "#000000"
+
+  android: true
+  ios: true
+  web: false
