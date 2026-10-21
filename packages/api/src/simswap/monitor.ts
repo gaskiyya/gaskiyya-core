@@ -36,7 +36,6 @@ export class SimSwapMonitor {
       if (typeof r?.swapped !== 'boolean') return { ok: false };
       return { ok: true, swapped: r.swapped, latestSimChange: r.latestSimChange ?? null };
     } catch (err) {
-      // Log code and status only: a provider error message could quote the phone number.
       const e = err as SimSwapError;
       this.deps.log.warn({ err: { code: e instanceof SimSwapError ? e.code : 'error', status: e instanceof SimSwapError ? e.status : undefined } }, 'SIM swap check failed');
       return { ok: false };

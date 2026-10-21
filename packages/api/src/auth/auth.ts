@@ -27,19 +27,23 @@ function safeEqual(a: string, b: string): boolean {
 
 export class BankAuth {
   private secret: Uint8Array;
+
   directory: ClientDirectory | null = null;
 
-  constructor(tokenSecret: string, private clients: BankClient[]) {
+  constructor(
+    tokenSecret: string,
+    private clients: BankClient[],
+  ) {
     if (tokenSecret.length < 32) throw new Error('GASKIYA_TOKEN_SECRET must be at least 32 characters');
     this.secret = new TextEncoder().encode(tokenSecret);
   }
 
   configuredClients(): { clientId: string; tenantId: string }[] {
-    return this.clients.map(({ clientId, tenantId }) => ({ clientId, tenantId }));
+    return this.clients.map((c) => ({ clientId: c.clientId, tenantId: c.tenantId }));
   }
 
   async authenticate(clientId: string, clientSecret: string): Promise<{ clientId: string; tenantId: string } | null> {
-    const client = this.clients.find((entry) => safeEqual(entry.clientId, clientId));
+    const client = this.clients.find((c) => safeEqual(c.clientId, clientId));
     if (client) {
       if (!safeEqual(client.clientSecret, clientSecret)) return null;
       if (this.directory?.refuses(client.clientId, undefined)) return null;
@@ -56,8 +60,8 @@ export class BankAuth {
 
   async sign(client: { clientId: string; tenantId: string }): Promise<{ access_token: string; token_type: 'Bearer'; expires_in: number }> {
     this.directory?.used(client.clientId);
-    const generation = this.directory?.generation(client.clientId) ?? 0;
-    const token = await new SignJWT({ tid: client.tenantId, scope: 'registry', ...(generation ? { gen: generation } : {}) })
+    const gen = this.directory?.generation(client.clientId) ?? 0;
+    const token = await new SignJWT({ tid: client.tenantId, scope: 'registry', ...(gen ? { gen } : {}) })
       .setProtectedHeader({ alg: 'HS256' })
       .setSubject(client.clientId)
       .setAudience(BANK_AUDIENCE)
@@ -90,13 +94,13 @@ export class CustomerAuth {
   }
 
   private keySet(tenant: Tenant): JWTVerifyGetKey | null {
-    let keySet = this.keySets.get(tenant.id);
-    if (keySet) return keySet;
-    if (tenant.tokenKeys) keySet = createLocalJWKSet(tenant.tokenKeys as Parameters<typeof createLocalJWKSet>[0]);
-    else if (tenant.tokenKeysUrl) keySet = createRemoteJWKSet(new URL(tenant.tokenKeysUrl), { cooldownDuration: 30_000, cacheMaxAge: 10 * 60_000 });
+    let ks = this.keySets.get(tenant.id);
+    if (ks) return ks;
+    if (tenant.tokenKeys) ks = createLocalJWKSet(tenant.tokenKeys as Parameters<typeof createLocalJWKSet>[0]);
+    else if (tenant.tokenKeysUrl) ks = createRemoteJWKSet(new URL(tenant.tokenKeysUrl), { cooldownDuration: 30_000, cacheMaxAge: 10 * 60_000 });
     else return null;
-    this.keySets.set(tenant.id, keySet);
-    return keySet;
+    this.keySets.set(tenant.id, ks);
+    return ks;
   }
 
   async verify(bearer: string | undefined): Promise<{ tenant: Tenant; phone: string; accounts: string[] } | null> {
@@ -107,9 +111,9 @@ export class CustomerAuth {
       const unverified = JSON.parse(Buffer.from(body ?? '', 'base64url').toString('utf8')) as { iss?: unknown };
       const tenant = typeof unverified.iss === 'string' ? this.tenants.get(unverified.iss) : undefined;
       if (!tenant) return null;
-      const keySet = this.keySet(tenant);
-      if (!keySet) return null;
-      const { payload } = await jwtVerify(token, keySet, {
+      const ks = this.keySet(tenant);
+      if (!ks) return null;
+      const { payload } = await jwtVerify(token, ks, {
         issuer: tenant.id,
         audience: CUSTOMER_AUDIENCE,
         algorithms: ['ES256', 'RS256', 'EdDSA'],
@@ -125,5 +129,5 @@ export class CustomerAuth {
 
 function accountsClaim(claim: unknown): string[] {
   if (!Array.isArray(claim)) return [];
-  return [...new Set(claim.filter((account): account is string => typeof account === 'string' && /^[0-9]{10}$/.test(account)))].slice(0, 20);
+  return [...new Set(claim.filter((a): a is string => typeof a === 'string' && /^[0-9]{10}$/.test(a)))].slice(0, 20);
 }

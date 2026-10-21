@@ -289,7 +289,6 @@ export class MemoryStore implements Store {
     }
   }
 
-  // Platform administration: not cleared by reset() or resetTenant().
   private orgs = new Map<string, OrgRecord>();
   private apiClients = new Map<string, ApiClientRecord>();
   private tenantKeys = new Map<string, TenantKeyRecord>();

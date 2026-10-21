@@ -16,10 +16,8 @@ export class DirectoryLicenceRegistry implements LicenceRegistry {
   ) {}
 
   private async load() {
-    const names = (await readdir(this.dir)).filter((name) => name.endsWith('.json')).sort();
-    const files = await Promise.all(
-      names.map(async (name) => LicenceDataFile.parse(JSON.parse(await readFile(join(this.dir, name), 'utf8')))),
-    );
+    const names = (await readdir(this.dir)).filter((n) => n.endsWith('.json')).sort();
+    const files = await Promise.all(names.map(async (n) => LicenceDataFile.parse(JSON.parse(await readFile(join(this.dir, n), 'utf8')))));
     if (files.length === 0) throw new Error(`no licence data files in ${this.dir}`);
     this.index = buildLicenceIndex(files);
   }

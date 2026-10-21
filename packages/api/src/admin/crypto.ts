@@ -1,17 +1,17 @@
-import { createCipheriv, createDecipheriv, createHash, randomBytes, scrypt as scryptCallback, timingSafeEqual, type ScryptOptions } from 'node:crypto';
+import { createCipheriv, createDecipheriv, createHash, randomBytes, scrypt as scryptCb, timingSafeEqual, type ScryptOptions } from 'node:crypto';
 import type { Sealed } from '../store/types.ts';
 
-const scrypt = (password: string, salt: Buffer, keyLength: number, options: ScryptOptions) =>
-  new Promise<Buffer>((resolve, reject) => scryptCallback(password, salt, keyLength, options, (error, key) => (error ? reject(error) : resolve(key))));
+const scrypt = (password: string, salt: Buffer, keylen: number, opts: ScryptOptions) =>
+  new Promise<Buffer>((resolve, reject) => scryptCb(password, salt, keylen, opts, (err, key) => (err ? reject(err) : resolve(key))));
 
 const N = 16384;
 const R = 8;
 const P = 1;
-const KEY_LENGTH = 32;
+const KEYLEN = 32;
 
 export async function hashSecret(secret: string): Promise<string> {
   const salt = randomBytes(16);
-  const hash = await scrypt(secret, salt, KEY_LENGTH, { N, r: R, p: P, maxmem: 64 * 1024 * 1024 });
+  const hash = await scrypt(secret, salt, KEYLEN, { N, r: R, p: P, maxmem: 64 * 1024 * 1024 });
   return ['scrypt', N, R, P, salt.toString('base64url'), hash.toString('base64url')].join('$');
 }
 
@@ -25,12 +25,11 @@ export async function verifySecret(secret: string, stored: string): Promise<bool
   const expected = Buffer.from(hash!, 'base64url');
   const cost = { N: Number(n), r: Number(r), p: Number(p) };
   if (cost.N > 1 << 20 || cost.r > 32 || cost.p > 16 || expected.length < 16) return false;
-  const actual = await scrypt(secret, Buffer.from(salt!, 'base64url'), expected.length, { ...cost, maxmem: 256 * 1024 * 1024 });
-  return timingSafeEqual(actual, expected);
+  const got = await scrypt(secret, Buffer.from(salt!, 'base64url'), expected.length, { ...cost, maxmem: 256 * 1024 * 1024 });
+  return timingSafeEqual(got, expected);
 }
 
 let dummyHash: Promise<string> | null = null;
-
 export async function burnSecretCheck(secret: string): Promise<false> {
   dummyHash ??= hashSecret(randomBytes(16).toString('hex'));
   await verifySecret(secret, await dummyHash);
@@ -56,11 +55,11 @@ export function seal(masterKey: Buffer, plain: Buffer, aad: string): Sealed {
   return { iv: iv.toString('base64'), tag: cipher.getAuthTag().toString('base64'), data: data.toString('base64') };
 }
 
-export function unseal(masterKey: Buffer, sealed: Sealed, aad: string): Buffer {
-  const decipher = createDecipheriv('aes-256-gcm', masterKey, Buffer.from(sealed.iv, 'base64'));
+export function unseal(masterKey: Buffer, s: Sealed, aad: string): Buffer {
+  const decipher = createDecipheriv('aes-256-gcm', masterKey, Buffer.from(s.iv, 'base64'));
   decipher.setAAD(Buffer.from(aad, 'utf8'));
-  decipher.setAuthTag(Buffer.from(sealed.tag, 'base64'));
-  return Buffer.concat([decipher.update(Buffer.from(sealed.data, 'base64')), decipher.final()]);
+  decipher.setAuthTag(Buffer.from(s.tag, 'base64'));
+  return Buffer.concat([decipher.update(Buffer.from(s.data, 'base64')), decipher.final()]);
 }
 
 export function newClientSecret(mode: 'live' | 'sandbox'): { secret: string; hint: string } {

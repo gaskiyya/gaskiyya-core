@@ -335,7 +335,6 @@ export class GaskiyaService {
     channelUsed: VerifyChannel,
   ): Promise<ReceiptResult> {
     const now = this.now();
-    // A suspended organisation is not enrolled: its checks fail closed (decision 0020).
     const enrolled = Boolean(tenant.bankCode) && this.keys.has(tenant.id) && !isSuspended(tenant);
     const accountBound = accounts.includes(beneficiaryAccount);
     let accountKey = '';
@@ -441,7 +440,6 @@ export class GaskiyaService {
       try {
         ({ items, text } = await this.activity(tenant!, recipientKeys));
       } catch {
-        // An activity failure must not change the verdict.
       }
       result = { verdict, recentActivity: items, activityText: text, bank: tenant!.name };
     } else {
@@ -543,7 +541,6 @@ export class GaskiyaService {
     try {
       await this.store.ping();
       facts = contactFacts(parsed, only ? [only] : this.tenants.values());
-      // A match with a suspended or sandbox organisation is not vouched for: fail closed.
       const unvouched = (id: string) => {
         const t = this.tenants.get(id);
         return !t || isSuspended(t) || t.mode === 'sandbox';
@@ -698,7 +695,6 @@ export class GaskiyaService {
   }
 
   async submitReport(tenant: Tenant, input: { maskedText: string; indicators: Indicator[]; callbackDigests?: string[] }) {
-    // Masked again: the client is not trusted to have masked sensitive digits.
     const maskedText = maskDigits(input.maskedText);
     const digests = new Set([...(input.callbackDigests ?? []), ...extractPhoneNumbers(input.maskedText).map(callbackDigest)]);
     const embedding = await this.model.embed(maskedText);
@@ -812,7 +808,6 @@ export class GaskiyaService {
         expiresAt: new Date(now.getTime() + this.advisoryTtlMs()).toISOString(),
         withdrawnBy: null,
         withdrawnAt: null,
-        // Claimed before sending, so a repeated approval never notifies twice.
         notifiedAt: c.advisory.notifiedAt ?? now.toISOString(),
       },
     };

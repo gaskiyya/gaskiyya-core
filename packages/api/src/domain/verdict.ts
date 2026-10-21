@@ -92,7 +92,6 @@ const DAY = 24 * 60 * 60 * 1000;
 export function decideLicenceVerdict(input: LicenceVerdictInput): LicenceVerdict {
   if (!input.data.ok || input.data.sources.length === 0) return { verdict: 'cannot_check' };
   const now = input.now.getTime();
-  // A retrieval date in the future is as untrustworthy as a stale one.
   const fresh = (s: { retrievedAt: string }) => {
     const t = Date.parse(s.retrievedAt);
     return Number.isFinite(t) && t <= now + DAY && now - t <= input.maxAgeDays * DAY;
