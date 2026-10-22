@@ -57,8 +57,10 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "ng.gaskiya/calls").setMethodCallHandler { call, result ->
+        val calls = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "ng.gaskiya/calls")
+        calls.setMethodCallHandler { call, result ->
             when (call.method) {
+                "drainEvents" -> result.success(BankCalls.drain { e -> runOnUiThread { calls.invokeMethod("callEvent", e) } })
                 "ring" -> {
                     (call.arguments as? Map<*, *>)?.let { BankCalls.ring(this, it) }
                     result.success(null)

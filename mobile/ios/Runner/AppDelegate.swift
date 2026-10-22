@@ -66,13 +66,17 @@ enum ShieldSetup {
 // Bank calls on iPhone. The bank's announced call arrives as a VoIP push and rings through
 // CallKit: the iPhone call screen and the ringtone chosen in Settings > Sounds. The caller name
 // carries the call code. Answering plays the same agent voice as the console's simulated phone.
+// What happens on the call screen (rang, answered, ended, missed) goes to Flutter as "callEvent" for the
+// call log and the in-call screen, held in UserDefaults until Flutter asks for them with "drainEvents".
 final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
   private static let tokenKey = "gk.voipToken"
+  private static let eventsKey = "gk.callEvents"
   private static let ringSeconds: TimeInterval = 30
 
   private struct Incoming {
     let callId: String
     let orgId: String
+    let bank: String
     let code: String
     var answered = false
     var timeout: DispatchWorkItem?
@@ -85,6 +89,7 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
   private var calls: [UUID: Incoming] = [:]
   private var rung: Set<String> = []
   private var voice: AgentVoice?
+  private var listening = false
 
   override init() {
     let config = CXProviderConfiguration()
@@ -110,6 +115,10 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
       switch call.method {
       case "voipToken":
         result(UserDefaults.standard.string(forKey: BankCalls.tokenKey))
+      case "drainEvents":
+        self?.listening = true
+        result(UserDefaults.standard.array(forKey: BankCalls.eventsKey) ?? [])
+        UserDefaults.standard.removeObject(forKey: BankCalls.eventsKey)
       case "ring":
         // The app heard the call on its live connection; rings the same way without waiting for a VoIP push.
         if let p = call.arguments as? [String: Any], let id = p["callId"] as? String, self?.rung.contains(id) == false {
@@ -174,13 +183,16 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
       defer { completion() }
       guard let self, error == nil else { return }
       let ringFor = min(BankCalls.ringSeconds, expiresAt?.timeIntervalSinceNow ?? BankCalls.ringSeconds)
+      let call = Incoming(callId: callId, orgId: orgId, bank: bank, code: code)
+      self.emit("rang", call)
       if ringFor <= 0 {
         self.provider.reportCall(with: uuid, endedAt: nil, reason: .unanswered)
         self.forget(uuid)
+        self.emit("missed", call)
         return
       }
       let timeout = DispatchWorkItem { [weak self] in self?.missed(uuid) }
-      self.calls[uuid] = Incoming(callId: callId, orgId: orgId, code: code, timeout: timeout)
+      self.calls[uuid] = Incoming(callId: callId, orgId: orgId, bank: bank, code: code, timeout: timeout)
       DispatchQueue.main.asyncAfter(deadline: .now() + ringFor, execute: timeout)
       BankCalls.trace("ringing \(update.localizedCallerName ?? "") for \(Int(ringFor))s")
     }
@@ -238,6 +250,7 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
     voice?.stop()
     voice = AgentVoice(orgId: call.orgId, code: call.code)
     action.fulfill()
+    emit("answered", call)
     BankCalls.trace("answered")
   }
 
@@ -251,9 +264,12 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
   }
 
   func provider(_ provider: CXProvider, perform action: CXEndCallAction) {
-    if calls[action.callUUID]?.answered == true {
-      voice?.stop()
-      voice = nil
+    if let call = calls[action.callUUID] {
+      if call.answered {
+        voice?.stop()
+        voice = nil
+      }
+      emit("ended", call)
     }
     forget(action.callUUID)
     action.fulfill()
@@ -271,6 +287,7 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
     guard let call = calls[uuid], !call.answered else { return }
     provider.reportCall(with: uuid, endedAt: nil, reason: .unanswered)
     forget(uuid)
+    emit("missed", call)
     BankCalls.trace("missed")
   }
 
@@ -282,6 +299,19 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
     }
     provider.reportCall(with: uuid, endedAt: nil, reason: reason)
     forget(uuid)
+  }
+
+  private func emit(_ event: String, _ call: Incoming) {
+    let e: [String: Any] = [
+      "event": event, "callId": call.callId, "orgId": call.orgId, "bank": call.bank, "code": call.code,
+      "at": Int(Date().timeIntervalSince1970 * 1000),
+    ]
+    if listening, let channel {
+      channel.invokeMethod("callEvent", arguments: e)
+      return
+    }
+    let held = UserDefaults.standard.array(forKey: BankCalls.eventsKey) ?? []
+    UserDefaults.standard.set(Array((held + [e]).suffix(50)), forKey: BankCalls.eventsKey)
   }
 
   private func forget(_ uuid: UUID) {

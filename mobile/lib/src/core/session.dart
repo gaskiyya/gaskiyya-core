@@ -29,6 +29,52 @@ class InboxMessage {
   final String? channel;
 }
 
+enum CallOutcome { ringing, active, answered, missed, declined }
+
+class CallRecord {
+  CallRecord({required this.id, required this.orgId, required this.bank, required this.code, this.purpose, required this.at, this.outcome = CallOutcome.ringing, this.answeredAt, this.endedAt});
+  factory CallRecord.fromJson(Map<String, dynamic> j) => CallRecord(
+        id: j['id'] as String,
+        orgId: j['orgId'] as String? ?? '',
+        bank: j['bank'] as String? ?? '',
+        code: j['code'] as String? ?? '',
+        purpose: j['purpose'] as String?,
+        at: DateTime.parse(j['at'] as String).toLocal(),
+        outcome: CallOutcome.values.asNameMap()[j['outcome']] ?? CallOutcome.missed,
+        answeredAt: j['answeredAt'] == null ? null : DateTime.parse(j['answeredAt'] as String).toLocal(),
+        endedAt: j['endedAt'] == null ? null : DateTime.parse(j['endedAt'] as String).toLocal(),
+      );
+
+  final String id;
+  final String orgId;
+  String bank;
+  String code;
+  String? purpose;
+  final DateTime at;
+  CallOutcome outcome;
+  DateTime? answeredAt;
+  DateTime? endedAt;
+
+  bool get settled => outcome != CallOutcome.ringing && outcome != CallOutcome.active;
+
+  Duration? get duration {
+    final a = answeredAt, e = endedAt;
+    return a == null || e == null ? null : e.difference(a);
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'orgId': orgId,
+        'bank': bank,
+        'code': code,
+        'purpose': ?purpose,
+        'at': at.toUtc().toIso8601String(),
+        'outcome': outcome.name,
+        'answeredAt': ?answeredAt?.toUtc().toIso8601String(),
+        'endedAt': ?endedAt?.toUtc().toIso8601String(),
+      };
+}
+
 class BankLink {
   BankLink._(this.bank, this.phone, this._http, http.Client api, this._now) {
     client = GaskiyaClient(baseUrl: Config.apiUrl, token: token, renewToken: renewToken, httpClient: api);
@@ -127,6 +173,17 @@ class AppState extends ChangeNotifier {
   final List<Locale> Function() _deviceLocales;
   Timer? _poll;
   final _rung = <String>{};
+  StreamSubscription<Map<String, dynamic>>? _native;
+
+  final List<CallRecord> _callLog = [];
+  static const _callLogKey = 'callLog';
+  static const _callLogMax = 100;
+
+  /// Every bank call the app heard about, newest first.
+  List<CallRecord> get callLog => List.unmodifiable(_callLog);
+
+  /// The answered call still in progress.
+  CallRecord? get activeCall => _callLog.where((r) => r.outcome == CallOutcome.active).firstOrNull;
 
   final http.Client _http;
   final http.Client Function() _apiHttp;
@@ -192,6 +249,16 @@ class AppState extends ChangeNotifier {
       }
     }
     _selectedId = _prefs!.getString(_selectedKey);
+    final log = _prefs!.getString(_callLogKey);
+    if (log != null) {
+      try {
+        _callLog.addAll((jsonDecode(log) as List).map((e) => CallRecord.fromJson(e as Map<String, dynamic>)));
+        for (final r in _callLog.where((r) => r.outcome == CallOutcome.active)) {
+          r.outcome = CallOutcome.answered;
+        }
+      } catch (_) {}
+    }
+    _native ??= NativeCalls.instance.events.listen(handleNativeCall);
     for (final l in _links) {
       unawaited(l._refreshToken().then((_) => _listen(l)).catchError((_) {}));
     }
@@ -415,7 +482,10 @@ class AppState extends ChangeNotifier {
       }
     } else if (type == 'call.closed') {
       final id = data['callId'];
-      if (id is String) unawaited(NativeCalls.instance.endCall(id));
+      if (id is String) {
+        unawaited(NativeCalls.instance.endCall(id));
+        _settle(id);
+      }
       for (final l in from == null ? _links : [from]) {
         if (l.liveCalls.isEmpty) continue;
         final left = id == null ? const <CallSession>[] : l.liveCalls.where((c) => c.id != id).toList();
@@ -482,12 +552,23 @@ class AppState extends ChangeNotifier {
     _poll = null;
   }
 
-  void _setCalls(BankLink l, List<CallSession> calls) {
+  void _setCalls(BankLink l, List<CallSession> calls, {DateTime? asOf}) {
     if (l._closed || _disposed) return;
     l._expiry?.cancel();
     final now = DateTime.now();
+    final before = l.liveCalls;
     l.liveCalls = calls.where((c) => c.expiresAt.isAfter(now)).toList();
+    final live = l.liveCalls.map((c) => c.id).toSet();
+    for (final c in before) {
+      if (!live.contains(c.id) && !c.expiresAt.isAfter(now)) _settle(c.id, ringingOnly: true);
+    }
+    if (asOf != null) {
+      for (final r in _callLog.where((r) => r.orgId == l.id && !r.settled && !live.contains(r.id) && r.at.isBefore(asOf)).toList()) {
+        _settle(r.id);
+      }
+    }
     for (final c in l.liveCalls) {
+      if (c.code.isNotEmpty) _logCall(id: c.id, orgId: l.id, bank: l.bank.name, code: c.code, purpose: c.purpose);
       if (c.status != 'open' || c.code.isEmpty || !_rung.add(c.id)) continue;
       unawaited(NativeCalls.instance.ring(callId: c.id, orgId: l.bank.id, bank: l.bank.name, code: c.code, expiresAt: c.expiresAt));
     }
@@ -500,14 +581,85 @@ class AppState extends ChangeNotifier {
 
   Future<void> _refreshCall(BankLink l) => l._checking ??= () async {
         try {
+          final asked = _now();
           final s = await l.client.openCall();
           if (l._closed || _disposed) return;
           _answered(l, !s.cannotCheck);
-          _setCalls(l, s.calling ? s.calls : const []);
+          _setCalls(l, s.calling ? s.calls : const [], asOf: s.cannotCheck ? null : asked);
         } finally {
           l._checking = null;
         }
       }();
+
+  CallRecord _logCall({required String id, required String orgId, required String bank, required String code, String? purpose, DateTime? at}) {
+    final known = _callLog.where((r) => r.id == id).firstOrNull;
+    if (known != null) {
+      if (purpose != null && known.purpose == null) {
+        known.purpose = purpose;
+        unawaited(_saveCallLog());
+      }
+      return known;
+    }
+    final r = CallRecord(id: id, orgId: orgId, bank: bank, code: code, purpose: purpose, at: at ?? _now());
+    _callLog.insert(0, r);
+    if (_callLog.length > _callLogMax) _callLog.removeRange(_callLogMax, _callLog.length);
+    unawaited(_saveCallLog());
+    _notify();
+    return r;
+  }
+
+  void _settle(String id, {bool ringingOnly = false, bool declined = false}) {
+    final r = _callLog.where((r) => r.id == id).firstOrNull;
+    if (r == null || r.settled || (ringingOnly && r.outcome == CallOutcome.active)) return;
+    if (r.outcome == CallOutcome.active) {
+      r
+        ..outcome = CallOutcome.answered
+        ..endedAt = _now();
+    } else {
+      r.outcome = declined ? CallOutcome.declined : CallOutcome.missed;
+    }
+    unawaited(_saveCallLog());
+    _notify();
+  }
+
+  Future<void> _saveCallLog() async => _prefs?.setString(_callLogKey, jsonEncode(_callLog.map((r) => r.toJson()).toList()));
+
+  /// The person answered on the phone's call screen.
+  void answerCall(String id, [DateTime? at]) {
+    final r = _callLog.where((r) => r.id == id).firstOrNull;
+    if (r == null || r.settled) return;
+    r
+      ..outcome = CallOutcome.active
+      ..answeredAt = at ?? _now();
+    unawaited(_saveCallLog());
+    _notify();
+  }
+
+  /// The person ended the call from the app's in-call screen.
+  void hangUp([String? id]) {
+    final r = id == null ? activeCall : _callLog.where((r) => r.id == id).firstOrNull;
+    if (r == null) return;
+    unawaited(NativeCalls.instance.endCall(r.id));
+    _settle(r.id, declined: true);
+  }
+
+  void handleNativeCall(Map<String, dynamic> e) {
+    final id = e['callId'];
+    if (id is! String || id.isEmpty) return;
+    final orgId = e['orgId'] as String? ?? '';
+    final l = _links.where((l) => l.id == orgId).firstOrNull;
+    final ms = e['at'];
+    final at = ms is int ? DateTime.fromMillisecondsSinceEpoch(ms) : null;
+    _logCall(id: id, orgId: orgId, bank: l?.bank.name ?? e['bank'] as String? ?? '', code: e['code'] as String? ?? '', at: at);
+    switch (e['event']) {
+      case 'answered':
+        answerCall(id, at);
+      case 'ended':
+        _settle(id, declined: true);
+      case 'missed':
+        _settle(id, ringingOnly: true);
+    }
+  }
 
   Future<void> refreshCall() => Future.wait(_links.map(_refreshCall));
 
@@ -548,6 +700,7 @@ class AppState extends ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
+    _native?.cancel();
     stopCallPolling();
     for (final l in _links) {
       l._close();

@@ -171,7 +171,18 @@
     "calls": {
       "checkAgain": "Check again",
       "howItWorks": "When your bank call you, notice and four-digit code go show here sharp sharp. People fit fake caller ID; dem no fit fake this code.",
-      "validFor": "Code go work for {time}"
+      "validFor": "Code go work for {time}",
+      "recent": "Calls wey just pass",
+      "codeIs": "Code {code}",
+      "inCall": "You dey talk with {bank}",
+      "end": "End call",
+      "outcome": {
+        "ringing": "E dey call now",
+        "active": "For call",
+        "answered": "You pick am",
+        "missed": "You miss am",
+        "declined": "You no pick am"
+      }
     },
     "activity": {
       "last24h": "Last 24 hours",

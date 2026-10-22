@@ -25,6 +25,7 @@ import org.json.JSONObject
 // Bank calls on Android, mirroring CallKit on iPhone: the phone's own ringtone and an incoming-call
 // notification (full screen on a locked phone) until the call is answered, declined or runs out.
 // Answering opens the app and plays the same agent voice as the iPhone and the console's simulated phone.
+// What happens to each call (rang, answered, ended, missed) goes to Flutter for the call log and the in-call screen.
 object BankCalls {
     const val ACTION_ANSWER = "ng.gaskiya.calls.ANSWER"
     const val ACTION_DECLINE = "ng.gaskiya.calls.DECLINE"
@@ -41,6 +42,21 @@ object BankCalls {
     private var vibrator: Vibrator? = null
     private var voice: AgentVoice? = null
     private var missed: Runnable? = null
+    private val held = mutableListOf<Map<String, Any>>()
+    private var sink: ((Map<String, Any>) -> Unit)? = null
+
+    fun drain(to: (Map<String, Any>) -> Unit): List<Map<String, Any>> {
+        sink = to
+        return held.toList().also { held.clear() }
+    }
+
+    private fun emit(event: String, call: Incoming) {
+        val e = mapOf("event" to event, "callId" to call.callId, "orgId" to call.orgId, "bank" to call.bank, "code" to call.code, "at" to System.currentTimeMillis())
+        sink?.invoke(e) ?: run {
+            held.add(e)
+            if (held.size > 50) held.removeAt(0)
+        }
+    }
 
     fun ring(context: Context, args: Map<*, *>) {
         val ctx = context.applicationContext
@@ -58,7 +74,13 @@ object BankCalls {
         current = call
         startRinging(ctx)
         notify(ctx, call)
-        missed = Runnable { if (current?.callId == callId) stopAll(ctx) }.also { main.postDelayed(it, minOf(RING_MS, left)) }
+        emit("rang", call)
+        missed = Runnable {
+            if (current?.callId == callId) {
+                stopAll(ctx)
+                emit("missed", call)
+            }
+        }.also { main.postDelayed(it, minOf(RING_MS, left)) }
     }
 
     fun answer(context: Context, callId: String?) {
@@ -66,13 +88,19 @@ object BankCalls {
         val ctx = context.applicationContext
         stopRinging(ctx)
         voice = AgentVoice(ctx, call.orgId, call.code).also { it.start() }
+        emit("answered", call)
     }
 
     fun decline(context: Context, callId: String?) {
-        if (callId == null || current?.callId == callId) stopAll(context.applicationContext)
+        val call = current ?: return
+        if (callId != null && call.callId != callId) return
+        stopAll(context.applicationContext)
+        emit("ended", call)
     }
 
-    fun end(context: Context, callId: String?) = decline(context, callId)
+    fun end(context: Context, callId: String?) {
+        if (callId == null || current?.callId == callId) stopAll(context.applicationContext)
+    }
 
     private fun stopAll(ctx: Context) {
         stopRinging(ctx)

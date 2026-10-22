@@ -7,6 +7,7 @@ import '../../core/copy.dart';
 import '../../core/session.dart';
 import '../theme.dart';
 import '../widgets/widgets.dart';
+import 'in_call_screen.dart';
 
 class CallsScreen extends StatefulWidget {
   const CallsScreen({super.key, required this.state});
@@ -49,48 +50,63 @@ class _CallsScreenState extends State<CallsScreen> {
                   final allQuiet = calling.isEmpty && unchecked.isEmpty;
                   final kinds = state.links.map((l) => l.bank.kind).toSet();
                   final kind = kinds.length == 1 ? kinds.first : 'bank';
-                  return AnimatedSwitcher(
-                    duration: G.motion(context, const Duration(milliseconds: 520)),
-                    switchInCurve: G.spring,
-                    switchOutCurve: Curves.easeIn,
-                    transitionBuilder: (child, a) => FadeTransition(
-                      opacity: a,
-                      child: ScaleTransition(scale: Tween(begin: 0.94, end: 1.0).animate(a), child: child),
+                  final log = state.callLog;
+                  return Column(children: [
+                    AnimatedSwitcher(
+                      duration: G.motion(context, const Duration(milliseconds: 520)),
+                      switchInCurve: G.spring,
+                      switchOutCurve: Curves.easeIn,
+                      transitionBuilder: (child, a) => FadeTransition(
+                        opacity: a,
+                        child: ScaleTransition(scale: Tween(begin: 0.94, end: 1.0).animate(a), child: child),
+                      ),
+                      child: allQuiet
+                          ? _notCalling(context, c, bank, kind, named: names.length == 1)
+                          : Column(
+                              key: ValueKey([
+                                for (final l in calling) ...l.liveCalls.map((x) => x.id),
+                                for (final l in unchecked) 'unchecked:${l.id}',
+                                ...quiet,
+                              ].join(',')),
+                              children: [
+                                for (var i = 0; i < calling.length; i++) ...[
+                                  if (i > 0) const SizedBox(height: 28),
+                                  _calling(context, c, calling[i].bank.name, calling[i].liveCalls),
+                                ],
+                                for (final l in unchecked) ...[
+                                  if (calling.isNotEmpty || l != unchecked.first) const SizedBox(height: 28),
+                                  _cannotCheck(context, c, names.length > 1 ? l.bank.name : null, l.bank),
+                                ],
+                                if (calling.isEmpty && quiet.isNotEmpty) ...[
+                                  const SizedBox(height: 22),
+                                  GroupCard(
+                                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                      Text(c.t('official.org.notCallingTitle', {'bank': c.orList(quiet)}), style: G.headline(context)),
+                                      const SizedBox(height: 4),
+                                      Text(c.tOrg('call.not_calling.body', kind, {'bank': c.orList(quiet)}), style: G.subhead(context)),
+                                    ]),
+                                  ),
+                                ],
+                                if (unchecked.isEmpty) ...[
+                                  const SizedBox(height: 22),
+                                  PrimaryButton(label: c.t('app.calls.checkAgain'), icon: CupertinoIcons.arrow_clockwise, loading: _checking, onTap: _refresh),
+                                ],
+                              ],
+                            ),
                     ),
-                    child: allQuiet
-                        ? _notCalling(context, c, bank, kind, named: names.length == 1)
-                        : Column(
-                            key: ValueKey([
-                              for (final l in calling) ...l.liveCalls.map((x) => x.id),
-                              for (final l in unchecked) 'unchecked:${l.id}',
-                              ...quiet,
-                            ].join(',')),
-                            children: [
-                              for (var i = 0; i < calling.length; i++) ...[
-                                if (i > 0) const SizedBox(height: 28),
-                                _calling(context, c, calling[i].bank.name, calling[i].liveCalls),
-                              ],
-                              for (final l in unchecked) ...[
-                                if (calling.isNotEmpty || l != unchecked.first) const SizedBox(height: 28),
-                                _cannotCheck(context, c, names.length > 1 ? l.bank.name : null, l.bank),
-                              ],
-                              if (calling.isEmpty && quiet.isNotEmpty) ...[
-                                const SizedBox(height: 22),
-                                GroupCard(
-                                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                    Text(c.t('official.org.notCallingTitle', {'bank': c.orList(quiet)}), style: G.headline(context)),
-                                    const SizedBox(height: 4),
-                                    Text(c.tOrg('call.not_calling.body', kind, {'bank': c.orList(quiet)}), style: G.subhead(context)),
-                                  ]),
-                                ),
-                              ],
-                              if (unchecked.isEmpty) ...[
-                                const SizedBox(height: 22),
-                                PrimaryButton(label: c.t('app.calls.checkAgain'), icon: CupertinoIcons.arrow_clockwise, loading: _checking, onTap: _refresh),
-                              ],
-                            ],
-                          ),
-                  );
+                    if (log.isNotEmpty) ...[
+                      SectionHeader(c.t('app.calls.recent')),
+                      GroupCard(
+                        padding: EdgeInsets.zero,
+                        child: Column(children: [
+                          for (final (i, r) in log.indexed) ...[
+                            if (i > 0) Container(height: 0.5, margin: const EdgeInsets.only(left: 64), color: G.separator.resolveFrom(context)),
+                            _LogRow(record: r),
+                          ],
+                        ]),
+                      ),
+                    ],
+                  ]);
                 },
               ),
             ),
@@ -291,5 +307,59 @@ class _CountdownState extends State<_Countdown> {
     final left = widget.expiresAt.difference(DateTime.now()).inSeconds.clamp(0, 9999);
     return Text(Copy.I.t('app.calls.validFor', {'time': '${left ~/ 60}:${(left % 60).toString().padLeft(2, '0')}'}),
         style: G.footnote(context).copyWith(color: CupertinoColors.white.withValues(alpha: 0.85), fontFeatures: const [FontFeature.tabularFigures()]));
+  }
+}
+
+class _LogRow extends StatelessWidget {
+  const _LogRow({required this.record});
+  final CallRecord record;
+
+  static String _when(DateTime t) {
+    final now = DateTime.now();
+    final clock = '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
+    return t.year == now.year && t.month == now.month && t.day == now.day ? clock : '${t.day}/${t.month} $clock';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Copy.I;
+    final r = record;
+    final missed = r.outcome == CallOutcome.missed;
+    final color = switch (r.outcome) {
+      CallOutcome.missed || CallOutcome.declined => G.red,
+      CallOutcome.ringing || CallOutcome.active => G.tint,
+      CallOutcome.answered => G.greenInk,
+    }.resolveFrom(context);
+    final duration = r.duration;
+    final outcome = c.t('app.calls.outcome.${r.outcome.name}');
+    final detail = [
+      if (r.code.isNotEmpty) c.t('app.calls.codeIs', {'code': r.code}),
+      if (r.purpose != null) c.purpose(r.purpose!),
+    ].join(' \u00b7 ');
+    return Semantics(
+      container: true,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(14, 12, 16, 12),
+        child: Row(children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(color: color.withValues(alpha: 0.14), borderRadius: BorderRadius.circular(10)),
+            child: Icon(missed ? CupertinoIcons.phone_down_fill : CupertinoIcons.phone_fill, size: 18, color: color),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(r.bank, style: G.headline(context).copyWith(color: missed ? color : null)),
+              if (detail.isNotEmpty) Text(detail.cap, style: G.footnote(context)),
+              Text.rich(TextSpan(children: [
+                TextSpan(text: duration == null ? outcome : '$outcome \u00b7 ${callTime(duration)}', style: TextStyle(color: color, fontWeight: FontWeight.w600)),
+                TextSpan(text: ' \u00b7 ${_when(r.at)}'),
+              ]), style: G.footnote(context).copyWith(fontFeatures: const [FontFeature.tabularFigures()])),
+            ]),
+          ),
+        ]),
+      ),
+    );
   }
 }

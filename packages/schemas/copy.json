@@ -180,7 +180,18 @@
     "calls": {
       "checkAgain": "Check Again",
       "howItWorks": "When your bank calls, its code appears here. Caller ID can be faked. This code can't.",
-      "validFor": "Expires in {time}"
+      "validFor": "Expires in {time}",
+      "recent": "Recent calls",
+      "codeIs": "Code {code}",
+      "inCall": "On a call with {bank}",
+      "end": "End call",
+      "outcome": {
+        "ringing": "Calling now",
+        "active": "In call",
+        "answered": "Answered",
+        "missed": "Missed",
+        "declined": "Declined"
+      }
     },
     "activity": {
       "last24h": "Last 24 hours",

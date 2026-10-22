@@ -171,7 +171,18 @@
     "calls": {
       "checkAgain": "Lelee \u1ecdz\u1ecd",
       "howItWorks": "Mgbe \u1ee5l\u1ecd ak\u1ee5 g\u1ecb kp\u1ecdr\u1ecd, \u1ecdkwa na koodu nwere \u1ecdn\u1ee5\u1ecdg\u1ee5g\u1ee5 an\u1ecd ga-egosi ebe a ozugbo. E nwere ike \u1ecbme n\u1ecdmba onye na-akp\u1ecd ka \u1ecd d\u1ecb ka nke ezi; koodu a enwegh\u1ecb ike.",
-      "validFor": "Koodu ga-ar\u1ee5 \u1ecdr\u1ee5 maka {time}"
+      "validFor": "Koodu ga-ar\u1ee5 \u1ecdr\u1ee5 maka {time}",
+      "recent": "Oku na-ad\u1ecbbegh\u1ecb anya",
+      "codeIs": "Koodu {code}",
+      "inCall": "\u1eca na-akpar\u1ecbta \u1ee5ka na {bank}",
+      "end": "Kw\u1ee5s\u1ecb oku",
+      "outcome": {
+        "ringing": "\u1ecc na-akp\u1ecd ugbu a",
+        "active": "Na oku",
+        "answered": "\u1eca zara ya",
+        "missed": "\u1eca zagh\u1ecb ya",
+        "declined": "\u1eca j\u1ee5r\u1ee5 ya"
+      }
     },
     "activity": {
       "last24h": "Awa 24 gara aga",

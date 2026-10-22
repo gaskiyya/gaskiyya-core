@@ -110,7 +110,7 @@ void main() {
     await tester.runAsync(state.refreshCall);
     await tester.pumpWidget(hostWith(CallsScreen(state: state), disableAnimations: true));
     await tester.pump();
-    final countdown = find.textContaining(RegExp(r'\d:\d\d'));
+    final countdown = find.textContaining(Copy.I.t('app.calls.validFor', {'time': ''}).trim());
     String shown() => tester.widget<Text>(countdown).data!;
     final before = shown();
     await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 1100)));

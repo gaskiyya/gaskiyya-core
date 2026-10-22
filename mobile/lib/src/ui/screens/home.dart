@@ -14,6 +14,7 @@ import '../widgets/widgets.dart';
 import 'alerts.dart';
 import 'calls_screen.dart';
 import 'check_screen.dart';
+import 'in_call_screen.dart';
 
 String sharedText(List<SharedMediaFile> files) =>
     files.where((f) => f.type == SharedMediaType.text || f.type == SharedMediaType.url).map((f) => f.path).join('\n');
@@ -165,6 +166,24 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             setState(() => _banner = null);
             _tabs.index = 1;
           },
+        ),
+        Positioned.fill(
+          child: ListenableBuilder(
+            listenable: widget.state,
+            builder: (context, _) {
+              final call = widget.state.activeCall;
+              return AnimatedSwitcher(
+                duration: G.motion(context, G.springFast),
+                switchInCurve: G.spring,
+                switchOutCurve: Curves.easeIn,
+                transitionBuilder: (child, a) => FadeTransition(
+                  opacity: a,
+                  child: SlideTransition(position: Tween(begin: const Offset(0, 0.06), end: Offset.zero).animate(a), child: child),
+                ),
+                child: call == null ? const SizedBox.shrink() : InCallScreen(key: ValueKey(call.id), call: call, onEnd: widget.state.hangUp),
+              );
+            },
+          ),
         ),
       ],
     );

@@ -171,7 +171,18 @@
     "calls": {
       "checkAgain": "Sake dubawa",
       "howItWorks": "Idan bankinku ya kira, sanarwa da lamba mai lambobi hu\u0257u za su bayyana a nan nan take. Ana iya yin jabun lambar mai kira; wannan lambar ba za a iya ba.",
-      "validFor": "Lambar tana aiki na {time}"
+      "validFor": "Lambar tana aiki na {time}",
+      "recent": "Kiran kwanan nan",
+      "codeIs": "Lamba {code}",
+      "inCall": "Kuna magana da {bank}",
+      "end": "Kashe kira",
+      "outcome": {
+        "ringing": "Yana kira yanzu",
+        "active": "Ana kira",
+        "answered": "An amsa",
+        "missed": "Ba a amsa ba",
+        "declined": "An ki"
+      }
     },
     "activity": {
       "last24h": "Awa 24 da suka wuce",
