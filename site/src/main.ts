@@ -66,6 +66,15 @@ if (heroWord && !reduceMotion) {
   }, 2400);
 }
 
+const marquee = $('[data-marquee]');
+if (marquee) {
+  for (const item of [...marquee.children]) {
+    const copy = item.cloneNode(true) as HTMLElement;
+    copy.setAttribute('aria-hidden', 'true');
+    marquee.append(copy);
+  }
+}
+
 const nav = $('#nav')!;
 const hero = $('.dark-hero .hero');
 const onScroll = () => {
