@@ -1,0 +1,39 @@
+# DigitalOcean App Platform spec for the Gaskiya registry server.
+# Builds the root Dockerfile and redeploys on every push to main.
+# Secrets are set in the DigitalOcean dashboard (or with `doctl apps update --spec`),
+# never committed here: see docs/CONFIGURATION.md for each setting.
+name: gaskiyya
+region: lon
+services:
+  - name: api
+    github:
+      repo: gaskiyya/gaskiyya-core
+      branch: main
+      deploy_on_push: true
+    dockerfile_path: Dockerfile
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: apps-s-1vcpu-1gb
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 20
+    envs:
+      - { key: NODE_ENV, value: production }
+      - { key: STORE, value: firestore }
+      - { key: FIRESTORE_PROJECT_ID, value: gaskiyya-io }
+      - { key: FIRESTORE_COLLECTION_PREFIX, value: gaskiya }
+      - { key: TRUST_PROXY, value: "true" }
+      - { key: SIM_SWAP_PROVIDER, value: none }
+      - { key: ALLOW_DEMO_RESET, value: "false" }
+      - { key: AI_PROVIDER, value: gemini }
+      - { key: AGENT_AI_PROVIDER, value: same }
+      - { key: AGENT_IN_PROCESS, value: "true" }
+      - { key: LOG_LEVEL, value: info }
+      - { key: FIRESTORE_SERVICE_ACCOUNT_JSON, type: SECRET }
+      - { key: GASKIYA_TOKEN_SECRET, type: SECRET }
+      - { key: GASKIYA_TENANTS, type: SECRET }
+      - { key: GASKIYA_TENANT_KEYS, type: SECRET }
+      - { key: GASKIYA_BANK_CLIENTS, type: SECRET }
+      - { key: ADMIN_USERS, type: SECRET }
+      - { key: GASKIYA_MASTER_KEY, type: SECRET }
+      # Add GEMINI_API_KEY (SECRET) to switch on AI explanations.
