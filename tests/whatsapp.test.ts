@@ -2,7 +2,7 @@ import { createHmac } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import { copy } from '@gaskiya/schemas';
 import { MemoryStore } from '../packages/api/src/index.ts';
-import { ALERT, ALICE, harness, LINK_MSG, TAMPERED_LINK_MSG, WA } from './helpers.ts';
+import { ALERT, ALICE, harness, LINK_MSG, seedSecondCall, TAMPERED_LINK_MSG, WA } from './helpers.ts';
 
 export function waPayload(from: string, message: Record<string, unknown>) {
   return { object: 'whatsapp_business_account', entry: [{ id: '1', changes: [{ field: 'messages', value: { messaging_product: 'whatsapp', messages: [{ from, id: `wamid.${Math.random()}`, timestamp: '1', ...message }] } }] }] };
@@ -61,13 +61,10 @@ describe('WhatsApp route', () => {
     expect(reply.body).toContain(call.json().code);
   });
 
-  it('F10 / CH-2: CALL lists every open call code when two agents are calling', async () => {
+  it('F10 / CH-2: CALL lists every open call code when two sessions are open together', async () => {
     const h = await harness();
-    const open = async (purpose: string) =>
-      (await h.sys.app.inject({ method: 'POST', url: '/v1/calls', headers: { authorization: `Bearer ${h.bankToken}` }, payload: { recipient: ALICE, purpose, agentRef: purpose } })).json();
-    const a = await open('fraud_check');
-    h.clock.now = new Date(h.clock.now.getTime() + 1000);
-    const b = await open('card_activation');
+    const a = (await h.sys.app.inject({ method: 'POST', url: '/v1/calls', headers: { authorization: `Bearer ${h.bankToken}` }, payload: { recipient: ALICE, purpose: 'fraud_check', agentRef: 'a1' } })).json();
+    const b = await seedSecondCall(h, a.id, 'card_activation', a.code === '1111' ? '2222' : '1111');
     const reply = (await send(h, 'CALL')).body;
     expect(reply).toContain(`${copy.call.calling.codeLabel}: ${a.code}`);
     expect(reply).toContain(`${copy.call.calling.codeLabel}: ${b.code}`);

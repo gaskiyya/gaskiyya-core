@@ -4,7 +4,7 @@ import type { Category } from '@gaskiya/schemas';
 import { genuineTemplate } from '../../../packages/api/src/simulator/demo-data.ts';
 import { sim, type AppUser, type Call, type SimConfig } from '../api.ts';
 import { IconMessage, IconPhone, IconSend, IconShield, IconWarning } from '../icons.tsx';
-import { ago, Empty, fmtTime, PageHead, Section, usePoll } from './ui.tsx';
+import { ago, Empty, fmtTime, PageHead, Section, SkeletonRows, useActions, usePoll } from './ui.tsx';
 
 const label = (map: Record<string, string>, key: string) => {
   const s = map[key] ?? key.replace(/_/g, ' ');
@@ -28,11 +28,11 @@ export function CustomersPage({ config, notify, onCalled, onOpen }: {
     <div className="page">
       <PageHead
         title="Customers"
-        sub={`Everyone who signed in to the Gaskiyya app with their number is a ${config.bank.name} customer. Call them, text them, or test them with a scam.`}
+        sub={`${config.bank.name} customers who use the Gaskiyya app. Call them or send them a message.`}
       />
       <Section title="Registered app users" action={users.length ? <span className="muted small">{users.length} in all &middot; {today} new today</span> : undefined}>
         {!list ? (
-          <p className="muted small flat">Loading&hellip;</p>
+          <SkeletonRows rows={3} lead="avatar" label="Loading customers" />
         ) : users.length === 0 ? (
           <Empty icon={<IconPhone />} title="No one has signed in to the app yet">When someone signs in to the Gaskiyya app with their number, they appear here.</Empty>
         ) : (
@@ -65,23 +65,13 @@ function AppUserRow({ user, config, tool, setTool, notify, onCalled, onOpen }: {
   onCalled: (call: Call) => void;
   onOpen: (phone: string) => void;
 }) {
-  const [busy, setBusy] = useState(false);
+  const { run, busy } = useActions((e) => notify(e.message));
   const [purpose, setPurpose] = useState(config.purposes[0]!);
   const draft = (c: string) => genuineTemplate(c as Category, config.bank.name, user.phone, new Date(), config.bank.domain).text;
   const [category, setCategory] = useState('security_notice');
   const [text, setText] = useState(() => draft('security_notice'));
   const who = showPhone(user.phone);
 
-  const act = async (fn: () => Promise<unknown>) => {
-    setBusy(true);
-    try {
-      await fn();
-    } catch (e) {
-      notify((e as Error).message);
-    } finally {
-      setBusy(false);
-    }
-  };
   const toggle = (t: 'call' | 'text') => setTool(tool === t ? null : t);
 
   return (
@@ -97,10 +87,10 @@ function AppUserRow({ user, config, tool, setTool, notify, onCalled, onOpen }: {
         <div className="row app-user-actions">
           <button className="btn" aria-expanded={tool === 'call'} onClick={() => toggle('call')}><IconPhone /> Call</button>
           <button className="btn secondary" aria-expanded={tool === 'text'} onClick={() => toggle('text')}><IconMessage /> Text</button>
-          <button className="btn secondary" disabled={busy} onClick={() => act(async () => { await sim.sendFake(user.phone, Math.floor(Math.random() * 4)); notify(`Scam text sent to ${who}`); })}>
+          <button className="btn secondary" disabled={busy('scam')} aria-busy={busy('scam')} onClick={() => run('scam', async () => { await sim.sendFake(user.phone, Math.floor(Math.random() * 4)); notify(`Scam text sent to ${who}`); })}>
             <IconWarning /> Scam test
           </button>
-          <button className="btn secondary" disabled={busy} onClick={() => act(async () => { const a = await sim.simSwapCheck(user.phone, 24); notify(`${who}: ${SIM_SAYS[a.status] ?? a.status}`); })}>
+          <button className="btn secondary" disabled={busy('sim')} aria-busy={busy('sim')} onClick={() => run('sim', async () => { const a = await sim.simSwapCheck(user.phone, 24); notify(`${who}: ${SIM_SAYS[a.status] ?? a.status}`); })}>
             <IconShield /> SIM check
           </button>
           <button className="btn plain" onClick={() => onOpen(user.phone)}>Open phone</button>
@@ -115,7 +105,7 @@ function AppUserRow({ user, config, tool, setTool, notify, onCalled, onOpen }: {
             ))}
           </div>
           <div className="row" style={{ justifyContent: 'flex-end' }}>
-            <button className="btn" disabled={busy} onClick={() => act(async () => { onCalled(await sim.openCall(user.phone, purpose)); notify(`Calling ${who}. Their app now shows the code.`); })}>
+            <button className="btn" disabled={busy('call')} aria-busy={busy('call')} onClick={() => run('call', async () => { onCalled(await sim.openCall(user.phone, purpose)); notify(`Calling ${who}. Their app now shows the code.`); })}>
               <IconPhone /> Announce and call
             </button>
           </div>
@@ -131,7 +121,7 @@ function AppUserRow({ user, config, tool, setTool, notify, onCalled, onOpen }: {
           <textarea aria-label={`Message to ${who}`} rows={4} value={text} onChange={(e) => setText(e.target.value)} />
           <div className="row" style={{ justifyContent: 'space-between' }}>
             <span className="muted small">Registered with Gaskiyya first, so {who}&apos;s app shows it as sent by {config.bank.name}.</span>
-            <button className="btn" disabled={busy || !text.trim()} onClick={() => act(async () => { await sim.send(user.phone, category, text.trim()); notify(`Registered and sent to ${who}`); setTool(null); setText(draft(category)); })}>
+            <button className="btn" disabled={busy('text') || !text.trim()} aria-busy={busy('text')} onClick={() => run('text', async () => { await sim.send(user.phone, category, text.trim()); notify(`Registered and sent to ${who}`); setTool(null); setText(draft(category)); })}>
               <IconSend /> Send
             </button>
           </div>

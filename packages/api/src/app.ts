@@ -36,7 +36,7 @@ import { activitySummaryEmail, advisoryApprovedEmail, testEmail, welcomeEmail, t
 import type { RateLimiter, RateLimiterFactory } from './ratelimit/ratelimit.ts';
 import { registerAdminRoutes, type AdminDeps } from './admin/routes.ts';
 import { registerConsoleRoutes, type ConsoleDeps } from './console/routes.ts';
-import type { GaskiyaService, Registered } from './service.ts';
+import { CallInProgressError, type GaskiyaService, type Registered } from './service.ts';
 import type { SimulatedMno } from './simswap/simswap.ts';
 import { featureOn, isSuspended, type ApiCallEvent, type OrgFeature, type Tenant } from './store/types.ts';
 import { cannotCheck, handleUssd } from './ussd.ts';
@@ -363,7 +363,12 @@ export function buildApp(deps: AppDeps) {
   app.post('/v1/calls', { preHandler: [requireBank, needs('calls')] }, async (req, reply) => {
     const body = parse(OpenCall, req.body, reply);
     if (!body) return;
-    return reply.code(201).send(await svc.openCall(req.bank!.tenantId, body));
+    try {
+      return reply.code(201).send(await svc.openCall(req.bank!.tenantId, body));
+    } catch (err) {
+      if (err instanceof CallInProgressError) return reply.code(409).send({ code: err.code, message: err.message, call: err.call });
+      throw err;
+    }
   });
 
   app.patch<{ Params: { id: string } }>('/v1/calls/:id', { preHandler: [requireBank, needs('calls')] }, async (req, reply) => {

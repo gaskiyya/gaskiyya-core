@@ -5,7 +5,7 @@ import { createSystem, StaticKeyService } from '../packages/api/src/index.ts';
 import { MemoryVoipPush } from '../packages/api/src/channels/voip.ts';
 import { MemoryPush } from '../packages/api/src/channels/channels.ts';
 import { MemoryStore } from '../packages/api/src/store/memory.ts';
-import { buildSimulator, DEMO_CUSTOMERS, DEMO_ORGS, demoTenant, knowsNumber } from '../packages/api/src/simulator/index.ts';
+import { buildSimulator, DEMO_CUSTOMERS, knowsNumber } from '../packages/api/src/simulator/index.ts';
 import { BANK_CLIENT, clientFor, TENANT, TOKEN_SECRET } from './helpers.ts';
 
 const NEWCOMER = '+2348161234567';
@@ -24,7 +24,7 @@ describe('app users: anyone who signs in by number is a demo bank customer the c
   const store = new MemoryStore();
   const push = new MemoryPush();
   const voip = new MemoryVoipPush();
-  const agency = demoTenant(DEMO_ORGS.roadsafety!);
+  const agency = { id: 'acme', name: 'Acme Bank (demo)', kind: 'bank' as const, domains: ['acme.example'], senderIds: ['ACME-DEMO'] };
   let api: ReturnType<typeof createSystem>;
   let apiUrl = '';
   let simPort = 0;
@@ -40,7 +40,7 @@ describe('app users: anyone who signs in by number is a demo bank customer the c
       bankName: TENANT.name,
       demoLogin: true,
       logger: false,
-      orgs: [{ tenantId: agency.id, name: agency.name, kind: 'agency', domain: agency.domains[0], clientId: c.clientId, clientSecret: c.clientSecret }],
+      orgs: [{ tenantId: agency.id, name: agency.name, kind: 'bank', domain: agency.domains[0], clientId: c.clientId, clientSecret: c.clientSecret }],
       appUsers: store,
       consoleCheck: async (auth) => (auth === CONSOLE.authorization ? { tenantId: TENANT.id } : null),
     });

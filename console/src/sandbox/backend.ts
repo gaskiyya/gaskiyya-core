@@ -8,7 +8,7 @@ import { EventHub, MemoryPush } from '../../../packages/api/src/channels/channel
 import { StaticKeyService } from '../../../packages/api/src/keys/keys.ts';
 import { deriveConsoleCode } from '../../../packages/api/src/console/code.ts';
 import { RegistrationGuard } from '../../../packages/api/src/guard.ts';
-import { AdvisoryError, GaskiyaService } from '../../../packages/api/src/service.ts';
+import { AdvisoryError, CallInProgressError, GaskiyaService } from '../../../packages/api/src/service.ts';
 import { DEFAULT_SIM_SWAP, SimSwapMonitor } from '../../../packages/api/src/simswap/monitor.ts';
 import { SimulatedMno } from '../../../packages/api/src/simswap/simswap.ts';
 import { MemoryStore } from '../../../packages/api/src/store/memory.ts';
@@ -26,6 +26,7 @@ import {
   FAKE_TEMPLATES,
   fakeCustomerCareMessage,
   fakeReceipt,
+  forgedReceipt,
   genuineTemplate,
   listFraudCalls,
   newFraudCall,
@@ -34,7 +35,7 @@ import {
   type FraudCall,
   type Transfer,
 } from '../../../packages/api/src/simulator/demo-data.ts';
-import { DEMO_BANKS, DEMO_ORGS, demoTenant } from '../../../packages/api/src/simulator/demo-banks.ts';
+import { DEMO_BANKS, demoTenant } from '../../../packages/api/src/simulator/demo-banks.ts';
 
 const USSD_CODE = '*347*123#';
 import { contentDigest } from '../device/digest.ts';
@@ -56,8 +57,6 @@ interface InboxItem {
 }
 
 const BANK: Tenant = { ...demoTenant(DEMO_BANKS.demobank!), bankCode: DEMO_BANK_CODE };
-const ORGS: Tenant[] = Object.values(DEMO_ORGS).map(demoTenant);
-const SAMPLES = new Map(Object.values(DEMO_ORGS).map((p) => [p.tenant.id, p.sampleMessage]));
 const FAKE_CARE = DEMO_BANKS.demobank!.fakeCustomerCare!;
 const phoneOk = (p: unknown): p is string => typeof p === 'string' && /^\+[1-9]\d{6,14}$/.test(p);
 const fail = (status: number, code: string, message: string): Reply => ({ status, body: { code, message } });
@@ -71,8 +70,8 @@ function parse<T extends z.ZodType>(schema: T, body: unknown): { ok: true; value
 
 export function createSandbox() {
   const store = new MemoryStore();
-  const keys = StaticKeyService.random([BANK.id, ...ORGS.map((t) => t.id)]);
-  const tenants = new Map([BANK, ...ORGS].map((t) => [t.id, t]));
+  const keys = StaticKeyService.random([BANK.id]);
+  const tenants = new Map([[BANK.id, BANK]]);
   const model = new NoModelProvider();
   const svc = new GaskiyaService(tenants, store, keys, model, new MemoryPush(), new EventHub(), { recordTtlDays: 30, callRingSeconds: 180, callMaxSeconds: 7200, aiTimeoutMs: 4000, registerMaxFutureSeconds: 300 }, { warn: () => {}, error: () => {} });
 
@@ -205,7 +204,7 @@ export function createSandbox() {
             categories: CATEGORIES,
             purposes: CALL_PURPOSES,
             ussdCode: USSD_CODE,
-            orgs: [BANK, ...ORGS].map((t) => ({ id: t.id, name: t.name, kind: t.kind ?? 'bank' })),
+            orgs: [{ id: BANK.id, name: BANK.name, kind: BANK.kind ?? 'bank' }],
             fakeCustomerCare: FAKE_CARE,
             simSwap: true,
             consoleCode: deriveConsoleCode(keys, BANK.id, 1),
@@ -254,7 +253,7 @@ export function createSandbox() {
         if (!CATEGORIES.includes(category)) return fail(400, 'invalid_request', 'unknown category');
         const org = tenants.get(typeof b.org === 'string' ? b.org : BANK.id);
         if (!org) return fail(400, 'invalid_request', 'unknown organisation');
-        const text = (typeof b.text === 'string' && b.text.trim()) || (org !== BANK && SAMPLES.get(org.id)) || genuineTemplate(category, org.name, phone).text;
+        const text = (typeof b.text === 'string' && b.text.trim()) || genuineTemplate(category, org.name, phone).text;
         const t0 = performance.now();
         const reg = await register(phone, category, text, 'sms', org);
         const item = pushInbox(phone, { from: org.name, text, kind: 'genuine', category, channel: 'sms', ...(org !== BANK ? { tenantId: org.id } : {}) });
@@ -288,7 +287,13 @@ export function createSandbox() {
       case method === 'POST' && path === '/sim/calls': {
         const v = parse(OpenCall, { recipient: b.phone, purpose: b.purpose ?? 'card_activation', agentRef: b.agentRef ?? 'agent-017' });
         if (!v.ok) return v.reply;
-        const d = await svc.openCall(BANK.id, v.value);
+        let d: Awaited<ReturnType<typeof svc.openCall>>;
+        try {
+          d = await svc.openCall(BANK.id, v.value);
+        } catch (err) {
+          if (err instanceof CallInProgressError) return { status: 409, body: { code: err.code, message: err.message, call: err.call } };
+          throw err;
+        }
         const call = { ...d, phone: v.value.recipient, purpose: v.value.purpose, agentRef: v.value.agentRef, openedAt: new Date().toISOString() };
         calls.set(d.id, call);
         return { status: 200, body: call };
@@ -349,6 +354,15 @@ export function createSandbox() {
       case method === 'POST' && path === '/sim/transfers/fake': {
         const kind = b.kind;
         if (kind !== 'fake_amount' && kind !== 'fake_reference') return fail(400, 'invalid_request', 'kind must be fake_amount or fake_reference');
+        if (kind === 'fake_reference' && typeof b.id !== 'string' && b.from !== undefined) {
+          const amountKobo = Number(b.amountKobo);
+          if (!phoneOk(b.from) || !phoneOk(b.to) || b.from === b.to) return fail(400, 'invalid_request', 'from and to must be two different E.164 numbers');
+          if (!Number.isSafeInteger(amountKobo) || amountKobo < 100 || amountKobo > 100_000_000_000) return fail(400, 'invalid_request', 'amountKobo must be between 100 and 100,000,000,000');
+          const t = forgedReceipt(b.from, b.to, amountKobo, DEMO_BANK_CODE, crypto.randomUUID());
+          transfers.unshift(t);
+          transfers.splice(30);
+          return { status: 200, body: { transfer: t } };
+        }
         const source = typeof b.id === 'string' ? transfers.find((t) => t.id === b.id) : transfers.find((t) => t.kind === 'genuine');
         if (!source) return fail(404, 'not_found', 'Make a genuine transfer first');
         const t = fakeReceipt(source, kind, DEMO_BANK_CODE, crypto.randomUUID());

@@ -1,3 +1,4 @@
+import { lagosDate } from '@gaskiya/canonical';
 import type { Category } from '@gaskiya/schemas';
 import type { AppUser } from '../store/types.ts';
 
@@ -120,6 +121,23 @@ export function fakeReceipt(source: Transfer, kind: 'fake_amount' | 'fake_refere
     kind,
     amountKobo: kind === 'fake_amount' ? source.amountKobo * 10 : source.amountKobo,
     reference: kind === 'fake_reference' ? sessionId(bankCode, now) : source.reference,
+    at: now.toISOString(),
+    registered: false,
+    check: null,
+  };
+}
+
+/** A receipt nobody paid or registered: the fraudster types every field and makes up the session ID. */
+export function forgedReceipt(payer: string, merchant: string, amountKobo: number, bankCode: string, id: string, now = new Date()): Transfer {
+  return {
+    id,
+    kind: 'fake_reference',
+    payer,
+    merchant,
+    account: demoAccount(merchant),
+    amountKobo,
+    reference: sessionId(bankCode, now),
+    valueDate: lagosDate(now),
     at: now.toISOString(),
     registered: false,
     check: null,

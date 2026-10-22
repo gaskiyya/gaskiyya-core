@@ -16,14 +16,6 @@
       "text": "Hello, good day. I am calling from ZB Demo Bank. Your code is",
       "ms": 5841
     },
-    "opening-roadsafety": {
-      "text": "Hello, good day. I am calling from the Road Safety Agency. Your code is",
-      "ms": 6306
-    },
-    "opening-taxoffice": {
-      "text": "Hello, good day. I am calling from the Tax Office. Your code is",
-      "ms": 5788
-    },
     "opening-generic": {
       "text": "Hello, good day. I am calling from your bank. Your code is",
       "ms": 5282

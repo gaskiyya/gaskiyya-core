@@ -38,10 +38,10 @@ Check that it is up:
 
 ```bash
 curl http://localhost:8080/health          # {"ok":true}  (503 means the store is unreachable)
-curl http://localhost:8080/sim/config      # DemoBank and the demo organisations
+curl http://localhost:8080/sim/config      # DemoBank and its demo settings
 ```
 
-Open `http://localhost:8080/console/` on the laptop and put it on the projector. The console lists only numbers that have signed in to the app, under *Customers* and as the recipient on each demo tool page; the newest is picked first, and a number can also be typed in. The demo agencies also know +2348012345678 (Amina, the phone below), +2348098765432 and +2348031112222.
+Open `http://localhost:8080/console/` on the laptop and put it on the projector. The console lists only numbers that have signed in to the app, under *Customers* and as the recipient on each demo tool page; the newest is picked first, and a number can also be typed in.
 
 Stop everything with Ctrl+C.
 
@@ -111,17 +111,16 @@ The same steps as the README, in console terms:
    - `Fair Mony`: **Not on any licence list we hold**, with the warning that the name is very close to a listed firm. A near miss is never "licensed".
    - A made-up name such as `Moonbeam Quick Loans`: **Not on any licence list we hold**, the regulators to check, and "do not pay any upfront fee". There is no "fraud" answer: the registry only knows the name is absent.
    On WhatsApp the same check is `LOAN FairMoney`; on the console's feature phone dial `*347*123#`, choose 9 (*More*), then 4, and type the name; 0 on that page goes back, and 4 also works straight from the first menu.
-7. **Not only banks** (optional): on **Messages**, *Send as* "Road Safety Agency (demo)". It registers like a bank, and its customers see **Sent by Road Safety Agency (demo)**, never "your bank". The Contacts page lists what each organisation declared, and its apps: a Play Store link to `example.roadsafety.demo` is the official app, and any `.apk` download link is not confirmed.
-8. **Fake payment receipt** (Transfers): type `0809 876 5432` as payer and pick Amina's number as merchant, *Pay and register* NGN25,000. DemoBank, as the paying bank, registers the receipt; *Merchant checks this receipt*: **Payment received**, with the bank that registered it and when. Then *Same receipt, amount changed* (NGN250,000) and *Made-up session ID*: each is **Not confirmed**, telling the merchant to check their balance before releasing goods. In the app, signed in as Amina, *Check a payment receipt* gives the same answers: type the amount, session ID and date from the console's receipt, or read them from a screenshot of it (read on the phone, never uploaded).
-9. **SIM swap: the bank holds the OTP**. On **Messages**, in the *SIM swap* card, press *Check SIM before OTP* for Amina's number: no SIM change reported. Press *Swap the SIM* (a fraudster has moved her number to a new SIM on the simulated network), then *Check SIM before OTP* again: **SIM changed recently: hold the one-time code**, with the registry's answer from `POST /v1/sim-swap/check`. Send a genuine *One-time code*: the toast says a real gateway would hold it (`simSwapWarning: true`). Check that message in the app: it is still **Sent by your bank**, with a red *Your SIM changed recently* banner beside it; the verdict never changes. *Restore SIM* puts it back; **Reset** also restores every SIM. Needs `SIM_SWAP_PROVIDER=simulated`, which `pnpm dev` sets.
-10. **Overview**: *Live activity* shows each check from the app as it happens (counts only, never content).
-11. **Onboarding a new bank** (admin dashboard, optional): open `http://localhost:8080/admin/` and sign in as `admin` with the password `pnpm dev` printed. See the next section.
+7. **Fake payment receipt** (Transfers): type `0809 876 5432` as payer and pick Amina's number as merchant, *Pay and register* NGN25,000. DemoBank, as the paying bank, registers the receipt; *Merchant checks this receipt*: **Payment received**, with the bank that registered it and when. Then *Same receipt, amount changed* (NGN250,000) and *Made-up session ID*: each is **Not confirmed**, telling the merchant to check their balance before releasing goods. In the app, signed in as Amina, *Check a payment receipt* gives the same answers: type the amount, session ID and date from the console's receipt, or read them from a screenshot of it (read on the phone, never uploaded).
+8. **SIM swap: the bank holds the OTP**. On **Messages**, in the *SIM swap* card, press *Check SIM before OTP* for Amina's number: no SIM change reported. Press *Swap the SIM* (a fraudster has moved her number to a new SIM on the simulated network), then *Check SIM before OTP* again: **SIM changed recently: hold the one-time code**, with the registry's answer from `POST /v1/sim-swap/check`. Send a genuine *One-time code*: the toast says a real gateway would hold it (`simSwapWarning: true`). Check that message in the app: it is still **Sent by your bank**, with a red *Your SIM changed recently* banner beside it; the verdict never changes. *Restore SIM* puts it back; **Reset** also restores every SIM. Needs `SIM_SWAP_PROVIDER=simulated`, which `pnpm dev` sets.
+9. **Overview**: *Live activity* shows each check from the app as it happens (counts only, never content).
+10. **Onboarding a new bank** (admin dashboard, optional): open `http://localhost:8080/admin/` and sign in as `admin` with the password `pnpm dev` printed. See the next section.
 
 ### Admin dashboard
 
 The dashboard is for Gaskiyya's own operations staff, not for a bank. A short path through it:
 
-1. **Overview** shows every organisation (DemoBank and the two demo agencies come from `.env`), API calls per day, customer checks and recent admin activity.
+1. **Overview** shows every organisation (DemoBank comes from `.env`), API calls per day, customer checks and recent admin activity.
 2. **Onboard** a fictional bank, for example ID `firstcity`, name "First City Bank (demo)", kind Bank, NIBSS code `999123`, domain `firstcity.example`, sender ID `FirstCity`, a customer care number such as `+2342019990000`, and for the token keys the simulator's JWKS URL `http://127.0.0.1:8080/sim/.well-known/jwks.json`. Each *Continue* checks that step on the server; try a bad phone number or DemoBank's code `999001` to show the checks. The review step lists everything before *Create organisation*.
 3. On its **API access** tab, *New API client*. The secret is shown once: copy it, tick the box, *Done*. The table now shows only a hint of it. The *Quick start* box has the curl commands with the client ID filled in. Paste the secret into them to register a message and announce a call from a terminal.
 4. **Hashing keys**: *Rotate key*. Version 2 becomes current and version 1 stays as previous, so messages already registered still confirm.

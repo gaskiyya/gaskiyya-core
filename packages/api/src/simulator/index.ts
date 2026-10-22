@@ -14,6 +14,7 @@ import {
   FAKE_TEMPLATES,
   fakeCustomerCareMessage,
   fakeReceipt,
+  forgedReceipt,
   genuineTemplate,
   knowsNumber,
   listFraudCalls,
@@ -27,7 +28,7 @@ import { MemoryStore } from '../store/memory.ts';
 import type { Store } from '../store/types.ts';
 
 export { advisoryToSend, DEMO_BANK_CODE, DEMO_CUSTOMERS, demoAccount, FAKE_CREDIT_ALERT, FAKE_TEMPLATES, fakeCustomerCareMessage, genuineTemplate, knowsNumber, tamper, type FraudCall, type Transfer };
-export { DEMO_BANKS, DEMO_ORGS, demoBank, demoTenant, type DemoBank } from './demo-banks.ts';
+export { DEMO_BANKS, demoBank, demoTenant, type DemoBank } from './demo-banks.ts';
 
 export interface SimOptions {
   apiUrl: string;
@@ -311,7 +312,7 @@ export async function registerSimulator(app: FastifyInstance, o: SimOptions) {
     const { phone, purpose = 'card_activation', agentRef = 'agent-017' } = req.body ?? {};
     if (!phoneOk(phone)) return fail(reply, 400, 'invalid_request', 'phone must be E.164');
     const r = await bank('POST', '/v1/calls', { recipient: phone, purpose, agentRef });
-    if (r.status >= 300) return reply.code(502).send(r.data);
+    if (r.status >= 300) return reply.code(r.status === 409 ? 409 : 502).send(r.data);
     const d = r.data as { id: string; code: string; status: string; expiresAt: string };
     const call = { ...d, phone, purpose, agentRef, openedAt: new Date().toISOString() };
     calls.set(d.id, call);
@@ -376,9 +377,17 @@ export async function registerSimulator(app: FastifyInstance, o: SimOptions) {
     return { transfer: t };
   });
 
-  app.post<{ Body: { id?: string; kind?: 'fake_amount' | 'fake_reference' } }>('/sim/transfers/fake', async (req, reply) => {
-    const { id, kind } = req.body ?? {};
+  app.post<{ Body: { id?: string; kind?: 'fake_amount' | 'fake_reference'; from?: string; to?: string; amountKobo?: number } }>('/sim/transfers/fake', async (req, reply) => {
+    const { id, kind, from, to, amountKobo } = req.body ?? {};
     if (kind !== 'fake_amount' && kind !== 'fake_reference') return fail(reply, 400, 'invalid_request', 'kind must be fake_amount or fake_reference');
+    if (kind === 'fake_reference' && !id && from !== undefined) {
+      if (!phoneOk(from) || !phoneOk(to) || from === to) return fail(reply, 400, 'invalid_request', 'from and to must be two different E.164 numbers');
+      if (!Number.isSafeInteger(amountKobo) || amountKobo! < 100 || amountKobo! > 100_000_000_000) return fail(reply, 400, 'invalid_request', 'amountKobo must be between 100 and 100,000,000,000');
+      const t = forgedReceipt(from, to!, amountKobo!, bankCode, randomUUID());
+      transfers.unshift(t);
+      transfers.splice(30);
+      return { transfer: t };
+    }
     const source = id ? transfers.find((t) => t.id === id) : transfers.find((t) => t.kind === 'genuine');
     if (!source) return fail(reply, 404, 'not_found', 'Make a genuine transfer first');
     const t = fakeReceipt(source, kind, bankCode, randomUUID());

@@ -1,18 +1,16 @@
-# 0014: Organisations beyond banks, official contacts and official apps
+# 0014: Official contacts and official apps
 
 **Status:** accepted (approved by owner, 2026-10-20)
 
-Fraud gaps #14, #7 and #10. Impersonation is not limited to banks: fake road-safety fines and tax refunds use the same playbook. And many scams never forge a message at all. They send the customer to a fake "customer care" WhatsApp number or social account, or to a fake app. This note extends the registry to cover all three without weakening any principle.
+Fraud gaps #7 and #10. Many scams never forge a message at all. They send the customer to a fake "customer care" WhatsApp number or social account, or to a fake app. This note extends the registry to cover both without weakening any principle.
 
 ## Decision
 
-### Organisations (#14)
+### Banks
 
-- A tenant has a `kind`: `bank`, `agency` or `company`. A tenant without one is a bank, so every existing configuration keeps working unchanged.
-- Agencies and companies register messages and open calls through the same bank-facing API, with the same recipient binding and the same verdict function. Nothing in `verdict.ts` depends on the kind.
-- Customer-facing text never says "your bank" for a non-bank. `copyForOrg(language, kind)` in `packages/schemas` returns the normal copy for a bank and, for an agency or company, swaps in the `official.org.*` variants. These name the organisation through the existing `{bank}` placeholder. The swap covers the verdict, explanation, call, link, report, activity, WhatsApp and USSD texts. The app has the same mapping (`Copy.tOrg`).
+- The Gaskiyya app links only banks. At sign-in it asks each bank on the registry whether it knows the number, through that bank's own customer-token endpoint.
+- A tenant has a `kind`, which defaults to `bank`. Customer-facing text names the organisation through the existing `{bank}` placeholder; `copyForOrg(language, kind)` in `packages/schemas` and `Copy.tOrg` in the app return the normal copy for a bank.
 - `GET /v1/organisations` lists every organisation with its kind, domains, sender IDs, official contacts and official apps. All of these are public by nature. `GET /v1/banks` keeps its shape and gains `kind`.
-- Demo data: "Road Safety Agency (demo)" and "Tax Office (demo)" (`packages/api/src/simulator/demo-orgs.json`). Both are fictional, run on reserved `.example` domains with made-up numbers, and carry no real name, logo or trademark. `pnpm dev` enrols them beside the demo bank unless `DEMO_ORGS=0`. The simulator sends as them with their own bank clients (`SIM_ORGS`).
 
 ### Official contacts (#7)
 
@@ -48,7 +46,7 @@ Fraud gaps #14, #7 and #10. Impersonation is not limited to banks: fake road-saf
 
 These are additive only, all under the new top-level `official` namespace in `packages/schemas/copy.json`. No existing key changed. All are translated in `copy.pcm.json`, `copy.ha.json`, `copy.yo.json` and `copy.ig.json` (still marked "needs native-speaker review"), and synced to the app with `pnpm sync:copy`.
 
-- `official.org.*` (texts that name the organisation for a non-bank):
+- `official.org.*` (texts that name the organisation instead of saying "your bank"):
   - `confirmedTitle`, `cannotCheckBody`
   - `notCallingTitle`, `notCallingBody`
   - `explainFallback`, `explainAction`
@@ -67,7 +65,7 @@ These are additive only, all under the new top-level `official` namespace in `pa
 - `official.ussd.{option,enterNumber,official,notOfficial,badNumber}`
 - `official.app.{checkContact,placeholder,contactCheck,appCheck,contact,organisation}`
 
-Every USSD screen these keys make fits 160 plain ASCII characters in every language, for a bank and for an agency (LANG-7, OFF-9). No new text asks for a secret, and no warning reassures (LANG-2, OFF-11, SEC-5).
+Every USSD screen these keys make fits 160 plain ASCII characters in every language (LANG-7, OFF-9). No new text asks for a secret, and no warning reassures (LANG-2, OFF-11, SEC-5).
 
 ## Consequences
 

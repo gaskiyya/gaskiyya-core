@@ -1,12 +1,12 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { asksForSecret } from '../packages/api/src/ai/secrets.ts';
-import { DEMO_BANKS, DEMO_ORGS } from '../packages/api/src/simulator/index.ts';
+import { DEMO_BANKS } from '../packages/api/src/simulator/index.ts';
 
 const AUDIO = 'console/public/audio/agent';
 const manifest = () => JSON.parse(readFileSync(`${AUDIO}/voice.json`, 'utf8'));
 const DIGIT_IDS = [...'0123456789'].flatMap((d) => [`digit-${d}-mid`, `digit-${d}-last`]);
-const OPENING_IDS = [...Object.keys({ ...DEMO_BANKS, ...DEMO_ORGS }), 'generic'].map((id) => `opening-${id}`);
+const OPENING_IDS = [...Object.keys(DEMO_BANKS), 'generic'].map((id) => `opening-${id}`);
 
 describe('agent voice on the console phone call', () => {
   it('VOICE-1: the agent only greets, says who is calling and reads the code', () => {

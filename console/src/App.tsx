@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import copy from '../../packages/schemas/copy.json';
-import { setConsoleToken, sim, type Call, type Metrics, type Organisation, type SimConfig, type SimSwapAnswer, type Transfer } from './api.ts';
-import { fill, type Category, type LicenceResult } from '@gaskiya/schemas';
+import { setConsoleToken, sim, type Call, type Metrics, type SimConfig, type SimSwapAnswer, type Transfer } from './api.ts';
+import { type Category } from '@gaskiya/schemas';
 import { genuineTemplate } from '../../packages/api/src/simulator/demo-data.ts';
-import { device, normalisePhone, type ContactCheck } from './device/api.ts';
+import { normalisePhone } from './device/api.ts';
 import { Device, officialBankNumber } from './device/Device.tsx';
 import { FeaturePhone, type UssdHop } from './ussd/FeaturePhone.tsx';
 import {
-  IconBadge,
   IconBuilding,
   IconCheck,
   IconClock,
@@ -33,15 +32,15 @@ import { IntegrationPage } from './workspace/Integration.tsx';
 import { OrganisationPage } from './workspace/Organisation.tsx';
 import { OverviewPage, type LiveEvent } from './workspace/Overview.tsx';
 import { SignIn } from './workspace/SignIn.tsx';
-import { ago, Empty, usePoll } from './workspace/ui.tsx';
+import { ago, Empty, Scenarios, Skeleton, SkeletonRows, useActions, usePoll, type Scenario } from './workspace/ui.tsx';
 
 type WorkPage = 'overview' | 'fraud' | 'integration' | 'organisation' | 'activity';
-type DemoPage = 'customers' | 'messages' | 'calls' | 'transfers' | 'ussd' | 'contacts' | 'licence';
+type DemoPage = 'customers' | 'messages' | 'calls' | 'transfers' | 'ussd';
 type Page = WorkPage | DemoPage;
 
 const SANDBOX = __SANDBOX__;
 const WORK_PAGES: WorkPage[] = ['overview', 'fraud', 'integration', 'organisation', 'activity'];
-const DEMO_PAGES: DemoPage[] = ['customers', 'messages', 'calls', 'transfers', 'ussd', 'contacts', 'licence'];
+const DEMO_PAGES: DemoPage[] = ['customers', 'messages', 'calls', 'transfers', 'ussd'];
 
 const label = (map: Record<string, string>, key: string) => {
   const s = map[key] ?? key.replace(/_/g, ' ');
@@ -248,16 +247,17 @@ function Shell({ ws, config, notify, toast, onSignOut, onExpired }: {
         { id: 'calls', name: 'Calls', icon: <IconPhone /> },
         { id: 'transfers', name: 'Transfers', icon: <IconTransfer /> },
         { id: 'ussd', name: 'USSD', icon: <IconKeypad /> },
-        { id: 'contacts', name: 'Contacts', icon: <IconCheck /> },
-        { id: 'licence', name: 'Licence check', icon: <IconBadge /> },
       ]
     : [];
 
-  const reset = async () => {
+  const actions = useActions((e) => notify(e.message));
+  const reset = () => {
     if (!ws.reset || !confirm('Reset all demo data in the registry and the simulator?')) return;
-    await ws.reset();
-    reloadMetrics();
-    notify('Demo reset');
+    void actions.run('reset', async () => {
+      await ws.reset!();
+      reloadMetrics();
+      notify('Demo reset');
+    });
   };
 
   const badge = ws.kind === 'demo' ? 'Demo' : ws.profile.mode === 'live' ? 'Live' : 'Sandbox';
@@ -296,7 +296,7 @@ function Shell({ ws, config, notify, toast, onSignOut, onExpired }: {
         </nav>
         <div className="sidebar-foot">
           {status}
-          {ws.reset && <button className="btn plain small muted-btn" onClick={reset}><IconReset /> <span>Reset demo</span></button>}
+          {ws.reset && <button className="btn plain small muted-btn" disabled={actions.busy('reset')} aria-busy={actions.busy('reset')} onClick={reset}><IconReset /> <span>Reset demo</span></button>}
           <button className="btn plain small" onClick={onSignOut}><IconLogout /> <span>Sign out</span></button>
           <div className="powered"><img src="favicon.svg" alt="" /> Gaskiyya bank console</div>
         </div>
@@ -309,18 +309,10 @@ function Shell({ ws, config, notify, toast, onSignOut, onExpired }: {
             <div className="org-sub"><span className={`mode ${badge.toLowerCase()}`}>{badge}</span></div>
           </div>
         </div>
-        {ws.reset && <button className="icon-btn" aria-label="Reset demo" onClick={reset}><IconReset /></button>}
+        {ws.reset && <button className="icon-btn" aria-label="Reset demo" disabled={actions.busy('reset')} aria-busy={actions.busy('reset')} onClick={reset}><IconReset /></button>}
         <button className="icon-btn" aria-label="Sign out" onClick={onSignOut}><IconLogout /></button>
       </header>
       <main>
-        {demo && (
-          <p className="sandbox-note">
-            <b>{SANDBOX ? 'Live sandbox.' : 'Demo bank.'}</b>{' '}
-            {SANDBOX
-              ? 'DemoBank and the Gaskiyya registry run in this browser tab, with the registry’s own code. Nothing leaves your device; reload to start fresh.'
-              : 'The demo tools act as the bank’s systems and its customers. Anyone who signs in to the Gaskiyya app with their number becomes a customer under Customers.'}
-          </p>
-        )}
         {page === 'overview' && <OverviewPage ws={ws} metrics={metrics} events={events} go={setPage} onSignedOut={onExpired} />}
         {page === 'fraud' && <FraudDeskPage ws={ws} notify={notify} onSignedOut={onExpired} />}
         {page === 'integration' && <IntegrationPage ws={ws} onSignedOut={onExpired} />}
@@ -345,8 +337,6 @@ function Shell({ ws, config, notify, toast, onSignOut, onExpired }: {
         {demo && page === 'calls' && <CallsPage config={config} phone={phone} setPhone={setPhone} notify={notify} placed={placed} />}
         {demo && page === 'transfers' && <TransfersPage config={config} notify={notify} />}
         {demo && page === 'ussd' && <UssdPage config={config} phone={phone} setPhone={setPhone} />}
-        {demo && page === 'contacts' && <ContactsPage config={config} phone={phone} setPhone={setPhone} notify={notify} />}
-        {demo && page === 'licence' && <LicencePage phone={phone} setPhone={setPhone} />}
       </main>
       <nav className="tabbar" aria-label="Sections">
         {[...work, ...tools].map((n) => (
@@ -367,6 +357,12 @@ const NoPhone = () => (
     <Empty icon={<IconPhone />} title="No customer picked">Pick a customer, or type their number, to see their phone.</Empty>
   </div>
 );
+
+// Whether this number is signed in to the real Gaskiyya app.
+function useAppUser(phone: string) {
+  const [recent] = usePoll(() => sim.recentCustomers(), 4000);
+  return Boolean(phone && recent?.customers.some((c) => c.phone === phone));
+}
 
 function People({ phone, setPhone, except }: { phone: string; setPhone: (p: string) => void; except?: string }) {
   const [recent] = usePoll(() => sim.recentCustomers(), 3000);
@@ -390,14 +386,21 @@ function People({ phone, setPhone, except }: { phone: string; setPhone: (p: stri
   return (
     <div className="stack" style={{ gap: 12 }}>
       <div className="people-label">
-        <span>Signed in to the Gaskiyya app</span>
-        {appUsers.length > 0 && <span className="muted small">{appUsers.length} app user{appUsers.length === 1 ? '' : 's'}</span>}
+        <span>App users</span>
+        {appUsers.length > 0 && <span className="muted small">{appUsers.length}</span>}
       </div>
       {!recent ? (
-        <p className="muted small flat">Loading&hellip;</p>
+        <div className="skel-grid" role="status" aria-label="Loading app users">
+          {[0, 1, 2].map((i) => (
+            <div className="skel-tile" key={i}>
+              <Skeleton w={36} h={36} r={999} />
+              <div className="skel-lines"><Skeleton w="80%" h={13} /></div>
+            </div>
+          ))}
+        </div>
       ) : appUsers.length === 0 && !typedOnly ? (
         <Empty icon={<IconUsers />} title={all.length ? 'No one else has signed in to the app yet' : 'No one has signed in to the app yet'}>
-          Anyone who signs in to the Gaskiyya app with their number appears here. Or type a number below.
+          People who sign in to the Gaskiyya app appear here.
         </Empty>
       ) : (
         <div className="people">
@@ -415,7 +418,7 @@ function People({ phone, setPhone, except }: { phone: string; setPhone: (p: stri
               <span className="avatar app">{c.phone.slice(-2)}</span>
               <span>
                 <div className="person-name">{showPhone(c.phone)}</div>
-                <div className="person-phone">App user &middot; {ago(c.lastSeenAt)}</div>
+                <div className="person-phone">{ago(c.lastSeenAt)}</div>
               </span>
             </button>
           ))}
@@ -426,7 +429,7 @@ function People({ phone, setPhone, except }: { phone: string; setPhone: (p: stri
           style={{ flex: 1 }}
           value={typed}
           onChange={(e) => { setTyped(e.target.value); setBad(false); }}
-          placeholder="Or type a number, e.g. 0803 123 4567"
+          placeholder="Or type a number"
           inputMode="tel"
           aria-label="Type a phone number to send to"
           aria-invalid={bad}
@@ -438,11 +441,12 @@ function People({ phone, setPhone, except }: { phone: string; setPhone: (p: stri
   );
 }
 
+type MessageMode = 'genuine' | 'tampered' | 'scam' | 'credit_alert';
+
 function MessagesPage({ config, phone, setPhone, notify }: { config: SimConfig; phone: string; setPhone: (p: string) => void; notify: (s: string) => void }) {
+  const isAppUser = useAppUser(phone);
+  const [mode, setMode] = useState<MessageMode>('genuine');
   const [category, setCategory] = useState('transaction_alert');
-  const orgs = config.orgs ?? [{ id: config.bank.id, name: config.bank.name, kind: 'bank' as const }];
-  const [org, setOrg] = useState(orgs[0]!.id);
-  const asOther = org !== config.bank.id;
   const draft = (c: string, p: string) => genuineTemplate(c as Category, config.bank.name, p, new Date(), config.bank.domain).text;
   const [text, setText] = useState(() => draft('transaction_alert', phone));
   const [edited, setEdited] = useState(false);
@@ -454,30 +458,45 @@ function MessagesPage({ config, phone, setPhone, notify }: { config: SimConfig; 
   useEffect(() => {
     if (!edited) setText(draft(category, phone));
   }, [phone]);
-  const [busy, setBusy] = useState(false);
+  const { run, busy } = useActions((e) => notify(e.message));
   const [lastMs, setLastMs] = useState<number | null>(null);
   const [inbox, reload] = usePoll(() => sim.inbox(phone), 2000, [phone]);
-  const items = inbox?.items ?? [];
-  const lastGenuine = items.find((i) => i.kind === 'genuine');
-  const act = async (fn: () => Promise<unknown>, done: string) => {
-    setBusy(true);
-    try {
-      await fn();
+  const lastGenuine = (inbox?.items ?? []).find((i) => i.kind === 'genuine');
+  const modes: Scenario<MessageMode>[] = [
+    { id: 'genuine', label: 'Genuine', hint: 'Registered, then sent.' },
+    { id: 'tampered', label: 'Tampered copy', hint: 'One character changed.', fraud: true },
+    { id: 'scam', label: 'Scam text', hint: 'Lookalike link or number.', fraud: true },
+    { id: 'credit_alert', label: 'Fake credit alert', hint: '"I have paid you."', fraud: true },
+  ];
+
+  const send = () =>
+    run('send', async () => {
+      if (mode === 'genuine') {
+        const r = await sim.send(phone, category, text.trim() || undefined);
+        setLastMs(r.registrationMs);
+        if (r.simSwapWarning) notify('SIM changed recently: a real gateway would hold this code (simSwapWarning)');
+        else notify('Registered and sent');
+        setText(draft(category, phone));
+        setEdited(false);
+      } else if (mode === 'tampered') {
+        await sim.sendTampered(phone, lastGenuine?.id);
+        notify('Tampered copy sent');
+      } else if (mode === 'scam') {
+        await sim.sendFake(phone, Math.floor(Math.random() * 4));
+        notify('Scam text sent');
+      } else {
+        await sim.sendFake(phone, 'credit_alert');
+        notify('Fake credit alert sent');
+      }
       reload();
-      notify(done);
-    } catch (e) {
-      notify((e as Error).message);
-    } finally {
-      setBusy(false);
-    }
-  };
+    });
 
   return (
     <div className="page">
       <div className="page-head">
         <div>
           <h1>Messages</h1>
-          <p>Register and send messages as {config.bank.name}'s notification service would.</p>
+          <p>Send a genuine message or a fake one.</p>
         </div>
       </div>
       <div className="grid-2">
@@ -488,92 +507,47 @@ function MessagesPage({ config, phone, setPhone, notify }: { config: SimConfig; 
           </div>
 
           <div className="card stack">
-            <div>
-              <h2>Send a genuine message</h2>
-              <p className="muted small" style={{ margin: '4px 0 0' }}>
-                The simulator registers a fingerprint with Gaskiyya first, then hands the message to the SMS gateway. No text is stored.
-              </p>
-            </div>
-            {orgs.length > 1 && (
-              <div className="chips" role="group" aria-label="Send as">
-                {orgs.map((o) => (
-                  <button key={o.id} className={`chip ${org === o.id ? 'on' : ''}`} aria-pressed={org === o.id} onClick={() => setOrg(o.id)}>
-                    {o.name}
-                  </button>
-                ))}
-              </div>
-            )}
-            {asOther ? (
-              <p className="muted small" style={{ margin: 0 }}>
-                {orgs.find((o) => o.id === org)?.name} is a fictional {orgs.find((o) => o.id === org)?.kind === 'agency' ? 'government agency' : 'company'}. It registers its message exactly as a bank does; leave the text empty to send its sample message.
-              </p>
+            <h2>New message</h2>
+            <Scenarios label="Message to send" value={mode} options={modes} onChange={setMode} />
+            {mode === 'genuine' ? (
+              <>
+                <div className="chips" role="group" aria-label="Message type">
+                  {config.categories.map((c) => (
+                    <button key={c} className={`chip ${category === c ? 'on' : ''}`} aria-pressed={category === c} onClick={() => choose(c)} title={category === c ? 'Another example' : undefined}>
+                      {label(copy.categories, c)}
+                    </button>
+                  ))}
+                </div>
+                <textarea
+                  aria-label="Message text"
+                  placeholder="Pick a message type above, or write your own"
+                  value={text}
+                  rows={6}
+                  onChange={(e) => {
+                    setText(e.target.value);
+                    setEdited(true);
+                  }}
+                />
+              </>
             ) : (
-              <div className="chips">
-                {config.categories.map((c) => (
-                  <button key={c} className={`chip ${category === c ? 'on' : ''}`} onClick={() => choose(c)} title={category === c ? 'Another example' : undefined}>
-                    {label(copy.categories, c)}
-                  </button>
-                ))}
-              </div>
+              <p className="muted small" style={{ margin: 0 }}>
+                {mode === 'tampered' ? <>For example, <span className="mono">demobank.ng</span> becomes <span className="mono">demo-bank.ng</span>.</> : 'The customer sees it as not confirmed.'}
+              </p>
             )}
-            <textarea
-              aria-label="Message text"
-              placeholder="Pick a message type above, or write your own"
-              value={text}
-              rows={6}
-              onChange={(e) => {
-                setText(e.target.value);
-                setEdited(true);
-              }}
-            />
             <div className="row" style={{ justifyContent: 'space-between' }}>
               <span className="muted small">
-                {lastMs !== null ? <>Searchable in <b>{lastMs} ms</b></> : 'Registration target: under 2 seconds'}
+                {mode !== 'genuine' ? 'Not registered with Gaskiyya' : lastMs !== null ? <>Searchable in <b>{lastMs} ms</b></> : 'Registration target: under 2 seconds'}
               </span>
-              <button
-                className="btn"
-                disabled={busy || !phone}
-                onClick={() =>
-                  act(async () => {
-                    const r = await sim.send(phone, asOther ? 'service_update' : category, (asOther && !edited ? '' : text.trim()) || undefined, asOther ? org : undefined);
-                    setLastMs(r.registrationMs);
-                    if (r.simSwapWarning) notify('SIM changed recently: a real gateway would hold this code (simSwapWarning)');
-                    setText(draft(category, phone));
-                    setEdited(false);
-                  }, asOther ? `Registered and sent as ${orgs.find((o) => o.id === org)?.name}` : 'Registered and sent')
-                }
-              >
-                <IconSend /> Send
+              <button className={`btn ${mode === 'genuine' ? '' : 'danger'}`} disabled={busy('send') || !phone || (mode === 'genuine' && !text.trim())} aria-busy={busy('send')} onClick={send}>
+                {mode === 'genuine' ? <IconSend /> : mode === 'tampered' ? <IconScissors /> : <IconWarning />} Send
               </button>
             </div>
-          </div>
-
-          <div className="card stack">
-            <div>
-              <h2>Play the fraudster</h2>
-              <p className="muted small" style={{ margin: '4px 0 0' }}>These are never registered, so customers see them as not confirmed.</p>
-            </div>
-            <div className="row">
-              <button className="btn danger" disabled={busy || !phone} onClick={() => act(() => sim.sendTampered(phone, lastGenuine?.id), 'Tampered copy sent')}>
-                <IconScissors /> Tampered copy{lastGenuine ? '' : ' of a link'}
-              </button>
-              <button className="btn secondary" disabled={busy || !phone} onClick={() => act(() => sim.sendFake(phone, Math.floor(Math.random() * 4)), 'Fake message sent')}>
-                <IconWarning /> Fake message
-              </button>
-              <button className="btn secondary" disabled={busy || !phone} onClick={() => act(() => sim.sendFake(phone, 'credit_alert'), 'Fake credit alert sent')}>
-                <IconWarning /> Fake credit alert
-              </button>
-            </div>
-            <p className="muted small" style={{ margin: 0 }}>
-              A tampered copy changes one character, for example <span className="mono">demobank.ng</span> becomes{' '}
-              <span className="mono">demo-bank.ng</span>.
-            </p>
           </div>
 
           {config.simSwap && phone ? <SimSwapCard phone={phone} notify={notify} /> : null}
         </div>
 
-        {phone ? <Device key={phone} phone={phone} bank={config.bank.name} bankId={config.bank.id} /> : <NoPhone />}
+        {phone ? <Device key={phone} phone={phone} bank={config.bank.name} bankId={config.bank.id} realPhone={isAppUser} /> : <NoPhone />}
       </div>
     </div>
   );
@@ -581,18 +555,9 @@ function MessagesPage({ config, phone, setPhone, notify }: { config: SimConfig; 
 
 function SimSwapCard({ phone, notify }: { phone: string; notify: (s: string) => void }) {
   const [answer, setAnswer] = useState<SimSwapAnswer | null>(null);
-  const [busy, setBusy] = useState(false);
+  // The three actions change or read one SIM, so each waits for the others.
+  const { run, busy, busyOn } = useActions((e) => notify(e.message));
   useEffect(() => setAnswer(null), [phone]);
-  const run = async (fn: () => Promise<void>) => {
-    setBusy(true);
-    try {
-      await fn();
-    } catch (e) {
-      notify((e as Error).message);
-    } finally {
-      setBusy(false);
-    }
-  };
   const verdict =
     answer?.status === 'swapped'
       ? { tone: 'red', says: 'SIM changed recently: hold the one-time code' }
@@ -610,13 +575,13 @@ function SimSwapCard({ phone, notify }: { phone: string; notify: (s: string) => 
         </p>
       </div>
       <div className="row">
-        <button className="btn danger" disabled={busy} onClick={() => run(async () => { await sim.simSwap(phone, 'swap'); setAnswer(null); notify('SIM swapped on the simulated network'); })}>
+        <button className="btn danger" disabled={busyOn('')} aria-busy={busy('swap')} onClick={() => run('swap', async () => { await sim.simSwap(phone, 'swap'); setAnswer(null); notify('SIM swapped on the simulated network'); })}>
           <IconWarning /> Swap the SIM
         </button>
-        <button className="btn secondary" disabled={busy} onClick={() => run(async () => { await sim.simSwap(phone, 'restore'); setAnswer(null); notify('Original SIM restored'); })}>
+        <button className="btn secondary" disabled={busyOn('')} aria-busy={busy('restore')} onClick={() => run('restore', async () => { await sim.simSwap(phone, 'restore'); setAnswer(null); notify('Original SIM restored'); })}>
           Restore SIM
         </button>
-        <button className="btn" disabled={busy} onClick={() => run(async () => setAnswer(await sim.simSwapCheck(phone, 24)))}>
+        <button className="btn" disabled={busyOn('')} aria-busy={busy('check')} onClick={() => run('check', async () => setAnswer(await sim.simSwapCheck(phone, 24)))}>
           Check SIM before OTP
         </button>
       </div>
@@ -650,43 +615,57 @@ function Countdown({ expiresAt, total }: { expiresAt: string; total: number }) {
   );
 }
 
+type CallMode = 'announce' | 'spoof';
+
+const liveCall = (c: Call) => c.status !== 'ended' && Date.parse(c.expiresAt) > Date.now();
+
 function CallsPage({ config, phone, setPhone, notify, placed }: { config: SimConfig; phone: string; setPhone: (p: string) => void; notify: (s: string) => void; placed?: Call | null }) {
+  const isAppUser = useAppUser(phone);
+  const [mode, setMode] = useState<CallMode>('announce');
   const [purpose, setPurpose] = useState(placed?.purpose ?? config.purposes[0]!);
-  const [active, setActive] = useState<Call | null>(placed ?? null);
   const [calls, reload] = usePoll(() => sim.calls(), 1500);
-
+  // The call just placed, shown until the next poll lists it.
+  const [fresh, setFresh] = useState<Call | null>(placed ?? null);
+  const [number, setNumber] = useState<string | null>(null);
   useEffect(() => {
-    if (!active) return;
-    const latest = calls?.calls.find((c) => c.id === active.id);
-    if (!latest) return;
-    if (latest.status === 'ended') setActive(null);
-    else if (latest.status !== active.status) setActive({ ...active, ...latest });
-  }, [calls]);
+    void officialBankNumber(config.bank.name).then(setNumber);
+  }, [config.bank.name]);
+  // One open session per customer: the agent screen follows the selected number's session.
+  const listed = calls?.calls.find((c) => c.phone === phone && liveCall(c)) ?? null;
+  const open = listed ?? (fresh && fresh.phone === phone && liveCall(fresh) && !calls?.calls.some((c) => c.id === fresh.id) ? fresh : null);
 
-  const place = async () => {
-    try {
-      const c = await sim.openCall(phone, purpose);
-      setActive(c);
+  const { run, busy, busyOn } = useActions((e) => notify(e.message));
+  const modes: Scenario<CallMode>[] = [
+    { id: 'announce', label: `${config.bank.name} calls`, hint: 'The app shows a code first.' },
+    { id: 'spoof', label: 'Fraudster calls', hint: 'Spoofs the bank\u2019s number.', fraud: true },
+  ];
+  const place = () =>
+    run('place', async () => {
+      if (mode === 'announce') {
+        setFresh({ ...(await sim.openCall(phone, purpose)), phone });
+        notify('Call announced. The customer\u2019s app now shows the code.');
+      } else {
+        await sim.fraudCall(phone, number ?? '');
+        notify(`The phone is ringing from ${config.bank.name}\u2019s number. No call is announced.`);
+      }
       reload();
-      notify('Call announced. The customer’s app now shows the code.');
-    } catch (e) {
-      notify((e as Error).message);
-    }
-  };
-  const update = async (status: 'answered' | 'ended') => {
-    if (!active) return;
-    const r = await sim.updateCall(active.id, status);
-    setActive(status === 'ended' ? null : { ...active, ...r });
-    reload();
-    notify(status === 'ended' ? 'Call ended. Session closed.' : 'Call answered');
-  };
+    });
+  // Answered and End call act on the same call, so each waits for the other.
+  const update = (status: 'answered' | 'ended') =>
+    run(`call:${status}`, async () => {
+      if (!open) return;
+      await sim.updateCall(open.id, status);
+      if (status === 'ended') setFresh(null);
+      reload();
+      notify(status === 'ended' ? 'Call ended. Session closed.' : 'Call answered');
+    });
 
   return (
     <div className="page">
       <div className="page-head">
         <div>
           <h1>Calls</h1>
-          <p>Announce an outbound call before dialling. The agent reads the code aloud; the customer compares it in the app.</p>
+          <p>Announce a genuine call or place a spoofed one.</p>
         </div>
       </div>
       <div className="grid-2">
@@ -696,34 +675,41 @@ function CallsPage({ config, phone, setPhone, notify, placed }: { config: SimCon
             <People phone={phone} setPhone={setPhone} />
           </div>
           <div className="card stack">
-            <h2>Purpose</h2>
-            <div className="chips">
-              {config.purposes.map((p) => (
-                <button key={p} className={`chip ${purpose === p ? 'on' : ''}`} onClick={() => setPurpose(p)}>
-                  {label(copy.purposes, p)}
-                </button>
-              ))}
-            </div>
-            <div className="row" style={{ justifyContent: 'flex-end' }}>
-              <button className="btn" onClick={place} disabled={Boolean(active) || !phone}>
-                <IconPhone /> Announce and call
+            <h2>New call</h2>
+            <Scenarios label="Call to make" value={mode} options={modes} onChange={setMode} />
+            {mode === 'announce' ? (
+              <div className="chips" role="group" aria-label="Call purpose">
+                {config.purposes.map((p) => (
+                  <button key={p} className={`chip ${purpose === p ? 'on' : ''}`} aria-pressed={purpose === p} onClick={() => setPurpose(p)}>
+                    {label(copy.purposes, p)}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <p className="muted small" style={{ margin: 0 }}>
+                Calls from {number ? <span className="mono">{number}</span> : `${config.bank.name}\u2019s number`}. The app says {config.bank.name} is not calling.
+              </p>
+            )}
+            <div className="row" style={{ justifyContent: 'space-between' }}>
+              <span className="muted small">{open ? 'A call to this customer is open. End it first.' : mode === 'announce' ? 'One open call per customer at a time' : 'Not announced to Gaskiyya'}</span>
+              <button className={`btn ${mode === 'announce' ? '' : 'danger'}`} onClick={place} disabled={busy('place') || Boolean(open) || !phone} aria-busy={busy('place')}>
+                <IconPhone /> {mode === 'announce' ? 'Announce and call' : 'Call from the bank\u2019s number'}
               </button>
             </div>
           </div>
-          <FraudCallCard config={config} phone={phone} announced={Boolean(active) || (calls?.calls ?? []).some((c) => c.phone === phone && c.status !== 'ended' && Date.parse(c.expiresAt) > Date.now())} notify={notify} />
           <div className="card code-card">
             <h3 style={{ position: 'relative' }}>Agent screen</h3>
-            {active ? (
+            {open ? (
               <>
                 <div className="muted small" style={{ position: 'relative' }}>Read this code to the customer</div>
                 <div className="code-digits">
-                  {active.code.split('').map((d, i) => <div className="digit" key={`${active.id}${i}`}>{d}</div>)}
+                  {open.code.split('').map((d, i) => <div className="digit" key={`${open.id}${i}`}>{d}</div>)}
                 </div>
-                {active.status === 'open' && <Countdown expiresAt={active.expiresAt} total={180} />}
-                {active.status === 'answered' && <span className="tag green"><IconCheck style={{ width: 14 }} /> In call</span>}
+                {open.status === 'open' && <Countdown expiresAt={open.expiresAt} total={180} />}
+                {open.status === 'answered' && <span className="tag green"><IconCheck style={{ width: 14 }} /> In call</span>}
                 <div className="row" style={{ justifyContent: 'center', marginTop: 18, position: 'relative' }}>
-                  {active.status === 'open' && <button className="btn secondary" onClick={() => update('answered')}>Answered</button>}
-                  <button className="btn danger" onClick={() => update('ended')}>End call</button>
+                  {open.status === 'open' && <button className="btn secondary" disabled={busyOn('call:')} aria-busy={busy('call:answered')} onClick={() => update('answered')}>Answered</button>}
+                  <button className="btn danger" disabled={busyOn('call:')} aria-busy={busy('call:ended')} onClick={() => update('ended')}>End call</button>
                 </div>
               </>
             ) : (
@@ -736,7 +722,8 @@ function CallsPage({ config, phone, setPhone, notify, placed }: { config: SimCon
           </div>
           <div className="card">
             <h3>Recent sessions</h3>
-            {(calls?.calls ?? []).length === 0 && <p className="muted small" style={{ margin: 0 }}>No calls yet.</p>}
+            {!calls && <SkeletonRows rows={2} label="Loading recent sessions" />}
+            {calls?.calls.length === 0 && <p className="muted small" style={{ margin: 0 }}>No calls yet.</p>}
             {(calls?.calls ?? []).map((c) => (
               <div className="kbd-row" key={c.id}>
                 <span>
@@ -751,43 +738,8 @@ function CallsPage({ config, phone, setPhone, notify, placed }: { config: SimCon
           </div>
         </div>
 
-        {phone ? <Device key={phone} phone={phone} bank={config.bank.name} bankId={config.bank.id} /> : <NoPhone />}
+        {phone ? <Device key={phone} phone={phone} bank={config.bank.name} bankId={config.bank.id} realPhone={isAppUser} /> : <NoPhone />}
       </div>
-    </div>
-  );
-}
-
-function FraudCallCard({ config, phone, announced, notify }: { config: SimConfig; phone: string; announced: boolean; notify: (s: string) => void }) {
-  const [number, setNumber] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-  useEffect(() => {
-    void officialBankNumber(config.bank.name).then(setNumber);
-  }, [config.bank.name]);
-  const ring = async () => {
-    setBusy(true);
-    try {
-      await sim.fraudCall(phone, number ?? '');
-      notify('The phone is ringing from the bank\u2019s number. No call is announced.');
-    } catch (e) {
-      notify((e as Error).message);
-    } finally {
-      setBusy(false);
-    }
-  };
-  return (
-    <div className="card stack">
-      <div>
-        <h2>Play the fraudster</h2>
-        <p className="muted small" style={{ margin: '4px 0 0' }}>
-          Spoofs caller ID with {config.bank.name}&rsquo;s official number{number ? <> (<span className="mono">{number}</span>)</> : null}. Nothing is announced to the registry, so Gaskiyya on the phone says {config.bank.name} is not calling.
-        </p>
-      </div>
-      <div className="row">
-        <button className="btn danger" disabled={busy || announced || !phone} onClick={ring} title={announced ? 'End the announced call first' : undefined}>
-          <IconPhone /> Fraudster calls from the bank&rsquo;s number
-        </button>
-      </div>
-      {announced && <p className="muted small" style={{ margin: 0 }}>A call to this customer is announced. End it first.</p>}
     </div>
   );
 }
@@ -797,89 +749,117 @@ const groupSession = (s: string) => s.replace(/(.{6})(.{6})(.{6})(.{6})(.*)/, '$
 const KIND_LABEL: Record<Transfer['kind'], string> = { genuine: 'Genuine', fake_amount: 'Fake: amount changed', fake_reference: 'Fake: made-up session ID' };
 const VERDICT_TAG: Record<string, string> = { received: 'green', not_confirmed: 'red', cannot_check: 'orange' };
 
+type ReceiptMode = 'genuine' | 'fake_amount' | 'fake_reference';
+
 function TransfersPage({ config, notify }: { config: SimConfig; notify: (s: string) => void }) {
   const [payer, setPayer] = useState('');
   const [merchant, setMerchant] = useState('');
   const [amount, setAmount] = useState('25000');
-  const [busy, setBusy] = useState(false);
+  const [mode, setMode] = useState<ReceiptMode>('genuine');
+  const [checkNow, setCheckNow] = useState(true);
+  const { run, busy } = useActions((e) => notify(e.message));
   const [selected, setSelected] = useState<string | null>(null);
   const [list, reload] = usePoll(() => sim.transfers(), 2000);
   const transfers = list?.transfers ?? [];
   const shown = transfers.find((t) => t.id === selected) ?? transfers[0] ?? null;
-  const lastGenuine = transfers.find((t) => t.kind === 'genuine');
   const receipt = copy.receipt.verdict;
-
-  const act = async (fn: () => Promise<{ transfer: Transfer }>, done: (t: Transfer) => string) => {
-    setBusy(true);
-    try {
-      const { transfer } = await fn();
-      setSelected(transfer.id);
-      reload();
-      notify(done(transfer));
-    } catch (e) {
-      notify((e as Error).message);
-    } finally {
-      setBusy(false);
-    }
-  };
   const kobo = Math.round(Number(amount.replace(/,/g, '')) * 100);
-  const amountOk = Number.isSafeInteger(kobo) && kobo >= 100;
+  // An altered receipt starts from a real payment of a tenth of the amount, which must itself be at least NGN1.
+  const amountOk = Number.isSafeInteger(kobo) && kobo >= (mode === 'fake_amount' ? 1000 : 100) && kobo <= 100_000_000_000;
+  const paidPart = Math.round(kobo / 10);
+  const modes: Scenario<ReceiptMode>[] = [
+    { id: 'genuine', label: 'Genuine', hint: 'Paid and registered.' },
+    { id: 'fake_amount', label: 'Amount altered', hint: 'Pays a tenth, shows the full amount.', fraud: true },
+    { id: 'fake_reference', label: 'Made-up session ID', hint: 'Nothing paid or registered.', fraud: true },
+  ];
+  const verdictOf = (t: Transfer) => receipt[t.check?.verdict ?? 'cannot_check'].title;
+
+  const check = (t: Transfer) =>
+    run(`check:${t.id}`, async () => {
+      const r = (await sim.checkReceipt(t.id)).transfer;
+      setSelected(r.id);
+      reload();
+      notify(`Merchant's check: ${verdictOf(r)}`);
+    });
+  const submit = () =>
+    run('submit', async () => {
+      let t: Transfer;
+      let done: string;
+      if (mode === 'genuine') {
+        t = (await sim.pay(payer, merchant, kobo)).transfer;
+        done = t.registered ? 'Paid. Receipt registered.' : 'Paid, but the receipt was not stored';
+      } else if (mode === 'fake_amount') {
+        const paid = (await sim.pay(payer, merchant, paidPart)).transfer;
+        t = (await sim.fakeReceipt('fake_amount', paid.id)).transfer;
+        done = `Paid ${nairaText(paid.amountKobo)}; the receipt now shows ${nairaText(t.amountKobo)}`;
+      } else {
+        t = (await sim.forgeReceipt(payer, merchant, kobo)).transfer;
+        done = 'Fake receipt made. Nothing was paid or registered.';
+      }
+      if (checkNow) {
+        t = (await sim.checkReceipt(t.id)).transfer;
+        done = `${done} Merchant's check: ${verdictOf(t)}.`;
+      }
+      setSelected(t.id);
+      reload();
+      notify(done);
+    });
 
   return (
     <div className="page">
       <div className="page-head">
         <div>
           <h1>Transfers</h1>
-          <p>A customer pays a merchant; {config.bank.name} registers the transfer receipt. The merchant checks any receipt before releasing goods.</p>
+          <p>Pay a merchant, then check the receipt.</p>
         </div>
       </div>
       <div className="grid-2">
         <div className="stack">
           <div className="card stack">
-            <div>
-              <h2>Pay a merchant</h2>
-              <p className="muted small" style={{ margin: '4px 0 0' }}>
-                As the paying bank, {config.bank.name} registers a fingerprint of the receipt bound to the merchant's account. No account number, amount or session ID is stored.
-              </p>
-            </div>
+            <h2>New transfer</h2>
+            <Scenarios label="Receipt to make" value={mode} options={modes} onChange={setMode} />
             <div>
               <h3>Payer</h3>
               <People phone={payer} setPhone={(p) => { setPayer(p); if (p === merchant) setMerchant(''); }} />
             </div>
             <div>
-              <h3>Merchant (paid into)</h3>
+              <h3>Merchant</h3>
               <People phone={merchant} setPhone={setMerchant} except={payer} />
             </div>
             <div className="row" style={{ justifyContent: 'space-between' }}>
-              <label className="row small muted">
+              <label className="money small muted">
                 Amount (NGN)
-                <input aria-label="Amount in naira" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} style={{ width: 140 }} />
+                <input aria-label="Amount in naira" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} aria-invalid={!amountOk} />
               </label>
-              <button className="btn" disabled={busy || !amountOk || !payer || !merchant || payer === merchant} onClick={() => act(() => sim.pay(payer, merchant, kobo), (t) => (t.registered ? 'Paid. Receipt registered.' : 'Paid, but the receipt was not stored'))}>
-                <IconSend /> Pay and register
+              <div className="chips" role="group" aria-label="Quick amounts">
+                {['5000', '25000', '250000'].map((v) => (
+                  <button key={v} type="button" className={`chip ${amount === v ? 'on' : ''}`} onClick={() => setAmount(v)}>{Number(v).toLocaleString()}</button>
+                ))}
+              </div>
+            </div>
+            {mode === 'fake_amount' && amountOk && (
+              <p className="muted small" style={{ margin: 0 }}>Pays {nairaText(paidPart)}, receipt shows {nairaText(paidPart * 10)}.</p>
+            )}
+            <div className="row" style={{ justifyContent: 'space-between' }}>
+              <label className="toggle-line">
+                <input type="checkbox" checked={checkNow} onChange={(e) => setCheckNow(e.target.checked)} />
+                Check it right away
+              </label>
+              <button
+                className={`btn ${mode === 'genuine' ? '' : 'danger'}`}
+                disabled={busy('submit') || !amountOk || !payer || !merchant || payer === merchant}
+                aria-busy={busy('submit')}
+                onClick={submit}
+              >
+                {mode === 'genuine' ? <><IconSend /> Pay and register</> : mode === 'fake_amount' ? <><IconScissors /> Pay {nairaText(paidPart)}, show {nairaText(paidPart * 10)}</> : <><IconWarning /> Make the fake receipt</>}
               </button>
             </div>
-          </div>
-
-          <div className="card stack">
-            <div>
-              <h2>Play the fraudster</h2>
-              <p className="muted small" style={{ margin: '4px 0 0' }}>A fake receipt copies a genuine one. Nobody registers it, so the merchant's check is not confirmed.</p>
-            </div>
-            <div className="row">
-              <button className="btn danger" disabled={busy || !lastGenuine} onClick={() => act(() => sim.fakeReceipt('fake_amount', lastGenuine?.id), () => 'Fake receipt: amount multiplied by ten')}>
-                <IconScissors /> Same receipt, amount changed
-              </button>
-              <button className="btn secondary" disabled={busy || !lastGenuine} onClick={() => act(() => sim.fakeReceipt('fake_reference', lastGenuine?.id), () => 'Fake receipt: made-up session ID')}>
-                <IconWarning /> Made-up session ID
-              </button>
-            </div>
-            {!lastGenuine && <p className="muted small" style={{ margin: 0 }}>Make a genuine payment first.</p>}
           </div>
 
           <div className="card">
             <h3>Receipts</h3>
-            {transfers.length === 0 && <p className="muted small" style={{ margin: 0 }}>No transfers yet.</p>}
+            {!list && <SkeletonRows rows={2} label="Loading receipts" />}
+            {list && transfers.length === 0 && <p className="muted small" style={{ margin: 0 }}>No transfers yet.</p>}
             {transfers.map((t) => (
               <div className="kbd-row" key={t.id} onClick={() => setSelected(t.id)} style={{ cursor: 'pointer', background: shown?.id === t.id ? 'var(--fill-2)' : undefined }}>
                 <span>
@@ -892,7 +872,7 @@ function TransfersPage({ config, notify }: { config: SimConfig; notify: (s: stri
                   {t.check ? (
                     <span className={`tag ${VERDICT_TAG[t.check.verdict] ?? 'orange'}`}>{receipt[t.check.verdict]?.short ?? receipt.cannot_check.short}</span>
                   ) : (
-                    <button className="btn plain small" disabled={busy} onClick={(e) => { e.stopPropagation(); void act(() => sim.checkReceipt(t.id), (r) => `Merchant's check: ${receipt[r.check?.verdict ?? 'cannot_check'].title}`); }}>
+                    <button className="btn plain small" disabled={busy(`check:${t.id}`)} aria-busy={busy(`check:${t.id}`)} onClick={(e) => { e.stopPropagation(); void check(t); }}>
                       <IconCheck /> Merchant checks
                     </button>
                   )}
@@ -928,7 +908,7 @@ function TransfersPage({ config, notify }: { config: SimConfig; notify: (s: stri
                   </div>
                 </div>
               ) : (
-                <button className="btn" style={{ marginTop: 14 }} disabled={busy} onClick={() => act(() => sim.checkReceipt(shown.id), (r) => `Merchant's check: ${receipt[r.check?.verdict ?? 'cannot_check'].title}`)}>
+                <button className="btn" style={{ marginTop: 14 }} disabled={busy(`check:${shown.id}`)} aria-busy={busy(`check:${shown.id}`)} onClick={() => void check(shown)}>
                   <IconCheck /> Merchant checks this receipt
                 </button>
               )}
@@ -997,279 +977,6 @@ function UssdPage({ config, phone, setPhone }: { config: SimConfig; phone: strin
         </div>
 
         {phone ? <FeaturePhone phone={phone} code={config.ussdCode} onHop={(h) => setHops((list) => [{ ...h, key: Math.random() }, ...list].slice(0, 8))} /> : <NoPhone />}
-      </div>
-    </div>
-  );
-}
-
-const LICENCE_EXAMPLES = [
-  { label: 'Listed loan app', query: 'FairMoney' },
-  { label: 'Near miss', query: 'Fair Mony' },
-  { label: 'Unknown lender', query: 'Moonbeam Quick Loans' },
-];
-
-const LICENCE_TONE = { licensed: 'var(--blue)', not_listed: 'var(--orange)', cannot_check: 'var(--red)' } as const;
-
-function LicencePage({ phone, setPhone }: { phone: string; setPhone: (p: string) => void }) {
-  const [query, setQuery] = useState('');
-  const [busy, setBusy] = useState(false);
-  const [result, setResult] = useState<LicenceResult | null>(null);
-  const l = copy.licence;
-  const run = async (q: string) => {
-    if (!phone || q.trim().length < 2) return;
-    setQuery(q);
-    setBusy(true);
-    try {
-      setResult(await device.checkLicence(phone, q.trim()));
-    } finally {
-      setBusy(false);
-    }
-  };
-  const regulators = (r: LicenceResult) => r.regulators.map((x) => x.name).join(', ').replace(/, ([^,]*)$/, ' or $1');
-  return (
-    <div className="page">
-      <div className="page-head">
-        <div>
-          <h1>Licence check</h1>
-          <p>{l.intro} The same check answers in the app, on WhatsApp (LOAN followed by a name) and on USSD option 4.</p>
-        </div>
-      </div>
-      <div className="grid-2">
-        <div className="stack">
-          <div className="card">
-            <h3>Customer</h3>
-            <People phone={phone} setPhone={setPhone} />
-          </div>
-          <div className="card stack">
-            <h2>{l.title}</h2>
-            <div className="chips">
-              {LICENCE_EXAMPLES.map((e) => (
-                <button key={e.query} className={`chip ${query === e.query ? 'on' : ''}`} onClick={() => run(e.query)} title={e.label}>
-                  {e.label}: {e.query}
-                </button>
-              ))}
-            </div>
-            <form
-              className="row"
-              onSubmit={(e) => {
-                e.preventDefault();
-                void run(query);
-              }}
-            >
-              <input aria-label={l.placeholder} placeholder={l.placeholder} value={query} maxLength={200} onChange={(e) => setQuery(e.target.value)} style={{ flex: 1 }} />
-              <button className="btn" disabled={busy || !phone || query.trim().length < 2}>{l.check}</button>
-            </form>
-            <p className="muted small" style={{ margin: 0 }}>
-              The name is checked and dropped: the registry stores only a count of each answer.
-            </p>
-          </div>
-        </div>
-        <div className="card stack" aria-live="polite">
-          {!result && <p className="muted small" style={{ margin: 0 }}>Pick an example or type a name, website or Android app ID.</p>}
-          {result && (
-            <>
-              <div className="row" style={{ gap: 8 }}>
-                <span className="status-dot" style={{ background: LICENCE_TONE[result.verdict], boxShadow: 'none' }} />
-                <b>{l[result.verdict].short}</b>
-              </div>
-              <h2 style={{ margin: 0 }}>{l[result.verdict].title}</h2>
-              {result.verdict === 'licensed' && (
-                <>
-                  <p style={{ margin: 0 }}>{fillText(l.licensed.body, { name: result.firm.name, regulator: result.firm.regulator, category: label(l.categories, result.firm.category) })}</p>
-                  <div className="kbd-row"><span>{l.regulator}</span><b>{result.firm.regulator}</b></div>
-                  <div className="kbd-row"><span>{l.category}</span><b>{label(l.categories, result.firm.category)}</b></div>
-                  {result.firm.status && <div className="kbd-row"><span>{l.status}</span><b>{result.firm.status}</b></div>}
-                  <div className="kbd-row"><span>{l.listDate}</span><b>{result.firm.source.retrievedAt}</b></div>
-                  <p className="muted small" style={{ margin: 0 }}>{l.source}: <a href={result.firm.source.url} target="_blank" rel="noreferrer">{result.firm.source.title}</a></p>
-                </>
-              )}
-              {result.verdict === 'not_listed' && (
-                <>
-                  <p style={{ margin: 0 }}>{fillText(l.not_listed.body, { regulators: regulators(result) })}</p>
-                  {result.similarTo && (
-                    <p className="row" style={{ margin: 0, gap: 8, alignItems: 'flex-start' }}>
-                      <IconWarning style={{ color: 'var(--orange)', flex: 'none', width: 18 }} />
-                      <span>{fillText(l.similar, { name: result.similarTo.name })}</span>
-                    </p>
-                  )}
-                  <p className="muted small" style={{ margin: 0 }}>{fillText(l.listsChecked, { lists: [...new Set(result.sources.map((s) => `${s.regulator} (${s.retrievedAt})`))].join(', ') })}</p>
-                </>
-              )}
-              {result.verdict === 'cannot_check' && <p style={{ margin: 0 }}>{l.cannot_check.body}</p>}
-              {result.regulators.length > 0 && (
-                <p className="muted small" style={{ margin: 0 }}>
-                  {result.regulators.map((r, i) => (
-                    <span key={r.name}>{i > 0 && ' \u00b7 '}<a href={r.url} target="_blank" rel="noreferrer">{r.name}</a></span>
-                  ))}
-                </p>
-              )}
-            </>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-const fillText = (t: string, v: Record<string, string>) => t.replace(/\{(\w+)\}/g, (m, k: string) => v[k] ?? m);
-
-
-function contactKindLabel(c: { type: string; value: string; platform?: string }, platforms?: string[]): string {
-  const k = copy.official.contact.kinds;
-  if (c.type === 'phone' || c.type === 'whatsapp' || c.type === 'email') return k[c.type];
-  const p = c.platform ?? platforms?.[0];
-  const names = copy.official.contact.platforms as Record<string, string>;
-  return fill(k.social, { platform: p ? (names[p] ?? p) : `@${c.value}` });
-}
-
-const PLATFORM_URL: Record<string, (h: string) => string> = {
-  x: (h) => `x.com/${h}`,
-  facebook: (h) => `facebook.com/${h}`,
-  instagram: (h) => `instagram.com/${h}`,
-  tiktok: (h) => `tiktok.com/@${h}`,
-  telegram: (h) => `t.me/${h}`,
-};
-
-function ContactsPage({ config, phone, setPhone, notify }: { config: SimConfig; phone: string; setPhone: (p: string) => void; notify: (s: string) => void }) {
-  const [data] = usePoll(() => sim.organisations(), 10_000);
-  const [contact, setContact] = useState('');
-  const [result, setResult] = useState<ContactCheck | null>(null);
-  const [busy, setBusy] = useState(false);
-  const orgs: Organisation[] = data?.organisations ?? [];
-  const care = config.fakeCustomerCare;
-  const t = copy.official.contact;
-
-  const check = async (value = contact) => {
-    if (!phone || !value.trim()) return;
-    setBusy(true);
-    try {
-      setResult(await device.verifyContact(phone, value.trim()));
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  return (
-    <div className="page">
-      <div className="page-head">
-        <div>
-          <h1>Official contacts</h1>
-          <p>The numbers, emails, social accounts and apps each organisation declares as its own. A customer can check any contact against them; only an exact match is official.</p>
-        </div>
-      </div>
-      <div className="grid-2">
-        <div className="stack">
-          <div className="card">
-            <h3>Customer</h3>
-            <People phone={phone} setPhone={setPhone} />
-          </div>
-
-          <div className="card stack">
-            <div>
-              <h2>Check a number or account</h2>
-              <p className="muted small" style={{ margin: '4px 0 0' }}>As the customer's app does: a phone number, email, @handle or profile link, checked against every organisation. The contact is never stored.</p>
-            </div>
-            <input aria-label="Contact to check" placeholder={copy.official.app.placeholder} value={contact} onChange={(e) => setContact(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && void check()} />
-            <div className="row" style={{ justifyContent: 'flex-end' }}>
-              <button className="btn" disabled={busy || !phone || !contact.trim()} onClick={() => void check()}>
-                <IconCheck /> Check
-              </button>
-            </div>
-            {result && (
-              <div role="status" className="stack" style={{ gap: 6 }}>
-                {result.verdict === 'official' && (
-                  <>
-                    <span className="tag green">{t.official.short}</span>
-                    {result.matches.map((m) => <p key={m.id} style={{ margin: 0 }}>{fill(t.official.body, { org: m.name, contact: contactKindLabel(result.contact, m.platforms) })}</p>)}
-                    <p className="muted small" style={{ margin: 0 }}>{t.spoofNote}</p>
-                  </>
-                )}
-                {result.verdict === 'not_official' && (
-                  <>
-                    <span className="tag red">{t.not_official.short}</span>
-                    <p style={{ margin: 0 }}>{result.organisation ? fill(t.not_official.body, { org: result.organisation.name, contact: contactKindLabel(result.contact) }) : fill(t.not_official.bodyAny, { contact: contactKindLabel(result.contact) })}</p>
-                    {result.impersonates.map((o) => <p key={o.id} className="small" style={{ margin: 0, color: 'var(--red)' }}>{fill(t.impersonation, { org: o.name })}</p>)}
-                  </>
-                )}
-                {result.verdict === 'cannot_check' && (
-                  <>
-                    <span className="tag orange">{copy.verdict.cannot_check.short}</span>
-                    <p style={{ margin: 0 }}>{t.cannotCheckBody}</p>
-                  </>
-                )}
-                {result.verdict === 'not_a_contact' && <p className="muted" style={{ margin: 0 }}>{t.notAContact}</p>}
-              </div>
-            )}
-          </div>
-
-          {care && (
-            <div className="card stack">
-              <div>
-                <h2>Fake customer care</h2>
-                <p className="muted small" style={{ margin: '4px 0 0' }}>
-                  A scam message sends the customer to a WhatsApp "help desk" ({care.whatsapp}) that {config.bank.name} never registered. Send it, then check the number.
-                </p>
-              </div>
-              <div className="row">
-                <button
-                  className="btn danger"
-                  disabled={busy || !phone}
-                  onClick={async () => {
-                    try {
-                      const r = await sim.sendFakeCare(phone);
-                      notify('Fake customer care message sent');
-                      const link = `https://wa.me/${r.contact.whatsapp.replace(/\D/g, '')}`;
-                      setContact(link);
-                      await check(link);
-                    } catch (e) {
-                      notify((e as Error).message);
-                    }
-                  }}
-                >
-                  <IconWarning /> Send the scam and check its number
-                </button>
-                <button className="btn secondary" disabled={busy} onClick={() => { setContact(`@${care.handle}`); void check(`@${care.handle}`); }}>
-                  Check @{care.handle}
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="stack">
-          {orgs.map((o) => {
-            const oc = o.officialContacts;
-            const rows: [string, string][] = [
-              ...oc.phones.map((v): [string, string] => [t.kinds.phone, v]),
-              ...oc.whatsapp.map((v): [string, string] => [t.kinds.whatsapp, v]),
-              ...oc.emails.map((v): [string, string] => [t.kinds.email, v]),
-              ...oc.social.map((s): [string, string] => [fill(t.kinds.social, { platform: (t.platforms as Record<string, string>)[s.platform] ?? s.platform }), `@${s.handle}`]),
-              ...o.officialApps.android.map((v): [string, string] => ['Android app', v]),
-              ...o.officialApps.ios.map((v): [string, string] => ['App Store app', `id${v.replace(/\D/g, '')}`]),
-            ];
-            return (
-              <div className="card" key={o.id}>
-                <div className="row" style={{ justifyContent: 'space-between' }}>
-                  <h2 style={{ margin: 0 }}>{o.name}</h2>
-                  <span className="tag blue">{label(copy.official.kinds, o.kind)}</span>
-                </div>
-                <p className="muted small">{o.domains.join(', ')}</p>
-                {rows.length === 0 && <p className="muted small">No official contacts declared.</p>}
-                {rows.map(([k, v]) => (
-                  <div className="kbd-row" key={`${k}${v}`}>
-                    <span>{k}</span>
-                    <button className="btn plain small mono" title="Check this contact" onClick={() => {
-                      const value = v.startsWith('@') && k !== t.kinds.email ? (Object.entries(PLATFORM_URL).find(([p]) => fill(t.kinds.social, { platform: (t.platforms as Record<string, string>)[p] ?? p }) === k)?.[1](v.slice(1)) ?? v) : v;
-                      setContact(value);
-                      void check(value);
-                    }}>{v}</button>
-                  </div>
-                ))}
-              </div>
-            );
-          })}
-          {!data && <div className="card empty"><p className="small">Loading what each organisation publishes&hellip;</p></div>}
-        </div>
       </div>
     </div>
   );

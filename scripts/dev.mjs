@@ -85,7 +85,6 @@ const jwksUrl = `http://127.0.0.1:${process.env.PORT || 8080}/sim/.well-known/jw
   }
 }
 const bankPresets = JSON.parse(readFileSync('packages/api/src/simulator/demo-banks.json', 'utf8'));
-const orgPresets = JSON.parse(readFileSync('packages/api/src/simulator/demo-orgs.json', 'utf8'));
 
 function enrol(preset) {
   const t = { ...preset.tenant, ...preset.publishes };
@@ -144,15 +143,6 @@ if (demoTenant !== 'demobank') {
   });
 }
 if (bankPreset.fakeCustomerCare) process.env.SIM_FAKE_CUSTOMER_CARE ||= JSON.stringify(bankPreset.fakeCustomerCare);
-
-if (process.env.DEMO_ORGS !== '0' && process.env.DEMO_ORGS !== 'false') {
-  const orgs = Object.values(orgPresets).map((preset) => {
-    const client = enrol(preset);
-    const t = preset.tenant;
-    return { tenantId: t.id, name: t.name, kind: t.kind, domain: t.domains[0], clientId: client.clientId, clientSecret: client.clientSecret, sampleMessage: preset.sampleMessage };
-  });
-  process.env.SIM_ORGS ||= JSON.stringify(orgs);
-}
 
 const WEB = process.env.WEB_DIST_DIR || 'dist';
 if (!['site', 'console', 'admin', 'admin-login'].every((d) => existsSync(`${WEB}/${d}/index.html`))) {

@@ -1,6 +1,6 @@
 import { IconClock } from '../icons.tsx';
 import type { ActivityEntry, Workspace } from './data.ts';
-import { Empty, fmtTime, PageHead, usePoll } from './ui.tsx';
+import { Empty, fmtTime, PageHead, SkeletonRows, usePoll } from './ui.tsx';
 
 const ACTIONS: Record<string, string> = {
   'console.login': 'Signed in to the dashboard',
@@ -43,11 +43,11 @@ export function ActivityPage({ ws, onSignedOut }: { ws: Workspace; onSignedOut: 
     <div className="page">
       <PageHead
         title="Activity"
-        sub={ws.kind === 'demo' ? 'What you have done in this demo session.' : `Every sign-in, approval and change for ${ws.profile.name}, by your team or by Gaskiyya. Kept for audit.`}
+        sub={`Every sign-in, approval and change for ${ws.profile.name}, by your team or by Gaskiyya. Kept for audit.`}
       />
       <div className="card">
         {!entries ? (
-          <p className="muted small flat">Loading&hellip;</p>
+          <SkeletonRows rows={5} lead="dot" label="Loading activity" />
         ) : entries.length === 0 ? (
           <Empty icon={<IconClock />} title="Nothing yet">Approvals, sign-ins and changes to your organisation appear here.</Empty>
         ) : (

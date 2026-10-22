@@ -6,7 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:gaskiya/src/core/api.dart';
 import 'package:gaskiya/src/core/copy.dart';
 import 'package:gaskiya/src/core/text_tools.dart';
-import 'package:gaskiya/src/ui/screens/calls_screen.dart';
 import 'package:gaskiya/src/ui/screens/check_screen.dart';
 import 'package:gaskiya/src/ui/screens/result_sheet.dart';
 import 'package:http/http.dart' as http;
@@ -382,24 +381,11 @@ void main() {
       await tidy(tester);
     });
 
-    testWidgets('an agency\'s cannot-check and the calls screen name the agency', (tester) async {
+    testWidgets('an agency\'s cannot-check names the agency', (tester) async {
       phoneSize(tester);
       await showSheet(tester, answering({'code': 'error'}, 500).client, CheckRequest.message('Your tax filing is due.'), bank: 'Tax Office (demo)', kind: 'agency');
       expect(find.text(c.t('official.org.cannotCheckBody', {'bank': 'Tax Office (demo)'})), findsOneWidget);
       await tidy(tester);
-
-      final taxOffice = Bank(id: 'taxoffice', name: 'Tax Office (demo)', kind: 'agency', domains: ['taxoffice.example'], customerTokenUrl: 'http://registry/sim/taxoffice/customer-token', demoInboxUrl: 'http://registry/sim/taxoffice/inbox');
-      final registry = FakeRegistry([taxOffice]);
-      final state = await linkedState(registry, ['taxoffice']);
-      await state.refreshCall();
-      await tester.pumpWidget(hostWith(CallsScreen(state: state), disableAnimations: true));
-      await tester.pump();
-      expect(find.text(c.t('official.org.notCallingTitle', {'bank': 'Tax Office (demo)'})), findsOneWidget);
-      expect(find.text(c.t('call.not_calling.title')), findsNothing);
-      await tester.pumpWidget(const SizedBox());
-      await tester.pump(const Duration(seconds: 7));
-      state.dispose();
-      await registry.close();
     });
   });
 }

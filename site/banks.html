@@ -584,8 +584,8 @@ const jwks = await issuer.jwks(); // publish at your tokenKeysUrl</code></pre>
 }</code></pre>
           </div>
           <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/calls</code></h3>
-          <p class="ep-meta"><b>Auth:</b> Bank access token &middot; <b>Success:</b> 201</p>
-          <p>Open a call session before dialling. The customer's app shows the code; your agent reads the same code from <code>code</code>. <code>agentRef</code> is 1 to 64 characters.</p>
+          <p class="ep-meta"><b>Auth:</b> Bank access token &middot; <b>Success:</b> 201; 409 <code>call_in_progress</code> when a session to this number is already open, with that session's <code>call: { id, status, expiresAt }</code></p>
+          <p>Open a call session before dialling. The customer's app shows the code; your agent reads the same code from <code>code</code>. <code>agentRef</code> is 1 to 64 characters. A number has one open session at a time: end it with <code>PATCH /v1/calls/{id}</code>, or let it expire, before opening another.</p>
           <p class="code-label">Request body</p>
           <div class="code" data-copy>
             <pre><code data-schema="OpenCall">{
@@ -826,7 +826,7 @@ const jwks = await issuer.jwks(); // publish at your tokenKeysUrl</code></pre>
           </ol>
           <h3 class="ep"><span class="m m-get">GET</span> <code>/v1/banks</code></h3>
           <p class="ep-meta"><b>Auth:</b> none (public) &middot; <b>Success:</b> 200</p>
-          <p>The banks (and other organisations) the Gaskiyya app can link to, and where each one signs its customers in. <code>kind</code> is <code>bank</code>, <code>agency</code> or <code>company</code>. <code>customerTokenUrl</code> is absolute, or a path on the registry for banks it hosts. <code>demoInboxUrl</code> is set for demo banks only.</p>
+          <p>The organisations on the registry and where each one signs its customers in. <code>kind</code> is <code>bank</code>, <code>agency</code> or <code>company</code>; the Gaskiyya app links only banks. <code>customerTokenUrl</code> is absolute, or a path on the registry for banks it hosts. <code>demoInboxUrl</code> is set for demo banks only.</p>
           <p class="code-label">Response</p>
           <div class="code" data-copy>
             <pre><code data-json>{

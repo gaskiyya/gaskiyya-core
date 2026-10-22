@@ -58,8 +58,9 @@ void main() {
     expect(code('4719'), findsOneWidget);
     final demo = state.links.firstWhere((l) => l.id == 'demobank');
     expect(demo.liveCalls.map((c) => c.code), ['9031', '1442']);
+    // One list for every bank, with one warning and one button under it.
     expect(find.text(Copy.I.t('call.mismatchMany')), findsOneWidget);
-    expect(find.text(Copy.I.t('call.mismatch')), findsOneWidget);
+    expect(find.text(Copy.I.t('call.mismatch')), findsNothing);
     expect(find.text(Copy.I.t('app.calls.checkAgain')), findsOneWidget);
 
     state.handleNotice({'type': 'call.closed', 'callId': 'call_demobank'});
@@ -98,6 +99,25 @@ void main() {
 
     state.handleNotice({'type': 'call.closed', 'callId': 'call_3'});
     expect(native.where((c) => c.method == 'endCall').map((c) => (c.arguments as Map)['callId']), ['call_3']);
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(const MethodChannel('ng.gaskiya/calls'), null);
+    state.dispose();
+    await registry.close();
+  });
+
+  testWidgets('calls arriving together ring the phone once, for the newest', (tester) async {
+    final native = <MethodCall>[];
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(const MethodChannel('ng.gaskiya/calls'), (c) async {
+      native.add(c);
+      return null;
+    });
+    final registry = FakeRegistry([testBank('demobank', 'DemoBank')])
+      ..calling['demobank'] = '9031'
+      ..moreCalls['demobank'] = ['1442', '7730'];
+    final state = (await tester.runAsync(() => linkedState(registry, ['demobank'])))!;
+    await tester.runAsync(state.refreshCall);
+    await tester.runAsync(state.refreshCall);
+    expect(state.links.single.liveCalls.map((c) => c.code), ['9031', '1442', '7730']);
+    expect(native.where((c) => c.method == 'ring').map((c) => (c.arguments as Map)['code']), ['9031']);
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(const MethodChannel('ng.gaskiya/calls'), null);
     state.dispose();
     await registry.close();

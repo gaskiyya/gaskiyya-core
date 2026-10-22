@@ -243,7 +243,7 @@ class _CheckScreenState extends State<CheckScreen> {
                   const SizedBox(height: 18),
                   Reveal(delay: const Duration(milliseconds: 90), child: _receiptTile(context)),
                 ],
-                SectionHeader(c.t('app.check.recentMessages'), trailing: Text(c.t('app.check.demoInbox'), style: G.footnote(context))),
+                SectionHeader(c.t('app.check.recentMessages')),
                 if (_inbox.isEmpty)
                   Reveal(
                     delay: const Duration(milliseconds: 120),

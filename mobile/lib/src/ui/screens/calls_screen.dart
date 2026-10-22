@@ -42,57 +42,28 @@ class _CallsScreenState extends State<CallsScreen> {
                 listenable: widget.state,
                 builder: (context, _) {
                   final state = widget.state;
-                  final calling = state.calling;
+                  // Every linked bank's open calls in one list, newest first; each card names its bank.
+                  final calls = [for (final l in state.calling) for (final x in l.liveCalls) (bank: l.bank.name, call: x)];
                   final unchecked = state.callUnchecked;
-                  final quiet = state.links.where((l) => l.callChecked && l.liveCall == null).map((l) => l.bank.name).toList();
                   final names = state.links.map((l) => l.bank.name).toList();
                   final bank = names.length == 1 ? names.single : c.t('app.common.yourBank');
-                  final allQuiet = calling.isEmpty && unchecked.isEmpty;
-                  final kinds = state.links.map((l) => l.bank.kind).toSet();
-                  final kind = kinds.length == 1 ? kinds.first : 'bank';
                   final log = state.callLog;
                   return Column(children: [
                     AnimatedSwitcher(
                       duration: G.motion(context, const Duration(milliseconds: 520)),
                       switchInCurve: G.spring,
                       switchOutCurve: Curves.easeIn,
+                      // Only the current view stays on screen, so calls arriving close together never stack.
+                      layoutBuilder: (current, previous) => Stack(alignment: Alignment.topCenter, children: [?current]),
                       transitionBuilder: (child, a) => FadeTransition(
                         opacity: a,
                         child: ScaleTransition(scale: Tween(begin: 0.94, end: 1.0).animate(a), child: child),
                       ),
-                      child: allQuiet
-                          ? _notCalling(context, c, bank, kind, named: names.length == 1)
-                          : Column(
-                              key: ValueKey([
-                                for (final l in calling) ...l.liveCalls.map((x) => x.id),
-                                for (final l in unchecked) 'unchecked:${l.id}',
-                                ...quiet,
-                              ].join(',')),
-                              children: [
-                                for (var i = 0; i < calling.length; i++) ...[
-                                  if (i > 0) const SizedBox(height: 28),
-                                  _calling(context, c, calling[i].bank.name, calling[i].liveCalls),
-                                ],
-                                for (final l in unchecked) ...[
-                                  if (calling.isNotEmpty || l != unchecked.first) const SizedBox(height: 28),
-                                  _cannotCheck(context, c, names.length > 1 ? l.bank.name : null, l.bank),
-                                ],
-                                if (calling.isEmpty && quiet.isNotEmpty) ...[
-                                  const SizedBox(height: 22),
-                                  GroupCard(
-                                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                      Text(c.t('official.org.notCallingTitle', {'bank': c.orList(quiet)}), style: G.headline(context)),
-                                      const SizedBox(height: 4),
-                                      Text(c.tOrg('call.not_calling.body', kind, {'bank': c.orList(quiet)}), style: G.subhead(context)),
-                                    ]),
-                                  ),
-                                ],
-                                if (unchecked.isEmpty) ...[
-                                  const SizedBox(height: 22),
-                                  PrimaryButton(label: c.t('app.calls.checkAgain'), icon: CupertinoIcons.arrow_clockwise, loading: _checking, onTap: _refresh),
-                                ],
-                              ],
-                            ),
+                      child: calls.isNotEmpty
+                          ? _calling(context, c, calls)
+                          : unchecked.isNotEmpty
+                              ? _cannotCheck(context, c, [for (final l in unchecked) l.bank.name], named: names.length > 1)
+                              : _notCalling(context, c, bank, named: names.length == 1),
                     ),
                     if (log.isNotEmpty) ...[
                       SectionHeader(c.t('app.calls.recent')),
@@ -116,11 +87,11 @@ class _CallsScreenState extends State<CallsScreen> {
     );
   }
 
-  Widget _calling(BuildContext context, Copy c, String bank, List<CallSession> calls) {
+  Widget _calling(BuildContext context, Copy c, List<({String bank, CallSession call})> calls) {
     return Column(
-      key: ValueKey(calls.map((x) => x.id).join(',')),
+      key: const ValueKey('calling'),
       children: [
-        for (final call in calls) ...[_callCard(context, c, bank, call), const SizedBox(height: 16)],
+        for (final x in calls) ...[_callCard(context, c, x.bank, x.call), const SizedBox(height: 16)],
         GroupCard(
           child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Icon(CupertinoIcons.exclamationmark_triangle_fill, size: 18, color: G.orange.resolveFrom(context)),
@@ -128,16 +99,20 @@ class _CallsScreenState extends State<CallsScreen> {
             Expanded(child: Text(c.t(calls.length > 1 ? 'call.mismatchMany' : 'call.mismatch'), style: G.subhead(context).copyWith(color: G.label.resolveFrom(context), fontWeight: FontWeight.w600))),
           ]),
         ),
+        const SizedBox(height: 22),
+        PrimaryButton(label: c.t('app.calls.checkAgain'), icon: CupertinoIcons.arrow_clockwise, loading: _checking, onTap: _refresh),
       ],
     );
   }
 
-  Widget _cannotCheck(BuildContext context, Copy c, String? bank, Bank org) {
+  Widget _cannotCheck(BuildContext context, Copy c, List<String> banks, {bool named = false}) {
+    final bank = c.orList(banks);
     return Column(
+      key: const ValueKey('unchecked'),
       children: [
         Icon(CupertinoIcons.exclamationmark_circle, size: 64, color: G.orange.resolveFrom(context)),
         const SizedBox(height: 14),
-        if (bank != null) ...[
+        if (named) ...[
           Text(bank, textAlign: TextAlign.center, style: G.headline(context)),
           const SizedBox(height: 4),
         ],
@@ -145,7 +120,7 @@ class _CallsScreenState extends State<CallsScreen> {
         const SizedBox(height: 10),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Text(c.tOrg('verdict.cannot_check.body', org.kind, {'bank': org.name}),
+          child: Text(c.t('verdict.cannot_check.body', {'bank': bank}),
               textAlign: TextAlign.center, style: G.callout(context).copyWith(color: G.label2.resolveFrom(context), height: 1.45)),
         ),
         const SizedBox(height: 26),
@@ -185,19 +160,19 @@ class _CallsScreenState extends State<CallsScreen> {
     );
   }
 
-  Widget _notCalling(BuildContext context, Copy c, String bank, String kind, {bool named = false}) {
+  Widget _notCalling(BuildContext context, Copy c, String bank, {bool named = false}) {
     return Column(
       key: const ValueKey('none'),
       children: [
         const SizedBox(height: 4),
         const Art3D('call', size: 230),
         const SizedBox(height: 6),
-        Text(named ? c.t('official.org.notCallingTitle', {'bank': bank}) : c.tOrg('call.not_calling.title', kind, {'bank': bank}),
+        Text(named ? c.t('official.org.notCallingTitle', {'bank': bank}) : c.t('call.not_calling.title', {'bank': bank}),
             textAlign: TextAlign.center, style: G.title1(context)),
         const SizedBox(height: 10),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Text(c.tOrg('call.not_calling.body', kind, {'bank': bank}),
+          child: Text(c.t('call.not_calling.body', {'bank': bank}),
               textAlign: TextAlign.center, style: G.callout(context).copyWith(color: G.label2.resolveFrom(context), height: 1.45)),
         ),
         const SizedBox(height: 26),

@@ -106,6 +106,27 @@ void main() {
     await tidy(tester, state, registry);
   });
 
+  testWidgets('one in-call screen fills the phone, and answering another call ends the first', (tester) async {
+    phoneSize(tester);
+    mockSharing(tester);
+    final registry = FakeRegistry([testBank('demobank', 'DemoBank')]);
+    final state = (await tester.runAsync(() => linkedState(registry, ['demobank'])))!;
+    await tester.pumpWidget(hostWith(HomeScreen(state: state), disableAnimations: true));
+    await settle(tester);
+    state.handleNotice(opened('call_1', '4821'), state.links.single);
+    state.handleNotice(opened('call_2', '7730'), state.links.single);
+    await nativeEvent(tester, 'answered', 'call_1');
+    await settle(tester);
+    await nativeEvent(tester, 'answered', 'call_2');
+    await settle(tester);
+
+    expect(state.activeCall?.id, 'call_2');
+    expect(state.callLog.firstWhere((r) => r.id == 'call_1').outcome, CallOutcome.answered);
+    expect(find.byType(InCallScreen), findsOneWidget);
+    expect(tester.getSize(find.byType(InCallScreen)), tester.getSize(find.byType(HomeScreen)));
+    await tidy(tester, state, registry);
+  });
+
   testWidgets('an answered call ends when the bank closes it', (tester) async {
     final registry = FakeRegistry([testBank('demobank', 'DemoBank')]);
     final state = (await tester.runAsync(() => linkedState(registry, ['demobank'])))!;

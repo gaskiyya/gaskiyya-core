@@ -1,6 +1,6 @@
 import { IconCheck, IconExternal, IconKey, IconPlug } from '../icons.tsx';
 import type { Workspace } from './data.ts';
-import { ago, DayBars, Empty, fmtNum, fmtTime, PageHead, Ring, Section, usePoll } from './ui.tsx';
+import { ago, DayBars, Empty, fmtNum, fmtTime, PageHead, Ring, Section, Skeleton, SkeletonBars, SkeletonRows, usePoll } from './ui.tsx';
 
 const GUIDE_URL = 'https://gaskiyya-io.web.app/banks.html';
 const KEY_STATE: Record<string, string> = { current: 'In use', previous: 'Previous, still accepted', pending: 'Activating', retired: 'Retired' };
@@ -21,7 +21,7 @@ export function IntegrationPage({ ws, onSignedOut }: { ws: Workspace; onSignedOu
       <div className="split">
         <div className="stack">
           <Section title="API clients">
-            {!d ? <p className="muted small flat">Loading&hellip;</p> : d.clients.length === 0 ? (
+            {!d ? <SkeletonRows rows={2} label="Loading API clients" /> : d.clients.length === 0 ? (
               <Empty icon={<IconPlug />} title="No API client yet">Ask Gaskiyya for a client so your notification service can register messages.</Empty>
             ) : (
               <div className="ws-table-wrap">
@@ -43,11 +43,11 @@ export function IntegrationPage({ ws, onSignedOut }: { ws: Workspace; onSignedOu
           </Section>
 
           <Section title="API traffic, last 14 days" action={d && d.usage.length > 0 ? <span className="muted small">{fmtNum(calls)} calls &middot; {fmtNum(errors)} errors</span> : undefined}>
-            <DayBars days={d?.usage ?? []} empty={ws.kind === 'demo' ? 'The demo registers through the simulator, so no API traffic is counted here.' : 'No API calls in the last 14 days.'} />
+            {!d ? <SkeletonBars label="Loading API traffic" /> : <DayBars days={d.usage} empty="No API calls in the last 14 days." />}
           </Section>
 
           <Section title="Recent errors">
-            {!d || d.errors.length === 0 ? (
+            {!d ? <SkeletonRows rows={2} label="Loading recent errors" /> : d.errors.length === 0 ? (
               <p className="muted small flat">No failed calls recently.</p>
             ) : (
               <div className="ws-table-wrap">
@@ -72,21 +72,23 @@ export function IntegrationPage({ ws, onSignedOut }: { ws: Workspace; onSignedOu
         <div className="stack side">
           <Section title="Go-live checklist">
             <div className="checklist-head">
-              <Ring value={done} total={total} />
+              {d ? <Ring value={done} total={total} /> : <Skeleton w={64} h={64} r={999} />}
               <p className="small flat">{done === total && total > 0 ? 'Everything is in place.' : 'Gaskiyya completes these with your team during onboarding.'}</p>
             </div>
-            <ul className="ws-checklist">
-              {d?.checklist.map((c) => (
-                <li key={c.id} className={c.done ? 'done' : ''}>
-                  <IconCheck />
-                  <span>{c.label}</span>
-                </li>
-              ))}
-            </ul>
+            {d ? (
+              <ul className="ws-checklist">
+                {d.checklist.map((c) => (
+                  <li key={c.id} className={c.done ? 'done' : ''}>
+                    <IconCheck />
+                    <span>{c.label}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : <SkeletonRows rows={4} lead="dot" label="Loading the checklist" />}
           </Section>
 
           <Section title="Hashing key">
-            {d?.keys.length ? (
+            {!d ? <SkeletonRows rows={1} label="Loading the hashing key" /> : d.keys.length ? (
               <ul className="rows">
                 {d.keys.map((k) => (
                   <li key={k.version}>
@@ -101,7 +103,7 @@ export function IntegrationPage({ ws, onSignedOut }: { ws: Workspace; onSignedOu
           </Section>
 
           <Section title="Alert webhook">
-            {d?.webhook ? (
+            {!d ? <Skeleton w="70%" h={13} /> : d.webhook ? (
               <>
                 <code className="ws-wrap small">{d.webhook.url}</code>
                 <p className="muted small flat">Set {fmtTime(d.webhook.createdAt)}. Campaign and registration alerts are posted here, signed.</p>

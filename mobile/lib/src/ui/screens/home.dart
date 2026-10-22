@@ -176,6 +176,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 duration: G.motion(context, G.springFast),
                 switchInCurve: G.spring,
                 switchOutCurve: Curves.easeIn,
+                // The in-call screen fills the phone, and only the current call's screen stays on it.
+                layoutBuilder: (current, previous) => Stack(fit: StackFit.expand, children: [?current]),
                 transitionBuilder: (child, a) => FadeTransition(
                   opacity: a,
                   child: SlideTransition(position: Tween(begin: const Offset(0, 0.06), end: Offset.zero).animate(a), child: child),
@@ -378,8 +380,8 @@ class _ActivityScreenState extends State<ActivityScreen> {
               if (data == null)
                 const GroupCard(child: Shimmer())
               else ...[
-                for (final e in data.where((e) => e.data == null)) ...[
-                  _note(context, CupertinoIcons.exclamationmark_circle, c.t('app.activity.unavailable', {'bank': e.link.bank.name})),
+                if (data.any((e) => e.data == null)) ...[
+                  _note(context, CupertinoIcons.exclamationmark_circle, c.t('app.activity.unavailable', {'bank': c.orList([for (final e in data) if (e.data == null) e.link.bank.name])})),
                   const SizedBox(height: 12),
                 ],
                 if (data.any((e) => e.data != null))

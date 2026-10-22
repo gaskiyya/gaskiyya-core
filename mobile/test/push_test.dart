@@ -74,6 +74,49 @@ void main() {
     expect(push.registeredToken, 'fcm-token-2');
   });
 
+  test('a registration that fails is tried again until the registry has it', () async {
+    final devices = <Map<String, dynamic>>[];
+    var down = 2;
+    final client = GaskiyaClient(
+      baseUrl: 'http://registry',
+      token: () async => 'customer-token',
+      httpClient: MockClient((req) async {
+        if (req.url.path != '/v1/devices') return http.Response('', 404);
+        if (down-- > 0) return http.Response('{"code":"store_unavailable","message":"Store unreachable"}', 503);
+        devices.add(jsonDecode(req.body) as Map<String, dynamic>);
+        return http.Response('', 204);
+      }),
+    );
+    final push = PushService(FakeTransport(), retryDelays: const [Duration(milliseconds: 5)]);
+    await push.start(client: client, onNotice: (_) {}, onOpened: (_) {});
+    expect(devices, isEmpty);
+    expect(push.registeredToken, isNull);
+    await Future<void>.delayed(const Duration(milliseconds: 60));
+    expect(devices, [
+      {'pushToken': 'fcm-token-1', 'platform': 'android'},
+    ]);
+    expect(push.registeredToken, 'fcm-token-1');
+    await push.stop();
+  });
+
+  test('stopping push stops the retries', () async {
+    var tries = 0;
+    final client = GaskiyaClient(
+      baseUrl: 'http://registry',
+      token: () async => 'customer-token',
+      httpClient: MockClient((req) async {
+        tries++;
+        return http.Response('', 503);
+      }),
+    );
+    final push = PushService(FakeTransport(), retryDelays: const [Duration(milliseconds: 5)]);
+    await push.start(client: client, onNotice: (_) {}, onOpened: (_) {});
+    await push.stop();
+    final after = tries;
+    await Future<void>.delayed(const Duration(milliseconds: 40));
+    expect(tries, after);
+  });
+
   test('foreground notices and taps reach the app', () async {
     final r = registry();
     final t = FakeTransport(initial: opened('1111'));

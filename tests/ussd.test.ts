@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { copy, fill } from '@gaskiya/schemas';
 import { MemoryStore } from '../packages/api/src/index.ts';
 import { paginate, startOfDay, USSD_MAX } from '../packages/api/src/ussd.ts';
-import { ALERT, ALICE, BOB, harness, LINK_MSG, USSD, type Harness } from './helpers.ts';
+import { ALERT, ALICE, BOB, harness, LINK_MSG, seedSecondCall, USSD, type Harness } from './helpers.ts';
 
 const NOON = new Date('2026-10-20T11:00:00Z');
 
@@ -56,10 +56,10 @@ describe('USSD channel', () => {
     expect((await dial(h, ALICE, '1')).body).toContain(copy.call.not_calling.title);
   });
 
-  it('USSD-2 / F10: with two agents calling at once, option 1 shows both codes', async () => {
+  it('USSD-2 / F10: with two sessions open together, option 1 shows both codes', async () => {
     const h = await harness();
     const first = await openCall(h, ALICE, 'card_activation');
-    const second = await openCall(h, ALICE, 'fraud_check');
+    const second = await seedSecondCall(h, first.id, 'fraud_check', first.code === '1111' ? '2222' : '1111');
     const r = await dial(h, ALICE, '1');
     expectScreen(r.body);
     expect(r.body.startsWith('END ')).toBe(true);

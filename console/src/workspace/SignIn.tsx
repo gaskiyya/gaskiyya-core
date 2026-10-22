@@ -3,7 +3,7 @@ import { IconArrow, IconKey } from '../icons.tsx';
 import { CODE_LENGTH, formatCode, NO_CODE, signIn, type OrgProfile, type StoredSession } from './data.ts';
 
 const SANDBOX = __SANDBOX__;
-const FIELD_LABEL = 'Bank sign-in code';
+const FIELD_LABEL = 'Sign-in code';
 
 export function SignIn({ onSignedIn, demo, onSandboxDemo }: {
   onSignedIn: (s: StoredSession, p: OrgProfile, label: string) => void;
@@ -12,29 +12,31 @@ export function SignIn({ onSignedIn, demo, onSandboxDemo }: {
 }) {
   const [code, setCode] = useState(NO_CODE);
   const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
+  // Which button started the sign-in; a second click is ignored until it finishes.
+  const [busy, setBusy] = useState<'code' | 'demo' | null>(null);
   const complete = code.length === CODE_LENGTH;
 
-  const go = async (value: string) => {
+  const go = async (value: string, from: 'code' | 'demo') => {
+    if (busy) return;
     setError(null);
     if (SANDBOX) {
       if (demo && value === demo.code) onSandboxDemo?.();
       else setError('This in-browser demo only holds the demo bank. Registered banks sign in on the live dashboard.');
       return;
     }
-    setBusy(true);
+    setBusy(from);
     try {
       const r = await signIn(value);
       onSignedIn(r.session, r.profile, r.accessLabel);
     } catch (err) {
       setError((err as Error).message);
     } finally {
-      setBusy(false);
+      setBusy(null);
     }
   };
   const handle = (e: FormEvent) => {
     e.preventDefault();
-    if (complete) void go(code);
+    if (complete) void go(code, 'code');
   };
 
   return (
@@ -45,7 +47,7 @@ export function SignIn({ onSignedIn, demo, onSandboxDemo }: {
           <span>Gaskiyya</span>
         </div>
         <h1>Bank console</h1>
-        <p className="muted">Use the six-character code Gaskiyya issued when your organisation was registered. It opens your organisation, and only yours.</p>
+        <p className="muted">Enter your organisation&apos;s six-character code.</p>
         <form onSubmit={handle} className="gate-form">
           <label htmlFor="gate-field">{FIELD_LABEL}</label>
           <div className="code-input">
@@ -70,7 +72,7 @@ export function SignIn({ onSignedIn, demo, onSandboxDemo }: {
               {SANDBOX && <> <a href={__REGISTRY_CONSOLE_URL__}>Open the live dashboard</a></>}
             </p>
           )}
-          <button className="btn wide" type="submit" disabled={!complete || busy}>{busy ? 'Checking…' : 'Sign in'} {!busy && <IconArrow />}</button>
+          <button className="btn wide" type="submit" disabled={!complete || busy !== null} aria-busy={busy === 'code'}>Sign in <IconArrow /></button>
         </form>
         {demo && (
           <div className="demo-code">
@@ -78,10 +80,10 @@ export function SignIn({ onSignedIn, demo, onSandboxDemo }: {
               <span className="eyebrow">Demo bank</span>
               <div className="demo-code-line">{demo.name} <code>{demo.code}</code></div>
             </div>
-            <button className="btn secondary" type="button" disabled={busy} onClick={() => (setCode(demo.code), void go(demo.code))}>Try the demo</button>
+            <button className="btn secondary" type="button" disabled={busy !== null} aria-busy={busy === 'demo'} onClick={() => (setCode(demo.code), void go(demo.code, 'demo'))}>Try the demo</button>
           </div>
         )}
-        <p className="gate-foot small muted">No code? Gaskiyya issues one when your organisation is registered, and can replace it at any time.</p>
+        <p className="gate-foot small muted">No code? Ask Gaskiyya.</p>
       </div>
     </div>
   );

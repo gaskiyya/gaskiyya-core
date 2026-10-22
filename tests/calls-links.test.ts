@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { checkLink, decideLinkVerdict, MemoryStore } from '../packages/api/src/index.ts';
-import { ALICE, BOB, harness } from './helpers.ts';
+import { ALICE, BOB, harness, seedSecondCall } from './helpers.ts';
 
 async function openCall(h: Awaited<ReturnType<typeof harness>>, recipient = ALICE) {
   const r = await h.sys.app.inject({
@@ -37,7 +37,7 @@ describe('call sessions', () => {
   it('CALL-1: codes are not predictable from one call to the next', async () => {
     const h = await harness();
     const codes = new Set<string>();
-    for (let i = 0; i < 20; i++) codes.add((await openCall(h)).body.code);
+    for (let i = 0; i < 20; i++) codes.add((await openCall(h, `+2348012340${String(i).padStart(3, '0')}`)).body.code);
     expect(codes.size).toBeGreaterThan(10);
   });
 
@@ -49,12 +49,28 @@ describe('call sessions', () => {
     expect(await check(h, BOB)).toEqual({ verdict: 'not_calling', calling: false, bank: 'DemoBank' });
   });
 
-  it('F10 / CALL-2: with two agents calling one number, every open call and its code is returned, newest first', async () => {
+  it('CALL-2: a number with an open session gets no second call until the first ends, even when two arrive at once', async () => {
     const h = await harness();
     const first = (await openCall(h)).body;
-    h.clock.now = new Date(h.clock.now.getTime() + 1000);
-    const second = (await openCall(h)).body;
-    expect(second.code === first.code && second.id === first.id).toBe(false);
+    const again = await openCall(h);
+    expect(again.status).toBe(409);
+    expect(again.body).toMatchObject({ code: 'call_in_progress', call: { id: first.id, status: 'open', expiresAt: first.expiresAt } });
+    expect((await check(h, ALICE)).calls.map((c: { id: string }) => c.id)).toEqual([first.id]);
+    expect((await openCall(h, BOB)).status).toBe(201);
+
+    await h.sys.app.inject({ method: 'PATCH', url: `/v1/calls/${first.id}`, headers: { authorization: `Bearer ${h.bankToken}` }, payload: { status: 'ended' } });
+    const next = await openCall(h);
+    expect(next.status).toBe(201);
+    expect(next.body.id).not.toBe(first.id);
+
+    const racing = await Promise.all([openCall(h, '+2348031112222'), openCall(h, '+2348031112222')]);
+    expect(racing.map((r) => r.status).sort()).toEqual([201, 409]);
+  });
+
+  it('F10 / CALL-2: sessions already open together are all returned with their codes, newest first', async () => {
+    const h = await harness();
+    const first = (await openCall(h)).body;
+    const second = await seedSecondCall(h, first.id, 'card_activation', first.code === '1111' ? '2222' : '1111');
     const r = await check(h, ALICE);
     expect(r).toMatchObject({ verdict: 'calling', calling: true, call: { id: second.id, code: second.code } });
     expect(r.calls.map((c: { id: string; code: string }) => [c.id, c.code])).toEqual([

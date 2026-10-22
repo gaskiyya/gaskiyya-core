@@ -360,6 +360,10 @@ describe('console and bank simulator', () => {
     const reference = (await post('/sim/transfers/fake', { kind: 'fake_reference', id: paid.id })).json().transfer;
     expect(reference.reference).not.toBe(paid.reference);
     expect(await check(reference.id)).toEqual({ verdict: 'not_confirmed', bank: 'DemoBank' });
+    const forged = (await post('/sim/transfers/fake', { kind: 'fake_reference', from: payer, to: merchant, amountKobo: 7_500_000 })).json().transfer;
+    expect(forged).toMatchObject({ kind: 'fake_reference', registered: false, payer, merchant, amountKobo: 7_500_000, account: demoAccount(merchant) });
+    expect(await check(forged.id)).toEqual({ verdict: 'not_confirmed', bank: 'DemoBank' });
+    expect((await post('/sim/transfers/fake', { kind: 'fake_reference', from: payer, to: payer, amountKobo: 7_500_000 })).statusCode).toBe(400);
 
     const { token } = (await post('/sim/customer-token', { phone: merchant })).json();
     const verify = (bearer: string, body: object) =>
@@ -371,7 +375,7 @@ describe('console and bank simulator', () => {
     const viaSim = await sim.app.inject({ method: 'POST', url: '/sim/registry/v1/verify/receipt', headers: { authorization: `Bearer ${token}` }, payload: fields });
     expect(viaSim.json().verdict).toBe('received');
 
-    expect((await sim.app.inject({ method: 'GET', url: '/sim/transfers' })).json().transfers).toHaveLength(3);
+    expect((await sim.app.inject({ method: 'GET', url: '/sim/transfers' })).json().transfers).toHaveLength(4);
     expect((await post('/sim/transfers', { from: payer, to: payer, amountKobo: 100 })).statusCode).toBe(400);
     expect((await post('/sim/transfers/fake', { kind: 'other' })).statusCode).toBe(400);
   });

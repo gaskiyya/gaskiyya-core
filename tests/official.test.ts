@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { contentDigest } from '@gaskiya/canonical';
 import { copy, copyFor, copyForOrg, fill, LANGUAGES } from '@gaskiya/schemas';
 import { checkLink, configFromEnv, createSystem, decideContactVerdict, decideLinkVerdict, MemoryStore, parseContact, StaticKeyService, type Tenant } from '../packages/api/src/index.ts';
-import { buildSimulator, DEMO_BANKS, DEMO_ORGS, demoTenant } from '../packages/api/src/simulator/index.ts';
+import { buildSimulator, DEMO_BANKS, demoTenant } from '../packages/api/src/simulator/index.ts';
 import { createSandbox } from '../console/src/sandbox/backend.ts';
 import { asksForSecret } from '../packages/api/src/ai/explain.ts';
 import { BUNDLED_LICENCES } from '@gaskiya/licences/bundled';
@@ -465,36 +465,18 @@ describe('official contacts on USSD and WhatsApp (decision 0014)', () => {
   });
 });
 
-describe('console: demo organisations and the fake customer care step (decision 0014)', () => {
-  it('OFF-12: the demo agency and tax office are plainly fictional, on reserved test domains', () => {
-    for (const p of Object.values(DEMO_ORGS)) {
-      expect(p.description).toContain('DEMO ONLY');
-      expect(p.tenant.name).toMatch(/\(demo\)$/);
-      expect(['agency', 'company']).toContain(p.tenant.kind);
-      for (const d of [...p.tenant.domains, p.lookalikeDomain]) expect(d).toMatch(/\.(example|test)$/);
-      expect(JSON.stringify(p).toLowerCase()).not.toMatch(/frsc|firs|federal|nigeria police|efcc/);
-      const env = demoEnv({
-        AI_PROVIDER: 'none',
-        GASKIYA_TENANTS: JSON.stringify([{ ...demoTenant(p), tokenKeysUrl: 'http://127.0.0.1:5170/sim/.well-known/jwks.json' }]),
-        GASKIYA_TENANT_KEYS: JSON.stringify({ [p.tenant.id]: Buffer.alloc(32, 1).toString('base64') }),
-        GASKIYA_BANK_CLIENTS: '[]',
-      });
-      expect(() => configFromEnv(env)).not.toThrow();
-    }
+describe('console: the fake customer care step (decision 0014)', () => {
+  it('OFF-12: the demo bank\'s scam customer care contact is not one it publishes', () => {
     expect(DEMO_BANKS.demobank!.fakeCustomerCare).toBeDefined();
     expect(demoTenant(DEMO_BANKS.demobank!).officialContacts?.whatsapp).not.toContain(DEMO_BANKS.demobank!.fakeCustomerCare!.whatsapp);
   });
 
-  it('OFF-12: the sandbox console sends as the agency, lists what each organisation declared, and runs the fake customer care step', async () => {
+  it('OFF-12: the sandbox console runs the demo bank alone and runs the fake customer care step', async () => {
     const sb = createSandbox();
     const call = async (method: string, path: string, body?: unknown, token?: string) =>
       sb.handle(method, new URL(path, 'https://gaskiyya.test'), body, token ? `Bearer ${token}` : null) as Promise<{ status: number; body: any }>;
     const config = (await call('GET', '/sim/config')).body;
-    expect(config.orgs.map((o: { id: string }) => o.id)).toEqual(['demobank', 'roadsafety', 'taxoffice']);
-    const { organisations } = (await call('GET', '/sim/organisations')).body;
-    expect(organisations.find((o: { id: string }) => o.id === 'roadsafety')).toMatchObject({ kind: 'agency', officialContacts: { whatsapp: ['+2349070000122'] } });
-    const sent = await call('POST', '/sim/send', { phone: ALICE, org: 'roadsafety' });
-    expect(sent.body.item).toMatchObject({ from: 'Road Safety Agency (demo)', kind: 'genuine', tenantId: 'roadsafety' });
+    expect(config.orgs.map((o: { id: string }) => o.id)).toEqual(['demobank']);
     const { token } = (await call('POST', '/sim/customer-token', { phone: ALICE })).body;
     const care = await call('POST', '/sim/send-fake-care', { phone: ALICE });
     expect(care.body.item.text).toContain(`wa.me/${care.body.contact.whatsapp.slice(1)}`);
@@ -505,10 +487,11 @@ describe('console: demo organisations and the fake customer care step (decision 
     expect((await call('POST', '/sim/registry/v1/verify/contact', { contact: 'hello' }, token)).status).toBe(422);
   });
 
-  it('OFF-12: the bank simulator sends as a demo agency with its own client, and the agency\'s customer sees it confirmed', async () => {
+  it('OFF-12: the bank simulator sends as another organisation with its own client, and that organisation\'s customer sees it confirmed', async () => {
     const simPort = await freePort();
     const sim0 = `http://127.0.0.1:${simPort}/sim`;
-    const agency = { ...demoTenant(DEMO_ORGS.roadsafety!), tokenKeysUrl: `${sim0}/.well-known/jwks.json` };
+    const sample = 'Road Safety Agency (demo): your vehicle licence ends on 31 Oct. Renew at https://roadsafety.example/renew or at any office.';
+    const agency = { ...AGENCY, tokenKeysUrl: `${sim0}/.well-known/jwks.json` };
     const api = createSystem({
       tenants: [{ ...TENANT, ...DEMOBANK_PUBLISHES, tokenKeysUrl: `${sim0}/.well-known/jwks.json` }, agency],
       keys: StaticKeyService.random([TENANT.id, agency.id]),
@@ -527,14 +510,14 @@ describe('console: demo organisations and the fake customer care step (decision 
       bankName: TENANT.name,
       demoLogin: true,
       logger: false,
-      orgs: [{ tenantId: agency.id, name: agency.name, kind: 'agency', domain: agency.domains[0], clientId: c.clientId, clientSecret: c.clientSecret, sampleMessage: DEMO_ORGS.roadsafety!.sampleMessage }],
+      orgs: [{ tenantId: agency.id, name: agency.name, kind: 'agency', domain: agency.domains[0], clientId: c.clientId, clientSecret: c.clientSecret, sampleMessage: sample }],
       fakeCustomerCare: DEMO_BANKS.demobank!.fakeCustomerCare,
     });
     await sim.app.listen({ port: simPort, host: '127.0.0.1' });
     try {
       const post = (url: string, payload: unknown) => sim.app.inject({ method: 'POST', url, payload: payload as object });
       const sent = (await post('/sim/send', { phone: ALICE, org: agency.id })).json();
-      expect(sent.item.text).toBe(DEMO_ORGS.roadsafety!.sampleMessage);
+      expect(sent.item.text).toBe(sample);
       const agencyToken = (await sim.app.inject({ method: 'POST', url: `/sim/customer-token?tenant=${agency.id}`, payload: { phone: ALICE } })).json().token as string;
       const bankToken = (await post('/sim/customer-token', { phone: ALICE })).json().token as string;
       const verify = async (token: string) =>

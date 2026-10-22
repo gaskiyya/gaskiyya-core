@@ -21,8 +21,6 @@ SR = 24000
 OPENINGS = {
     "demobank": "Hello, good day. I am calling from DemoBank. Your code is",
     "zb": "Hello, good day. I am calling from ZB Demo Bank. Your code is",
-    "roadsafety": "Hello, good day. I am calling from the Road Safety Agency. Your code is",
-    "taxoffice": "Hello, good day. I am calling from the Tax Office. Your code is",
     "generic": "Hello, good day. I am calling from your bank. Your code is",
 }
 PAUSES = {"afterOpening": 380, "betweenDigits": 240}

@@ -59,6 +59,15 @@ export class AdvisoryError extends Error {
   }
 }
 
+/** A call to this number is already open; the bank ends it before announcing another. */
+export class CallInProgressError extends Error {
+  readonly statusCode = 409;
+  readonly code = 'call_in_progress';
+  constructor(readonly call: { id: string; status: string; expiresAt: string }) {
+    super('A call to this number is already open. End it before announcing another.');
+  }
+}
+
 export interface AdvisoryView {
   id: string;
   bank: string;
@@ -596,7 +605,14 @@ export class GaskiyaService {
 
   private async notify(tenant: Tenant, c: CallSession, notice: CallNotice) {
     this.events.publish(`${tenant.id}:${c.recipientKey}`, notice);
-    const devices = await this.store.devices(tenant.id, c.recipientKey);
+    // The call is already stored: a failed device lookup costs the push, never the call itself.
+    let devices: Device[];
+    try {
+      devices = await this.store.devices(tenant.id, c.recipientKey);
+    } catch (err) {
+      this.log.warn({ err: (err as Error).message }, 'call push: device list failed');
+      return;
+    }
     const voip = this.voip;
     const ring = (d: Device) =>
       voip && d.voipToken && notice.type === 'call.opened' && notice.code
@@ -623,13 +639,31 @@ export class GaskiyaService {
     );
   }
 
+  private readonly callLocks = new Map<string, Promise<unknown>>();
+
+  /** One open call per number: requests for the same number run one after another, and a second waits for the first to end. */
   async openCall(tenantId: string, input: { recipient: string; purpose: CallPurpose; agentRef: string }) {
+    const recipientKey = this.keys.keyed(tenantId, 'recipient', input.recipient);
+    const lock = `${tenantId}:${recipientKey}`;
+    const mine = (this.callLocks.get(lock) ?? Promise.resolve()).then(() => this.openCallNow(tenantId, recipientKey, input));
+    const tail = mine.catch(() => {});
+    this.callLocks.set(lock, tail);
+    try {
+      return await mine;
+    } finally {
+      if (this.callLocks.get(lock) === tail) this.callLocks.delete(lock);
+    }
+  }
+
+  private async openCallNow(tenantId: string, recipientKey: string, input: { purpose: CallPurpose; agentRef: string }) {
     const tenant = this.tenants.get(tenantId)!;
     const now = this.now();
+    const [open] = await this.store.openCalls(tenantId, recipientKey, now);
+    if (open) throw new CallInProgressError({ id: open.id, status: open.status, expiresAt: open.expiresAt });
     const call: CallSession = {
       id: `call_${randomUUID().replace(/-/g, '').slice(0, 20)}`,
       tenantId,
-      recipientKey: this.keys.keyed(tenantId, 'recipient', input.recipient),
+      recipientKey,
       purpose: input.purpose,
       agentRef: input.agentRef,
       code: randomInt(0, 10_000).toString().padStart(4, '0'),

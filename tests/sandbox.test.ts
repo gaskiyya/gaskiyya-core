@@ -106,3 +106,70 @@ describe('in-browser sandbox console', () => {
     expect((await call('POST', '/sim/registry/v1/verify/message', { contentDigest: await contentDigest(fake.text) }, token)).body.verdict).toBe('not_confirmed');
   });
 });
+
+describe('every console flow, genuine and fraudulent, run the way the console runs it', () => {
+  const sb = createSandbox();
+  const call = async (method: string, path: string, body?: unknown, token?: string) =>
+    sb.handle(method, new URL(path, 'https://gaskiyya.test'), body, token ? `Bearer ${token}` : null) as Promise<{ status: number; body: any }>;
+  const AMINA = '+2348012345678';
+  const TUNDE = '+2348098765432';
+  const tokenFor = async (phone: string) => (await call('POST', '/sim/customer-token', { phone })).body.token as string;
+
+  it('Messages: a genuine message is confirmed; a tampered copy, a scam text and a fake credit alert are not', async () => {
+    const token = await tokenFor(AMINA);
+    const verdict = async (text: string) => (await call('POST', '/sim/registry/v1/verify/message', { contentDigest: await contentDigest(text) }, token)).body.verdict;
+    const genuine = (await call('POST', '/sim/send', { phone: AMINA, category: 'security_notice' })).body.item;
+    expect(genuine.kind).toBe('genuine');
+    expect(await verdict(genuine.text)).toBe('confirmed');
+    const tampered = (await call('POST', '/sim/send-tampered', { phone: AMINA, itemId: genuine.id })).body.item;
+    expect(tampered).toMatchObject({ kind: 'tampered' });
+    expect(tampered.text).not.toBe(genuine.text);
+    expect(await verdict(tampered.text)).toBe('not_confirmed');
+    for (const template of [0, 1, 2, 3, 'credit_alert']) {
+      const fake = (await call('POST', '/sim/send-fake', { phone: AMINA, template })).body.item;
+      expect(fake.kind).toBe('fake');
+      expect(await verdict(fake.text)).toBe('not_confirmed');
+    }
+  });
+
+  it('Calls: an announced call shows its code; a second announcement waits until it ends; a spoofed call is not the bank', async () => {
+    const token = await tokenFor(AMINA);
+    const openNow = async () => (await call('GET', '/sim/registry/v1/calls/open', undefined, token)).body;
+    const spoof = (await call('POST', '/sim/fraud-calls', { phone: AMINA, from: '+2342012345678' })).body;
+    expect(spoof.status).toBe('ringing');
+    expect(await openNow()).toMatchObject({ calling: false });
+
+    const first = await call('POST', '/sim/calls', { phone: AMINA, purpose: 'card_activation' });
+    expect(first.status).toBe(200);
+    expect(await openNow()).toMatchObject({ calling: true, call: { id: first.body.id, code: first.body.code } });
+    const again = await call('POST', '/sim/calls', { phone: AMINA, purpose: 'fraud_check' });
+    expect(again).toMatchObject({ status: 409, body: { code: 'call_in_progress', call: { id: first.body.id } } });
+    expect((await openNow()).calls).toHaveLength(1);
+    expect((await call('POST', '/sim/calls', { phone: TUNDE, purpose: 'fraud_check' })).status).toBe(200);
+
+    expect((await call('PATCH', `/sim/calls/${first.body.id}`, { status: 'answered' })).status).toBe(200);
+    expect((await call('PATCH', `/sim/calls/${first.body.id}`, { status: 'ended' })).status).toBe(200);
+    expect(await openNow()).toMatchObject({ calling: false });
+    const next = await call('POST', '/sim/calls', { phone: AMINA, purpose: 'fraud_check' });
+    expect(next.status).toBe(200);
+    expect(next.body.id).not.toBe(first.body.id);
+  });
+
+  it('Transfers: a genuine receipt is received; an altered amount and a made-up session ID are not', async () => {
+    const check = async (id: string) => (await call('POST', `/sim/transfers/${id}/check`)).body.transfer.check.verdict;
+    const genuine = (await call('POST', '/sim/transfers', { from: TUNDE, to: AMINA, amountKobo: 2_500_000 })).body.transfer;
+    expect(await check(genuine.id)).toBe('received');
+
+    // Amount altered: the payer really sends a tenth, then edits the receipt.
+    const part = (await call('POST', '/sim/transfers', { from: TUNDE, to: AMINA, amountKobo: 250_000 })).body.transfer;
+    const altered = (await call('POST', '/sim/transfers/fake', { kind: 'fake_amount', id: part.id })).body.transfer;
+    expect(altered).toMatchObject({ kind: 'fake_amount', amountKobo: 2_500_000, reference: part.reference, registered: false });
+    expect(await check(altered.id)).toBe('not_confirmed');
+    expect(await check(part.id)).toBe('received');
+
+    // Made-up session ID: nothing paid, between two people who never transacted.
+    const forged = (await call('POST', '/sim/transfers/fake', { kind: 'fake_reference', from: '+2348031112222', to: TUNDE, amountKobo: 9_000_000 })).body.transfer;
+    expect(forged).toMatchObject({ kind: 'fake_reference', payer: '+2348031112222', merchant: TUNDE, amountKobo: 9_000_000, registered: false });
+    expect(await check(forged.id)).toBe('not_confirmed');
+  });
+});

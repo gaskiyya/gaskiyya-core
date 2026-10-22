@@ -96,10 +96,14 @@ class FirebasePushTransport implements PushTransport {
 }
 
 class PushService {
-  PushService(this.transport);
+  PushService(this.transport, {this.retryDelays = const [Duration(seconds: 5), Duration(seconds: 15), Duration(seconds: 45), Duration(minutes: 2), Duration(minutes: 5)]});
 
   final PushTransport transport;
+
+  /// How long to wait before registering again after a failure; the last delay repeats until it succeeds.
+  final List<Duration> retryDelays;
   final _subs = <StreamSubscription<dynamic>>[];
+  Timer? _retry;
   int _run = 0;
   bool enabled = false;
   String? registeredToken;
@@ -117,17 +121,29 @@ class PushService {
     if (!enabled || run != _run) return;
     final calls = NativeCalls.instance;
     String? latest;
+    var attempts = 0;
     Future<void> register(String? token) async {
       if (token != null && token.isNotEmpty) latest = token;
       final t = latest;
       if (t == null || run != _run) return;
       final voip = await calls.voipToken();
+      var failed = false;
       for (final c in all) {
         try {
           await c.registerDevice(t, transport.platform, voipToken: voip);
           registeredToken = t;
         } catch (_) {
+          failed = true;
         }
+      }
+      // A device the registry never heard of gets no call or warning pushes, so keep trying until it lands.
+      _retry?.cancel();
+      if (failed && run == _run) {
+        final wait = retryDelays[attempts.clamp(0, retryDelays.length - 1)];
+        attempts++;
+        _retry = Timer(wait, () => register(null));
+      } else if (!failed) {
+        attempts = 0;
       }
     }
 
@@ -151,6 +167,8 @@ class PushService {
 
   Future<void> stop() async {
     _run++;
+    _retry?.cancel();
+    _retry = null;
     final subs = List.of(_subs);
     _subs.clear();
     await Future.wait(subs.map((s) => s.cancel().catchError((_) {}))).timeout(const Duration(seconds: 2), onTimeout: () => const []);

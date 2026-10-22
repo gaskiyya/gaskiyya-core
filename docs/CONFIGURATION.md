@@ -74,7 +74,7 @@ API routes (`/v1`, `/health`, `/webhooks`, `/sim`, `/internal`) are never shadow
 
 `SIM_DEMO_LOGIN` is off unless it is set to `true`. `pnpm dev` and `pnpm demo:offline` set it to `true` when `.env` leaves it empty, so the local demo works as before; set `SIM_DEMO_LOGIN=false` in `.env` to try the closed mode locally. A demo deployment that serves the simulator (`SIM_ENABLED=true`) and wants phones to sign in must set `SIM_DEMO_LOGIN=true` itself, and must never do so in a pilot ([decision 0003](decisions/0003-demo-identity.md)).
 
-While demo login is on, `POST /sim/customer-token` issues a token for any valid number from the demo bank, so every number that signs in to the app becomes a demo bank customer. The other demo organisations (`?tenant=<id>`) issue one only for the three demo numbers (+2348012345678, +2348098765432, +2348031112222) and answer 404 for any other number, which the app reads as "does not know this number". Each sign-in is kept in the store (`app_users` in Firestore) with its first and last time, and the console lists the demo bank's under *Customers* (`GET /sim/customers/recent`); they are the only people its demo tools offer as recipients.
+While demo login is on, `POST /sim/customer-token` issues a token for any valid number from the demo bank, so every number that signs in to the app becomes a demo bank customer. Any other organisation the simulator sends for (`SIM_ORGS`, `?tenant=<id>`) issues one only for the three demo numbers (+2348012345678, +2348098765432, +2348031112222) and answer 404 for any other number, which the app reads as "does not know this number". Each sign-in is kept in the store (`app_users` in Firestore) with its first and last time, and the console lists the demo bank's under *Customers* (`GET /sim/customers/recent`); they are the only people its demo tools offer as recipients.
 
 While demo login is off:
 
@@ -132,18 +132,15 @@ On a demo deployment with `SIM_ENABLED=true`, add the entry above to `GASKIYA_TE
 | `SIM_LOOKALIKE_DOMAIN` | `zbdemo-restore.example` (the scam domain in its fake messages) |
 | `SIM_CLIENT_ID`, `SIM_CLIENT_SECRET` | the `zbdemo` bank client |
 
-The in-browser sandbox console (the static build with no server) always uses DemoBank, with the two demo organisations below.
+The in-browser sandbox console (the static build with no server) always uses DemoBank.
 
-### Demo organisations (agencies)
+### What the demo banks publish
 
-`packages/api/src/simulator/demo-orgs.json` holds two **fictional** organisations that are not banks: "Road Safety Agency (demo)" (`roadsafety`) and "Tax Office (demo)" (`taxoffice`). Both are `kind: "agency"`, use `.example` domains and made-up numbers, and carry no real agency's name, logo or trademark. The demo banks' presets also say what each bank publishes (`publishes`: kind, official contacts, official apps) and give a scam "customer care" number (`fakeCustomerCare`) for the fake customer care step. None of those numbers is in service.
-
-`pnpm dev` enrols both organisations in `.env` beside the bank, each with its own hashing key and bank client (`roadsafety-sim`, `taxoffice-sim`). It also fills in what the bank publishes when an older `.env` lacks it. Set `DEMO_ORGS=0` to leave the organisations out. The console then shows a *Send as* choice on Messages and a Contacts page. While demo login is on, the app is offered the organisations too: their sign-in is the simulator's `/sim/customer-token?tenant=<id>`, which knows only the three demo numbers.
+The demo banks' presets also say what each bank publishes (`publishes`: official contacts, official apps) and give a scam "customer care" number (`fakeCustomerCare`) for the fake customer care step. None of those numbers is in service. `pnpm dev` fills in what the bank publishes when an older `.env` lacks it.
 
 | Variable | Value |
 | --- | --- |
-| `DEMO_ORGS` | `pnpm dev` only: `0` leaves the demo organisations out |
-| `SIM_ORGS` | JSON array of `{ tenantId, name, kind, domain, clientId, clientSecret, sampleMessage }`: the organisations the simulator also sends for. `pnpm dev` sets it; on a `SIM_ENABLED` deployment set it yourself, with each organisation in `GASKIYA_TENANTS`, `GASKIYA_TENANT_KEYS` and `GASKIYA_BANK_CLIENTS` |
+| `SIM_ORGS` | JSON array of `{ tenantId, name, kind, domain, clientId, clientSecret, sampleMessage }`: optional; other organisations the simulator also sends for. Set it yourself on a `SIM_ENABLED` deployment, with each organisation in `GASKIYA_TENANTS`, `GASKIYA_TENANT_KEYS` and `GASKIYA_BANK_CLIENTS` |
 | `SIM_FAKE_CUSTOMER_CARE` | JSON `{ whatsapp, handle }`: the scam contact in the fake customer care step. `pnpm dev` sets it from the bank's preset |
 
 ## Admin dashboard

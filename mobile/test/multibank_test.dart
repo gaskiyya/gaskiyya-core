@@ -72,7 +72,7 @@ void main() {
     });
   });
 
-  group('BANK-2: every organisation that knows the number is linked', () {
+  group('BANK-2: every bank that knows the number is linked', () {
     test('discovery finds each organisation that knows the number, and saves nothing until adopted', () async {
       final registry = twoBanks()..strangers['acme'] = {amina};
       final state = await linkedState(registry, const []);
@@ -83,6 +83,19 @@ void main() {
       expect(state.links.map((l) => (l.id, l.phone)), [('demobank', amina)]);
       state.dispose();
       expect((await restart(registry)).links.map((l) => l.id), ['demobank']);
+      await registry.close();
+    });
+
+    test('only banks are linked: an agency that knows the number is left out, and a saved agency link is dropped', () async {
+      final agency = Bank(id: 'taxoffice', name: 'Tax Office (demo)', kind: 'agency', domains: ['taxoffice.example'], customerTokenUrl: 'http://registry/sim/taxoffice/customer-token');
+      final registry = FakeRegistry([testBank('demobank', 'DemoBank'), agency]);
+      final state = await linkedState(registry, const []);
+      expect((await state.discover(amina)).map((l) => l.id), ['demobank']);
+      state.dispose();
+      (await linkedState(registry, ['demobank', 'taxoffice'], phone: amina)).dispose();
+      final again = await restart(registry);
+      expect(again.links.map((l) => l.id), ['demobank']);
+      again.dispose();
       await registry.close();
     });
 

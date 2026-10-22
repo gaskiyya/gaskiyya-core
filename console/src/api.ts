@@ -191,6 +191,7 @@ export const sim = {
   ussd: (phone: string, text: string, sessionId: string) => call<{ screen: string }>('POST', '/sim/ussd', { phone, text, sessionId }),
   pay: (from: string, to: string, amountKobo: number) => call<{ transfer: Transfer }>('POST', '/sim/transfers', { from, to, amountKobo }),
   fakeReceipt: (kind: 'fake_amount' | 'fake_reference', id?: string) => call<{ transfer: Transfer }>('POST', '/sim/transfers/fake', { kind, id }),
+  forgeReceipt: (from: string, to: string, amountKobo: number) => call<{ transfer: Transfer }>('POST', '/sim/transfers/fake', { kind: 'fake_reference', from, to, amountKobo }),
   checkReceipt: (id: string) => call<{ transfer: Transfer }>('POST', `/sim/transfers/${id}/check`, {}),
   transfers: () => call<{ transfers: Transfer[] }>('GET', '/sim/transfers'),
   simSwap: (phone: string, action: 'swap' | 'restore') => call<{ ok: boolean; latestSimChange: string | null }>('POST', '/sim/sim-swap', { phone, action }),

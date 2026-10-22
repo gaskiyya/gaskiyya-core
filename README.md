@@ -660,9 +660,9 @@ Response
 
 #### POST `/v1/calls`
 
-**Auth:** Bank access token · **Success:** 201
+**Auth:** Bank access token · **Success:** 201; 409 `call_in_progress` when a session to this number is already open, with that session's `call: { id, status, expiresAt }`
 
-Open a call session before dialling. The customer's app shows the code; your agent reads the same code from `code`. `agentRef` is 1 to 64 characters.
+Open a call session before dialling. The customer's app shows the code; your agent reads the same code from `code`. `agentRef` is 1 to 64 characters. A number has one open session at a time: end it with `PATCH /v1/calls/{id}`, or let it expire, before opening another.
 
 Request body
 
@@ -956,7 +956,7 @@ What your mobile app calls to verify for your customers, the same API the Gaskiy
 
 **Auth:** none (public) · **Success:** 200
 
-The banks (and other organisations) the Gaskiyya app can link to, and where each one signs its customers in. `kind` is `bank`, `agency` or `company`. `customerTokenUrl` is absolute, or a path on the registry for banks it hosts. `demoInboxUrl` is set for demo banks only.
+The organisations on the registry and where each one signs its customers in. `kind` is `bank`, `agency` or `company`; the Gaskiyya app links only banks. `customerTokenUrl` is absolute, or a path on the registry for banks it hosts. `demoInboxUrl` is set for demo banks only.
 
 Response
 

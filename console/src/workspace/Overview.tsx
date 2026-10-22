@@ -2,7 +2,7 @@ import copy from '../../../packages/schemas/copy.json';
 import type { Metrics } from '../api.ts';
 import { IconArrow, IconShield, IconWarning } from '../icons.tsx';
 import type { Workspace } from './data.ts';
-import { DayBars, fmtNum, fmtPct, PageHead, Section, Stat, usePoll } from './ui.tsx';
+import { DayBars, fmtNum, fmtPct, PageHead, Section, Skeleton, SkeletonBars, SkeletonRows, Stat, usePoll } from './ui.tsx';
 
 export interface LiveEvent {
   key: number;
@@ -36,46 +36,55 @@ export function OverviewPage({ ws, metrics, events, go, onSignedOut }: { ws: Wor
       <PageHead title="Overview" sub={<>How {ws.profile.name}'s customers are checking messages, links and calls. Counts only, never message content.</>} />
 
       <div className="stats-grid">
-        <Stat label="Messages registered" value={fmtNum(metrics?.registrations)} hint={`${fmtNum(metrics?.registrationsByChannel?.whatsapp)} on WhatsApp`} tone="blue" />
-        <Stat label="Customer checks" value={fmtNum(checks)} hint={`${fmtNum(sum(metrics?.links))} links · ${fmtNum(sum(metrics?.callChecks))} calls`} tone="indigo" />
-        <Stat label="Confirmed" value={fmtPct(checks ? (v.confirmed ?? 0) / checks : null)} hint={`${fmtNum(v.confirmed)} genuine messages`} tone="green" />
-        <Stat label="Not confirmed" value={fmtPct(cov?.notConfirmedRate)} hint={`${fmtNum(v.not_confirmed)} likely fakes`} tone="orange" />
+        <Stat label="Messages registered" value={fmtNum(metrics?.registrations)} hint={`${fmtNum(metrics?.registrationsByChannel?.whatsapp)} on WhatsApp`} tone="blue" loading={!metrics} />
+        <Stat label="Customer checks" value={fmtNum(checks)} hint={`${fmtNum(sum(metrics?.links))} links · ${fmtNum(sum(metrics?.callChecks))} calls`} tone="indigo" loading={!metrics} />
+        <Stat label="Confirmed" value={fmtPct(checks ? (v.confirmed ?? 0) / checks : null)} hint={`${fmtNum(v.confirmed)} genuine messages`} tone="green" loading={!metrics} />
+        <Stat label="Not confirmed" value={fmtPct(cov?.notConfirmedRate)} hint={`${fmtNum(v.not_confirmed)} likely fakes`} tone="orange" loading={!metrics} />
       </div>
 
       <div className="split">
         <div className="stack">
           <Section title="Check outcomes">
-            <div className="bar big" aria-hidden="true">
-              {OUTCOMES.map((o) => <span key={o.k} className={o.tone} style={{ width: `${checks ? ((v[o.k] ?? 0) / checks) * 100 : 0}%` }} />)}
-            </div>
-            <div className="legend">
-              {OUTCOMES.map((o) => (
-                <div key={o.k}>
-                  <span className={`ws-dot ${o.tone}`} />
-                  <span>{o.name}</span>
-                  <b>{fmtNum(v[o.k])}</b>
+            {!metrics ? (
+              <>
+                <Skeleton h={14} r={999} />
+                <SkeletonRows rows={4} label="Loading check outcomes" />
+              </>
+            ) : (
+              <>
+                <div className="bar big" aria-hidden="true">
+                  {OUTCOMES.map((o) => <span key={o.k} className={o.tone} style={{ width: `${checks ? ((v[o.k] ?? 0) / checks) * 100 : 0}%` }} />)}
                 </div>
-              ))}
-            </div>
-            <dl className="ws-kv">
-              {Object.entries(cov?.checksByChannel ?? {}).map(([k, n]) => (
-                <div key={k}><dt>Checks in {CHANNELS[k] ?? cap(k)}</dt><dd>{fmtNum(n)}</dd></div>
-              ))}
-              <div><dt>Cannot-check rate</dt><dd>{fmtPct(cov?.cannotCheckRate)}</dd></div>
-              <div><dt>Open call codes</dt><dd>{fmtNum(metrics?.openCalls)}</dd></div>
-              <div><dt>Scam reports from customers</dt><dd>{fmtNum(metrics?.reports)}</dd></div>
-            </dl>
+                <div className="legend">
+                  {OUTCOMES.map((o) => (
+                    <div key={o.k}>
+                      <span className={`ws-dot ${o.tone}`} />
+                      <span>{o.name}</span>
+                      <b>{fmtNum(v[o.k])}</b>
+                    </div>
+                  ))}
+                </div>
+                <dl className="ws-kv">
+                  {Object.entries(cov?.checksByChannel ?? {}).map(([k, n]) => (
+                    <div key={k}><dt>Checks in {CHANNELS[k] ?? cap(k)}</dt><dd>{fmtNum(n)}</dd></div>
+                  ))}
+                  <div><dt>Cannot-check rate</dt><dd>{fmtPct(cov?.cannotCheckRate)}</dd></div>
+                  <div><dt>Open call codes</dt><dd>{fmtNum(metrics?.openCalls)}</dd></div>
+                  <div><dt>Scam reports from customers</dt><dd>{fmtNum(metrics?.reports)}</dd></div>
+                </dl>
+              </>
+            )}
             <p className="muted small flat">A high not-confirmed rate means many fakes, or genuine messages your systems did not register.</p>
           </Section>
 
           {ws.kind === 'live' && (
             <Section title="API traffic, last 14 days" action={<button className="ws-link" onClick={() => go('integration')}>Integration <IconArrow /></button>}>
-              <DayBars days={ov?.usage ?? []} empty="No API calls in the last 14 days. Registrations from your systems appear here." />
+              {!ov ? <SkeletonBars label="Loading API traffic" /> : <DayBars days={ov.usage} empty="No API calls in the last 14 days. Registrations from your systems appear here." />}
             </Section>
           )}
 
           <Section title="Registered by type">
-            {Object.keys(metrics?.registrationsByCategory ?? {}).length === 0 ? (
+            {!metrics ? <SkeletonRows rows={3} label="Loading registrations by type" /> : Object.keys(metrics.registrationsByCategory ?? {}).length === 0 ? (
               <p className="muted small flat">Nothing registered yet.</p>
             ) : (
               <div className="meter-list">
@@ -95,7 +104,7 @@ export function OverviewPage({ ws, metrics, events, go, onSignedOut }: { ws: Wor
 
         <div className="stack side">
           <Section title="Needs attention">
-            {attention.length === 0 ? (
+            {!ov ? <SkeletonRows rows={2} label="Loading what needs attention" /> : attention.length === 0 ? (
               <div className="all-clear"><IconShield /><span>All clear. No drafts, new campaigns or alerts.</span></div>
             ) : (
               <ul className="todo">

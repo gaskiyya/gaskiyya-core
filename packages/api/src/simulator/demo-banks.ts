@@ -1,5 +1,4 @@
 import presets from './demo-banks.json' with { type: 'json' };
-import orgPresets from './demo-orgs.json' with { type: 'json' };
 
 export interface Publishes {
   kind?: 'bank' | 'agency' | 'company';
@@ -22,8 +21,6 @@ export interface DemoBank {
 }
 
 export const DEMO_BANKS: Record<string, DemoBank> = presets as Record<string, DemoBank>;
-
-export const DEMO_ORGS: Record<string, DemoBank> = orgPresets as Record<string, DemoBank>;
 
 export function demoTenant(preset: DemoBank): DemoBank['tenant'] {
   return { ...preset.tenant, ...preset.publishes };

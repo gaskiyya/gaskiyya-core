@@ -244,7 +244,7 @@ class AppState extends ChangeNotifier {
       for (final e in jsonDecode(raw) as List) {
         final j = e as Map<String, dynamic>;
         final b = Bank.fromJson(j['bank'] as Map<String, dynamic>, Config.apiUrl);
-        if (_links.any((l) => l.id == b.id)) continue;
+        if (b.kind != 'bank' || _links.any((l) => l.id == b.id)) continue;
         _links.add(_newLink(b, j['phone'] as String));
       }
     }
@@ -341,7 +341,8 @@ class AppState extends ChangeNotifier {
   /// one decides through its own customer-token endpoint; those that issue a
   /// token come back as links that are not yet saved.
   Future<List<BankLink>> discover(String e164) async {
-    final banks = await loadBanks();
+    // Only banks are linked; agencies and companies are still checked through official contacts.
+    final banks = (await loadBanks()).where((b) => b.kind == 'bank');
     final found = await Future.wait(banks.map((b) async {
       final l = _newLink(b, e164);
       try {
@@ -569,7 +570,11 @@ class AppState extends ChangeNotifier {
     }
     for (final c in l.liveCalls) {
       if (c.code.isNotEmpty) _logCall(id: c.id, orgId: l.id, bank: l.bank.name, code: c.code, purpose: c.purpose);
-      if (c.status != 'open' || c.code.isEmpty || !_rung.add(c.id)) continue;
+    }
+    // Calls arriving together ring once, for the newest: the phone shows one incoming call at a time.
+    final fresh = [for (final c in l.liveCalls) if (c.status == 'open' && c.code.isNotEmpty && _rung.add(c.id)) c];
+    if (fresh.isNotEmpty) {
+      final c = fresh.first;
       unawaited(NativeCalls.instance.ring(callId: c.id, orgId: l.bank.id, bank: l.bank.name, code: c.code, expiresAt: c.expiresAt));
     }
     if (l.liveCalls.isNotEmpty) {
@@ -628,6 +633,11 @@ class AppState extends ChangeNotifier {
   void answerCall(String id, [DateTime? at]) {
     final r = _callLog.where((r) => r.id == id).firstOrNull;
     if (r == null || r.settled) return;
+    // Answering one call ends any other, so only one in-call screen is ever shown.
+    for (final other in _callLog.where((o) => o.id != id && o.outcome == CallOutcome.active).toList()) {
+      unawaited(NativeCalls.instance.endCall(other.id));
+      _settle(other.id);
+    }
     r
       ..outcome = CallOutcome.active
       ..answeredAt = at ?? _now();

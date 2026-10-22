@@ -3,7 +3,7 @@ import copy from '../../../packages/schemas/copy.json';
 import type { Campaign, RegistrationAlert } from '../api.ts';
 import { IconCheck, IconShield, IconSpark } from '../icons.tsx';
 import type { CampaignAction, Workspace } from './data.ts';
-import { Empty, fmtNum, fmtTime, PageHead, Section, usePoll } from './ui.tsx';
+import { Empty, fmtNum, fmtTime, PageHead, Section, Skeleton, SkeletonRows, useActions, usePoll } from './ui.tsx';
 
 const CHANNEL: Record<NonNullable<Campaign['briefing']>['channel'], string> = {
   sms: 'Impersonates SMS',
@@ -35,7 +35,7 @@ export function FraudDeskPage({ ws, notify, onSignedOut }: { ws: Workspace; noti
   const [alertData] = usePoll(() => ws.alerts(), 5000, [ws], onSignedOut);
   const [analyst, setAnalyst] = useState(storedAnalyst);
   const [view, setView] = useState<'open' | 'all'>('open');
-  const [busy, setBusy] = useState<string | null>(null);
+  const { run: guard, busy, busyOn } = useActions((e) => notify(e.message));
   const all = data ?? [];
   const campaigns = view === 'open' ? all.filter((c) => c.status !== 'dismissed') : all;
   const alerts = alertData ?? [];
@@ -48,16 +48,6 @@ export function FraudDeskPage({ ws, notify, onSignedOut }: { ws: Workspace; noti
       localStorage.setItem(ANALYST_KEY, v);
     } catch {
       // The name is still used for this visit.
-    }
-  };
-  const guard = async (key: string, fn: () => Promise<void>) => {
-    setBusy(key);
-    try {
-      await fn();
-    } catch (e) {
-      notify((e as Error).message);
-    } finally {
-      setBusy(null);
     }
   };
   const act = (c: Campaign, a: CampaignAction) =>
@@ -84,16 +74,16 @@ export function FraudDeskPage({ ws, notify, onSignedOut }: { ws: Workspace; noti
     <div className="page">
       <PageHead title="Fraud desk" sub="Customer scam reports grouped into campaigns. A warning reaches customers only after an analyst approves it.">
         {ws.seedReports && (
-          <button className="btn secondary" disabled={busy !== null} onClick={() => guard('seed', async () => notify(`${await ws.seedReports!()} customer reports submitted`))}>
+          <button className="btn secondary" disabled={busy('seed')} aria-busy={busy('seed')} onClick={() => guard('seed', async () => notify(`${await ws.seedReports!()} customer reports submitted`))}>
             Simulate 3 reports
           </button>
         )}
-        <button className="btn" disabled={busy !== null} onClick={run}><IconSpark /> Group new reports</button>
+        <button className="btn" disabled={busy('agent')} aria-busy={busy('agent')} onClick={run}><IconSpark /> Group new reports</button>
       </PageHead>
 
       <div className="mini-stats">
         {stats.map((s) => (
-          <div key={s.k}><b>{fmtNum(s.v)}</b><span>{s.k}</span></div>
+          <div key={s.k}><b>{data && alertData ? fmtNum(s.v) : <Skeleton w={32} h={22} r={6} />}</b><span>{s.k}</span></div>
         ))}
       </div>
 
@@ -104,7 +94,7 @@ export function FraudDeskPage({ ws, notify, onSignedOut }: { ws: Workspace; noti
       </div>
 
       <Section title="Registration alerts">
-        {alerts.length === 0 ? (
+        {!alertData ? <SkeletonRows rows={2} label="Loading registration alerts" /> : alerts.length === 0 ? (
           <p className="muted small flat">Nothing unusual. Registrations that link outside your domains, or a sudden jump in volume, appear here and go to your alert email. They are never blocked.</p>
         ) : (
           <ul className="rows">
@@ -127,7 +117,11 @@ export function FraudDeskPage({ ws, notify, onSignedOut }: { ws: Workspace; noti
         </div>
       </div>
 
-      {campaigns.length === 0 ? (
+      {!data ? (
+        <div className="card">
+          <SkeletonRows rows={3} lead="square" label="Loading scam campaigns" />
+        </div>
+      ) : campaigns.length === 0 ? (
         <div className="card">
           <Empty icon={<IconShield />} title="No campaigns">When customers report fakes that share a link, number or lure, they are grouped here as one campaign.</Empty>
         </div>
@@ -174,17 +168,17 @@ export function FraudDeskPage({ ws, notify, onSignedOut }: { ws: Workspace; noti
                 </span>
                 {c.status !== 'dismissed' && c.advisory.status === 'draft' && (
                   <div className="row">
-                    <button className="btn plain" disabled={busy !== null} onClick={() => act(c, 'dismiss')}>Dismiss</button>
-                    <button className="btn success" disabled={!named || !canApprove || busy !== null} title={!named ? 'Enter your name above to approve' : !canApprove ? 'Advisories are not switched on for your organisation' : undefined} onClick={() => act(c, 'approve')}>
+                    <button className="btn plain" disabled={busyOn(`${c.id}:`)} aria-busy={busy(`${c.id}:dismiss`)} onClick={() => act(c, 'dismiss')}>Dismiss</button>
+                    <button className="btn success" disabled={!named || !canApprove || busyOn(`${c.id}:`)} aria-busy={busy(`${c.id}:approve`)} title={!named ? 'Enter your name above to approve' : !canApprove ? 'Advisories are not switched on for your organisation' : undefined} onClick={() => act(c, 'approve')}>
                       <IconCheck /> Approve advisory
                     </button>
                   </div>
                 )}
                 {c.advisory.status === 'approved' && (
                   <div className="row">
-                    <button className="btn plain" disabled={!named || busy !== null} title={!named ? 'Enter your name above to withdraw' : undefined} onClick={() => act(c, 'withdraw')}>Withdraw</button>
+                    <button className="btn plain" disabled={!named || busyOn(`${c.id}:`)} aria-busy={busy(`${c.id}:withdraw`)} title={!named ? 'Enter your name above to withdraw' : undefined} onClick={() => act(c, 'withdraw')}>Withdraw</button>
                     {ws.sendAdvisory && (
-                      <button className="btn" disabled={busy !== null} title="Sends this warning by SMS through DemoBank's gateway, registering each message so customers can check it" onClick={() => guard(`${c.id}:send`, async () => notify(`Warning sent to ${await ws.sendAdvisory!(c.id)} customers by SMS, each one registered`))}>
+                      <button className="btn" disabled={busyOn(`${c.id}:`)} aria-busy={busy(`${c.id}:send`)} title="Sends this warning by SMS through DemoBank's gateway, registering each message so customers can check it" onClick={() => guard(`${c.id}:send`, async () => notify(`Warning sent to ${await ws.sendAdvisory!(c.id)} customers by SMS, each one registered`))}>
                         Send to customers
                       </button>
                     )}

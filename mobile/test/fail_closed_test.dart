@@ -66,7 +66,7 @@ void main() {
       expect((open.cannotCheck, open.calling, open.call?.code), (false, true, '1442'));
     });
 
-    testWidgets('the Calls tab shows cannot check for each bank whose check failed, never not calling for it', (tester) async {
+    testWidgets('the Calls tab shows one cannot check naming every bank whose check failed, never not calling for it', (tester) async {
       phoneSize(tester);
       final registry = FakeRegistry([testBank('demobank', 'DemoBank'), testBank('acme', 'Acme Bank')])..failingCallChecks.addAll(['demobank', 'acme']);
       final state = (await tester.runAsync(() => linkedState(registry, ['demobank', 'acme'])))!;
@@ -79,7 +79,8 @@ void main() {
       await tester.pumpWidget(hostWith(CallsScreen(state: state), disableAnimations: true));
       await settle();
       expect(state.callUnchecked.map((l) => l.id), ['demobank', 'acme']);
-      expect(find.text(Copy.I.t('verdict.cannot_check.title')), findsNWidgets(2));
+      expect(find.text(Copy.I.t('verdict.cannot_check.title')), findsOneWidget);
+      expect(find.text(Copy.I.orList(['DemoBank', 'Acme Bank'])), findsOneWidget);
       expect(find.text(Copy.I.t('call.not_calling.title')), findsNothing);
       expect(find.textContaining(Copy.I.t('call.not_calling.body', {'bank': 'DemoBank'})), findsNothing);
 
@@ -87,7 +88,7 @@ void main() {
       await settle();
       expect(find.text(Copy.I.t('verdict.cannot_check.title')), findsOneWidget);
       expect(find.text('Acme Bank'), findsOneWidget);
-      expect(find.text(Copy.I.t('call.not_calling.body', {'bank': 'DemoBank'})), findsOneWidget);
+      expect(find.text(Copy.I.t('call.not_calling.body', {'bank': 'DemoBank'})), findsNothing);
       expect(find.text(Copy.I.t('call.not_calling.title')), findsNothing);
 
       registry.failingCallChecks.remove('acme');
