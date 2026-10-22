@@ -22,7 +22,8 @@
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.app.json",
     "demo:offline": "node scripts/demo-offline.mjs",
     "sync:copy": "node scripts/sync-copy.mjs",
-    "test": "vitest run && node scripts/flutter.mjs test"
+    "test": "vitest run && node scripts/flutter.mjs test",
+    "smoke": "tsx scripts/smoke.ts"
   },
   "dependencies": {
     "@gaskiya/canonical": "workspace:^",

@@ -284,6 +284,7 @@ describe('server configuration', () => {
       ai: 'off: fixed fallback explanations',
       agentAi: 'Ollama at http://127.0.0.1:11434 (qwen3:4b-instruct), briefings time out after 60000 ms',
       push: 'off: live in-app events only',
+      iosCalls: 'off: iPhones get the call banner only',
       email: 'off',
       whatsapp: 'off',
       ussd: 'off',
