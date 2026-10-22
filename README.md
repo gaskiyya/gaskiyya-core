@@ -26,7 +26,7 @@
 </p>
 
 <p align="center">
-  <a href="https://gaskiyya-io.web.app/video/gaskiyya-showcase.mp4"><img src="docs/screens/showcase-preview.webp" width="432" alt="Gaskiyya in one minute: checking a message shared from iPhone Messages, a verified bank call with its code, and the Gaskiyya app"></a>
+  <a href="https://gaskiyya-io.web.app/video/gaskiyya-showcase.mp4"><img src="docs/screens/showcase-preview.webp" width="720" alt="Gaskiyya in one minute: checking a message shared from iPhone Messages, a verified bank call with its code, and the Gaskiyya app"></a>
   <br>
   <sub>Gaskiyya in one minute. Click to watch with sound.</sub>
 </p>
