@@ -10,7 +10,7 @@ Three adapters ship, chosen by `AI_PROVIDER`:
 | --- | --- | --- |
 | `gemini` (default) | `gemini-3.8-flash`, `gemini-embedding-001` | JSON schema output, low thinking level, inline image input |
 | `openai` | `gpt-5.4-mini`, `text-embedding-3-small` | Responses API, strict JSON schema, low reasoning effort, `store: false` |
-| `ollama` | `llama3.1:8b`, `gemma3:4b` (vision), `nomic-embed-text` | Open-weights models served inside the bank's network, no key; see [0011](0011-open-source-model.md) |
+| `ollama` | `qwen3:4b-instruct`, `gemma3:4b` (vision), `nomic-embed-text` | Open-weights models served inside the bank's network, no key; see [0011](0011-open-source-model.md) |
 | `none` | | Fixed fallback text only |
 
 Every model name can be overridden with an environment variable. All adapters share one set of prompts and schemas (`apps/api/src/ai/prompts.ts`), so switching provider never changes what the model is asked. Embeddings carry their model name, and the campaign agent only compares vectors from the same model; if an embedding call fails, the local hashing embedding is used instead. A self-hosted model is another class implementing the same four methods.

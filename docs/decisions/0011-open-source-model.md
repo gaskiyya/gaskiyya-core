@@ -6,7 +6,7 @@ A third adapter, `OllamaProvider` (`apps/api/src/ai/ollama.ts`), runs open-weigh
 
 | Use | Default model | Approx. download |
 | --- | --- | --- |
-| Explanations, advisory drafts (`OLLAMA_MODEL`) | `llama3.1:8b` | 4.9 GB |
+| Explanations, advisory drafts (`OLLAMA_MODEL`) | `qwen3:4b-instruct` | 2.5 GB |
 | Screenshot reading (`OLLAMA_VISION_MODEL`) | `gemma3:4b` | 3.3 GB |
 | Campaign-grouping embeddings (`OLLAMA_EMBEDDING_MODEL`) | `nomic-embed-text` | 274 MB |
 
@@ -27,5 +27,9 @@ All three are among the most pulled models in the [Ollama library](https://ollam
 
 ## Trade-offs
 
-- A small local model is slower and writes less fluent Hausa, Yoruba, Igbo and Pidgin than a large hosted one. Local-language output stays behind native-speaker review, as for every provider (0002). On a laptop, `AI_TIMEOUT_MS` should be around 10 seconds; the app waits 12.
+- A small local model is slower and writes less fluent Hausa, Yoruba, Igbo and Pidgin than a large hosted one. Local-language output stays behind native-speaker review, as for every provider (0002). With `ollama`, `AI_TIMEOUT_MS` defaults to 10 seconds; the app waits 12.
+
+## Update, 22 October 2026: Qwen3 4B for explanations
+
+The default explanation model is now `qwen3:4b-instruct` (Apache-2.0), the model the campaign agent already used, so a bank pulls and keeps one model in memory instead of two. On a 12-message test set on an M1 laptop it gave a usable English explanation for all 12, with a median of 3.4 seconds. It often answers in English when asked for Pidgin, so local languages still need a larger model and native-speaker review. The prompt now passes the rule-based signals as hints, defines each indicator, gives one worked example and keeps replies short, which also makes them faster. A masked number the model copies into its reply (`###`) is replaced with "the number in the message" in English and Pidgin, and sent to the fallback in other languages. The genuine-claim filter no longer rejects everyday advice such as "open the official app" or "stay safe".
 - Screenshot reading with a 4B vision model misreads characters more often. A misread simply fails to match, which is safe (principle 1), but gives a worse experience; a bank can name a larger vision model.

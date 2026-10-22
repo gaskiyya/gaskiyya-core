@@ -18,12 +18,24 @@ const DENIAL =
 const AFFIRMING =
   /\b((no|without( a| any)?|beyond( a| any)?) (doubt|question)|not only|nothing but|no reason to \w+|no need to \w+|(do not|don't|dont|need not|needn't) (worry|panic|fear|be \w+)|nothing to (worry|fear) about|not (a |an )?(scam|fake|fraud|phishing|suspicious|risky|dangerous)\w*|cannot be (anything|other) (but|than))\b/gi;
 
+const ADVICE =
+  /\b((through|via|using|use|on|at|in|call|visit|open|dial|contact|with) (\S+ ){0,3}?official (apps?|application|website|web site|site|numbers?|phone numbers?|lines?|channels?|helplines?|hotlines?|contacts?|email|address|branch(es)?|customer (care|service)|social media|handles?|pages?)|(stay|staying|keep (yourself|you|your( \S+)? \S+)) safe|real (problems?|issues?)|non-?(official|verified|genuine|legitimate|authentic|trusted))\b/gi;
+
+const GENERIC_DENIAL = String.raw`(?=[^.!?;]*\b(never|not|don't|dont|won't|wont|doesn't|doesnt|cannot|can't|no)\b)`;
+
 const DENIAL_WINDOW = 6;
 
 export function claimsGenuine(text: string, bankName = ''): boolean {
   const name = bankName.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '\\s+');
   const claim = name ? `${CLAIM.source}|\\b(from|by) ${name}\\b` : CLAIM.source;
+  const bank = name ? `(your|the) bank|${name}` : '(your|the) bank';
+  const generic = new RegExp(
+    `\\b((real|genuine|legitimate|legit|authentic|official) (\\S+ ){0,2}?(messages|alerts|texts|sms|emails|calls|banks|staff|agents|websites|links)( (from|by) (${bank}))?|(messages|alerts|texts|emails|calls|staff|agents) (from|by) (${bank})|(a|any) (real|genuine|legitimate) bank)\\b${GENERIC_DENIAL}`,
+    'gi',
+  );
   const clauses = text
+    .replace(generic, ' ')
+    .replace(ADVICE, ' ')
     .replace(AFFIRMING, ' ')
     .split(/[.!?;:,\u2013\u2014()]+|\s-\s|\b(?:and|but|so|yet|while|whereas|however|although|though|because)\b/i);
   for (const clause of clauses) {
@@ -50,6 +62,18 @@ export function fallbackExplanation(indicators: Indicator[], language = 'en', or
   return { indicators, explanation: fill(c.explain.fallback, { bank }), action: fill(c.explain.action, { bank }), source: 'fallback' };
 }
 
+const MASKED_RUN = /(the |this |that |di |dis |dat )?#[#\s-]*#/gi;
+
+const MASKED_PHRASE: Record<string, string> = { en: 'the number in the message', pcm: 'the number wey dey the message' };
+
+function unmaskedRuns(out: Explanation, language: string): Explanation | null {
+  if (!(out.explanation + out.action).includes('#')) return out;
+  const phrase = MASKED_PHRASE[language];
+  if (!phrase) return null;
+  const tidy = (s: string) => s.replace(MASKED_RUN, phrase).replace(/#/g, '');
+  return { ...out, explanation: tidy(out.explanation), action: tidy(out.action) };
+}
+
 export async function explain(
   provider: ModelProvider,
   input: { text: string; language: string; bankName: string; bankDomains: string[]; orgKind?: OrgKind },
@@ -67,7 +91,8 @@ export async function explain(
     ]);
     const parsed = ExplanationSchema.safeParse(raw);
     if (!parsed.success) return fallbackExplanation(rules, input.language, org);
-    const out = parsed.data;
+    const out = unmaskedRuns(parsed.data, input.language);
+    if (!out) return fallbackExplanation(rules, input.language, org);
     if (asksForSecret(out.explanation) || asksForSecret(out.action)) return fallbackExplanation(rules, input.language, org);
     if (claimsGenuine(out.explanation, input.bankName) || claimsGenuine(out.action, input.bankName)) return fallbackExplanation(rules, input.language, org);
     if (['ha', 'yo', 'ig'].includes(input.language) && (localOutputRisky(out.explanation) || localOutputRisky(out.action))) return fallbackExplanation(rules, input.language, org);

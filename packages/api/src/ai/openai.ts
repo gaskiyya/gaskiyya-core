@@ -53,8 +53,8 @@ export class OpenAIProvider implements ModelProvider {
     return r.output_text ? JSON.parse(r.output_text) : null;
   }
 
-  explain(input: { maskedText: string; language: string; bankName: string }, signal: AbortSignal) {
-    return this.json(explainUserText(input.bankName, input.language, input.maskedText), EXPLAIN_SYSTEM, 'explanation', EXPLAIN_SCHEMA, signal);
+  explain(input: { maskedText: string; language: string; bankName: string; ruleIndicators: string[] }, signal: AbortSignal) {
+    return this.json(explainUserText(input.bankName, input.language, input.maskedText, input.ruleIndicators), EXPLAIN_SYSTEM, 'explanation', EXPLAIN_SCHEMA, signal);
   }
 
   async extractText(input: { imageBase64: string; mediaType: string }, signal: AbortSignal) {

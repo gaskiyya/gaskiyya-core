@@ -527,7 +527,7 @@ export function configFromEnv(env: NodeJS.ProcessEnv = process.env) {
     callRingSeconds: num('CALL_RING_SECONDS', 180, 30),
     registerMaxFutureSeconds: num('REGISTER_MAX_FUTURE_SECONDS', 300, 0),
     advisoryTtlDays: num('ADVISORY_TTL_DAYS', 14, 1),
-    aiTimeoutMs: num('AI_TIMEOUT_MS', 4000, 500),
+    aiTimeoutMs: num('AI_TIMEOUT_MS', (env.AI_PROVIDER || '').toLowerCase() === 'ollama' ? 10_000 : 4000, 500),
     verifyRateLimitPerMinute: num('VERIFY_RATE_LIMIT_PER_MINUTE', 30, 1),
     reportRateLimitPerMinute: num('REPORT_RATE_LIMIT_PER_MINUTE', 10, 1),
     tokenRateLimitPerMinute: num('TOKEN_RATE_LIMIT_PER_MINUTE', 20, 1),

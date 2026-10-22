@@ -152,7 +152,7 @@ describe('Ollama adapter (open-weights, self-hosted)', () => {
   });
 
   it('reports which configured models still need pulling', async () => {
-    reply = () => ({ json: { models: [{ name: 'llama3.1:8b', model: 'llama3.1:8b' }, { name: 'nomic-embed-text:latest', model: 'nomic-embed-text:latest' }] } });
+    reply = () => ({ json: { models: [{ name: 'qwen3:4b-instruct', model: 'qwen3:4b-instruct' }, { name: 'nomic-embed-text:latest', model: 'nomic-embed-text:latest' }] } });
     expect(await ollama().status()).toEqual({ reachable: true, missing: [OLLAMA_DEFAULT_VISION_MODEL] });
   });
 

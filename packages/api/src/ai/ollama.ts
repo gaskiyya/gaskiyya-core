@@ -21,7 +21,7 @@ export interface OllamaOptions {
 }
 
 export const OLLAMA_DEFAULT_URL = 'http://127.0.0.1:11434';
-export const OLLAMA_DEFAULT_MODEL = 'llama3.1:8b';
+export const OLLAMA_DEFAULT_MODEL = 'qwen3:4b-instruct';
 export const OLLAMA_DEFAULT_VISION_MODEL = 'gemma3:4b';
 export const OLLAMA_DEFAULT_EMBEDDING_MODEL = 'nomic-embed-text';
 
@@ -72,7 +72,7 @@ export class OllamaProvider implements ModelProvider {
 
   async explain(input: { maskedText: string; language: string; bankName: string; ruleIndicators: string[] }, signal: AbortSignal): Promise<unknown> {
     try {
-      return await this.json(this.model, EXPLAIN_SYSTEM, { content: explainUserText(input.bankName, input.language, input.maskedText) }, EXPLAIN_SCHEMA, signal);
+      return await this.json(this.model, EXPLAIN_SYSTEM, { content: explainUserText(input.bankName, input.language, input.maskedText, input.ruleIndicators) }, EXPLAIN_SCHEMA, signal);
     } catch {
       return this.none.explain();
     }

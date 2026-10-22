@@ -218,7 +218,7 @@ It starts the registry and the bank sandbox console on :8080 like `pnpm dev`, wi
 Pull the default models once, while still online (sizes are approximate downloads):
 
 ```bash
-ollama pull llama3.1:8b        # explanations and advisories, 4.9 GB
+ollama pull qwen3:4b-instruct  # explanations, advisories and agent briefings, 2.5 GB
 ollama pull gemma3:4b          # screenshot reading, 3.3 GB
 ollama pull nomic-embed-text   # campaign grouping, 274 MB
 ollama serve                   # if the Ollama app is not already running

@@ -73,7 +73,7 @@ The model only explains a result after the registry has decided it, or reads a s
 | --- | --- | --- | --- | --- | --- | --- |
 | Ollama | Local model server | MIT | open source | Serves open-weights models over a local HTTP API, `AI_PROVIDER=ollama` (`apps/api/src/ai/ollama.ts`, `tests/ollama.test.ts`, decision 0011; tested against a stand-in for Ollama's API, not yet with real models) | Fully offline, no message text leaves the machine | Optional (the offline AI choice) |
 | `nomic-embed-text` (default embedding model; see `apps/api/src/ai/ollama.ts`) | Text embedding model | Apache-2.0 | open source (open weights under an OSI licence) | Embeds masked reports so the agent can group similar scams | Small, fast, permissive | Optional |
-| Default chat model (`llama3.1:8b` at time of writing; see `apps/api/src/ai/ollama.ts`) | Meta Llama 3.1 8B | Llama 3.1 Community License (custom) | open weights, custom licence (not OSI) | Writes plain-language explanations and fraud-desk briefings | Runs on a laptop | Optional |
+| Default chat model (`qwen3:4b-instruct` at time of writing; see `packages/api/src/ai/ollama.ts`) | Qwen3 4B Instruct | Apache-2.0 | open source | Writes plain-language explanations and fraud-desk briefings | Runs on a laptop; one model for explanations and the campaign agent | Optional |
 | Default vision model (`gemma3:4b` at time of writing; see `apps/api/src/ai/ollama.ts`) | Google Gemma 3 4B | Gemma Terms of Use (custom) | open weights, custom licence (not OSI) | Reads text from a screenshot when sent to the server | Small multimodal model | Optional |
 | Gemini API (`@google/genai` 2.27.0 SDK) | Google's hosted models | SDK Apache-2.0; service under Google terms | proprietary-public (SDK open source) | Default hosted provider for explanations, OCR and embeddings (`apps/api/src/ai/gemini.ts`) | Good quality and price; free tier | No |
 | OpenAI API (`openai` 7.28.0 SDK) | OpenAI's hosted models | SDK Apache-2.0; service under OpenAI terms | proprietary-public (SDK open source) | Alternative provider, `AI_PROVIDER=openai` (`apps/api/src/ai/openai.ts`) | Swap-in without code changes (decision 0002) | No |
@@ -191,7 +191,7 @@ npm packages: the `license` field in `node_modules/.pnpm/<pkg>@<ver>/node_module
 | Inter fonts | `apps/mobile/assets/fonts/Inter-LICENSE.txt` | OFL-1.1 |
 | Ollama | github.com/ollama/ollama `LICENSE` | MIT |
 | nomic-embed-text | Hugging Face model card `nomic-ai/nomic-embed-text-v1.5` (linked from ollama.com/library/nomic-embed-text) | Apache-2.0 |
-| llama3.1 | Hugging Face model card `meta-llama/Llama-3.1-8B-Instruct` (licence: `llama3.1`) | Llama 3.1 Community License, not OSI |
+| qwen3 | Hugging Face model card `Qwen/Qwen3-4B-Instruct-2507` (linked from ollama.com/library/qwen3) | Apache-2.0 |
 | gemma3 | ollama.com/library/gemma3 (links ai.google.dev/gemma/terms) | Gemma Terms of Use, not OSI |
 | Node.js, OpenJDK, Docker Engine, pnpm, Chromium, ffmpeg | Project licence pages (not installed as packages here) | as stated in the tables |
 | Hosted services (Gemini, OpenAI, Firestore, FCM, Firebase Hosting, Resend, WhatsApp Cloud API, Africa's Talking, Cloud Run, Codemagic) | Provider terms of service | Proprietary; public sign-up; all optional |

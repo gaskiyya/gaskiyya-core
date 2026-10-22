@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { contentDigest } from '@gaskiya/canonical';
 import { copy } from '@gaskiya/schemas';
 import { claimsGenuine, localEmbed, maskDigits, senderWarnings, type ModelProvider } from '../packages/api/src/index.ts';
+import { explain } from '../packages/api/src/ai/explain.ts';
 import { ALERT, ALICE, harness } from './helpers.ts';
 
 class ScriptedModel implements ModelProvider {
@@ -77,6 +78,11 @@ const CLAIMS = [
   'Not only is it genuine, it is also urgent.',
   'Everything here checks out and it is legit.',
   'It is a real alert from your bank.',
+  'Keep calm, it is safe.',
+  'These are real alerts from your bank.',
+  'Use the official app: this message is real.',
+  'Real messages from your bank look like this one.',
+  'You can trust it; it came on the official line and is genuine.',
 ];
 
 const CAUTIOUS = [
@@ -89,6 +95,15 @@ const CAUTIOUS = [
   'Fraudsters want you to think it is from the bank.',
   'It claims to be an official alert to rush you.',
   'It threatens to block your account to rush you.',
+  'Contact your bank through its official app or the number on your card.',
+  'To stay safe, do not click the link.',
+  'Call the bank on its official number instead.',
+  'Keep your money safe: delete this message and report it.',
+  'Open your banking app to see if there is a real problem with your account.',
+  'Real messages from your bank never ask for your PIN.',
+  'Genuine bank messages do not contain links like this.',
+  'A genuine bank would never ask you to call a mobile number.',
+  'Messages from your bank never ask you to verify by link.',
 ];
 
 const FAKE = 'URGENT: your DemoBank account 0123456789 will be blocked in 24 hours. Verify at https://demobank-verify.com or call 08031234567.';
@@ -205,6 +220,17 @@ describe('AI layer', () => {
     for (const text of CLAIMS) expect(claimsGenuine(text, 'DemoBank'), text).toBe(true);
     expect(claimsGenuine('It was sent by Demo Bank.', 'Demo Bank')).toBe(true);
     expect(claimsGenuine('It is unsafe.')).toBe(false);
+  });
+
+  it('AI-4: a masked number the model copies is replaced in English and Pidgin, and falls back in other languages', async () => {
+    const model = new FixedModel({ indicators: ['callback_number'], explanation: 'It asks you to call ###########, which is a warning sign.', action: 'Do not call ###########; open the bank app yourself.' });
+    const input = { text: FAKE, bankName: 'DemoBank', bankDomains: ['demobank.com'] };
+    const en = await explain(model, { ...input, language: 'en' }, 3000);
+    expect(en.source).toBe('model');
+    expect(en.action).toBe('Do not call the number in the message; open the bank app yourself.');
+    expect(en.explanation + en.action).not.toContain('#');
+    expect((await explain(model, { ...input, language: 'pcm' }, 3000)).action).toContain('the number wey dey the message');
+    expect((await explain(model, { ...input, language: 'ha' }, 3000)).source).toBe('fallback');
   });
 
   it('AI-8: a screenshot sender that is not one of the bank\'s sender IDs adds a warning and never changes the verdict', async () => {

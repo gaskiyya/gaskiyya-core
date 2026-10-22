@@ -1,6 +1,6 @@
 export const OLLAMA_DEFAULTS = {
   url: 'http://127.0.0.1:11434',
-  model: 'llama3.1:8b',
+  model: 'qwen3:4b-instruct',
   visionModel: 'gemma3:4b',
   embeddingModel: 'nomic-embed-text',
 };
