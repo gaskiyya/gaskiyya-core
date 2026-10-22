@@ -78,6 +78,9 @@ export interface AdminRegistryOptions {
 const ALL_ON = Object.fromEntries(ORG_FEATURES.map((f) => [f, true])) as Record<OrgFeature, boolean>;
 const PROFILE_FIELDS = ['name', 'legalName', 'technicalContact', 'kind', 'bankCode', 'domains', 'senderIds', 'officialContacts', 'officialApps', 'alertEmails', 'tokenKeysUrl', 'tokenKeys', 'customerTokenUrl', 'logoUrl', 'recordTtlDays'] as const;
 const TOUCH_INTERVAL_MS = 60_000;
+// Settings that belong to how this server runs (the demo login and its keys), so an organisation from
+// GASKIYA_TENANTS always takes them from the configuration, never from a stored copy.
+const RUNTIME_FIELDS = ['customerTokenUrl', 'demoInboxUrl', 'tokenKeysUrl', 'tokenKeys'] as const;
 
 const keyAad = (tenantId: string, version: number) => `gaskiyya-key:${tenantId}:${version}`;
 const webhookAad = (tenantId: string) => `gaskiyya-webhook:${tenantId}`;
@@ -152,6 +155,12 @@ export class AdminRegistry implements ClientDirectory {
     const profile = org?.profile ?? env;
     if (!profile) return null;
     const t: Tenant = { ...clone(profile), id };
+    if (org?.profile && env) {
+      for (const f of RUNTIME_FIELDS) {
+        if (env[f] === undefined) delete t[f];
+        else (t as Record<string, unknown>)[f] = clone(env[f]);
+      }
+    }
     if (!org) return t;
     t.status = org.status;
     t.mode = org.mode;
@@ -460,7 +469,9 @@ export class AdminRegistry implements ClientDirectory {
         if (v === null || v === undefined) delete (profile as Record<string, unknown>)[f];
         else (profile as Record<string, unknown>)[f] = v;
       }
-      this.checkProfile({ ...profile, id });
+      const env = this.envTenants.get(id);
+      const runtime = env ? Object.fromEntries(RUNTIME_FIELDS.filter((k) => env[k] !== undefined).map((k) => [k, env[k]])) : {};
+      this.checkProfile({ ...profile, ...runtime, id });
       org.profile = profile;
       changed.push(...profileChanged);
     }
@@ -493,6 +504,24 @@ export class AdminRegistry implements ClientDirectory {
       ...(changed.includes('limits') ? { bankApiPerMinute: org.limits.bankApiPerMinute ?? null, customerChecksPerMinute: org.limits.customerChecksPerMinute ?? null } : {}),
     });
     return this.tenant(id);
+  }
+
+  // Stores every organisation configured in GASKIYA_TENANTS that the database does not hold yet, so it is
+  // registered like one onboarded in the dashboard. Idempotent: existing records are never touched.
+  async seedEnvOrgs(actor: Actor = { username: 'system', ip: null }): Promise<string[]> {
+    const seeded: string[] = [];
+    for (const [id, env] of this.envTenants) {
+      if (this.orgs.has(id) || (await this.o.store.getOrg(id))) continue;
+      const org = this.baseRecord(id, actor);
+      const profile = profileOf(env);
+      for (const f of RUNTIME_FIELDS) delete (profile as Record<string, unknown>)[f];
+      org.profile = profile;
+      org.notes = 'Seeded from GASKIYA_TENANTS';
+      await this.save(org, actor);
+      await this.audit(actor, 'org.seed', id, id, { name: env.name });
+      seeded.push(id);
+    }
+    return seeded;
   }
 
   async resetProfile(id: string, actor: Actor): Promise<Tenant> {

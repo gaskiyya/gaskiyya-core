@@ -284,6 +284,12 @@ export function createSystem(o: SystemOptions) {
       app.log.error({ err: { message: (err as Error).message } }, 'admin registry: could not load organisations from the store');
     }
     try {
+      const seeded = await registry.seedEnvOrgs();
+      if (seeded.length) app.log.info({ organisations: seeded }, 'organisations from GASKIYA_TENANTS stored in the registry');
+    } catch (err) {
+      app.log.error({ err: { message: (err as Error).message } }, 'organisations from GASKIYA_TENANTS could not be stored');
+    }
+    try {
       const issued = await consoleAccess.ensureAll(tenants.keys());
       if (issued.length) app.log.info({ organisations: issued }, 'bank console codes issued');
     } catch (err) {

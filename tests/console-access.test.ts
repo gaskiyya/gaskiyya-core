@@ -228,3 +228,66 @@ describe('admin sign-in page', () => {
     expect((await h.sys.app.inject({ method: 'GET', url: '/v1/admin/login-hint', remoteAddress: '203.0.113.9' })).statusCode).toBe(404);
   });
 });
+
+describe('registry seeding and bank registration', () => {
+  it('SEED-1: organisations configured in GASKIYA_TENANTS are stored in the registry once, with live settings left to the configuration', async () => {
+    const { h, admin } = await setup();
+    const stored = await h.sys.store.getOrg('demobank');
+    expect(stored).toMatchObject({ id: 'demobank', source: 'env', status: 'active', notes: 'Seeded from GASKIYA_TENANTS' });
+    expect(stored!.profile).toMatchObject({ name: 'DemoBank', domains: h.sys.svc.tenant('demobank')!.domains });
+    for (const f of ['customerTokenUrl', 'demoInboxUrl', 'tokenKeysUrl', 'tokenKeys']) expect(stored!.profile).not.toHaveProperty(f);
+    expect(h.sys.svc.tenant('demobank')!.tokenKeys).toBeTruthy();
+    expect(await h.sys.store.getOrg('otherbank')).toMatchObject({ id: 'otherbank', source: 'env' });
+
+    const before = stored!.updatedAt;
+    expect(await h.sys.registry.seedEnvOrgs()).toEqual([]);
+    expect((await h.sys.store.getOrg('demobank'))!.updatedAt).toBe(before);
+    const audit = (await admin('GET', '/v1/admin/audit?org=demobank')).json().entries;
+    expect(audit.filter((e: { action: string }) => e.action === 'org.seed')).toHaveLength(1);
+  });
+
+  it('REG-1: a bank registered in the admin dashboard can register messages, its customers can check them, and its staff can sign in', async () => {
+    const { h, admin } = await setup();
+    const { publicKey, privateKey } = await import('jose').then((j) => j.generateKeyPair('ES256'));
+    const jwk = { ...(await import('jose').then((j) => j.exportJWK(publicKey))), kid: 'nb1', alg: 'ES256', use: 'sig' };
+    const created = await admin('POST', '/v1/admin/orgs', {
+      id: 'novabank',
+      name: 'Nova Bank',
+      legalName: 'Nova Bank Plc',
+      kind: 'bank',
+      bankCode: '999777',
+      domains: ['novabank.example'],
+      senderIds: ['NovaBank'],
+      officialContacts: { phones: ['+2342017770000'], whatsapp: [], emails: ['care@novabank.example'], social: [] },
+      officialApps: { android: [], ios: [] },
+      alertEmails: ['fraud@novabank.example'],
+      tokenKeys: { keys: [jwk] },
+      customerTokenUrl: 'https://api.novabank.example/gaskiyya/customer-token',
+      mode: 'live',
+    });
+    expect(created.statusCode, created.body).toBe(201);
+    expect(await h.sys.store.getOrg('novabank')).toMatchObject({ id: 'novabank', source: 'admin' });
+
+    const client = await admin('POST', '/v1/admin/orgs/novabank/clients', { label: 'Notifications' });
+    expect(client.statusCode, client.body).toBe(201);
+    const { client: c, clientSecret } = client.json();
+    const tok = await h.sys.app.inject({ method: 'POST', url: '/v1/oauth/token', payload: { grant_type: 'client_credentials', client_id: c.clientId, client_secret: clientSecret } });
+    expect(tok.statusCode, tok.body).toBe(200);
+    const bank = { authorization: `Bearer ${tok.json().access_token}` };
+
+    const { contentDigest } = await import('@gaskiya/canonical');
+    const text = 'NovaBank: your OTP is 482913. Do not share it.';
+    const reg = await h.sys.app.inject({ method: 'POST', url: '/v1/messages', headers: bank, payload: { recipient: ALICE, channel: 'sms', contentDigest: await contentDigest(text), category: 'otp', hasLink: false, linkDomains: [], asksCallback: false, sentAt: h.clock.now.toISOString() } });
+    expect(reg.statusCode, reg.body).toBe(202);
+
+    const { SignJWT } = await import('jose');
+    const customer = await new SignJWT({ accts: [] }).setProtectedHeader({ alg: 'ES256', kid: 'nb1' }).setIssuer('novabank').setSubject(ALICE).setAudience('gaskiya').setIssuedAt().setExpirationTime('300s').sign(privateKey);
+    const check = await h.sys.app.inject({ method: 'POST', url: '/v1/verify/message', headers: { authorization: `Bearer ${customer}` }, payload: { contentDigest: await contentDigest(text) } });
+    expect(check.json().verdict).toBe('confirmed');
+
+    const code = created.json().consoleCode as string;
+    const session = (await signIn(h, code)).json();
+    expect(session.org).toMatchObject({ id: 'novabank', name: 'Nova Bank' });
+    expect((await as(h, session.token)('GET', '/v1/console/metrics')).json().registrations).toBe(1);
+  });
+});
