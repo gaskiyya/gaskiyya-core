@@ -43,7 +43,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write
     environment:
       name: production
       url: ${{ vars.DEPLOY_URL }}
@@ -52,15 +51,21 @@ jobs:
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
+      # The AWS Free plan blocks GitHub OIDC, so this uses the gaskiyya-github-deploy IAM user, which may only send SSM commands to the server.
       - uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
       - name: Build and swap in the new version on the server
         env:
           INSTANCE_ID: ${{ vars.AWS_INSTANCE_ID }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          script="cd /opt/gaskiyya/repo && sudo -u ubuntu git fetch --quiet origin main && sudo -u ubuntu git checkout --quiet --force $GITHUB_SHA && sudo -u ubuntu scripts/server-deploy.sh $GITHUB_SHA"
+          # The job's read-only token fetches the commit; it expires when this job ends and is never stored on the server.
+          auth=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
+          echo "::add-mask::$auth"
+          script="cd /opt/gaskiyya/repo && sudo -u ubuntu git -c http.extraHeader='AUTHORIZATION: basic $auth' fetch --quiet origin main && sudo -u ubuntu git checkout --quiet --force $GITHUB_SHA && sudo -u ubuntu scripts/server-deploy.sh $GITHUB_SHA"
           id=$(aws ssm send-command --instance-ids "$INSTANCE_ID" --document-name AWS-RunShellScript \
             --comment "deploy ${GITHUB_SHA::12}" --timeout-seconds 600 \
             --parameters "{\"commands\":[\"$script\"],\"executionTimeout\":[\"1500\"]}" \
