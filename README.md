@@ -1611,6 +1611,45 @@ Both, in that order. Gaskiyya is verification infrastructure that banks connect 
 **Does it work with my bank?**
 Only if your bank uses Gaskiyya. A message can be confirmed only when the bank registered it, so the app links your number through your bank's own login. If your bank is not on Gaskiyya yet, the app cannot confirm its messages. Ask your bank to join.
 
+## AI declaration
+
+Gaskiyya uses AI in a few places. None of them decides whether a message, call, link or payment is genuine.
+
+### Where AI is used
+
+| Use | What the model does | What it never does |
+| --- | --- | --- |
+| Explanations (`POST /v1/explain`) | Writes plain-language reasons why a not-confirmed message looks risky, in English, Pidgin, Hausa, Yoruba or Igbo | Run before the verdict, change it, or call anything genuine |
+| Screenshot reading (`POST /v1/verify/screenshot`) | Reads the text out of an image so it can be fingerprinted | Match approximately: a misread character simply fails to match |
+| Campaign grouping | Turns reports into embeddings so similar scams can be grouped | Decide on its own which reports belong together. Shared domains and callback numbers are matched without AI |
+| Fraud-desk briefings | Drafts a summary of each scam campaign and a suggested customer warning | Approve, publish or send anything. Every warning stays a draft until a bank analyst approves it |
+
+The model is a deployment choice (`AI_PROVIDER`): Gemini (default), OpenAI, or open-weights models run inside the bank's own network through Ollama (`qwen3:4b-instruct`, `gemma3:4b`, `nomic-embed-text`). With `none`, Gaskiyya works fully on fixed text. See [decision 0002](docs/decisions/0002-model-provider.md) and [decision 0011](docs/decisions/0011-open-source-model.md).
+
+### How we keep it responsible
+
+- **Records decide, AI explains.** "Sent by your bank" comes only from an exact match with the bank's own record. The AI runs afterwards and cannot change the result.
+- **Masked input only.** Runs of four or more digits are replaced before any text reaches a model. Models never see phone numbers, account numbers, keyed hashes, registry records or who the customer is.
+- **Checked output.** Every reply must match a strict schema. A reply is thrown away if it adds a verdict, calls something genuine, verified or safe, asks for a PIN, password or one-time code, or contains a long number.
+- **Fail safe.** If a model is slow, down or gives a bad answer, Gaskiyya uses fixed fallback text, a template briefing or a local embedding. It never falls back to "genuine".
+- **People stay in charge.** The campaign agent has no tool that sends or approves. Only a signed-in bank analyst can publish a warning, and the approval records who and when.
+- **Data stays where the bank needs it.** A bank can run open-weights models on its own servers, so customer text never leaves its network. This supports the Nigeria Data Protection Act 2023 and CBN data localisation rules.
+- **Local languages are reviewed first.** Before a bank turns on AI explanations in Pidgin, Hausa, Yoruba or Igbo, a native speaker should review a test set from the chosen model. Small local models often answer in English instead.
+- **Tested.** Automated tests check that unsafe or invalid model output is rejected, that the fallback works with no model, and that the agent cannot approve or send even when the model's text tells it to.
+
+### AI in building Gaskiyya
+
+The team built Gaskiyya. We used AI assistants, including Claude, as a guide and a second pair of eyes along the way:
+
+- **Fixing bugs.** Helped us find the cause of bugs and suggested fixes, which we checked and tested before keeping.
+- **The pitch.** Gave insight on structure and wording, and helped us prepare the pitch deck and its assets.
+- **Design.** Helped with screen designs and diagrams, and gave feedback on layout and plain-language copy.
+- **Explaining the architecture.** Helped us explain how the registry, fingerprints, verdict gates and bank integration fit together, for the docs and for judges.
+- **Our research study.** Helped us draft and refine the questionnaire, then helped analyse the responses and offered suggestions and recommendations from the findings.
+- **The workbook.** Helped us structure the workbook we followed and printed.
+
+Every suggestion was reviewed by the team before we used it. The decisions, the security model and the verdict rules are our own, recorded in [docs/decisions](docs/decisions).
+
 ## Development
 
 This repository holds the registry API (`packages/api`), the Gaskiyya app (`mobile/`), the landing page and bank guide (`site/`), the bank sandbox console and phone emulator (`console/`), the admin dashboard (`admin/`) and the docs (`docs/`). Shared code lives in `packages/`. The bank SDK lives in its own repository, [gaskiyya/gaskiyya-sdk](https://github.com/gaskiyya/gaskiyya-sdk).
