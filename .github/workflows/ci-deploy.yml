@@ -20,15 +20,21 @@ jobs:
     name: Typecheck, lint and test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
         with:
           version: 10.34.6
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # The canonical and receipt tests check the TypeScript digests against packages/canonical_dart byte for byte.
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - run: dart pub get
+        working-directory: packages/canonical_dart
       - run: pnpm typecheck
       - run: pnpm exec eslint .
       - run: pnpm exec vitest run --exclude tests/languages.test.ts
@@ -50,7 +56,7 @@ jobs:
       group: deploy-production
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       # The AWS Free plan blocks GitHub OIDC, so this uses the gaskiyya-github-deploy IAM user, which may only send SSM commands to the server.
       - uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -82,7 +88,7 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: 10.34.6
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: pnpm
