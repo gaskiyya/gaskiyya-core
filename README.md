@@ -48,6 +48,8 @@
 
 </div>
 
+<p align="center"><b>Contents:</b> <a href="#try-it-as-demobank">Try it as DemoBank</a> · <a href="#the-problem">The problem</a> · <a href="#how-customers-check">How customers check</a> · <a href="#calls">Calls</a> · <a href="#the-app">The app</a> · <a href="#privacy">Privacy</a> · <a href="#for-banks">For banks</a> · <a href="#questions">Questions</a> · <a href="#ai-declaration">AI declaration</a> · <a href="#development">Development</a></p>
+
 ## Try it as DemoBank
 
 Open the DemoBank simulation at **[gaskiyya-io.web.app/console](https://gaskiyya-io.web.app/console/)**. You play the bank on the left, and a customer's phone sits on the right, with the Gaskiyya app on it. Everything runs in your browser with the registry's own code, so nothing is sent anywhere, and reloading the page starts fresh.
