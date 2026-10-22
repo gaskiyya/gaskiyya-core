@@ -46,6 +46,7 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
   private var channel: FlutterMethodChannel?
   private var ids: [String: UUID] = [:]
   private var calls: [UUID: Incoming] = [:]
+  private var rung: Set<String> = []
   private var voice: AgentVoice?
 
   override init() {
@@ -72,6 +73,12 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
       switch call.method {
       case "voipToken":
         result(UserDefaults.standard.string(forKey: BankCalls.tokenKey))
+      case "ring":
+        // The app heard the call on its live connection; rings the same way without waiting for a VoIP push.
+        if let p = call.arguments as? [String: Any], let id = p["callId"] as? String, self?.rung.contains(id) == false {
+          self?.incoming(p) {}
+        }
+        result(nil)
       case "endCall":
         if let id = (call.arguments as? [String: Any])?["callId"] as? String { self?.end(callId: id, reason: .remoteEnded) }
         result(nil)
@@ -113,6 +120,7 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
     let expiresAt = (p["expiresAt"] as? String).flatMap(BankCalls.parseDate)
     let uuid = ids[callId] ?? UUID()
     ids[callId] = uuid
+    rung.insert(callId)
 
     let update = CXCallUpdate()
     update.remoteHandle = CXHandle(type: .generic, value: bank)

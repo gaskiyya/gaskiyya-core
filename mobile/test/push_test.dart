@@ -55,6 +55,8 @@ Map<String, dynamic> opened(String code) => {
     };
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   test('CALL-1 on the device: the push token is registered with the registry, and again when it rotates', () async {
     final r = registry();
     final t = FakeTransport();

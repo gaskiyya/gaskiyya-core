@@ -14,12 +14,15 @@ import android.provider.Settings
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
+import ng.gaskiya.gaskiya.calls.BankCalls
 import ng.gaskiya.gaskiya.shield.ShieldNotificationListener
 import ng.gaskiya.gaskiya.shield.ShieldOverlay
 
 class MainActivity : FlutterActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        intent = asShare(intent)
         super.onCreate(savedInstanceState)
+        answerFrom(intent)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel("calls", "Bank calls", NotificationManager.IMPORTANCE_HIGH).apply {
                 description = "Tells you when your bank is calling and shows the call code."
@@ -33,8 +36,40 @@ class MainActivity : FlutterActivity() {
         }
     }
 
+    override fun onNewIntent(intent: Intent) {
+        val shared = asShare(intent) ?: intent
+        setIntent(shared)
+        super.onNewIntent(shared)
+        answerFrom(shared)
+    }
+
+    private fun answerFrom(intent: Intent?) {
+        if (intent?.action == BankCalls.ACTION_ANSWER) BankCalls.answer(this, intent.getStringExtra(BankCalls.EXTRA_CALL_ID))
+    }
+
+    // receive_sharing_intent only reads ACTION_SEND, so text picked with "Check with Gaskiyya"
+    // in another app's selection menu is handed over as an ordinary text share.
+    private fun asShare(intent: Intent?): Intent? {
+        if (intent?.action != Intent.ACTION_PROCESS_TEXT) return intent
+        val text = intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)?.toString()?.takeIf { it.isNotBlank() } ?: return intent
+        return Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, text)
+    }
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "ng.gaskiya/calls").setMethodCallHandler { call, result ->
+            when (call.method) {
+                "ring" -> {
+                    (call.arguments as? Map<*, *>)?.let { BankCalls.ring(this, it) }
+                    result.success(null)
+                }
+                "endCall" -> {
+                    BankCalls.end(this, (call.arguments as? Map<*, *>)?.get("callId") as? String)
+                    result.success(null)
+                }
+                else -> result.notImplemented()
+            }
+        }
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "ng.gaskiya/shield.setup").setMethodCallHandler { call, result ->
             when (call.method) {
                 "status" -> result.success(

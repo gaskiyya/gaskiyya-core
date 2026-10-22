@@ -126,6 +126,7 @@ class AppState extends ChangeNotifier {
   final DateTime Function() _now;
   final List<Locale> Function() _deviceLocales;
   Timer? _poll;
+  final _rung = <String>{};
 
   final http.Client _http;
   final http.Client Function() _apiHttp;
@@ -429,6 +430,10 @@ class AppState extends ChangeNotifier {
     l._expiry?.cancel();
     final now = DateTime.now();
     l.liveCalls = calls.where((c) => c.expiresAt.isAfter(now)).toList();
+    for (final c in l.liveCalls) {
+      if (c.status != 'open' || c.code.isEmpty || !_rung.add(c.id)) continue;
+      unawaited(NativeCalls.instance.ring(callId: c.id, orgId: l.bank.id, bank: l.bank.name, code: c.code, expiresAt: c.expiresAt));
+    }
     if (l.liveCalls.isNotEmpty) {
       final next = l.liveCalls.map((c) => c.expiresAt).reduce((a, b) => a.isBefore(b) ? a : b);
       l._expiry = Timer(next.difference(now), () => _setCalls(l, l.liveCalls));

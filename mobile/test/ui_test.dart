@@ -39,7 +39,7 @@ void main() {
   setUpAll(() => Copy.fromJson(File('assets/copy.json').readAsStringSync()));
 
   test('CH-4: the app bundles the one shared copy file unchanged', () {
-    expect(File('assets/copy.json').readAsStringSync(), File('../../packages/schemas/copy.json').readAsStringSync());
+    expect(File('assets/copy.json').readAsStringSync(), File('../packages/schemas/copy.json').readAsStringSync());
   });
 
   testWidgets('CH-4: a confirmed verdict screen uses the shared wording', (tester) async {

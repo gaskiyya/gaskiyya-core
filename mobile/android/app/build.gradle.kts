@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.gaskiya.gaskiya"
+    namespace = "ng.gaskiya.gaskiya"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gaskiya/src/core/api.dart';
 import 'package:gaskiya/src/core/copy.dart';
@@ -71,6 +72,33 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
     expect(demo.liveCalls.map((c) => c.code), ['5517', '1442']);
     await tester.pumpWidget(hostWith(const SizedBox()));
+    state.dispose();
+    await registry.close();
+  });
+
+  testWidgets('a bank call rings the phone once, before it is answered, and stops when the bank closes it', (tester) async {
+    final native = <MethodCall>[];
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(const MethodChannel('ng.gaskiya/calls'), (c) async {
+      native.add(c);
+      return null;
+    });
+    final registry = FakeRegistry([testBank('demobank', 'DemoBank')])..calling['demobank'] = '9031';
+    final state = (await tester.runAsync(() => linkedState(registry, ['demobank'])))!;
+    await tester.runAsync(state.refreshCall);
+    await tester.runAsync(state.refreshCall);
+    state.handleNotice({'type': 'call.opened', ...call('call_3', '5517', 'loan_follow_up'), 'callId': 'call_3', 'bank': 'DemoBank'});
+    state.handleNotice({'type': 'call.opened', ...call('call_3', '5517', 'loan_follow_up'), 'callId': 'call_3', 'bank': 'DemoBank'});
+    state.handleNotice({'type': 'call.opened', ...call('call_4', '2210', 'fraud_check'), 'status': 'answered', 'callId': 'call_4', 'bank': 'DemoBank'});
+
+    final rings = native.where((c) => c.method == 'ring').map((c) => c.arguments as Map).toList();
+    expect(rings.map((r) => r['code']), ['9031', '5517']);
+    expect(rings.first, containsPair('bank', 'DemoBank'));
+    expect(rings.first, containsPair('orgId', 'demobank'));
+    expect(rings.first['expiresInMs'], greaterThan(0));
+
+    state.handleNotice({'type': 'call.closed', 'callId': 'call_3'});
+    expect(native.where((c) => c.method == 'endCall').map((c) => (c.arguments as Map)['callId']), ['call_3']);
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(const MethodChannel('ng.gaskiya/calls'), null);
     state.dispose();
     await registry.close();
   });
