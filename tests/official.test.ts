@@ -142,7 +142,7 @@ describe('organisations beyond banks (decision 0014)', () => {
     expect(fake).toContain(fill(copy.official.org.explainFallback, { bank: AGENCY.name }));
     expect(fake).toContain(fill(copy.official.org.otpAdvice, { bank: AGENCY.name }));
     const call = await whatsapp(h, 'CALL');
-    expect(call).toContain(`${AGENCY.name} is not calling you`);
+    expect(call).toContain(`${AGENCY.name} isn't calling you`);
     for (const reply of [confirmed, fake, call, await whatsapp(h, 'hi')]) expect(reply.toLowerCase()).not.toMatch(/your bank|my bank/);
     await whatsapp(h, 'LANG HA');
     expect(await whatsapp(h, 'CALL')).toContain(fill(copyFor('ha').official.org.notCallingTitle, { bank: AGENCY.name }));
