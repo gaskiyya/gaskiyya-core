@@ -95,6 +95,7 @@ export class OllamaProvider implements ModelProvider {
         return { model: this.embeddingModel, vector };
       }
     } catch {
+      // Use the local fallback if Ollama is unavailable or returns bad data.
     }
     return this.none.embed(text);
   }

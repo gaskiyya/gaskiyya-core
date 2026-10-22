@@ -983,6 +983,7 @@ function FraudPage({ notify }: { notify: (s: string) => void }) {
     try {
       localStorage.setItem('gaskiya.analyst', v);
     } catch {
+      // The demo can still run when browser storage is unavailable.
     }
   };
 

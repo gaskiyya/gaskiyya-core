@@ -160,6 +160,7 @@ export function buildApp(deps: AppDeps) {
         const code = (JSON.parse(payload) as { code?: unknown }).code;
         if (typeof code === 'string') req.errorCode = code.slice(0, 64);
       } catch {
+        // Ignore malformed error payloads; response security headers still apply.
       }
     }
     for (const [k, v] of Object.entries(BASE_SECURITY_HEADERS)) reply.header(k, v);

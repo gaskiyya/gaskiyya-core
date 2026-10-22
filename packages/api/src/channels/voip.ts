@@ -108,7 +108,7 @@ export class ApnsVoipPush implements VoipPush {
       req.on('data', (d: string) => (text += d));
       req.on('end', () => {
         if (status === 200) return resolve();
-        let reason = '';
+        let reason: string;
         try {
           reason = (JSON.parse(text) as { reason?: string }).reason ?? '';
         } catch {

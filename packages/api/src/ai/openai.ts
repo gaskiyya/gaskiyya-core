@@ -85,6 +85,7 @@ export class OpenAIProvider implements ModelProvider {
       const vector = r.data[0]?.embedding;
       if (vector?.length) return { model: this.embeddingModel, vector };
     } catch {
+      // Use the deterministic local embedding if the provider is unavailable.
     }
     return { model: LOCAL_EMBEDDING_MODEL, vector: localEmbed(text) };
   }

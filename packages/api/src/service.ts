@@ -443,6 +443,7 @@ export class GaskiyaService {
       try {
         ({ items, text } = await this.activity(tenant!, recipientKeys));
       } catch {
+        // Activity is supplementary; keep the not-confirmed verdict if unavailable.
       }
       result = { verdict, recentActivity: items, activityText: text, bank: tenant!.name };
     } else {

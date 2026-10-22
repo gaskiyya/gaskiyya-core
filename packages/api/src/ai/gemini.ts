@@ -82,6 +82,7 @@ export class GeminiProvider implements ModelProvider {
       const vector = r.embeddings?.[0]?.values;
       if (vector?.length) return { model: this.embeddingModel, vector };
     } catch {
+      // Use the deterministic local embedding if the provider is unavailable.
     }
     return { model: LOCAL_EMBEDDING_MODEL, vector: localEmbed(text) };
   }

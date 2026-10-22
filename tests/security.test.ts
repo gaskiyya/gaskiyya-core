@@ -175,10 +175,9 @@ describe('security and privacy', () => {
     const files = trackedFiles().filter(
       (f) =>
         f === 'packages/schemas/copy.json' ||
-        /^apps\/mobile\/lib\/.*\.dart$/.test(f) ||
-        /^apps\/console\/src\/.*\.(tsx?|html)$/.test(f) ||
-        /^apps\/api\/src\/(ai|whatsapp|campaigns).*\.ts$/.test(f) ||
-        /^apps\/api\/src\/ai\/.*\.ts$/.test(f),
+        /^mobile\/lib\/.*\.dart$/.test(f) ||
+        /^console\/src\/.*\.(tsx?|html)$/.test(f) ||
+        /^packages\/api\/src\/(ai|whatsapp|campaigns).*\.ts$/.test(f),
     );
     expect(files.length).toBeGreaterThan(5);
     const offending: string[] = [];
