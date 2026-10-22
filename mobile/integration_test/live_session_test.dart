@@ -27,10 +27,9 @@ void main() {
     await app.main();
     await _until(tester, find.text('Skip'));
     await tester.tap(find.text('Skip'));
-    await _until(tester, find.text('DemoBank'));
-    await tester.tap(find.text('DemoBank'));
-    await tester.pump(const Duration(milliseconds: 400));
+    await _until(tester, find.byType(CupertinoTextField));
     await tester.enterText(find.byType(CupertinoTextField), _local);
+    await _until(tester, find.byKey(const ValueKey('found-demobank')));
     await tester.tap(find.byKey(const ValueKey('signIn')));
     await _until(tester, find.text('Recent messages'));
 

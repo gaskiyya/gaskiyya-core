@@ -4,11 +4,12 @@ import { AccessSection, draftFrom, IdentitySection, IntegrationSection, PublicSe
 import { AuditTable } from './Audit.tsx';
 import { ago, Badge, Bars, Confirm, Copy, errorsByField, Field, fmtNum, fmtPct, fmtTime, Modal, SecretOnce, StatusBadges, Tile } from './ui.tsx';
 
-type Tab = 'overview' | 'profile' | 'access' | 'keys' | 'alerts' | 'usage' | 'audit';
+type Tab = 'overview' | 'profile' | 'access' | 'console' | 'keys' | 'alerts' | 'usage' | 'audit';
 const TABS: { id: Tab; name: string }[] = [
   { id: 'overview', name: 'Overview' },
   { id: 'profile', name: 'Profile' },
   { id: 'access', name: 'API access' },
+  { id: 'console', name: 'Bank console' },
   { id: 'keys', name: 'Hashing keys' },
   { id: 'alerts', name: 'Alerts' },
   { id: 'usage', name: 'Usage' },
@@ -85,6 +86,7 @@ export function OrgDetail({ id, notify, onBack, initial, startTab }: { id: strin
       {tab === 'overview' && <OverviewTab d={d} go={setTab} />}
       {tab === 'profile' && <ProfileTab d={d} setD={setD} notify={notify} />}
       {tab === 'access' && <AccessTab d={d} reload={load} notify={notify} />}
+      {tab === 'console' && <ConsoleTab d={d} reload={load} notify={notify} />}
       {tab === 'keys' && <KeysTab d={d} reload={load} notify={notify} />}
       {tab === 'alerts' && <AlertsTab d={d} reload={load} notify={notify} />}
       {tab === 'usage' && <UsageTab d={d} />}
@@ -398,6 +400,70 @@ function AccessTab({ d, reload, notify }: { d: Detail; reload: () => void; notif
           ]}
           note={<>Exchange them at <code>POST /v1/oauth/token</code> for a 10-minute access token. Never put the secret in a mobile app or a web page.</>}
           onDone={() => setSecret(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+function ConsoleTab({ d, reload, notify }: { d: Detail; reload: () => void; notify: (s: string, tone?: 'error') => void }) {
+  const [confirming, setConfirming] = useState(false);
+  const consoleUrl = `${window.location.origin}/console/`;
+  const current = d.consoleCodes.find((c) => c.status === 'active');
+
+  return (
+    <div className="stack">
+      <div className="card stack">
+        <div className="row between">
+          <div>
+            <h2>Bank console sign-in code</h2>
+            <p className="muted small">
+              {d.org.name} signs in to its dashboard at <code>{consoleUrl}</code> with this code. It is issued when the organisation is registered, signed with its own hashing key, and opens this organisation only.
+            </p>
+          </div>
+          <button className="btn secondary" disabled={d.org.status === 'suspended' || !d.consoleCode} onClick={() => setConfirming(true)}>Regenerate code</button>
+        </div>
+        {d.consoleCode ? (
+          <div className="console-code">
+            <code>{d.consoleCode}</code>
+            <Copy text={d.consoleCode} />
+            <span className="muted small">{current ? <>Issued {fmtTime(current.createdAt)} by {current.createdBy} &middot; last sign-in {ago(current.lastUsedAt)}</> : null}</span>
+          </div>
+        ) : (
+          <p className="notice warn">No code yet. It is issued as soon as the organisation has a hashing key.</p>
+        )}
+        <p className="muted small">Hand it to the organisation over a secure channel. Regenerating issues a new code and signs out everyone using the old one.</p>
+      </div>
+      {d.consoleCodes.length > 1 && (
+        <div className="card stack">
+          <h2>Earlier codes</h2>
+          <div className="table-wrap">
+            <table className="table">
+              <thead>
+                <tr><th>Code ends</th><th>Issued</th><th>Replaced</th><th>Last sign-in</th></tr>
+              </thead>
+              <tbody>
+                {d.consoleCodes.filter((c) => c.status === 'revoked').map((c) => (
+                  <tr key={c.id} className="dim">
+                    <td className="mono small">&hellip;{c.hint}</td>
+                    <td className="small">{fmtTime(c.createdAt)}<div className="muted">{c.createdBy}</div></td>
+                    <td className="small">{fmtTime(c.revokedAt)}<div className="muted">{c.revokedBy}</div></td>
+                    <td className="small">{ago(c.lastUsedAt)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+      {confirming && (
+        <Confirm
+          title="Regenerate the console code"
+          body={<p>{d.org.name} gets a new code. The current one stops working at once and everyone signed in with it is signed out.</p>}
+          action="Regenerate"
+          danger
+          onCancel={() => setConfirming(false)}
+          onConfirm={() => void admin.regenerateConsoleCode(d.org.id).then(() => (setConfirming(false), reload(), notify('New code issued'))).catch((e: Error) => notify(e.message, 'error'))}
         />
       )}
     </div>

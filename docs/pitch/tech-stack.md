@@ -17,4 +17,4 @@ The whole demo runs offline with `pnpm dev`: the in-memory store instead of Fire
 
 In production, each hosted service (Gemini or OpenAI, Firestore, Firebase Cloud Messaging, Resend, WhatsApp Cloud API and Africa's Talking USSD) sits behind an interface and has an open or offline stand-in in the repo. The one source-available tool is Remotion, used only to render the pitch video.
 
-There is no live banking API anywhere. The bank sandbox console plays the bank: it registers messages, announces calls, issues the customer's login token and runs the fraud desk. The full list, with every licence checked against the installed package, is in apps/web/docs/TECH_STACK.md.
+There is no live banking API anywhere. The bank sandbox console plays the bank: it registers messages, announces calls, issues the customer's login token and runs the fraud desk. The full list, with every licence checked against the installed package, is in docs/TECH_STACK.md.

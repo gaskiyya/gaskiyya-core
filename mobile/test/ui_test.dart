@@ -47,7 +47,7 @@ void main() {
     await tester.pumpWidget(host(ResultSheet(client: client, bank: 'DemoBank', request: CheckRequest.message('hello'))));
     await tester.pump(const Duration(seconds: 2));
     expect(find.text(Copy.I.t('verdict.confirmed.title')), findsOneWidget);
-    expect(find.textContaining('DemoBank sent this message to this number by SMS'), findsOneWidget);
+    expect(find.textContaining('DemoBank sent this to you by SMS'), findsOneWidget);
   });
 
   testWidgets('CH-4: a not-confirmed screen shows fixed wording, activity, then the explanation', (tester) async {
@@ -87,7 +87,7 @@ void main() {
     expect(find.text(Copy.I.t('verdict.cannot_check.title')), findsOneWidget);
   });
 
-  testWidgets('onboarding pages through to Get started', (tester) async {
+  testWidgets('onboarding pages through to Get Started', (tester) async {
     tester.view.physicalSize = const Size(1179, 2556);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
@@ -100,8 +100,8 @@ void main() {
         await tester.pump(const Duration(milliseconds: 16));
       }
     }
-    expect(find.text('Get started'), findsOneWidget);
-    await tester.tap(find.text('Get started'));
+    expect(find.text('Get Started'), findsOneWidget);
+    await tester.tap(find.text('Get Started'));
     expect(done, isTrue);
   });
 }

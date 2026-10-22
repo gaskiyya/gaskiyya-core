@@ -2,7 +2,7 @@
 
 **Status:** accepted (approved by owner, 2026-10-20: "fix all")
 
-The QA report of 20 October 2026 (`apps/web/docs/qa/2026-10-20-qa-report.md`) found three places where fixed customer text said more, or less, than the product does. The owner approved the wording below. No `verdict.*` text changed.
+The QA report of 20 October 2026 (`docs/qa/2026-10-20-qa-report.md`) found three places where fixed customer text said more, or less, than the product does. The owner approved the wording below. No `verdict.*` text changed.
 
 ## Decision
 
@@ -12,7 +12,7 @@ When more than one agent from a bank is calling the same customer, every code is
 
 - **Added** `call.mismatchMany`: "If the caller cannot read one of these codes exactly, hang up."
 - `call.mismatch` ("If the caller cannot read this exact code, hang up.") is unchanged and is still used whenever exactly one code is shown.
-- Used for more than one code in: the app's Calls tab (per bank), the WhatsApp `CALL` reply (`callReply` in `apps/api/src/whatsapp.ts`), the console's phone view, and USSD option 1 (`callingMany` in `apps/api/src/ussd.ts`). On USSD the codes share one line ("Call code: 4821, 9031, 1442") so three codes and the plural line fit one 160-character screen in every language (LANG-7 checks it); if a screen would still overflow, the oldest codes are left off.
+- Used for more than one code in: the app's Calls tab (per bank), the WhatsApp `CALL` reply (`callReply` in `packages/api/src/whatsapp.ts`), the console's phone view, and USSD option 1 (`callingMany` in `packages/api/src/ussd.ts`). On USSD the codes share one line ("Call code: 4821, 9031, 1442") so three codes and the plural line fit one 160-character screen in every language (LANG-7 checks it); if a screen would still overflow, the oldest codes are left off.
 
 ### F14: a link on the bank's domain has its own tag
 
@@ -42,7 +42,7 @@ A message that is not confirmed is explained by sending its text, with long numb
 
 The first sentence of the Check note and of the privacy slide is kept; only the overstated sentence is replaced. The key name `textStays` is kept so that overlays and tests need no rename. The Settings privacy rows now wrap instead of being cut to one line.
 
-The same claim was corrected outside `copy.json`: the marketing site (`apps/web/index.html`, step 02), `apps/web/docs/DESIGN.md` (verification flow, step 2), `apps/web/docs/whitepaper/whitepaper.html` and `apps/web/docs/pitch/deck.md` (Channels). The whitepaper PDF is rebuilt with `pnpm whitepaper`.
+The same claim was corrected outside `copy.json`: the marketing site (`index.html`, step 02), `docs/DESIGN.md` (verification flow, step 2), `docs/whitepaper/whitepaper.html` and `docs/pitch/deck.md` (Channels). The whitepaper PDF is rebuilt with `pnpm whitepaper`.
 
 ## Translations
 
@@ -51,4 +51,4 @@ All four overlays (`copy.pcm.json`, `copy.ha.json`, `copy.yo.json`, `copy.ig.jso
 ## Consequences
 
 - The privacy rows describe the explanation step accurately. Asking before sending text for an explanation (a consent toggle) would let the wording become stricter again; it is not part of this decision.
-- Screenshot checks that fall back to the server upload the image; that path is described in `apps/web/docs/DESIGN.md` and is not covered by these lines.
+- Screenshot checks that fall back to the server upload the image; that path is described in `docs/DESIGN.md` and is not covered by these lines.

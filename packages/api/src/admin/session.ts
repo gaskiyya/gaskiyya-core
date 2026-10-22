@@ -53,6 +53,11 @@ export class AdminAuth {
       : Promise.resolve(o.users);
   }
 
+  // The local admin login from ADMIN_PASSWORD, which production refuses; staff in ADMIN_USERS exist only as hashes.
+  get localLogin(): { username: string; password: string } | null {
+    return this.o.plain ? { ...this.o.plain } : null;
+  }
+
   get enabled() {
     return this.o.users.length > 0 || Boolean(this.o.plain);
   }

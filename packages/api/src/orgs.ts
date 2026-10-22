@@ -44,5 +44,7 @@ export function profileErrors(t: Tenant, others: Iterable<Tenant>): string[] {
   }
   const u = t.customerTokenUrl;
   if (u && !u.startsWith('/') && !/^https?:\/\//.test(u)) errors.push(`${at}: customerTokenUrl must be an http(s) URL or a path on this server`);
+  const logo = t.logoUrl;
+  if (logo && !logo.startsWith('/') && !/^https:\/\//.test(logo)) errors.push(`${at}: logoUrl must be an https URL or a path on this server`);
   return errors;
 }

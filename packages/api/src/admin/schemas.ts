@@ -43,6 +43,7 @@ const Profile = {
   tokenKeysUrl: url.nullable().optional(),
   tokenKeys: Jwks.nullable().optional(),
   customerTokenUrl: z.string().trim().max(500).nullable().optional(),
+  logoUrl: z.string().trim().max(500).nullable().optional(),
   recordTtlDays: z.number().int().min(1).max(365).nullable().optional(),
 };
 
@@ -71,6 +72,7 @@ export const UpdateOrg = z
     tokenKeysUrl: Profile.tokenKeysUrl,
     tokenKeys: Profile.tokenKeys,
     customerTokenUrl: Profile.customerTokenUrl,
+    logoUrl: Profile.logoUrl,
     recordTtlDays: Profile.recordTtlDays,
     mode: z.enum(['live', 'sandbox']).optional(),
     features: Features.optional(),

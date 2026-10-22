@@ -37,6 +37,7 @@ export interface Tenant {
   recordTtlDays?: number;
   alertEmails?: string[];
   customerTokenUrl?: string;
+  logoUrl?: string;
   demoInboxUrl?: string;
   bankCode?: string;
   legalName?: string;
@@ -133,6 +134,29 @@ export interface AuditEntry {
 export interface AdminSession {
   idHash: string;
   username: string;
+  createdAt: string;
+  expiresAt: string;
+}
+
+export interface ConsoleCodeRecord {
+  id: string;
+  idHash: string;
+  tenantId: string;
+  label: string;
+  hint: string;
+  generation: number;
+  keyVersion: number;
+  createdAt: string;
+  createdBy: string;
+  revokedAt: string | null;
+  revokedBy: string | null;
+  lastUsedAt: string | null;
+}
+
+export interface ConsoleSession {
+  idHash: string;
+  tenantId: string;
+  codeHash: string;
   createdAt: string;
   expiresAt: string;
 }
@@ -350,6 +374,12 @@ export interface Store {
   putAdminSession(session: AdminSession): Promise<void>;
   getAdminSession(idHash: string): Promise<AdminSession | null>;
   deleteAdminSession(idHash: string): Promise<void>;
+  listConsoleCodes(tenantId: string): Promise<ConsoleCodeRecord[]>;
+  getConsoleCode(idHash: string): Promise<ConsoleCodeRecord | null>;
+  putConsoleCode(code: ConsoleCodeRecord): Promise<void>;
+  putConsoleSession(session: ConsoleSession): Promise<void>;
+  getConsoleSession(idHash: string): Promise<ConsoleSession | null>;
+  deleteConsoleSession(idHash: string): Promise<void>;
   recordApiCall(event: ApiCallEvent): Promise<void>;
   apiUsage(tenantId: string, days: string[]): Promise<ApiUsageDay[]>;
   apiErrors(tenantId: string, limit: number): Promise<ApiCallEvent[]>;

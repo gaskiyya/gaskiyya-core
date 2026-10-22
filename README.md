@@ -379,7 +379,7 @@ Your customers can also use the Gaskiyya app, with no new app build: it lists ev
 
 ### Register transfer receipts
 
-Fake "I have paid you" receipts cost merchants and POS agents goods every day. When your customer's transfer completes, register its receipt; the merchant who was paid can then check it in their own bank's app before releasing goods. Decision note: `apps/web/docs/decisions/0015-transfer-receipts.md`.
+Fake "I have paid you" receipts cost merchants and POS agents goods every day. When your customer's transfer completes, register its receipt; the merchant who was paid can then check it in their own bank's app before releasing goods. Decision note: `docs/decisions/0015-transfer-receipts.md`.
 
 | Field | Canonical rule |
 | --- | --- |

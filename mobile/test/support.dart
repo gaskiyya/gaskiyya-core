@@ -50,6 +50,9 @@ class FakeRegistry {
 
   final failingSignIn = <String>{};
 
+  /// Numbers a bank does not know: its sign-in answers 404 for them.
+  final strangers = <String, Set<String>>{};
+
   final failingCallChecks = <String>{};
 
   final inboxItems = <String, List<Map<String, dynamic>>>{};
@@ -90,6 +93,7 @@ class FakeRegistry {
           final id = signIn[1]!;
           if (failingSignIn.contains(id)) return _json({'code': 'down'}, 503);
           final phone = (jsonDecode(utf8.decode(bytes)) as Map<String, dynamic>)['phone'];
+          if (strangers[id]?.contains(phone) ?? false) return _json({'code': 'not_found'}, 404);
           final token = 'tok:$id:$phone';
           signIns++;
           _issued.add(token);

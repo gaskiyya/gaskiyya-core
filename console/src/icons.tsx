@@ -33,9 +33,6 @@ export const IconSend = (p: P) => (
 export const IconScissors = (p: P) => (
   <svg {...base} {...p}><circle cx="6" cy="7" r="2.5" /><circle cx="6" cy="17" r="2.5" /><path d="M8 8.5 20 17M8 15.5 20 7" /></svg>
 );
-export const IconTray = (p: P) => (
-  <svg {...base} {...p}><path d="M3 13.5 5.5 5h13L21 13.5V19H3z" /><path d="M3 13.5h5l1.5 2.5h5l1.5-2.5h5" /></svg>
-);
 export const IconKeypad = (p: P) => (
   <svg {...base} {...p}><rect x="6" y="2.5" width="12" height="19" rx="2.5" /><path d="M9 6.5h6M9.5 11h.01M12 11h.01M14.5 11h.01M9.5 14h.01M12 14h.01M14.5 14h.01M9.5 17h.01M12 17h.01M14.5 17h.01" /></svg>
 );
@@ -44,4 +41,28 @@ export const IconBadge = (p: P) => (
 );
 export const IconTransfer = (p: P) => (
   <svg {...base} {...p}><path d="M4 8h14l-3.5-3.5M20 16H6l3.5 3.5" /></svg>
+);
+export const IconHome = (p: P) => (
+  <svg {...base} {...p}><rect x="3.5" y="3.5" width="7" height="7" rx="1.8" /><rect x="13.5" y="3.5" width="7" height="7" rx="1.8" /><rect x="3.5" y="13.5" width="7" height="7" rx="1.8" /><rect x="13.5" y="13.5" width="7" height="7" rx="1.8" /></svg>
+);
+export const IconPlug = (p: P) => (
+  <svg {...base} {...p}><path d="M9 3v5M15 3v5M6.5 8h11v3.5a5.5 5.5 0 0 1-11 0zM12 17v4" /></svg>
+);
+export const IconBuilding = (p: P) => (
+  <svg {...base} {...p}><path d="M3 20.5h18M5 20.5V9.5l7-5 7 5v11M9 20.5v-6h6v6M9 11h.01M15 11h.01" /></svg>
+);
+export const IconClock = (p: P) => (
+  <svg {...base} {...p}><circle cx="12" cy="12" r="9" /><path d="M12 7.5V12l3 2" /></svg>
+);
+export const IconLogout = (p: P) => (
+  <svg {...base} {...p}><path d="M14 4.5H6.5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2H14M10 12h10M16.5 8l4 4-4 4" /></svg>
+);
+export const IconKey = (p: P) => (
+  <svg {...base} {...p}><circle cx="8" cy="15" r="4" /><path d="m11 12 8.5-8.5M16 7l2.5 2.5M14 9l2 2" /></svg>
+);
+export const IconArrow = (p: P) => (
+  <svg {...base} {...p}><path d="M9 6l6 6-6 6" /></svg>
+);
+export const IconExternal = (p: P) => (
+  <svg {...base} {...p}><path d="M14 4h6v6M20 4l-9 9M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10" /></svg>
 );

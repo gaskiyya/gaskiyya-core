@@ -63,6 +63,7 @@ export interface OrgProfile {
   tokenKeysUrl?: string;
   tokenKeys?: { keys: Record<string, unknown>[] };
   customerTokenUrl?: string;
+  logoUrl?: string;
   recordTtlDays?: number;
   technicalContact?: { name: string; email: string; phone?: string };
   status: 'active' | 'suspended';
@@ -173,7 +174,22 @@ export interface OrgDetail {
   alerts: { id: string; kind: string; domain: string | null; count: number; expected: number | null; firstSeen: string; lastSeen: string }[];
   campaigns: { total: number; new: number; confirmed: number; dismissed: number; liveAdvisories: number };
   audit: AuditEntry[];
+  consoleCodes: ConsoleCodeView[];
+  consoleCode: string | null;
   checklist: { id: string; label: string; done: boolean }[];
+}
+
+export interface ConsoleCodeView {
+  id: string;
+  tenantId: string;
+  hint: string;
+  generation: number;
+  status: 'active' | 'revoked';
+  createdAt: string;
+  createdBy: string;
+  revokedAt: string | null;
+  revokedBy: string | null;
+  lastUsedAt: string | null;
 }
 
 export interface Overview {
@@ -183,8 +199,6 @@ export interface Overview {
   recentAudit: AuditEntry[];
   masterKeySet: boolean;
 }
-
-export type OrgInput = Omit<OrgProfile, 'status' | 'features' | 'limits' | 'webhookUrl'> & { features: Partial<Record<Feature, boolean>>; limits: OrgProfile['limits']; notes?: string };
 
 export const admin = {
   async signOut() {
@@ -220,5 +234,6 @@ export const admin = {
   removeWebhook: (id: string) => call('POST', `/v1/admin/orgs/${encodeURIComponent(id)}/webhook/remove`, {}),
   testWebhook: (id: string) => call<{ ok: boolean; status?: number; error?: string }>('POST', `/v1/admin/orgs/${encodeURIComponent(id)}/webhook/test`, {}),
   testEmail: (id: string) => call<{ ok: boolean; error?: string; to?: string[] }>('POST', `/v1/admin/orgs/${encodeURIComponent(id)}/test-email`, {}),
+  regenerateConsoleCode: (id: string) => call<OrgDetail>('POST', `/v1/admin/orgs/${encodeURIComponent(id)}/console-code/regenerate`, {}),
   refresh: () => call<{ ok: boolean; loadedAt: string }>('POST', '/v1/admin/refresh', {}),
 };

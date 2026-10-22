@@ -52,10 +52,9 @@ void main() {
     await app.main();
     await _until(tester, () => find.text('Skip').evaluate().isNotEmpty, 'onboarding');
     await tester.tap(find.text('Skip'));
-    await _until(tester, () => find.text('DemoBank').evaluate().isNotEmpty, 'bank list');
-    await tester.tap(find.text('DemoBank'));
-    await _wait(tester, const Duration(milliseconds: 400));
+    await _until(tester, () => find.byType(CupertinoTextField).evaluate().isNotEmpty, 'sign-in');
     await tester.enterText(find.byType(CupertinoTextField), _local);
+    await _until(tester, () => find.byKey(const ValueKey('found-demobank')).evaluate().isNotEmpty, 'organisations');
     await tester.tap(find.byKey(const ValueKey('signIn')));
     await _until(tester, () => find.text('Recent messages').evaluate().isNotEmpty, 'home');
     _mark('READY');

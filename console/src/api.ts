@@ -135,16 +135,26 @@ export interface SimConfig {
   purposes: string[];
   ussdCode: string;
   simSwap?: boolean;
+  // In-browser sandbox only: DemoBank's console sign-in code.
+  consoleCode?: string;
 }
 
 export type SimSwapAnswer =
   | { status: 'swapped' | 'not_swapped'; swapped: boolean; latestSimChange: string | null; maxAgeHours: number; checkedAt: string }
   | { status: 'unknown'; reason: string; maxAgeHours: number; checkedAt: string };
 
+// The demo tools act as the demo bank, so they carry its console session.
+let consoleToken: string | null = null;
+export const setConsoleToken = (token: string | null) => {
+  consoleToken = token;
+};
+
 async function call<T>(method: string, path: string, body?: unknown): Promise<T> {
+  const headers: Record<string, string> = body !== undefined ? { 'content-type': 'application/json' } : {};
+  if (consoleToken) headers.authorization = `Bearer ${consoleToken}`;
   const res = await fetch(path, {
     method,
-    headers: body !== undefined ? { 'content-type': 'application/json' } : {},
+    headers,
     body: body !== undefined ? JSON.stringify(body) : undefined,
   });
   const data = await res.json().catch(() => ({}));

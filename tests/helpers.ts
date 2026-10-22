@@ -95,6 +95,7 @@ export async function harness(
     simSwapSettings?: Partial<SimSwapSettings>;
     simSwapRateLimit?: number;
     beforeReady?: (sys: ReturnType<typeof createSystem>) => Promise<unknown>;
+    consoleDemoTenantId?: string | null;
     admin?: { password: string; masterKey?: Buffer | null; keyActivationSeconds?: number; webhooks?: WebhookSender; production?: boolean; loginRateLimit?: number };
   } = {},
 ): Promise<Harness> {
@@ -146,6 +147,7 @@ export async function harness(
     webhooks: opts.admin?.webhooks,
     production: opts.admin?.production,
     adminLoginRateLimitPerMinute: opts.admin?.loginRateLimit,
+    consoleDemoTenantId: opts.consoleDemoTenantId,
   });
   await opts.beforeReady?.(sys);
   const tok = await sys.app.inject({

@@ -9,7 +9,7 @@ LOAD_URL=https://registry.example LOAD_CLIENT_ID=... LOAD_CLIENT_SECRET=... \
   LOAD_CUSTOMER_TOKEN_URL=https://registry.example/sim/customer-token pnpm load
 ```
 
-The script is `scripts/load.ts` (autocannon). It gets the bank token the way a bank client does, with OAuth 2.0 client credentials at `POST /v1/oauth/token`, and a customer token per test phone: signed in-process, or fetched from the bank's customer-token endpoint (`LOAD_CUSTOMER_TOKEN_URL`) for a remote target. The settings are listed in `.env.example` and `apps/web/docs/CONFIGURATION.md`. It exits non-zero if REG-7 fails.
+The script is `scripts/load.ts` (autocannon). It gets the bank token the way a bank client does, with OAuth 2.0 client credentials at `POST /v1/oauth/token`, and a customer token per test phone: signed in-process, or fetched from the bank's customer-token endpoint (`LOAD_CUSTOMER_TOKEN_URL`) for a remote target. The settings are listed in `.env.example` and `docs/CONFIGURATION.md`. It exits non-zero if REG-7 fails.
 
 Scenarios, each run for `LOAD_DURATION` seconds over `LOAD_CONNECTIONS` connections:
 

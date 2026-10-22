@@ -1,6 +1,8 @@
 import type { Language } from '@gaskiya/schemas';
 import type {
   AdminSession,
+  ConsoleCodeRecord,
+  ConsoleSession,
   ApiCallEvent,
   ApiClientRecord,
   ApiUsageDay,
@@ -294,6 +296,8 @@ export class MemoryStore implements Store {
   private tenantKeys = new Map<string, TenantKeyRecord>();
   private audit: AuditEntry[] = [];
   private adminSessions = new Map<string, AdminSession>();
+  private consoleCodes = new Map<string, ConsoleCodeRecord>();
+  private consoleSessions = new Map<string, ConsoleSession>();
   private usage = new Map<string, ApiUsageDay>();
   private errors: ApiCallEvent[] = [];
 
@@ -368,6 +372,32 @@ export class MemoryStore implements Store {
 
   async deleteAdminSession(idHash: string) {
     this.adminSessions.delete(idHash);
+  }
+
+  async listConsoleCodes(tenantId: string) {
+    return [...this.consoleCodes.values()].filter((c) => c.tenantId === tenantId).map((c) => ({ ...c }));
+  }
+
+  async getConsoleCode(idHash: string) {
+    const c = this.consoleCodes.get(idHash);
+    return c ? { ...c } : null;
+  }
+
+  async putConsoleCode(code: ConsoleCodeRecord) {
+    this.consoleCodes.set(code.idHash, { ...code });
+  }
+
+  async putConsoleSession(session: ConsoleSession) {
+    this.consoleSessions.set(session.idHash, { ...session });
+  }
+
+  async getConsoleSession(idHash: string) {
+    const s = this.consoleSessions.get(idHash);
+    return s ? { ...s } : null;
+  }
+
+  async deleteConsoleSession(idHash: string) {
+    this.consoleSessions.delete(idHash);
   }
 
   async recordApiCall(e: ApiCallEvent) {

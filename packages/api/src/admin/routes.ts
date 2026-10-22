@@ -8,11 +8,13 @@ import type { GaskiyaService } from '../service.ts';
 import { ORG_FEATURES, featureOn, isSuspended, type Tenant } from '../store/types.ts';
 import { AdminError, type Actor, type AdminRegistry } from './registry.ts';
 import { AdminLogin, CreateClient, CreateOrg, RotateClient, SetWebhook, SuspendOrg, UpdateOrg } from './schemas.ts';
+import { ConsoleAccessError, type ConsoleAccess } from '../console/access.ts';
 import { ADMIN_CSRF_HEADER, adminCookie, adminToken, type AdminAuth } from './session.ts';
 
 export interface AdminDeps {
   registry: AdminRegistry;
   auth: AdminAuth;
+  consoleAccess: ConsoleAccess;
   svc: GaskiyaService;
   mailer: Mailer | null;
   emailOptions?: EmailOptions;
@@ -31,7 +33,7 @@ declare module 'fastify' {
 const DAY_MS = 24 * 3600_000;
 
 interface Gen {
-  Params: { id: string; clientId: string; version: string };
+  Params: { id: string; clientId: string; version: string; codeId: string };
   Querystring: Record<string, string | undefined>;
 }
 
@@ -53,6 +55,59 @@ export function utcDays(now: Date, count: number): string[] {
 
 const sum = (o: Record<string, number> | undefined) => Object.values(o ?? {}).reduce((a, b) => a + b, 0);
 
+export async function orgSummary(registry: AdminRegistry, svc: GaskiyaService, t: Tenant) {
+  const days = utcDays(svc.now(), 7);
+  const [m, usage] = await Promise.all([svc.store.metrics(t.id).catch(() => null), svc.store.apiUsage(t.id, days).catch(() => null)]);
+  const clients = registry.clientsFor(t.id);
+  const keys = registry.keysFor(t.id);
+  const cov = m ? coverage(m) : null;
+  return {
+    id: t.id,
+    name: t.name,
+    kind: t.kind ?? 'bank',
+    source: registry.source(t.id),
+    status: t.status ?? 'active',
+    mode: t.mode ?? 'live',
+    bankCode: t.bankCode ?? null,
+    domains: t.domains,
+    features: Object.fromEntries(ORG_FEATURES.map((f) => [f, featureOn(t, f)])),
+    clients: { active: clients.filter((c) => c.status === 'active').length, total: clients.length },
+    lastUsedAt: clients.map((c) => c.lastUsedAt).filter((x): x is string => Boolean(x)).sort().pop() ?? null,
+    keyVersion: keys.find((k) => k.state === 'current')?.version ?? null,
+    hasKey: keys.some((k) => k.state === 'current'),
+    webhook: Boolean(t.webhookUrl),
+    alertEmails: t.alertEmails?.length ?? 0,
+    usage: m && cov
+      ? {
+          registrations: m.registrations,
+          receiptsRegistered: m.receiptsRegistered,
+          checks: cov.checked + sum(m.callChecks) + sum(m.links) + sum(m.receiptChecks) + sum(m.contactChecks),
+          confirmed: cov.confirmed,
+          notConfirmed: cov.notConfirmed,
+          cannotCheck: cov.cannotCheck,
+          reports: m.reports,
+          openCalls: m.openCalls,
+        }
+      : null,
+    api: usage
+      ? { today: usage.at(-1)?.calls ?? 0, last7Days: usage.reduce((a, u) => a + u.calls, 0), errors7Days: usage.reduce((a, u) => a + u.errors, 0) }
+      : null,
+  };
+}
+
+export const orgChecklist = (t: Tenant, s: Awaited<ReturnType<typeof orgSummary>>) => [
+  { id: 'profile', label: 'Domains and sender IDs listed', done: t.domains.length > 0 && t.senderIds.length > 0 },
+  { id: 'tokenKeys', label: 'Customer token keys (JWKS) set', done: Boolean(t.tokenKeysUrl || t.tokenKeys) },
+  { id: 'hashingKey', label: 'Hashing key in place', done: s.hasKey },
+  { id: 'client', label: 'An active API client', done: s.clients.active > 0 },
+  { id: 'firstCall', label: 'First registry call made', done: Boolean(s.lastUsedAt) || (s.api?.last7Days ?? 0) > 0 || (s.usage?.registrations ?? 0) > 0 },
+  { id: 'contacts', label: 'Official contacts published', done: Boolean(t.officialContacts?.phones?.length || t.officialContacts?.emails?.length || t.officialContacts?.whatsapp?.length) },
+  { id: 'alerts', label: 'Alert email or webhook set', done: Boolean(t.alertEmails?.length || t.webhookUrl) },
+  ...((t.kind ?? 'bank') === 'bank' ? [{ id: 'bankCode', label: 'NIBSS bank code set (transfer receipts)', done: Boolean(t.bankCode) }] : []),
+  { id: 'live', label: 'Switched to live', done: (t.mode ?? 'live') === 'live' && !isSuspended(t) },
+];
+
+
 export function registerAdminRoutes(app: FastifyInstance, d: AdminDeps) {
   const { registry, auth, svc } = d;
   const actor = (req: FastifyRequest<Gen>): Actor => ({ username: req.admin?.username ?? 'unknown', ip: req.ip ?? null });
@@ -64,7 +119,7 @@ export function registerAdminRoutes(app: FastifyInstance, d: AdminDeps) {
       try {
         return await fn(req, reply);
       } catch (err) {
-        if (err instanceof AdminError) return fail(reply, err.statusCode, err.code, err.message);
+        if (err instanceof AdminError || err instanceof ConsoleAccessError) return fail(reply, err.statusCode, err.code, err.message);
         throw err;
       }
     };
@@ -91,70 +146,22 @@ export function registerAdminRoutes(app: FastifyInstance, d: AdminDeps) {
   };
   const admin = { preHandler: requireAdmin };
 
-  const orgSummary = async (t: Tenant) => {
-    const days = utcDays(svc.now(), 7);
-    const [m, usage] = await Promise.all([svc.store.metrics(t.id).catch(() => null), svc.store.apiUsage(t.id, days).catch(() => null)]);
-    const clients = registry.clientsFor(t.id);
-    const keys = registry.keysFor(t.id);
-    const cov = m ? coverage(m) : null;
-    return {
-      id: t.id,
-      name: t.name,
-      kind: t.kind ?? 'bank',
-      source: registry.source(t.id),
-      status: t.status ?? 'active',
-      mode: t.mode ?? 'live',
-      bankCode: t.bankCode ?? null,
-      domains: t.domains,
-      features: Object.fromEntries(ORG_FEATURES.map((f) => [f, featureOn(t, f)])),
-      clients: { active: clients.filter((c) => c.status === 'active').length, total: clients.length },
-      lastUsedAt: clients.map((c) => c.lastUsedAt).filter((x): x is string => Boolean(x)).sort().pop() ?? null,
-      keyVersion: keys.find((k) => k.state === 'current')?.version ?? null,
-      hasKey: keys.some((k) => k.state === 'current'),
-      webhook: Boolean(t.webhookUrl),
-      alertEmails: t.alertEmails?.length ?? 0,
-      usage: m && cov
-        ? {
-            registrations: m.registrations,
-            receiptsRegistered: m.receiptsRegistered,
-            checks: cov.checked + sum(m.callChecks) + sum(m.links) + sum(m.receiptChecks) + sum(m.contactChecks),
-            confirmed: cov.confirmed,
-            notConfirmed: cov.notConfirmed,
-            cannotCheck: cov.cannotCheck,
-            reports: m.reports,
-            openCalls: m.openCalls,
-          }
-        : null,
-      api: usage
-        ? { today: usage.at(-1)?.calls ?? 0, last7Days: usage.reduce((a, u) => a + u.calls, 0), errors7Days: usage.reduce((a, u) => a + u.errors, 0) }
-        : null,
-    };
-  };
-
-  const checklist = (t: Tenant, s: Awaited<ReturnType<typeof orgSummary>>) => [
-    { id: 'profile', label: 'Domains and sender IDs listed', done: t.domains.length > 0 && t.senderIds.length > 0 },
-    { id: 'tokenKeys', label: 'Customer token keys (JWKS) set', done: Boolean(t.tokenKeysUrl || t.tokenKeys) },
-    { id: 'hashingKey', label: 'Hashing key in place', done: s.hasKey },
-    { id: 'client', label: 'An active API client', done: s.clients.active > 0 },
-    { id: 'firstCall', label: 'First registry call made', done: Boolean(s.lastUsedAt) || (s.api?.last7Days ?? 0) > 0 || (s.usage?.registrations ?? 0) > 0 },
-    { id: 'contacts', label: 'Official contacts published', done: Boolean(t.officialContacts?.phones?.length || t.officialContacts?.emails?.length || t.officialContacts?.whatsapp?.length) },
-    { id: 'alerts', label: 'Alert email or webhook set', done: Boolean(t.alertEmails?.length || t.webhookUrl) },
-    ...((t.kind ?? 'bank') === 'bank' ? [{ id: 'bankCode', label: 'NIBSS bank code set (transfer receipts)', done: Boolean(t.bankCode) }] : []),
-    { id: 'live', label: 'Switched to live', done: (t.mode ?? 'live') === 'live' && !isSuspended(t) },
-  ];
+  const summaryOf = (t: Tenant) => orgSummary(registry, svc, t);
 
   const orgDetail = async (id: string) => {
     const t = registry.tenant(id);
     const rec = registry.record(id);
-    const summary = await orgSummary(t);
+    const summary = await summaryOf(t);
     const days = utcDays(svc.now(), 14);
-    const [metrics, usage, errors, alerts, campaigns, audit] = await Promise.all([
+    const [metrics, usage, errors, alerts, campaigns, audit, consoleCodes, consoleCode] = await Promise.all([
       svc.metrics(id).catch(() => null),
       svc.store.apiUsage(id, days).catch(() => []),
       svc.store.apiErrors(id, 25).catch(() => []),
       svc.store.listAlerts(id, 10).catch(() => []),
       svc.store.listCampaigns(id).catch(() => []),
       svc.store.listAudit({ tenantId: id, limit: 40 }).catch(() => []),
+      d.consoleAccess.list(id).catch(() => []),
+      d.consoleAccess.current(id).catch(() => null),
     ]);
     const now = svc.now().getTime();
     return {
@@ -187,7 +194,9 @@ export function registerAdminRoutes(app: FastifyInstance, d: AdminDeps) {
         liveAdvisories: campaigns.filter((c) => c.advisory.status === 'approved' && (!c.advisory.expiresAt || Date.parse(c.advisory.expiresAt) > now)).length,
       },
       audit,
-      checklist: checklist(t, summary),
+      consoleCodes,
+      consoleCode: consoleCode?.code ?? null,
+      checklist: orgChecklist(t, summary),
     };
   };
 
@@ -205,6 +214,15 @@ export function registerAdminRoutes(app: FastifyInstance, d: AdminDeps) {
     return { token: s.token, username: s.username, expiresAt: s.expiresAt };
   });
 
+  // Fills the sign-in form on a developer's machine only: a local ADMIN_PASSWORD, asked for from this machine.
+  app.get<Gen>('/v1/admin/login-hint', async (req, reply) => {
+    const login = auth.localLogin;
+    const local = ['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(req.socket.remoteAddress ?? '');
+    if (!login || !local) return fail(reply, 404, 'not_found', 'Not found');
+    reply.header('cache-control', 'no-store');
+    return login;
+  });
+
   app.get<Gen>('/v1/admin/session', admin, async (req) => ({ username: req.admin!.username, expiresAt: req.admin!.expiresAt }));
 
   app.post<Gen>('/v1/admin/session/logout', admin, async (req, reply) => {
@@ -216,7 +234,7 @@ export function registerAdminRoutes(app: FastifyInstance, d: AdminDeps) {
 
   app.get<Gen>('/v1/admin/overview', admin, run(async () => {
     const tenants = registry.orgIds().map((id) => registry.tenant(id));
-    const orgs = await Promise.all(tenants.map(orgSummary));
+    const orgs = await Promise.all(tenants.map(summaryOf));
     const days = utcDays(svc.now(), 14);
     const daily = await Promise.all(tenants.map((t) => svc.store.apiUsage(t.id, days).catch(() => [])));
     const apiByDay = days.map((day, i) => ({ day, calls: daily.reduce((a, u) => a + (u[i]?.calls ?? 0), 0), errors: daily.reduce((a, u) => a + (u[i]?.errors ?? 0), 0) }));
@@ -255,12 +273,14 @@ export function registerAdminRoutes(app: FastifyInstance, d: AdminDeps) {
     return { entries: (action ? entries.filter((e) => e.action.startsWith(action)) : entries).slice(0, limit) };
   }));
 
-  app.get<Gen>('/v1/admin/orgs', admin, run(async () => ({ orgs: await Promise.all(registry.orgIds().map((id) => orgSummary(registry.tenant(id)))) })));
+  app.get<Gen>('/v1/admin/orgs', admin, run(async () => ({ orgs: await Promise.all(registry.orgIds().map((id) => summaryOf(registry.tenant(id)))) })));
 
   app.post<Gen>('/v1/admin/orgs', admin, run(async (req, reply) => {
     const body = parse(CreateOrg, req.body, reply);
     if (!body) return;
     const t = await registry.createOrg(body, actor(req));
+    const code = await d.consoleAccess.ensure(t.id, actor(req).username).catch(() => null);
+    if (code?.created) await registry.audit(actor(req), 'console_code.issue', t.id, code.view.id, { generation: code.view.generation });
     return reply.code(201).send(await orgDetail(t.id));
   }));
 
@@ -318,6 +338,13 @@ export function registerAdminRoutes(app: FastifyInstance, d: AdminDeps) {
   app.post<Gen>('/v1/admin/orgs/:id/clients/:clientId/restore', admin, run(async (req) => ({
     client: await registry.setClientStatus(req.params.id, req.params.clientId, 'active', actor(req)),
   })));
+
+  app.post<Gen>('/v1/admin/orgs/:id/console-code/regenerate', admin, run(async (req) => {
+    registry.tenant(req.params.id);
+    const r = await d.consoleAccess.regenerate(req.params.id, actor(req).username);
+    await registry.audit(actor(req), 'console_code.regenerate', req.params.id, r.view.id, { generation: r.view.generation });
+    return orgDetail(req.params.id);
+  }));
 
   app.post<Gen>('/v1/admin/orgs/:id/keys/rotate', admin, run(async (req) => ({ keys: await registry.rotateKey(req.params.id, actor(req)) })));
 

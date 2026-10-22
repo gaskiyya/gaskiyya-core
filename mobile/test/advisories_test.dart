@@ -186,6 +186,17 @@ void main() {
       await tidy(tester, state, registry);
     });
 
+    testWidgets('several organisations with no warnings share one line that names none of them', (tester) async {
+      final registry = twoBanks();
+      final state = await tester.runAsync(() => linkedState(registry, ['demobank', 'acme']));
+      await tester.runAsync(() => state!.refreshAdvisories());
+      await show(tester, CupertinoPageScaffold(child: AdvisoriesSection(state: state!)));
+      expect(find.text(Copy.I.t('advisory.noneAll')), findsOneWidget);
+      expect(find.textContaining('DemoBank'), findsNothing);
+      expect(find.textContaining('Acme Bank'), findsNothing);
+      await tidy(tester, state, registry);
+    });
+
     testWidgets('fits a phone at 2x text with no overflow, and holds still when motion is reduced', (tester) async {
       phoneSize(tester);
       final registry = twoBanks();

@@ -45,7 +45,7 @@ class _CallsScreenState extends State<CallsScreen> {
                   final unchecked = state.callUnchecked;
                   final quiet = state.links.where((l) => l.callChecked && l.liveCall == null).map((l) => l.bank.name).toList();
                   final names = state.links.map((l) => l.bank.name).toList();
-                  final bank = names.isEmpty ? c.t('app.common.yourBank').cap : c.orList(names);
+                  final bank = names.length == 1 ? names.single : c.t('app.common.yourBank');
                   final allQuiet = calling.isEmpty && unchecked.isEmpty;
                   final kinds = state.links.map((l) => l.bank.kind).toSet();
                   final kind = kinds.length == 1 ? kinds.first : 'bank';
@@ -58,7 +58,7 @@ class _CallsScreenState extends State<CallsScreen> {
                       child: ScaleTransition(scale: Tween(begin: 0.94, end: 1.0).animate(a), child: child),
                     ),
                     child: allQuiet
-                        ? _notCalling(context, c, bank, kind)
+                        ? _notCalling(context, c, bank, kind, named: names.length == 1)
                         : Column(
                             key: ValueKey([
                               for (final l in calling) ...l.liveCalls.map((x) => x.id),
@@ -74,9 +74,15 @@ class _CallsScreenState extends State<CallsScreen> {
                                 if (calling.isNotEmpty || l != unchecked.first) const SizedBox(height: 28),
                                 _cannotCheck(context, c, names.length > 1 ? l.bank.name : null, l.bank),
                               ],
-                              if (quiet.isNotEmpty) ...[
+                              if (calling.isEmpty && quiet.isNotEmpty) ...[
                                 const SizedBox(height: 22),
-                                GroupCard(child: Text(c.tOrg('call.not_calling.body', kind, {'bank': c.orList(quiet)}), style: G.callout(context))),
+                                GroupCard(
+                                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                    Text(c.t('official.org.notCallingTitle', {'bank': c.orList(quiet)}), style: G.headline(context)),
+                                    const SizedBox(height: 4),
+                                    Text(c.tOrg('call.not_calling.body', kind, {'bank': c.orList(quiet)}), style: G.subhead(context)),
+                                  ]),
+                                ),
                               ],
                               if (unchecked.isEmpty) ...[
                                 const SizedBox(height: 22),
@@ -100,16 +106,10 @@ class _CallsScreenState extends State<CallsScreen> {
       children: [
         for (final call in calls) ...[_callCard(context, c, bank, call), const SizedBox(height: 16)],
         GroupCard(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            for (final call in calls) ...[
-              Text(c.t('call.calling.body', {'purpose': c.purpose(call.purpose)}), style: G.callout(context)),
-              const SizedBox(height: 12),
-            ],
-            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Icon(CupertinoIcons.exclamationmark_triangle_fill, size: 18, color: G.orange.resolveFrom(context)),
-              const SizedBox(width: 10),
-              Expanded(child: Text(c.t(calls.length > 1 ? 'call.mismatchMany' : 'call.mismatch'), style: G.subhead(context).copyWith(color: G.label.resolveFrom(context), fontWeight: FontWeight.w600))),
-            ]),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Icon(CupertinoIcons.exclamationmark_triangle_fill, size: 18, color: G.orange.resolveFrom(context)),
+            const SizedBox(width: 10),
+            Expanded(child: Text(c.t(calls.length > 1 ? 'call.mismatchMany' : 'call.mismatch'), style: G.subhead(context).copyWith(color: G.label.resolveFrom(context), fontWeight: FontWeight.w600))),
           ]),
         ),
       ],
@@ -169,14 +169,15 @@ class _CallsScreenState extends State<CallsScreen> {
     );
   }
 
-  Widget _notCalling(BuildContext context, Copy c, String bank, String kind) {
+  Widget _notCalling(BuildContext context, Copy c, String bank, String kind, {bool named = false}) {
     return Column(
       key: const ValueKey('none'),
       children: [
         const SizedBox(height: 4),
         const Art3D('call', size: 230),
         const SizedBox(height: 6),
-        Text(c.tOrg('call.not_calling.title', kind, {'bank': bank}), textAlign: TextAlign.center, style: G.title1(context)),
+        Text(named ? c.t('official.org.notCallingTitle', {'bank': bank}) : c.tOrg('call.not_calling.title', kind, {'bank': bank}),
+            textAlign: TextAlign.center, style: G.title1(context)),
         const SizedBox(height: 10),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),

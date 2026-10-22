@@ -70,10 +70,9 @@ void main() {
     await _shot(tester, '01_onboarding_1');
 
     await tester.tap(find.text('Skip'));
-    await _until(tester, find.text('DemoBank'));
-    await tester.tap(find.text('DemoBank'));
-    await _wait(tester, const Duration(milliseconds: 400));
+    await _until(tester, find.byType(CupertinoTextField));
     await tester.enterText(find.byType(CupertinoTextField), '8012345678');
+    await _until(tester, find.byKey(const ValueKey('found-demobank')));
     await _shot(tester, '05_link_bank');
     await tester.tap(find.byKey(const ValueKey('signIn')));
     await _until(tester, find.text('Recent messages'));

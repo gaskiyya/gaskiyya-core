@@ -8,8 +8,6 @@ import 'package:gaskiya/src/ui/screens/home.dart';
 
 import 'support.dart';
 
-Color? dotColor(WidgetTester tester) => (tester.widget<Container>(find.byKey(const ValueKey('status-dot'))).decoration as BoxDecoration?)?.color;
-
 void main() {
   setUpAll(() => Copy.fromJson(File('assets/copy.json').readAsStringSync()));
 
@@ -19,20 +17,22 @@ void main() {
     final state = await linkedState(registry, ['demobank']);
     await tester.pumpWidget(hostWith(SettingsScreen(state: state), disableAnimations: true));
     await tester.pump();
-    for (final key in ['app.settings.privacy', 'app.settings.about', 'banks.heading']) {
+    for (final key in ['app.settings.privacy', 'app.settings.about']) {
       final header = tester.widget<Text>(find.text(Copy.I.t(key).toUpperCase()));
       expect(header.style?.fontSize, 13, reason: key);
       expect(header.style?.fontWeight, FontWeight.w400, reason: key);
     }
     final privacy = tester.widget<Text>(find.text(Copy.I.t('app.settings.textStays')));
     expect(privacy.maxLines, greaterThan(1));
+    expect(find.text(Copy.I.t('banks.heading').toUpperCase()), findsNothing);
+    expect(find.text('DemoBank'), findsNothing);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(hostWith(const SizedBox()));
     state.dispose();
     await registry.close();
   });
 
-  testWidgets('F24: inbox rows show the channel, and the status dot is green only while the registry answers', (tester) async {
+  testWidgets('F24: inbox rows show the channel, and the Check screen carries no bank tag', (tester) async {
     phoneSize(tester);
     final registry = FakeRegistry([testBank('demobank', 'DemoBank')]);
     registry.inboxItems['demobank'] = [
@@ -45,13 +45,8 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
     }
     expect(find.textContaining(Copy.I.channel('whatsapp')), findsOneWidget);
-    final grey = CupertinoColors.systemGrey.color.toARGB32();
-    expect(dotColor(tester)!.toARGB32(), isNot(grey));
-
-    registry.failingCallChecks.add('demobank');
-    await tester.runAsync(state.refreshCall);
-    await tester.pump();
-    expect(dotColor(tester)!.toARGB32(), grey);
+    expect(find.byKey(const ValueKey('status-dot')), findsNothing);
+    expect(find.descendant(of: find.byType(CupertinoSliverNavigationBar), matching: find.text('DemoBank')), findsNothing);
     await tester.pumpWidget(hostWith(const SizedBox()));
     await tester.pump(const Duration(seconds: 1));
     state.dispose();

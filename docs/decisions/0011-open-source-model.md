@@ -2,7 +2,7 @@
 
 **Status:** accepted
 
-A third adapter, `OllamaProvider` (`apps/api/src/ai/ollama.ts`), runs open-weights models through [Ollama](https://ollama.com)'s local HTTP API. It is selected with `AI_PROVIDER=ollama` and needs no key. Gemini and OpenAI remain available; a bank chooses.
+A third adapter, `OllamaProvider` (`packages/api/src/ai/ollama.ts`), runs open-weights models through [Ollama](https://ollama.com)'s local HTTP API. It is selected with `AI_PROVIDER=ollama` and needs no key. Gemini and OpenAI remain available; a bank chooses.
 
 | Use | Default model | Approx. download |
 | --- | --- | --- |

@@ -1,6 +1,6 @@
 # Email templates
 
-Rendered by `pnpm emails:preview` with sample data. Templates: `apps/api/src/emails/`.
+Rendered by `pnpm emails:preview` with sample data. Templates: `packages/api/src/emails/`.
 
 - [Welcome to Gaskiya, DemoBank](01_welcome.html) (`welcome`)
 - [New scam campaign: 3 customer reports](02_campaign_new.html) (`campaign_new`)

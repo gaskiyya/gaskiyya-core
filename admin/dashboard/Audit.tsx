@@ -22,9 +22,17 @@ const LABELS: Record<string, string> = {
   'webhook.remove': 'Webhook removed',
   'webhook.test': 'Webhook tested',
   'email.test': 'Test email sent',
+  'console_code.issue': 'Console code issued',
+  'console_code.revoke': 'Console code revoked',
+  'console_code.regenerate': 'Console code regenerated',
+  'console.login': 'Bank signed in to console',
+  'console.login_failed': 'Failed console sign-in',
+  'console.advisory_approve': 'Advisory approved (console)',
+  'console.advisory_withdraw': 'Advisory withdrawn (console)',
+  'console.campaign_dismiss': 'Campaign dismissed (console)',
 };
 
-const tone = (a: string) => (/suspend|revoke|retire|failed|remove/.test(a) ? 'red' : /create|reactivate|restore|login$/.test(a) ? 'green' : /rotate/.test(a) ? 'orange' : undefined);
+const tone = (a: string) => (/suspend|revoke|retire|failed|remove|withdraw/.test(a) ? 'red' : /create|issue|reactivate|restore|login$|approve/.test(a) ? 'green' : /rotate/.test(a) ? 'orange' : undefined);
 
 function details(d: AuditEntry['details']) {
   const parts = Object.entries(d).map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(', ') : String(v)}`);

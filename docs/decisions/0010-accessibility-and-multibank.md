@@ -55,6 +55,6 @@ the new keys sit under new top-level namespaces only.
 
 No verdict wording, canonicalisation or principle changed. Widget tests cover
 the call-code label, the hidden art, reduced motion and the 2x text size
-(`apps/mobile/test/a11y_test.dart`); Dart tests cover the upgrade migration,
+(`mobile/test/a11y_test.dart`); Dart tests cover the upgrade migration,
 adding and removing banks, and routing each check to the selected bank's
-tenant and number (`apps/mobile/test/multibank_test.dart`).
+tenant and number (`mobile/test/multibank_test.dart`).

@@ -20,7 +20,7 @@ Availability in Africa (checked 2026-10-20):
 
 ## Decision
 
-1. **A caution, never a verdict.** The pure functions in `apps/api/src/domain/verdict.ts` (`decideSimSwapWarnings`, `decideSimSwapStatus`, `decideOtpHold`) take a verdict as input and return warnings or a flag. They never return a verdict. A SIM-swap answer cannot confirm, upgrade or downgrade anything (principle 1).
+1. **A caution, never a verdict.** The pure functions in `packages/api/src/domain/verdict.ts` (`decideSimSwapWarnings`, `decideSimSwapStatus`, `decideOtpHold`) take a verdict as input and return warnings or a flag. They never return a verdict. A SIM-swap answer cannot confirm, upgrade or downgrade anything (principle 1).
 2. **Fail closed.** If the provider errors or times out, the probe is `{ ok: false }`. The bank's answer is then `status: "unknown"`, never `"not_swapped"`. No customer screen ever says "no swap" or "SIM fine".
 3. **Behind an interface.** `SimSwapProvider.check(phone, maxAgeHours)` has these implementations:
    - `CamaraSimSwap`: HTTP, OAuth 2.0 client credentials, configurable timeout. Every non-2xx answer, malformed body or timeout throws `SimSwapError`.

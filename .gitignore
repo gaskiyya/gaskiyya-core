@@ -16,3 +16,4 @@ coverage
 /gaskiyya-sdk-node/
 .firebase/
 __pycache__/
+*.tsbuildinfo

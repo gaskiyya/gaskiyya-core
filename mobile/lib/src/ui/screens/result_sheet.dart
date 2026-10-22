@@ -12,6 +12,9 @@ import '../widgets/widgets.dart';
 
 enum CheckKind { message, link, screenshot, contact }
 
+/// One organisation a message or link is checked against.
+typedef CheckTarget = ({String bank, String kind, GaskiyaClient client});
+
 class CheckRequest {
   CheckRequest.message(this.text) : kind = CheckKind.message, screenshot = null;
   CheckRequest.link(this.text) : kind = CheckKind.link, screenshot = null;
@@ -23,15 +26,15 @@ class CheckRequest {
   final Screenshot? screenshot;
 }
 
-Future<void> showResult(BuildContext context, GaskiyaClient client, String bank, CheckRequest req, {String kind = 'bank'}) {
+Future<void> showResult(BuildContext context, GaskiyaClient client, String bank, CheckRequest req, {String kind = 'bank', List<CheckTarget> others = const []}) {
   return showCupertinoSheet<void>(
     context: context,
-    scrollableBuilder: (_, controller) => ResultSheet(client: client, bank: bank, kind: kind, request: req, controller: controller),
+    scrollableBuilder: (_, controller) => ResultSheet(client: client, bank: bank, kind: kind, request: req, controller: controller, others: others),
   );
 }
 
 class ResultSheet extends StatefulWidget {
-  const ResultSheet({super.key, required this.client, required this.bank, required this.request, this.controller, this.reader, this.kind = 'bank'});
+  const ResultSheet({super.key, required this.client, required this.bank, required this.request, this.controller, this.reader, this.kind = 'bank', this.others = const []});
   final ScrollController? controller;
 
   final TextReader? reader;
@@ -40,6 +43,10 @@ class ResultSheet extends StatefulWidget {
 
   final String kind;
   final CheckRequest request;
+
+  /// Further organisations the number belongs to. Messages and links are
+  /// checked against all of them, and the strongest answer is shown.
+  final List<CheckTarget> others;
 
   @override
   State<ResultSheet> createState() => _ResultSheetState();
@@ -58,10 +65,53 @@ class _ResultSheetState extends State<ResultSheet> {
   bool _slow = false;
   Timer? _slowTimer;
 
-  Copy get c => Copy.I;
-  String get _bank => _result?.bank ?? _link?.bank ?? widget.bank;
+  late GaskiyaClient _client = widget.client;
+  late String _kind = widget.kind;
+  String? _pooled;
 
-  String _org(String path) => c.tOrg(path, widget.kind, {'bank': _bank});
+  Copy get c => Copy.I;
+  String get _bank => _pooled ?? _result?.bank ?? _link?.bank ?? widget.bank;
+
+  String _org(String path) => c.tOrg(path, _kind, {'bank': _bank});
+
+  List<CheckTarget> get _targets => [(bank: widget.bank, kind: widget.kind, client: widget.client), ...widget.others];
+
+  void _use(CheckTarget t, {required bool pooled}) {
+    _client = t.client;
+    _kind = t.kind;
+    _pooled = pooled && widget.others.isNotEmpty ? c.orList([for (final x in _targets) x.bank]) : null;
+  }
+
+  Future<LinkResult?> _verifyLink(String url) async {
+    final ts = _targets;
+    final all = await Future.wait(ts.map((t) => t.client.verifyLink(url)));
+    var i = all.indexWhere((l) => l != null && (l.belongs || l.officialApp));
+    final strong = i >= 0;
+    if (i < 0) i = all.indexWhere((l) => l != null);
+    if (i < 0) return null;
+    _use(ts[i], pooled: !strong);
+    return all[i];
+  }
+
+  Future<VerifyResult> _verifyMessage(CheckRequest r) async {
+    final ts = _targets;
+    Future<VerifyResult> one(CheckTarget t) => r.kind == CheckKind.message
+        ? t.client.verifyText(r.text)
+        : checkScreenshot(t.client, widget.reader ?? defaultTextReader(), r.screenshot!);
+    if (ts.length == 1) return one(ts.single);
+    ApiException? failed;
+    final all = await Future.wait(ts.map((t) => one(t).catchError((Object e) {
+          if (e is! ApiException) throw e;
+          failed ??= e;
+          return VerifyResult.unavailable();
+        })));
+    if (failed != null && all.every((v) => v.verdict == Verdict.cannotCheck)) throw failed!;
+    var i = all.indexWhere((v) => v.verdict == Verdict.confirmed);
+    if (i < 0) i = all.indexWhere((v) => v.verdict == Verdict.notConfirmed);
+    if (i < 0) i = 0;
+    _use(ts[i], pooled: all[i].verdict != Verdict.confirmed);
+    return all[i];
+  }
 
   @override
   void initState() {
@@ -81,7 +131,7 @@ class _ResultSheetState extends State<ResultSheet> {
     try {
       switch (r.kind) {
         case CheckKind.link:
-          final l = await widget.client.verifyLink(r.text);
+          final l = await _verifyLink(r.text);
           if (!mounted) return;
           setState(() => l == null ? _linkFailed = true : _link = l);
           if (l?.belongs == true || l?.officialApp == true) {
@@ -104,9 +154,7 @@ class _ResultSheetState extends State<ResultSheet> {
           }
         case CheckKind.message:
         case CheckKind.screenshot:
-          final v = r.kind == CheckKind.message
-              ? await widget.client.verifyText(r.text)
-              : await checkScreenshot(widget.client, widget.reader ?? defaultTextReader(), r.screenshot!);
+          final v = await _verifyMessage(r);
           if (!mounted) return;
           setState(() => _result = v);
           _haptic(v.verdict);
@@ -138,7 +186,7 @@ class _ResultSheetState extends State<ResultSheet> {
 
   Future<void> _explain(String text) async {
     setState(() => _explaining = true);
-    final e = await widget.client.explain(text, language: c.language);
+    final e = await _client.explain(text, language: c.language);
     if (mounted) {
       setState(() {
         _explanation = e;
@@ -158,7 +206,7 @@ class _ResultSheetState extends State<ResultSheet> {
       ),
     );
     if (ok != true || text.isEmpty) return;
-    final sent = await widget.client.report(text, _explanation?.indicators ?? const []);
+    final sent = await _client.report(text, _explanation?.indicators ?? const []);
     if (!mounted) return;
     HapticFeedback.mediumImpact();
     setState(() => _reported = sent);

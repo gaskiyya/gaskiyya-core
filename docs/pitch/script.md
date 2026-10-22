@@ -2,7 +2,7 @@
 
 Two parts: a timed three-minute spoken pitch, and the 90-second live demo click path with a recovery line for each step. Figures and their sources are in [deck.md](deck.md#sources); the tags below ([S1] and so on) are not read aloud.
 
-The spoken pitch runs 3:00 on its own. The live demo is a separate 90-second block, cued at 1:20. With the demo the whole slot is 4:30 [CONFIRM: slot length and whether the demo counts inside it]. If the slot is 3:00 in total, play the one-minute showcase film in place of the live demo (`apps/web/docs/DEMO.md`, section 7) and cut the block marked *(cut if short)*.
+The spoken pitch runs 3:00 on its own. The live demo is a separate 90-second block, cued at 1:20. With the demo the whole slot is 4:30 [CONFIRM: slot length and whether the demo counts inside it]. If the slot is 3:00 in total, play the one-minute showcase film in place of the live demo (`docs/DEMO.md`, section 7) and cut the block marked *(cut if short)*.
 
 Pronunciation: Gaskiyya is "gas-KEE-ya", stress on the middle syllable.
 
@@ -46,7 +46,7 @@ Say the track name: "Strengthening Trust in Digital Banking".
 
 > We are asking for one thing: a pilot. One message type and outbound calls, inside one bank. Let us prove it is really your bank.
 
-Word count check: run `sed -n '/^## Part 1/,/^## Part 2/p' apps/web/docs/pitch/script.md | grep '^>' | wc -w` before rehearsal.
+Word count check: run `sed -n '/^## Part 1/,/^## Part 2/p' docs/pitch/script.md | grep '^>' | wc -w` before rehearsal.
 
 Spoken figures and where they come from: "seventeen point six seven billion naira" and "eighty thousand customers" are NIBSS 2023 [S1]; "about two in three" is our 65.8%, derived from NIBSS 2023 case counts [S1]; "most prevalent technique" is NIBSS, 22 Jan 2026 [S2]; "ninety-three percent" and "at least one in two" are EFInA A2F 2023 [S7].
 
@@ -54,13 +54,13 @@ Spoken figures and where they come from: "seventeen point six seven billion nair
 
 Open the demo with one sentence: "This is a simulated bank. The sandbox console plays the bank's systems; no live banking or production APIs are involved."
 
-Set-up before going on stage (`apps/web/docs/DEMO.md`, sections 1 to 3):
+Set-up before going on stage (`docs/DEMO.md`, sections 1 to 3):
 
 - `pnpm dev` running on the laptop; `curl http://localhost:8080/health` returns `{"ok":true}`.
 - The console at `http://localhost:8080/console/` on the projector. Press **Reset** in the console header once.
 - The phone on the same hotspot, running the app (`flutter run --dart-define=API_URL=http://<LAN-ip>:8080`), linked to DemoBank as Amina Bello (`8012345678` after `+234`). From the phone's browser, `http://<LAN-ip>:8080/health` shows `{"ok":true}`.
 - For step (e), nothing extra: `pnpm dev` sets `USSD_WEBHOOK_TOKEN` for the registry and the console when `.env` lacks one (`scripts/dev.mjs`), and the console's **USSD** page posts Africa's Talking-style callbacks for the demo code `*347*123#` through the console server, which holds the token. If the page says "USSD is off", the token is missing: stop and restart `pnpm dev`.
-- The fallback recording and the showcase film copied to `~/Desktop/gaskiyya-demo/` and opened once (`apps/web/docs/DEMO.md`, section 7).
+- The fallback recording and the showcase film copied to `~/Desktop/gaskiyya-demo/` and opened once (`docs/DEMO.md`, section 7).
 
 Demo customers: Amina Bello (+2348012345678), Tunde Okafor (+2348098765432), Chidinma Eze (+2348031112222).
 
@@ -73,7 +73,7 @@ Demo customers: Amina Bello (+2348012345678), Tunde Okafor (+2348098765432), Chi
 
 Say: "The bank registered it as it sent it. Exact match, for Amina's number: confirmed."
 
-*If it breaks:* if the phone shows "Cannot check right now" just after a restart, wait 30 seconds and tap again (`apps/web/docs/DEMO.md`, section 5). If the phone cannot reach the laptop, use the simulated iPhone on the right of the console's Messages page: tap the message, choose **Check with Gaskiyya**. If the server is gone, run `pnpm --filter @gaskiya/web dev:sandbox` and continue at `http://localhost:5171` (`apps/web/docs/DEMO.md`, section 7).
+*If it breaks:* if the phone shows "Cannot check right now" just after a restart, wait 30 seconds and tap again (`docs/DEMO.md`, section 5). If the phone cannot reach the laptop, use the simulated iPhone on the right of the console's Messages page: tap the message, choose **Check with Gaskiyya**. If the server is gone, run `pnpm --filter @gaskiya/web dev:sandbox` and continue at `http://localhost:5171` (`docs/DEMO.md`, section 7).
 
 ### (b) One changed character shows "Not confirmed" (0:15-0:30)
 
@@ -82,7 +82,7 @@ Say: "The bank registered it as it sent it. Exact match, for Amina's number: con
 
 Say: "One hyphen. Different fingerprint. Not confirmed, and it tells Amina what her bank really sent her today."
 
-*If it breaks:* without an AI key the "why it looks fake" card shows fixed fallback text; that is expected and the verdict is the same (`apps/web/docs/DEMO.md`, section 6). If the tampered message does not arrive, use **Fake message** instead, which sends a scam that was never registered. Same simulated-phone and sandbox fallbacks as step (a).
+*If it breaks:* without an AI key the "why it looks fake" card shows fixed fallback text; that is expected and the verdict is the same (`docs/DEMO.md`, section 6). If the tampered message does not arrive, use **Fake message** instead, which sends a scam that was never registered. Same simulated-phone and sandbox fallbacks as step (a).
 
 ### (c) The same message replayed to another number shows "Not confirmed" (0:30-0:45)
 
@@ -102,7 +102,7 @@ Say: "Word for word the bank's real message. But the bank sent it to Amina, not 
 
 Say: "Caller ID can be faked. This code cannot. If the caller cannot read it, hang up."
 
-*If it breaks:* if the phone does not show the code, pull down to refresh the Calls tab or tap **Check again** (live events can miss; known issue F2 in `apps/web/docs/qa/2026-10-20-qa-report.md`). If it still fails, show the code on the console's simulated iPhone, which rings on **Announce and call**.
+*If it breaks:* if the phone does not show the code, pull down to refresh the Calls tab or tap **Check again** (live events can miss; known issue F2 in `docs/qa/2026-10-20-qa-report.md`). If it still fails, show the code on the console's simulated iPhone, which rings on **Announce and call**.
 
 ### (e) USSD from the console's feature phone (0:58-1:12)
 
@@ -123,10 +123,10 @@ Say: "No smartphone, no data. Same registry, same answer."
 
 Say: "Three customers reported fakes. The agent grouped them and drafted a warning. Nothing reaches customers until an analyst approves it, and even then the bank sends it through its own channels."
 
-*If it breaks:* if no campaign appears, click **Run agent** once more (the agent also runs every 60 seconds by default). Without an AI key the grouping and the template briefing still work (`apps/web/docs/DEMO.md`, section 6). If the console is wedged, Ctrl+C and `pnpm dev`, then use the recording.
+*If it breaks:* if no campaign appears, click **Run agent** once more (the agent also runs every 60 seconds by default). Without an AI key the grouping and the template briefing still work (`docs/DEMO.md`, section 6). If the console is wedged, Ctrl+C and `pnpm dev`, then use the recording.
 
 ### After the demo
 
 Click **Overview** for one second: *Live activity* shows every check made in the demo, as counts only, never content. Then back to slide 4 at 1:20 of the spoken pitch.
 
-Before the next run, press **Reset** (`apps/web/docs/DEMO.md`, section 5).
+Before the next run, press **Reset** (`docs/DEMO.md`, section 5).

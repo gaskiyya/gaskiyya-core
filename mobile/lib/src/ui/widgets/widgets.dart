@@ -346,3 +346,49 @@ class _ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
     );
   }
 }
+
+class BankLogo extends StatelessWidget {
+  const BankLogo({super.key, required this.name, this.url, this.size = 40});
+  final String name;
+  final String? url;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final radius = BorderRadius.circular(size * 0.26);
+    final monogram = Container(
+      decoration: BoxDecoration(gradient: G.brandGradient, borderRadius: radius),
+      alignment: Alignment.center,
+      child: Text(name.isEmpty ? '' : name.substring(0, 1).toUpperCase(),
+          style: G.headline(context).copyWith(color: CupertinoColors.white, fontSize: size * 0.42)),
+    );
+    return ExcludeSemantics(
+      child: SizedBox(
+        width: size,
+        height: size,
+        child: url == null
+            ? monogram
+            : ClipRRect(
+                borderRadius: radius,
+                child: Image.network(
+                  url!,
+                  fit: BoxFit.contain,
+                  filterQuality: FilterQuality.medium,
+                  errorBuilder: (_, _, _) => monogram,
+                  frameBuilder: (context, child, frame, sync) => sync || frame != null
+                      ? Container(
+                          decoration: BoxDecoration(
+                            color: CupertinoColors.white,
+                            borderRadius: radius,
+                            border: Border.all(color: G.separator.resolveFrom(context), width: 0.5),
+                          ),
+                          padding: EdgeInsets.all(size * 0.12),
+                          child: child,
+                        )
+                      : Container(decoration: BoxDecoration(color: G.fill.resolveFrom(context), borderRadius: radius)),
+                ),
+              ),
+      ),
+    );
+  }
+}

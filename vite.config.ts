@@ -7,6 +7,8 @@ import { defineConfig, type Plugin, type UserConfig } from 'vite';
 const here = dirname(fileURLToPath(import.meta.url));
 const at = (p: string) => resolve(here, p);
 const API = 'http://localhost:8080';
+// Where the in-browser demo sends registered banks to sign in.
+const REGISTRY_CONSOLE_URL = JSON.stringify(process.env.REGISTRY_CONSOLE_URL || 'https://16-192-138-140.sslip.io/console/');
 
 const inlineDiagrams: Plugin = {
   name: 'inline-diagrams',
@@ -34,7 +36,7 @@ const apps: Record<string, UserConfig> = {
     root: at('console'),
     base: './',
     plugins: [react()],
-    define: { __SANDBOX__: 'true' },
+    define: { __SANDBOX__: 'true', __REGISTRY_CONSOLE_URL__: REGISTRY_CONSOLE_URL },
     resolve: { alias: { 'node:crypto': at('console/src/sandbox/node-crypto.ts'), 'node:events': at('console/src/sandbox/node-events.ts') } },
     server: { port: 5173 },
     build: { outDir: at('dist/site/console') },
@@ -43,7 +45,7 @@ const apps: Record<string, UserConfig> = {
     root: at('console'),
     base: '/console/',
     plugins: [react()],
-    define: { __SANDBOX__: 'false' },
+    define: { __SANDBOX__: 'false', __REGISTRY_CONSOLE_URL__: REGISTRY_CONSOLE_URL },
     server: { port: 5171, proxy: { '/sim': API, '/v1': API } },
     build: { outDir: at('dist/console') },
   },

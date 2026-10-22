@@ -109,7 +109,7 @@ class _ShieldSettingsSectionState extends State<ShieldSettingsSection> with Widg
       footer: android ? Text(c.t('shield.settingsIntro')) : null,
       children: [
         if (!android)
-          CupertinoListTile(leading: const Icon(CupertinoIcons.shield), title: Text(c.t('shield.androidOnly'), maxLines: 4, overflow: TextOverflow.visible))
+          CupertinoListTile(padding: const EdgeInsetsDirectional.fromSTEB(20, 11, 14, 11), leading: const Icon(CupertinoIcons.shield), title: Text(c.t('shield.androidOnly'), maxLines: 4, overflow: TextOverflow.visible))
         else ...[
           _row(context, 'calls', s?.screening ?? false, 'requestScreeningRole'),
           _row(context, 'dialled', s?.redirection ?? false, 'requestRedirectionRole'),

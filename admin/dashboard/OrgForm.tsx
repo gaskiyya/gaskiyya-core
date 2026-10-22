@@ -21,6 +21,7 @@ export interface Draft {
   tokenKeysUrl: string;
   tokenKeysJson: string;
   customerTokenUrl: string;
+  logoUrl: string;
   recordTtlDays: string;
   techName: string;
   techEmail: string;
@@ -51,6 +52,7 @@ export const emptyDraft = (): Draft => ({
   tokenKeysUrl: '',
   tokenKeysJson: '',
   customerTokenUrl: '',
+  logoUrl: '',
   recordTtlDays: '',
   techName: '',
   techEmail: '',
@@ -84,6 +86,7 @@ export function draftFrom(d: OrgDetail): Draft {
     tokenKeysUrl: o.tokenKeysUrl ?? '',
     tokenKeysJson: o.tokenKeys ? JSON.stringify(o.tokenKeys, null, 2) : '',
     customerTokenUrl: o.customerTokenUrl ?? '',
+    logoUrl: o.logoUrl ?? '',
     recordTtlDays: o.recordTtlDays ? String(o.recordTtlDays) : '',
     techName: o.technicalContact?.name ?? '',
     techEmail: o.technicalContact?.email ?? '',
@@ -126,6 +129,7 @@ export function toInput(d: Draft, mode: 'create' | 'update'): { body: Record<str
     tokenKeysUrl: d.keysMode === 'url' ? opt(d.tokenKeysUrl.trim()) : create ? undefined : null,
     tokenKeys: d.keysMode === 'inline' ? opt(tokenKeys) : create ? undefined : null,
     customerTokenUrl: opt(d.customerTokenUrl.trim()),
+    logoUrl: opt(d.logoUrl.trim()),
     recordTtlDays: opt(int(d.recordTtlDays)),
     technicalContact: opt(tech),
     mode: d.mode,
@@ -240,6 +244,9 @@ export function IntegrationSection({ d, set, errs }: SectionProps) {
       </Field>
       <Field label="Customer sign-in URL" optional error={errs.customerTokenUrl} help="Where the Gaskiyya app signs this organisation's customers in. It answers POST { phone } with { token, expiresIn } once the bank has authenticated the customer. Without it, customers verify only inside the organisation's own app." doc="apps/web/docs/CONFIGURATION.md, customerTokenUrl">
         <input value={d.customerTokenUrl} placeholder="https://api.firstcitybank.ng/gaskiyya/customer-token" onChange={(e) => set({ customerTokenUrl: e.target.value })} />
+      </Field>
+      <Field label="Logo URL" optional error={errs.logoUrl} help="The organisation's own logo, shown in the Gaskiyya app when a customer signs in. A square PNG or JPEG of at least 256 by 256 pixels, served over https.">
+        <input value={d.logoUrl} placeholder="https://www.firstcitybank.ng/logo-256.png" onChange={(e) => set({ logoUrl: e.target.value })} />
       </Field>
       <Field label="Fraud desk and security alert emails" optional error={errs.alertEmails} help="Campaign alerts, registration alerts (unknown link domains, volume spikes) and SIM swap notices go here.">
         <ListInput value={d.alertEmails} onChange={(v) => set({ alertEmails: v })} placeholder="fraud-desk@firstcitybank.ng" mono />

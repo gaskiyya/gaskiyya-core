@@ -60,12 +60,12 @@ Tenant entry:
 
 ### Web pages
 
-The server serves the built web UIs (`pnpm web:build`, read from `WEB_DIST_DIR`, default `apps/web/dist`) beside the API:
+The server serves the built web UIs (`pnpm web:build`, read from `WEB_DIST_DIR`, default `dist`) beside the API:
 
 | Path | What | When |
 | --- | --- | --- |
 | `/`, `/banks.html` | Landing page and bank integration guide | Always |
-| `/console/` | Bank sandbox console, live against this server | `SIM_ENABLED=true`; otherwise the in-browser sandbox console |
+| `/console/` | Bank console: each registered organisation signs in with an access code issued in the admin dashboard ([decision 0021](decisions/0021-bank-console-access.md)). With `SIM_ENABLED=true` it opens on DemoBank and its demo tools | Always, unless `CONSOLE_ENABLED=false` |
 | `/admin/` | Platform admin dashboard, staff only | A staff login is set (see [Admin dashboard](#admin-dashboard)) |
 
 API routes (`/v1`, `/health`, `/webhooks`, `/sim`, `/internal`) are never shadowed by these pages. HTML is sent with `Cache-Control: no-cache`, hashed build assets as immutable.
@@ -101,7 +101,7 @@ With the admin dashboard on, you can rotate and retire keys there instead, with 
 
 ### Demo banks
 
-The demo banks are in `apps/api/src/simulator/demo-banks.json`. `demobank` (DemoBank) is the default. `zb` is a second bank for the Zecathon demo. It is **fictional and marked as a demo**. It carries no Zenith name, logo or trademark. Its domains use reserved test TLDs (RFC 2606) and its short code is made up:
+The demo banks are in `packages/api/src/simulator/demo-banks.json`. `demobank` (DemoBank) is the default. `zb` is a second bank for the Zecathon demo. It is **fictional and marked as a demo**. It carries no Zenith name, logo or trademark. Its domains use reserved test TLDs (RFC 2606) and its short code is made up:
 
 ```json
 {
@@ -134,7 +134,7 @@ The in-browser sandbox console (the static build with no server) always uses Dem
 
 ### Demo organisations (agencies)
 
-`apps/api/src/simulator/demo-orgs.json` holds two **fictional** organisations that are not banks: "Road Safety Agency (demo)" (`roadsafety`) and "Tax Office (demo)" (`taxoffice`). Both are `kind: "agency"`, use `.example` domains and made-up numbers, and carry no real agency's name, logo or trademark. The demo banks' presets also say what each bank publishes (`publishes`: kind, official contacts, official apps) and give a scam "customer care" number (`fakeCustomerCare`) for the fake customer care step. None of those numbers is in service.
+`packages/api/src/simulator/demo-orgs.json` holds two **fictional** organisations that are not banks: "Road Safety Agency (demo)" (`roadsafety`) and "Tax Office (demo)" (`taxoffice`). Both are `kind: "agency"`, use `.example` domains and made-up numbers, and carry no real agency's name, logo or trademark. The demo banks' presets also say what each bank publishes (`publishes`: kind, official contacts, official apps) and give a scam "customer care" number (`fakeCustomerCare`) for the fake customer care step. None of those numbers is in service.
 
 `pnpm dev` enrols both organisations in `.env` beside the bank, each with its own hashing key and bank client (`roadsafety-sim`, `taxoffice-sim`). It also fills in what the bank publishes when an older `.env` lacks it. Set `DEMO_ORGS=0` to leave the organisations out. The console then shows a *Send as* choice on Messages and a Contacts page. While demo login is on, the app is offered the organisations too: their sign-in is the simulator's `/sim/customer-token?tenant=<id>`.
 
@@ -312,11 +312,11 @@ What a bank gets:
 
 Used for "your bank is calling" notices: high priority, with the call code, expiring with the session. A silent update clears the call when it ends. Also used once per approved fraud advisory: a normal-priority notice titled "Fraud warning from <bank>" on the Android channel `advisories`, carrying the advisory id only; the app reads the text from `GET /v1/advisories`. Tokens that Firebase reports as unregistered are deleted automatically.
 
-1. In the Firebase project, register the Android app as `com.gaskiyya.app` and the iOS app as `com.gaskiya.app` (these must match `applicationId` in `apps/mobile/android/app/build.gradle.kts` and the bundle id in Xcode).
+1. In the Firebase project, register the Android app as `com.gaskiyya.app` and the iOS app as `com.gaskiya.app` (these must match `applicationId` in `mobile/android/app/build.gradle.kts` and the bundle id in Xcode).
 2. **Server:** Firebase console > Project settings > Service accounts > *Generate new private key*. Put the JSON (raw or base64) in `FCM_SERVICE_ACCOUNT_JSON`, or its file path in `GOOGLE_APPLICATION_CREDENTIALS`.
-3. **App:** copy `apps/mobile/firebase.example.json` to `apps/mobile/firebase.json`, fill it from `google-services.json` and `GoogleService-Info.plist`, and build with `flutter run --dart-define-from-file=firebase.json`. Both files are gitignored; the Firebase app keys are never committed.
-   - **Release builds (Codemagic):** create an environment group named `gaskiyya_app` with `API_URL` (required) and the seven `FIREBASE_*` values from `firebase.example.json`. `apps/mobile/tool/write_config.mjs` writes them to `apps/mobile/config/production.json` (gitignored) before `flutter build ... --dart-define-from-file=config/production.json`.
-   - **Local release build:** copy `apps/mobile/config/production.example.json` to `config/production.json` and fill it in.
+3. **App:** copy `mobile/firebase.example.json` to `mobile/firebase.json`, fill it from `google-services.json` and `GoogleService-Info.plist`, and build with `flutter run --dart-define-from-file=firebase.json`. Both files are gitignored; the Firebase app keys are never committed.
+   - **Release builds (Codemagic):** create an environment group named `gaskiyya_app` with `API_URL` (required) and the seven `FIREBASE_*` values from `firebase.example.json`. `mobile/tool/write_config.mjs` writes them to `mobile/config/production.json` (gitignored) before `flutter build ... --dart-define-from-file=config/production.json`.
+   - **Local release build:** copy `mobile/config/production.example.json` to `config/production.json` and fill it in.
    - In Google Cloud console, restrict each Firebase API key to its app (Android package + SHA-1, iOS bundle id). Keys committed before this change remain in git history, so restrict or rotate them.
 4. **iOS only:** upload an APNs authentication key in Firebase (Project settings > Cloud Messaging), and enable the *Push Notifications* and *Background Modes > Remote notifications* capabilities in Xcode.
 5. Find the device token with `flutter run` (the app registers it with `POST /v1/devices`), then `pnpm check:server --push <token>`.

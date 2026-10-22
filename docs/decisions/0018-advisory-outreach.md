@@ -28,4 +28,4 @@ New keys only, under the top-level `advisory` namespace of `copy.json`, translat
 
 ## Tests
 
-`tests/advisories.test.ts` (ADV-1 to ADV-9), the console and sandbox send-to-customers tests (ADV-10), and the app's alerts tests (`apps/mobile/test/advisories_test.dart`, ADV-11).
+`tests/advisories.test.ts` (ADV-1 to ADV-9), the console and sandbox send-to-customers tests (ADV-10), and the app's alerts tests (`mobile/test/advisories_test.dart`, ADV-11).

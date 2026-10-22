@@ -353,7 +353,7 @@ class AdvisoryList {
 }
 
 class Bank {
-  Bank({required this.id, required this.name, required this.domains, required this.customerTokenUrl, this.demoInboxUrl, this.kind = 'bank'});
+  Bank({required this.id, required this.name, required this.domains, required this.customerTokenUrl, this.demoInboxUrl, this.kind = 'bank', this.logoUrl});
 
   static const kinds = {'bank', 'agency', 'company'};
 
@@ -364,6 +364,7 @@ class Bank {
         domains: ((j['domains'] as List?) ?? []).cast<String>(),
         customerTokenUrl: resolveUrl(apiUrl, j['customerTokenUrl'] as String),
         demoInboxUrl: j['demoInboxUrl'] == null ? null : resolveUrl(apiUrl, j['demoInboxUrl'] as String),
+        logoUrl: j['logoUrl'] is String ? resolveUrl(apiUrl, j['logoUrl'] as String) : null,
       );
 
   final String id;
@@ -376,9 +377,12 @@ class Bank {
 
   final String? demoInboxUrl;
 
+  /// The organisation's own logo, as it registered it. Null shows a monogram.
+  final String? logoUrl;
+
   bool get isDemo => demoInboxUrl != null;
 
-  Map<String, dynamic> toJson() => {'id': id, 'name': name, 'kind': kind, 'domains': domains, 'customerTokenUrl': customerTokenUrl, 'demoInboxUrl': demoInboxUrl};
+  Map<String, dynamic> toJson() => {'id': id, 'name': name, 'kind': kind, 'domains': domains, 'customerTokenUrl': customerTokenUrl, 'demoInboxUrl': demoInboxUrl, 'logoUrl': logoUrl};
 }
 
 String resolveUrl(String apiUrl, String url) => Uri.parse(apiUrl.endsWith('/') ? apiUrl : '$apiUrl/').resolve(url).toString();

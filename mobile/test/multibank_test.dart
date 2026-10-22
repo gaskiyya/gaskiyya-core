@@ -34,7 +34,7 @@ void main() {
 
   group('BANK-1: an install from before multi-bank keeps its bank on upgrade', () {
     test('a saved phone and bank become the one linked bank', () async {
-      final registry = twoBanks();
+      final registry = twoBanks()..strangers['demobank'] = {amina};
       SharedPreferences.setMockInitialValues({'onboarded': true, 'phone': amina, 'bank': jsonEncode(registry.bank('acme').toJson())});
       final state = await restart(registry);
       expect(state.links.map((l) => l.id), ['acme']);
@@ -72,35 +72,48 @@ void main() {
     });
   });
 
-  group('BANK-2: the customer adds and removes linked banks', () {
-    test('adding a second bank keeps the first, selects the new one, and survives a restart', () async {
-      final registry = twoBanks();
-      final state = await linkedState(registry, ['demobank']);
-      await state.link(tunde, registry.bank('acme'));
-      expect(state.links.map((l) => (l.id, l.phone)), [('demobank', '+2348012345678'), ('acme', tunde)]);
-      expect(state.bank!.id, 'acme');
+  group('BANK-2: every organisation that knows the number is linked', () {
+    test('discovery finds each organisation that knows the number, and saves nothing until adopted', () async {
+      final registry = twoBanks()..strangers['acme'] = {amina};
+      final state = await linkedState(registry, const []);
+      final found = await state.discover(amina);
+      expect(found.map((l) => (l.id, l.phone)), [('demobank', amina)]);
+      expect(state.linked, isFalse);
+      await state.adopt(found);
+      expect(state.links.map((l) => (l.id, l.phone)), [('demobank', amina)]);
       state.dispose();
+      expect((await restart(registry)).links.map((l) => l.id), ['demobank']);
+      await registry.close();
+    });
 
+    test('an organisation that starts knowing the number is linked on the next launch', () async {
+      final registry = twoBanks()..strangers['acme'] = {amina};
+      final state = await linkedState(registry, const []);
+      await state.adopt(await state.discover(amina));
+      state.dispose();
+      registry.strangers.clear();
       final again = await restart(registry);
-      expect(again.links.map((l) => (l.id, l.phone)), [('demobank', '+2348012345678'), ('acme', tunde)]);
-      expect(again.bank!.id, 'acme');
+      expect(again.links.map((l) => (l.id, l.phone)), [('demobank', amina), ('acme', amina)]);
+      expect(again.bank!.id, 'demobank');
       again.dispose();
       await registry.close();
     });
 
-    test('removing a bank leaves the others linked and selects one of them', () async {
-      final registry = twoBanks();
-      final state = await linkedState(registry, ['demobank', 'acme']);
-      await state.unlinkBank('acme');
+    test('an organisation whose sign-in fails is left out, and the others are linked', () async {
+      final registry = twoBanks()..failingSignIn.add('acme');
+      final state = await linkedState(registry, const []);
+      await state.adopt(await state.discover(amina));
       expect(state.links.map((l) => l.id), ['demobank']);
-      expect(state.bank!.id, 'demobank');
-      expect(state.linked, isTrue);
       state.dispose();
-      final again = await restart(registry);
-      expect(again.links.map((l) => l.id), ['demobank']);
-      await again.unlinkBank('demobank');
-      expect(again.linked, isFalse);
-      again.dispose();
+      await registry.close();
+    });
+
+    test('discarded results are never saved', () async {
+      final registry = twoBanks();
+      final state = await linkedState(registry, const []);
+      state.discard(await state.discover(amina));
+      expect(state.linked, isFalse);
+      state.dispose();
       expect((await restart(registry)).linked, isFalse);
       await registry.close();
     });
@@ -113,20 +126,10 @@ void main() {
       state.dispose();
       await registry.close();
     });
-
-    test('a bank whose sign-in fails is not added, and the others are untouched', () async {
-      final registry = twoBanks()..failingSignIn.add('acme');
-      final state = await linkedState(registry, ['demobank']);
-      await expectLater(state.link(amina, registry.bank('acme')), throwsA(isA<ApiException>()));
-      expect(state.links.map((l) => l.id), ['demobank']);
-      expect(state.bank!.id, 'demobank');
-      state.dispose();
-      await registry.close();
-    });
   });
 
-  group('BANK-3: a check goes to the selected bank, bound to its number', () {
-    test('selecting a bank routes verify, activity and inbox to that tenant only', () async {
+  group('BANK-3: each organisation is asked with its own client, bound to its number', () {
+    test('a client talks to its own tenant only, and the inbox gathers every organisation', () async {
       final registry = twoBanks();
       final state = await linkedState(registry, ['demobank']);
       await state.link(tunde, registry.bank('acme'));
@@ -137,9 +140,11 @@ void main() {
       expect(r.bank, 'DemoBank');
       await state.client!.activity();
       await state.inbox();
-      final checks = registry.calls.where((c) => c.path != '/v1/events' && c.path != '/v1/calls/open');
-      expect(checks.map((c) => c.path), ['/v1/verify/message', '/v1/activity', '/sim/demobank/inbox']);
+      final checks = registry.calls.where((c) => c.path == '/v1/verify/message' || c.path == '/v1/activity');
+      expect(checks.map((c) => c.path), ['/v1/verify/message', '/v1/activity']);
       expect(checks.map((c) => (c.bank, c.phone)).toSet(), {('demobank', amina)});
+      final inboxes = registry.calls.where((c) => c.path.endsWith('/inbox'));
+      expect(inboxes.map((c) => (c.bank, c.phone)).toSet(), {('demobank', amina), ('acme', tunde)});
 
       await state.select('acme');
       registry.calls.clear();
@@ -206,13 +211,15 @@ void main() {
       await registry.close();
     });
 
-    testWidgets('with no call, the calls screen names every linked bank', (tester) async {
+    testWidgets('with no call from any organisation, the calls screen says so without listing them', (tester) async {
       phoneSize(tester);
       final registry = twoBanks();
       final state = await linkedState(registry, ['demobank', 'acme']);
       await tester.pumpWidget(hostWith(CallsScreen(state: state), disableAnimations: true));
       await tester.pump();
-      expect(find.text(Copy.I.t('call.not_calling.body', {'bank': 'DemoBank or Acme Bank'})), findsOneWidget);
+      expect(find.text(Copy.I.t('call.not_calling.title')), findsOneWidget);
+      expect(find.text(Copy.I.t('call.not_calling.body', {'bank': Copy.I.t('app.common.yourBank')})), findsOneWidget);
+      expect(find.textContaining('Acme Bank'), findsNothing);
       await tester.pumpWidget(hostWith(const SizedBox()));
       state.dispose();
       await registry.close();
@@ -231,85 +238,69 @@ void main() {
   });
 
   group('BANK-5: the screens', () {
-    testWidgets('the check screen asks which bank, and the pick routes the check', (tester) async {
+    testWidgets('the check screen has no bank picker, and a message is checked with every organisation', (tester) async {
       phoneSize(tester);
       final registry = twoBanks();
       final state = await linkedState(registry, ['demobank', 'acme']);
       await tester.pumpWidget(hostWith(CheckScreen(state: state), disableAnimations: true));
       await tester.pump();
-      expect(find.text(Copy.I.t('banks.pickerHeading')), findsOneWidget);
-      await tester.tap(find.byKey(const ValueKey('pick-demobank')));
-      await tester.pump();
-      expect(state.bank!.id, 'demobank');
+      expect(find.text(Copy.I.t('banks.pickerHeading')), findsNothing);
       registry.calls.clear();
       await tester.enterText(find.byType(CupertinoTextField), 'Your account is blocked');
       await tester.pump();
-      await tester.tap(find.text('Check message'));
+      await tester.tap(find.text(Copy.I.t('app.check.checkMessage')));
       for (var i = 0; i < 10; i++) {
         await tester.pump(const Duration(milliseconds: 100));
       }
-      expect(registry.calls.where((c) => c.path == '/v1/verify/message').map((c) => c.bank), ['demobank']);
+      expect(registry.calls.where((c) => c.path == '/v1/verify/message').map((c) => c.bank).toSet(), {'demobank', 'acme'});
+      expect(find.text(Copy.I.t('verdict.not_confirmed.body', {'bank': 'Acme Bank or DemoBank'})), findsOneWidget);
       await tester.pumpWidget(hostWith(const SizedBox()));
       await tester.pump(const Duration(seconds: 1));
       state.dispose();
       await registry.close();
     });
 
-    testWidgets('with one bank linked there is no bank picker', (tester) async {
+    testWidgets('activity merges every organisation into one list and names one only when it cannot be loaded', (tester) async {
       phoneSize(tester);
       final registry = twoBanks();
-      final state = await linkedState(registry, ['demobank']);
-      await tester.pumpWidget(hostWith(CheckScreen(state: state), disableAnimations: true));
-      await tester.pump();
-      expect(find.text(Copy.I.t('banks.pickerHeading')), findsNothing);
+      final state = await linkedState(registry, ['demobank', 'acme']);
+      await tester.pumpWidget(hostWith(ActivityScreen(state: state), disableAnimations: true));
+      for (var i = 0; i < 5; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+      expect(find.text(Copy.I.t('app.activity.none')), findsOneWidget);
+      expect(find.textContaining('DemoBank'), findsNothing);
+      expect(find.textContaining('Acme Bank'), findsNothing);
       await tester.pumpWidget(hostWith(const SizedBox()));
       state.dispose();
       await registry.close();
     });
 
-    testWidgets('settings lists each linked bank and removes one after confirming', (tester) async {
+    testWidgets('settings does not list or count linked organisations', (tester) async {
       phoneSize(tester);
       final registry = twoBanks();
       final state = await linkedState(registry, ['demobank', 'acme']);
       await tester.pumpWidget(hostWith(SettingsScreen(state: state), disableAnimations: true));
       await tester.pump();
-      expect(find.byKey(const ValueKey('bank-demobank')), findsOneWidget);
-      expect(find.byKey(const ValueKey('bank-acme')), findsOneWidget);
-      expect(find.text(Copy.I.t('banks.add')), findsOneWidget);
-      await tester.tap(find.descendant(of: find.byKey(const ValueKey('bank-acme')), matching: find.byType(CupertinoButton)));
-      await tester.pumpAndSettle();
-      expect(find.text(Copy.I.t('banks.removeTitle', {'bank': 'Acme Bank'})), findsOneWidget);
-      await tester.tap(find.text(Copy.I.t('banks.remove')));
-      await tester.pumpAndSettle();
-      expect(state.links.map((l) => l.id), ['demobank']);
-      expect(find.byKey(const ValueKey('bank-acme')), findsNothing);
-      await tester.pumpWidget(hostWith(const SizedBox()));
-      state.dispose();
-      await registry.close();
-    });
-
-    testWidgets('add a bank from settings links it and returns', (tester) async {
-      phoneSize(tester);
-      final registry = twoBanks();
-      final state = await linkedState(registry, ['demobank']);
-      await tester.pumpWidget(hostWith(SettingsScreen(state: state), disableAnimations: true));
-      await tester.pump();
-      await tester.tap(find.text(Copy.I.t('banks.add')));
-      await tester.pumpAndSettle();
-      expect(find.text('Acme Bank'), findsOneWidget);
-      await tester.tap(find.byKey(const ValueKey('signIn')));
-      await tester.pumpAndSettle();
-      expect(state.links.map((l) => (l.id, l.phone)), [('demobank', amina), ('acme', amina)]);
-      expect(find.byKey(const ValueKey('bank-acme')), findsOneWidget);
+      expect(find.byKey(const ValueKey('bank-demobank')), findsNothing);
+      expect(find.text(Copy.I.t('banks.add')), findsNothing);
+      expect(find.text('DemoBank'), findsNothing);
+      expect(find.text('Acme Bank'), findsNothing);
       await tester.pumpWidget(hostWith(const SizedBox()));
       state.dispose();
       await registry.close();
     });
   });
 
-  group('BANK-6: sign-in is the customer\'s own bank and number, nothing else', () {
+  group('BANK-6: sign-in asks only for the number and finds every organisation that knows it', () {
     Future<void> open(WidgetTester tester, AppState state) async {
       await tester.pumpWidget(hostWith(LinkScreen(state: state), disableAnimations: true));
+      await tester.pumpAndSettle();
+    }
+
+    Future<void> type(WidgetTester tester, String number) async {
+      await tester.enterText(find.byType(CupertinoTextField), number);
+      await tester.pump(const Duration(milliseconds: 400));
       await tester.pumpAndSettle();
     }
 
@@ -319,35 +310,50 @@ void main() {
       await registry.close();
     }
 
-    testWidgets('the screen reads as sign-in, lists no demo customers and has the number as its only field', (tester) async {
+    testWidgets('the screen reads as sign-in, lists no banks or demo customers and has the number as its only field', (tester) async {
       phoneSize(tester);
       final registry = twoBanks();
       final state = await linkedState(registry, const []);
       await open(tester, state);
-      expect(find.text(Copy.I.t('app.link.title')), findsWidgets);
-      expect(find.descendant(of: find.byKey(const ValueKey('signIn')), matching: find.text(Copy.I.t('app.link.title'))), findsOneWidget);
-      for (final name in ['Amina Bello', 'Tunde Okafor', 'Chidinma Eze', amina, tunde, '+2348031112222']) {
+      expect(find.text(Copy.I.t('app.link.title')), findsOneWidget);
+      for (final name in ['DemoBank', 'Acme Bank', 'Amina Bello', 'Tunde Okafor', 'Chidinma Eze', amina, tunde, '+2348031112222']) {
         expect(find.text(name), findsNothing);
       }
       expect(find.byType(CupertinoTextField), findsOneWidget);
       final field = tester.widget<CupertinoTextField>(find.byType(CupertinoTextField));
       expect(field.keyboardType, TextInputType.phone);
       expect(field.obscureText, isFalse);
+      expect(field.focusNode!.hasFocus, isTrue);
       await close(tester, state, registry);
     });
 
-    testWidgets('picking a bank, typing a number and pressing Sign in signs in for that number', (tester) async {
+    testWidgets('a number shows the logo of every organisation that knows it, and proceeding links them all', (tester) async {
       phoneSize(tester);
       final registry = twoBanks();
       final state = await linkedState(registry, const []);
       await open(tester, state);
-      await tester.tap(find.text('Acme Bank'));
-      await tester.pumpAndSettle();
-      expect(tester.widget<CupertinoTextField>(find.byType(CupertinoTextField)).focusNode!.hasFocus, isTrue);
-      await tester.enterText(find.byType(CupertinoTextField), '0809 876 5432');
+      await type(tester, '0809 876 5432');
+      expect(find.byKey(const ValueKey('found-demobank')), findsOneWidget);
+      expect(find.byKey(const ValueKey('found-acme')), findsOneWidget);
+      expect(find.byType(BankLogo), findsNWidgets(2));
+      expect(state.linked, isFalse);
       await tester.tap(find.byKey(const ValueKey('signIn')));
       await tester.pumpAndSettle();
-      expect(state.links.map((l) => (l.id, l.phone)), [('acme', tunde)]);
+      expect(state.links.map((l) => (l.id, l.phone)), [('demobank', tunde), ('acme', tunde)]);
+      await close(tester, state, registry);
+    });
+
+    testWidgets('only organisations that know the number are shown', (tester) async {
+      phoneSize(tester);
+      final registry = twoBanks()..strangers['demobank'] = {tunde};
+      final state = await linkedState(registry, const []);
+      await open(tester, state);
+      await type(tester, '08098765432');
+      expect(find.byKey(const ValueKey('found-demobank')), findsNothing);
+      expect(find.byKey(const ValueKey('found-acme')), findsOneWidget);
+      await tester.tap(find.byKey(const ValueKey('signIn')));
+      await tester.pumpAndSettle();
+      expect(state.links.map((l) => l.id), ['acme']);
       await close(tester, state, registry);
     });
 
@@ -357,8 +363,7 @@ void main() {
         final registry = FakeRegistry([testBank('demobank', 'DemoBank')]);
         final state = await linkedState(registry, const []);
         await open(tester, state);
-        expect(tester.widget<CupertinoTextField>(find.byType(CupertinoTextField)).focusNode!.hasFocus, isTrue);
-        await tester.enterText(find.byType(CupertinoTextField), typed);
+        await type(tester, typed);
         await tester.tap(find.byKey(const ValueKey('signIn')));
         await tester.pumpAndSettle();
         expect(state.links.map((l) => (l.id, l.phone)), [('demobank', amina)]);
@@ -366,18 +371,31 @@ void main() {
       });
     }
 
-    testWidgets('signing in needs a bank and a valid number first', (tester) async {
+    testWidgets('a number no organisation knows says so and cannot proceed', (tester) async {
+      phoneSize(tester);
+      final registry = twoBanks()
+        ..strangers['demobank'] = {amina}
+        ..strangers['acme'] = {amina};
+      final state = await linkedState(registry, const []);
+      await open(tester, state);
+      await type(tester, '08012345678');
+      expect(find.text(Copy.I.t('app.link.notFound')), findsOneWidget);
+      await tester.tap(find.byKey(const ValueKey('signIn')));
+      await tester.pumpAndSettle();
+      expect(state.links, isEmpty);
+      await close(tester, state, registry);
+    });
+
+    testWidgets('an incomplete number looks nothing up and asks for a valid one', (tester) async {
       phoneSize(tester);
       final registry = twoBanks();
       final state = await linkedState(registry, const []);
       await open(tester, state);
-      await tester.enterText(find.byType(CupertinoTextField), '08012345678');
-      await tester.tap(find.byKey(const ValueKey('signIn')));
-      await tester.pumpAndSettle();
-      expect(find.text(Copy.I.t('app.link.chooseBank')), findsOneWidget);
-      await tester.tap(find.text('DemoBank'));
-      await tester.enterText(find.byType(CupertinoTextField), '123');
-      await tester.tap(find.byKey(const ValueKey('signIn')));
+      registry.calls.clear();
+      final before = registry.signIns;
+      await type(tester, '123');
+      expect(registry.signIns, before);
+      await tester.testTextInput.receiveAction(TextInputAction.go);
       await tester.pumpAndSettle();
       expect(find.text(Copy.I.t('app.link.enterNumber')), findsOneWidget);
       expect(state.links, isEmpty);

@@ -6,6 +6,7 @@ import { NoModelProvider } from '../../../packages/api/src/ai/provider.ts';
 import { runAgentForAll } from '../../../packages/api/src/campaigns.ts';
 import { EventHub, MemoryPush } from '../../../packages/api/src/channels/channels.ts';
 import { StaticKeyService } from '../../../packages/api/src/keys/keys.ts';
+import { deriveConsoleCode } from '../../../packages/api/src/console/code.ts';
 import { RegistrationGuard } from '../../../packages/api/src/guard.ts';
 import { AdvisoryError, GaskiyaService } from '../../../packages/api/src/service.ts';
 import { DEFAULT_SIM_SWAP, SimSwapMonitor } from '../../../packages/api/src/simswap/monitor.ts';
@@ -206,6 +207,7 @@ export function createSandbox() {
             orgs: [BANK, ...ORGS].map((t) => ({ id: t.id, name: t.name, kind: t.kind ?? 'bank' })),
             fakeCustomerCare: FAKE_CARE,
             simSwap: true,
+            consoleCode: deriveConsoleCode(keys, BANK.id, 1),
           },
         };
 

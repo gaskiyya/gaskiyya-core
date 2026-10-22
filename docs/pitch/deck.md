@@ -5,7 +5,7 @@ Ten slides for the semi-final (23 Oct 2026, Lagos) and the final (28 Oct 2026). 
 Rules this deck follows:
 
 - Every figure carries a short source tag such as [S1] on the slide, and the full citation is in [Sources](#sources) at the end. "(press report)" marks a figure we saw only in the press, not in the issuing body's own document.
-- Every product claim points at a file or a test ID in `tests/` or `apps/mobile/test/`. Every feature cited is merged into `main`.
+- Every product claim points at a file or a test ID in `tests/` or `mobile/test/`. Every feature cited is merged into `main`.
 - Zenith Bank is named only as the hackathon host and a possible pilot bank. No Zenith logo or trademark appears on any slide. The demo's second bank, "ZB Demo Bank (demo)", is fictional (`tests/demo-bank.test.ts`).
 - The naira sign is written "N".
 
@@ -65,7 +65,7 @@ What no one publishes: an official share of fraud that is specifically a fake SM
 
 **Speaker notes**
 
-Every check a customer can do today looks at something the fraudster controls: the number on the screen, the sender name, the wording. A careful fraudster copies all three. Gaskiyya never relies on caller ID or the sender name; the design says so explicitly (`apps/web/docs/DESIGN.md`, "The check never relies on caller ID, because caller ID can be spoofed").
+Every check a customer can do today looks at something the fraudster controls: the number on the screen, the sender name, the wording. A careful fraudster copies all three. Gaskiyya never relies on caller ID or the sender name; the design says so explicitly (`docs/DESIGN.md`, "The check never relies on caller ID, because caller ID can be spoofed").
 
 The CBN has told customers since at least 2016 that it and banks "would [never] call bank customers or send e-mail/text messages requesting for passwords, card details or personal identification numbers (PIN)" [S10]. That advice is right, but it only helps once the fraudster asks for a PIN. Most lures start earlier, with a believable alert or a link.
 
@@ -73,7 +73,7 @@ AI classifiers have a different problem: they output a probability. A message th
 
 The Truecaller figure is a press report of Truecaller's own data, and it covers unknown calls in general, not only bank impersonation.
 
-**Evidence:** `apps/web/docs/DESIGN.md` (Verifying a call); AI-2 in `tests/ai.test.ts`; [S5] press report; [S10] CBN 2016 press release (seen in a search excerpt of the CBN PDF, so near-primary).
+**Evidence:** `docs/DESIGN.md` (Verifying a call); AI-2 in `tests/ai.test.ts`; [S5] press report; [S10] CBN 2016 press release (seen in a search excerpt of the CBN PDF, so near-primary).
 
 ---
 
@@ -97,9 +97,9 @@ On a "Not confirmed" result we also say what the bank really did send recently, 
 
 For calls, the contact centre calls `POST /v1/calls` before dialling. The agent's screen and the customer's app show the same four-digit code for 180 seconds. If no call is open, the app says the bank is not calling.
 
-The verdict is one pure function with no network or model calls: `apps/api/src/domain/verdict.ts`.
+The verdict is one pure function with no network or model calls: `packages/api/src/domain/verdict.ts`.
 
-**Evidence:** REG-1 (confirmed for its recipient), REG-2 (another recipient: not confirmed), REG-3 (unregistered: not confirmed with recent activity), REG-6 (store down: cannot check), REG-7 (searchable within two seconds) in `tests/registry.test.ts`; CAN-1 to CAN-4 in `tests/canonical.test.ts` (TypeScript and Dart give identical digests on the shared vectors in `packages/test-vectors/`); CH-1 in `apps/mobile/test/client_test.dart` (the app's verify request carries a digest and no text); SEC-1 in `tests/security.test.ts` (no plain number or message text in the store after a full run); CALL-1 to CALL-4 and LINK-1, LINK-2 in `tests/calls-links.test.ts`.
+**Evidence:** REG-1 (confirmed for its recipient), REG-2 (another recipient: not confirmed), REG-3 (unregistered: not confirmed with recent activity), REG-6 (store down: cannot check), REG-7 (searchable within two seconds) in `tests/registry.test.ts`; CAN-1 to CAN-4 in `tests/canonical.test.ts` (TypeScript and Dart give identical digests on the shared vectors in `packages/test-vectors/`); CH-1 in `mobile/test/client_test.dart` (the app's verify request carries a digest and no text); SEC-1 in `tests/security.test.ts` (no plain number or message text in the store after a full run); CALL-1 to CALL-4 and LINK-1, LINK-2 in `tests/calls-links.test.ts`.
 
 ---
 
@@ -115,9 +115,9 @@ The verdict is one pure function with no network or model calls: `apps/api/src/d
 
 **Speaker notes**
 
-Say first: "Everything you are about to see runs against a simulated bank. The sandbox console plays the bank's notification service, contact centre, login and fraud desk. No live banking system or production API is involved." Then run the click path in `apps/web/docs/pitch/script.md` (section "Demo click path"). Narrate outcomes, not clicks: "the bank sent this, so it is confirmed"; "one hyphen added to the link, not confirmed"; "same message, other customer, not confirmed". Keep the console on the projector so the audience sees the bank side and the customer side at once (`apps/web/docs/DEMO.md`, section 4).
+Say first: "Everything you are about to see runs against a simulated bank. The sandbox console plays the bank's notification service, contact centre, login and fraud desk. No live banking system or production API is involved." Then run the click path in `docs/pitch/script.md` (section "Demo click path"). Narrate outcomes, not clicks: "the bank sent this, so it is confirmed"; "one hyphen added to the link, not confirmed"; "same message, other customer, not confirmed". Keep the console on the projector so the audience sees the bank side and the customer side at once (`docs/DEMO.md`, section 4).
 
-If anything fails, go straight to the recovery line for that step, and do not debug on stage. The fallbacks, in order, are the console's own simulated phone, the in-browser sandbox console (`pnpm --filter @gaskiya/web dev:sandbox`, no server or network), and the recording made the day before (`apps/web/docs/DEMO.md`, section 7).
+If anything fails, go straight to the recovery line for that step, and do not debug on stage. The fallbacks, in order, are the console's own simulated phone, the in-browser sandbox console (`pnpm --filter @gaskiya/web dev:sandbox`, no server or network), and the recording made the day before (`docs/DEMO.md`, section 7).
 
 **Evidence:** CH-3 and DEMO-3 in `tests/console.test.ts` (from the console an operator can send a message, send a tampered copy, open a call and view campaigns; the demo passes twice with a reset between); USSD-8 in `tests/console.test.ts` (the console feature phone dials the registry); AI-5 and AI-9 (campaign and briefing).
 
@@ -142,9 +142,9 @@ AI does four jobs here, and deciding authenticity is not one of them.
 3. Flagging senders. If a not-confirmed screenshot shows a sender that is not one of the bank's registered sender IDs, the answer carries an "unknown sender" warning. A matching sender ID never upgrades a verdict, because sender IDs can be faked (AI-8).
 4. Briefing the fraud desk. The agent groups consented, masked reports deterministically (shared link domain, shared callback number or similar wording) and asks the model for a briefing: likely scam pattern, impersonated channel, draft advisory. Unsafe or invalid output falls back to a template. The agent has four tools and none of them sends or approves (AI-5, AI-9, decision 0009).
 
-Be honest if asked: for a "Not confirmed" message, the digit-masked text is sent to the model to get the explanation. Without an AI key, every explanation uses fixed text and verdicts are unchanged (AI-1). Gemini is the default provider; OpenAI is one setting away; a self-hosted model is another class behind the same interface (decision 0002). `AI_PROVIDER=ollama` runs open-weights models locally, inside the bank, and offline for the demo (`pnpm demo:offline`; `apps/web/docs/decisions/0011-open-source-model.md`). It is tested against a stand-in for Ollama's HTTP API, not yet end to end with real models.
+Be honest if asked: for a "Not confirmed" message, the digit-masked text is sent to the model to get the explanation. Without an AI key, every explanation uses fixed text and verdicts are unchanged (AI-1). Gemini is the default provider; OpenAI is one setting away; a self-hosted model is another class behind the same interface (decision 0002). `AI_PROVIDER=ollama` runs open-weights models locally, inside the bank, and offline for the demo (`pnpm demo:offline`; `docs/decisions/0011-open-source-model.md`). It is tested against a stand-in for Ollama's HTTP API, not yet end to end with real models.
 
-**Evidence:** AI-1 to AI-4, AI-7, AI-8 in `tests/ai.test.ts`; AI-5 in `tests/ai.test.ts`; AI-9 in `tests/briefing.test.ts`; Ollama option: `apps/api/src/ai/ollama.ts`, `tests/ollama.test.ts`, `tests/offline.test.ts`, decision 0011, `apps/web/docs/DEMO.md` section 8; on-device OCR in `apps/mobile/lib/src/core/ocr_mlkit.dart` and `screenshot.dart`, tested in `apps/mobile/test/screenshot_test.dart` ("the OCR path sends digests only, never the image"); `apps/web/docs/decisions/0002-model-provider.md`, `0009-campaign-briefing.md`. AI-6 (screenshot check with the real model) is a manual check, not an automated one.
+**Evidence:** AI-1 to AI-4, AI-7, AI-8 in `tests/ai.test.ts`; AI-5 in `tests/ai.test.ts`; AI-9 in `tests/briefing.test.ts`; Ollama option: `packages/api/src/ai/ollama.ts`, `tests/ollama.test.ts`, `tests/offline.test.ts`, decision 0011, `docs/DEMO.md` section 8; on-device OCR in `mobile/lib/src/core/ocr_mlkit.dart` and `screenshot.dart`, tested in `mobile/test/screenshot_test.dart` ("the OCR path sends digests only, never the image"); `docs/decisions/0002-model-provider.md`, `0009-campaign-briefing.md`. AI-6 (screenshot check with the real model) is a manual check, not an automated one.
 
 ---
 
@@ -164,13 +164,13 @@ Fraud by impersonation lands hardest on people with the least room to check: old
 
 Channels. The app is the primary route because the check sends only the fingerprint: the text leaves the phone only to explain a result that is not confirmed, once and with long numbers hidden. WhatsApp needs no install: paste a message and get the same verdict (CH-2). USSD works on any phone with no data: option 1 shows an open bank call and its code, option 2 lists today's messages by category, channel and time only, with no content, and ends with "A message from today that is not listed is not confirmed." This matters because the KPMG/Orange study's foreword says more than a third of mobile subscribers were still on 2G in May 2026, citing NCC data [S6], and NCC data puts 2G plus 3G at 41.08% of connections in June 2026 (press report) [S8].
 
-Languages. English, Pidgin, Hausa, Yoruba and Igbo are built into the app (Settings language picker), the WhatsApp bot (`LANG HA`) and USSD (plain ASCII spellings). All four non-English languages were drafted without a native speaker and are marked as needing native-speaker review; our design rule is that a language is switched on for real customers only after that review (`apps/web/docs/DESIGN.md`, Languages). The recent-activity sentence is still in English. Pidgin alone has a speech community of over 75 million [S9]. EFInA ran its own survey in Hausa, Yoruba, Igbo and Pidgin [S7].
+Languages. English, Pidgin, Hausa, Yoruba and Igbo are built into the app (Settings language picker), the WhatsApp bot (`LANG HA`) and USSD (plain ASCII spellings). All four non-English languages were drafted without a native speaker and are marked as needing native-speaker review; our design rule is that a language is switched on for real customers only after that review (`docs/DESIGN.md`, Languages). The recent-activity sentence is still in English. Pidgin alone has a speech community of over 75 million [S9]. EFInA ran its own survey in Hausa, Yoruba, Igbo and Pidgin [S7].
 
 Accessibility. The call code reads as one screen-reader label digit by digit, the 3D art is hidden from screen readers, animations stop under reduced motion, and every main screen lays out at twice the text size (A11Y-1 to A11Y-4).
 
 Caveat on [S6]: it covers 12 cities and urban smartphone users only, so it does not describe rural Nigeria.
 
-**Evidence:** [S1], [S6], [S7], [S8], [S9]; CH-2 in `tests/whatsapp.test.ts`; USSD-1 to USSD-7 in `tests/ussd.test.ts` and USSD-8 in `tests/console.test.ts`, with `apps/web/docs/decisions/0007-ussd-channel.md` (not tried on a live short code); A11Y-1 to A11Y-4 in `apps/mobile/test/a11y_test.dart` and BANK-1 to BANK-5 in `apps/mobile/test/multibank_test.dart`, with `apps/web/docs/decisions/0010-accessibility-and-multibank.md`; LANG-1 to LANG-5 and LANG-7 in `tests/languages.test.ts`, LANG-6 in `apps/mobile/test/language_test.dart`, `apps/web/docs/decisions/0006-languages-and-app-copy.md` (translations need native-speaker review).
+**Evidence:** [S1], [S6], [S7], [S8], [S9]; CH-2 in `tests/whatsapp.test.ts`; USSD-1 to USSD-7 in `tests/ussd.test.ts` and USSD-8 in `tests/console.test.ts`, with `docs/decisions/0007-ussd-channel.md` (not tried on a live short code); A11Y-1 to A11Y-4 in `mobile/test/a11y_test.dart` and BANK-1 to BANK-5 in `mobile/test/multibank_test.dart`, with `docs/decisions/0010-accessibility-and-multibank.md`; LANG-1 to LANG-5 and LANG-7 in `tests/languages.test.ts`, LANG-6 in `mobile/test/language_test.dart`, `docs/decisions/0006-languages-and-app-copy.md` (translations need native-speaker review).
 
 ---
 
@@ -186,23 +186,23 @@ Caveat on [S6]: it covers 12 cities and urban smartphone users only, so it does 
 
 **Speaker notes**
 
-Integration. The bank adds one call, `POST /v1/messages` (or `/v1/messages/batch`), at the point of sending, authenticated with OAuth 2.0 client credentials. Registration must never block sending; the design asks for asynchronous registration with a retry queue (`apps/web/docs/DESIGN.md`, Rules for the registration path). Where the notification code cannot change, the same call can be made by the SMS gateway or aggregator that already sends the message, or from an existing outbound-message queue. Our demo simulator shows the inline pattern; the gateway and queue connectors are designed, not built. Calls need one more call, `POST /v1/calls`, from the dialler. Nothing touches core banking, balances or transactions.
+Integration. The bank adds one call, `POST /v1/messages` (or `/v1/messages/batch`), at the point of sending, authenticated with OAuth 2.0 client credentials. Registration must never block sending; the design asks for asynchronous registration with a retry queue (`docs/DESIGN.md`, Rules for the registration path). Where the notification code cannot change, the same call can be made by the SMS gateway or aggregator that already sends the message, or from an existing outbound-message queue. Our demo simulator shows the inline pattern; the gateway and queue connectors are designed, not built. Calls need one more call, `POST /v1/calls`, from the dialler. Nothing touches core banking, balances or transactions.
 
 Deployment. The server is one Docker image (`Dockerfile`) with storage behind a `Store` interface. Firestore is the production store today; a bank that must use its own database implements the same interface, and `pnpm test` runs the whole acceptance suite against both memory and Firestore, so a third store can be checked the same way (decision 0004). Bank-hosted is the likely pilot: it keeps data in the bank's environment for its data protection officer's review under the NDPA, whose data-minimisation (s.24(1)(c)) and pseudonymisation (s.39(2)(a)) provisions match what the registry stores [S12]. The CBN payments data-localisation circular, effective 1 Jan 2027 (press report), points the same way [S11].
 
-Scale mechanics. A check is one Firestore document read, because the document id is a hash of bank, keyed recipient and keyed content (decision 0004). Dashboard counters are spread over shard documents so no single document takes every write. Rate limits are shared across server instances through the store (SEC-4). Keys rotate with versioned keys, and old records keep verifying until they expire (KEY-1 to KEY-3, decision 0008). The campaign agent runs as a separate scheduled job, so several replicas never run it twice (`pnpm agent:run`, decision 0009). Load test (`apps/web/docs/PERFORMANCE.md`, `pnpm load`): on an Apple M1 laptop, Node 22, memory store, client and server in one process on a busy machine, three runs gave single registration 5,728 to 8,476 requests/s with p95 9.1 to 16.7 ms; batch registration 373 to 629 requests/s, which is 37,000 to 63,000 messages/s, with p95 96 to 403 ms; verification 6,056 to 7,696 requests/s with p95 10.3 to 15.6 ms; no errors. Under that load the slowest registration-to-confirmed probe took 160 ms against the 2-second REG-7 target. Say clearly that these are laptop numbers on the memory store: Firestore and production have not been measured, and will be slower per request.
+Scale mechanics. A check is one Firestore document read, because the document id is a hash of bank, keyed recipient and keyed content (decision 0004). Dashboard counters are spread over shard documents so no single document takes every write. Rate limits are shared across server instances through the store (SEC-4). Keys rotate with versioned keys, and old records keep verifying until they expire (KEY-1 to KEY-3, decision 0008). The campaign agent runs as a separate scheduled job, so several replicas never run it twice (`pnpm agent:run`, decision 0009). Load test (`docs/PERFORMANCE.md`, `pnpm load`): on an Apple M1 laptop, Node 22, memory store, client and server in one process on a busy machine, three runs gave single registration 5,728 to 8,476 requests/s with p95 9.1 to 16.7 ms; batch registration 373 to 629 requests/s, which is 37,000 to 63,000 messages/s, with p95 96 to 403 ms; verification 6,056 to 7,696 requests/s with p95 10.3 to 15.6 ms; no errors. Under that load the slowest registration-to-confirmed probe took 160 ms against the 2-second REG-7 target. Say clearly that these are laptop numbers on the memory store: Firestore and production have not been measured, and will be slower per request.
 
 Abuse and coverage. A registration anomaly guard alerts the bank by email when a registration carries a link domain the bank has not declared, or when registration volume spikes above its trailing rate; it never blocks or fails the registration (`tests/guard.test.ts`). `GET /v1/metrics` reports registered versus verified counts, the not-confirmed rate and checks by channel (`tests/coverage.test.ts`).
 
 Multi-bank. One deployment can serve several banks with separate keys and data, and the app already lists every enrolled bank from `GET /v1/banks`.
 
-**Evidence:** REG-7, REG-8; SEC-4 in `tests/ratelimit.test.ts`; KEY-1 to KEY-3 in `tests/key-rotation.test.ts`; shard spreading in `tests/registry.test.ts`; `apps/web/docs/decisions/0004-firestore.md`, `0008-key-rotation.md`, `0009-campaign-briefing.md`; `apps/web/docs/CONFIGURATION.md`; `Dockerfile`; [S11] press report; [S12] NDPA 2023 (primary); `apps/web/docs/PERFORMANCE.md` (`scripts/load.ts`), `tests/guard.test.ts`, `tests/coverage.test.ts`.
+**Evidence:** REG-7, REG-8; SEC-4 in `tests/ratelimit.test.ts`; KEY-1 to KEY-3 in `tests/key-rotation.test.ts`; shard spreading in `tests/registry.test.ts`; `docs/decisions/0004-firestore.md`, `0008-key-rotation.md`, `0009-campaign-briefing.md`; `docs/CONFIGURATION.md`; `Dockerfile`; [S11] press report; [S12] NDPA 2023 (primary); `docs/PERFORMANCE.md` (`scripts/load.ts`), `tests/guard.test.ts`, `tests/coverage.test.ts`.
 
 ---
 
 ## Appendix after slide 8. Technology used (open source)
 
-The competition rules ask teams to identify every technology used and to use open-source tools. That slide is maintained separately: see [tech-stack.md](tech-stack.md) and [apps/web/docs/TECH_STACK.md](../TECH_STACK.md) (being written). Show it after slide 8 if time allows, or keep it as a backup slide for questions. Do not duplicate its table here.
+The competition rules ask teams to identify every technology used and to use open-source tools. That slide is maintained separately: see [tech-stack.md](tech-stack.md) and [docs/TECH_STACK.md](../TECH_STACK.md) (being written). Show it after slide 8 if time allows, or keep it as a backup slide for questions. Do not duplicate its table here.
 
 ---
 
@@ -226,7 +226,7 @@ Pilot KPIs, all to be measured during the pilot, none achieved yet:
 
 | KPI | What it measures | Why |
 | --- | --- | --- |
-| Registration coverage | Registered messages / messages sent, for the enrolled type | A genuine message that was never registered shows as "Not confirmed"; this is the main operational risk (`apps/web/docs/DESIGN.md`) |
+| Registration coverage | Registered messages / messages sent, for the enrolled type | A genuine message that was never registered shows as "Not confirmed"; this is the main operational risk (`docs/DESIGN.md`) |
 | Checks per week | Verifications by channel (app, WhatsApp, USSD) | Adoption; `GET /v1/metrics` reports checks by channel (`tests/coverage.test.ts`) |
 | Not-confirmed rate | Share of checks that do not match | Fake messages caught, plus a signal of coverage gaps |
 | Report to advisory time | Time from first customer report to analyst-approved advisory | Speed of the fraud desk's response |
@@ -234,7 +234,7 @@ Pilot KPIs, all to be measured during the pilot, none achieved yet:
 
 Target values are for the bank and us to agree before the pilot [CONFIRM: pilot targets].
 
-**Evidence:** `GET /v1/metrics` in `apps/api/src/app.ts`, extended with registered vs verified counts, the not-confirmed rate and checks by channel in `tests/coverage.test.ts`; note that true coverage (registered / sent) also needs the bank's own sent count; pilot shape in `apps/web/docs/DESIGN.md` (Build plan); [S13] press report. No pricing or KPI result exists in the repository.
+**Evidence:** `GET /v1/metrics` in `packages/api/src/app.ts`, extended with registered vs verified counts, the not-confirmed rate and checks by channel in `tests/coverage.test.ts`; note that true coverage (registered / sent) also needs the bank's own sent count; pilot shape in `docs/DESIGN.md` (Build plan); [S13] press report. No pricing or KPI result exists in the repository.
 
 ---
 
@@ -250,11 +250,11 @@ Target values are for the bank and us to agree before the pilot [CONFIRM: pilot 
 
 **Speaker notes**
 
-Close on the ask. We want a bank's notification team, contact-centre team and fraud desk for a pilot of one message type plus outbound calls, in the bank's own environment, with its data protection officer reviewing the design. Everything a pilot needs from us exists today as code with tests; what we need from a bank is the integration point, its security review, and the assumptions in `apps/web/docs/DESIGN.md` (Assumptions to confirm) checked against its real systems. None of those has been checked with a bank yet.
+Close on the ask. We want a bank's notification team, contact-centre team and fraud desk for a pilot of one message type plus outbound calls, in the bank's own environment, with its data protection officer reviewing the design. Everything a pilot needs from us exists today as code with tests; what we need from a bank is the integration point, its security review, and the assumptions in `docs/DESIGN.md` (Assumptions to confirm) checked against its real systems. None of those has been checked with a bank yet.
 
 Replace the test count with the figure from a fresh `npx vitest run` on the day [CONFIRM: test count], and add the Dart and Flutter counts from `pnpm test` if you want to quote them.
 
-**Evidence:** `pnpm test` on `main` at commit f097011, 20 Oct 2026: 25 files and 231 tests passed on memory and on the Firestore emulator; 94 Flutter and 78 canonical_dart tests passed; `apps/web/docs/DESIGN.md` (Build plan, Assumptions to confirm).
+**Evidence:** `pnpm test` on `main` at commit f097011, 20 Oct 2026: 25 files and 231 tests passed on memory and on the Firestore emulator; 94 Flutter and 78 canonical_dart tests passed; `docs/DESIGN.md` (Build plan, Assumptions to confirm).
 
 ---
 

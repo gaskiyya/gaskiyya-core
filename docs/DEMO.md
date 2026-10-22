@@ -27,7 +27,7 @@ pnpm dev
 
 - On the first run it writes `.env` from `.env.example` with fresh local secrets, a demo bank (DemoBank), the console's bank client and `ALLOW_DEMO_RESET=true`. It never overwrites an existing `.env`.
 - It builds the web UIs (`pnpm web:build`) if they are missing.
-- It starts one server on `http://localhost:8080` (`apps/api/src/server.ts`) with the bank simulator on (`SIM_ENABLED=true`):
+- It starts one server on `http://localhost:8080` (`packages/api/src/server.ts`) with the bank simulator on (`SIM_ENABLED=true`):
   - **Registry API** under `/v1`. The store is in memory, so all data is lost when it stops.
   - **Bank sandbox console** at `http://localhost:8080/console/`, backed by the simulator's `/sim` routes. Its inbox and call list are in memory too, and it makes a new customer-token signing key on every start.
   - The landing page at `/` and the admin dashboard at `/admin/`.
@@ -88,7 +88,7 @@ Test from the **phone's browser** before opening the app: `http://<LAN-ip>:8080/
 ### Run the app
 
 ```bash
-cd apps/mobile && flutter run --dart-define=API_URL=http://<LAN-ip>:8080
+cd mobile && flutter run --dart-define=API_URL=http://<LAN-ip>:8080
 ```
 
 - Use a **debug** build (plain `flutter run`). Only the debug Android manifest allows plain `http://`; iOS allows it to local network addresses through `NSAllowsLocalNetworking`. On iOS, accept the "find devices on your local network" prompt.
@@ -231,5 +231,5 @@ ollama serve                   # if the Ollama app is not already running
 The phone must be on the same network as the laptop: join the laptop's hotspot, or put both on one Wi-Fi network or LAN (no internet needed). Run the app with the laptop's address, which `pnpm demo:offline` prints:
 
 ```bash
-cd apps/mobile && flutter run --dart-define=API_URL=http://<laptop-ip>:8080
+cd mobile && flutter run --dart-define=API_URL=http://<laptop-ip>:8080
 ```

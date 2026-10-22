@@ -6,7 +6,7 @@ Many frauds do not imitate a bank's message at all. They are unlicensed loan app
 
 ## What it answers
 
-`POST /v1/verify/licence { query }` (customer token, rate limited with the other checks) takes a firm's name, website or Android package ID (or a Play Store link). The answer is one of three, decided in `decideLicenceVerdict` in `apps/api/src/domain/verdict.ts`:
+`POST /v1/verify/licence { query }` (customer token, rate limited with the other checks) takes a firm's name, website or Android package ID (or a Play Store link). The answer is one of three, decided in `decideLicenceVerdict` in `packages/api/src/domain/verdict.ts`:
 
 | Verdict | When | What the customer is told |
 | --- | --- | --- |
@@ -18,7 +18,7 @@ There is no "fraud", "unlicensed" or "illegal" verdict. The registry knows only 
 
 ## Matching
 
-Exact only, after normalisation (`apps/api/src/domain/licence.ts`):
+Exact only, after normalisation (`packages/api/src/domain/licence.ts`):
 
 - **Names:** accents and punctuation are removed, "&" is read as "and", case and spacing are ignored (spaces are removed, so "Palm Credit" and "PalmCredit" match), and the trailing company words Ltd, Limited, Plc, Nigeria, Nig, NG, Inc, LLC and Co are dropped, as is a leading "The".
 - **Websites:** the host, without scheme, "www.", port or path. A website matches only a listed website. A domain that merely contains a listed name (for example `palmcredit-ng.com`) is never a match: that is how look-alike domains work.

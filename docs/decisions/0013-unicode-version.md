@@ -13,7 +13,7 @@ NFKC is defined by **Unicode 15.1**, whatever version the runtime knows:
 
 This is exactly how a Unicode 15.1 normaliser treats such a code point. An unassigned code point has no decomposition and combining class 0, and composes with nothing, so it is a normalisation boundary. Splitting there therefore gives the 15.1 result. Within a run every code point is assigned in 15.1, and the Unicode normalisation stability policy guarantees that any later version normalises those runs exactly as 15.1 does.
 
-The 15.1 table is generated once from `DerivedAge.txt` by `packages/canonical/scripts/generate-unicode.mjs`. It is committed as ASCII hex ranges in both languages: `packages/canonical/src/unicode-assigned.ts` and `packages/canonical_dart/lib/src/unicode_assigned.dart`. It has 707 ranges and 289,394 code points. The splitting code is `nfkc.ts` and `nfkc.dart`. The marketing site's demo (`apps/web/site/src/fingerprint.ts`) imports the same `nfkcPinned` from `@gaskiya/canonical/nfkc`.
+The 15.1 table is generated once from `DerivedAge.txt` by `packages/canonical/scripts/generate-unicode.mjs`. It is committed as ASCII hex ranges in both languages: `packages/canonical/src/unicode-assigned.ts` and `packages/canonical_dart/lib/src/unicode_assigned.dart`. It has 707 ranges and 289,394 code points. The splitting code is `nfkc.ts` and `nfkc.dart`. The marketing site's demo (`site/src/fingerprint.ts`) imports the same `nfkcPinned` from `@gaskiya/canonical/nfkc`.
 
 A runtime must know at least Unicode 15.1. Node 22 and later do (`engines` is `>=22`), and so does `unorm_dart` 0.3.3. `tests/canonical.test.ts` fails if the running Node does not know every code point in the table, and it also checks that the TypeScript and Dart tables are identical.
 

@@ -31,4 +31,4 @@ New keys under the top-level `shield` namespace of `copy.json`. Changed: `app.li
 
 ## Tests
 
-`tests/zeroclick.test.ts` (ZC-6 server, ZC-8), `apps/mobile/test/shield_test.dart` (ZC-1 to ZC-8 decision rules), `apps/mobile/test/language_test.dart` (ZC-9), and the console and sandbox tests for the simulated phone. The Android services themselves need a manual check on a real phone.
+`tests/zeroclick.test.ts` (ZC-6 server, ZC-8), `mobile/test/shield_test.dart` (ZC-1 to ZC-8 decision rules), `mobile/test/language_test.dart` (ZC-9), and the console and sandbox tests for the simulated phone. The Android services themselves need a manual check on a real phone.

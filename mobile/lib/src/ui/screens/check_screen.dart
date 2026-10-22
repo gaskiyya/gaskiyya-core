@@ -24,8 +24,14 @@ CheckRequest requestFor(String text, {bool asContact = false}) {
 Future<void> checkText(BuildContext context, AppState state, String text, {bool asContact = false}) async {
   final client = state.client;
   if (client == null || text.trim().isEmpty) return;
-  await showResult(context, client, state.bankName ?? Copy.I.t('app.common.yourBank'), requestFor(text, asContact: asContact), kind: state.bank?.kind ?? 'bank');
+  await showResult(context, client, state.bankName ?? Copy.I.t('app.common.yourBank'), requestFor(text, asContact: asContact),
+      kind: state.bank?.kind ?? 'bank', others: othersFor(state));
 }
+
+List<CheckTarget> othersFor(AppState state) => [
+      for (final l in state.links)
+        if (l != state.selected) (bank: l.bank.name, kind: l.bank.kind, client: l.client),
+    ];
 
 class CheckScreen extends StatefulWidget {
   const CheckScreen({super.key, required this.state});
@@ -80,7 +86,7 @@ class _CheckScreenState extends State<CheckScreen> {
     final type = file.mimeType ?? (file.name.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg');
     if (!mounted) return;
     final shot = Screenshot(path: kIsWeb ? null : file.path, bytes: bytes, mediaType: type);
-    await showResult(context, widget.state.client!, widget.state.bankName ?? Copy.I.t('app.common.yourBank'), CheckRequest.screenshot(shot), kind: widget.state.bank?.kind ?? 'bank');
+    await showResult(context, widget.state.client!, widget.state.bankName ?? Copy.I.t('app.common.yourBank'), CheckRequest.screenshot(shot), kind: widget.state.bank?.kind ?? 'bank', others: othersFor(widget.state));
   }
 
   Future<void> _licence() async {
@@ -111,44 +117,6 @@ class _CheckScreenState extends State<CheckScreen> {
 
   @override
   Widget build(BuildContext context) => ListenableBuilder(listenable: widget.state, builder: (context, _) => _build(context));
-
-  Widget _bankPicker(BuildContext context) {
-    final selected = widget.state.bank?.id;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(6, 0, 6, 8),
-          child: Text(Copy.I.t('banks.pickerHeading'), style: G.subhead(context).copyWith(fontWeight: FontWeight.w600)),
-        ),
-        Wrap(spacing: 8, runSpacing: 8, children: [
-          for (final l in widget.state.links)
-            Semantics(
-              selected: l.id == selected,
-              child: Pressable(
-                key: ValueKey('pick-${l.id}'),
-                onTap: () => widget.state.select(l.id),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-                  decoration: BoxDecoration(
-                    color: l.id == selected ? G.tint.resolveFrom(context) : G.card.resolveFrom(context),
-                    borderRadius: BorderRadius.circular(980),
-                    border: Border.all(color: G.tint.resolveFrom(context).withValues(alpha: l.id == selected ? 1 : 0.35)),
-                  ),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    if (l.id == selected) ...[const Icon(CupertinoIcons.checkmark_alt, size: 16, color: CupertinoColors.white), const SizedBox(width: 6)],
-                    Flexible(
-                      child: Text(l.bank.name,
-                          style: G.subhead(context).copyWith(fontWeight: FontWeight.w600, color: l.id == selected ? CupertinoColors.white : G.tint.resolveFrom(context))),
-                    ),
-                  ]),
-                ),
-              ),
-            ),
-        ]),
-      ]),
-    );
-  }
 
   Widget _receiptTile(BuildContext context) {
     final c = Copy.I;
@@ -199,23 +167,10 @@ class _CheckScreenState extends State<CheckScreen> {
               largeTitle: Text(c.t('app.tabs.check')),
               border: null,
               backgroundColor: G.bg.resolveFrom(context).withValues(alpha: 0.85),
-              trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                Container(
-                  key: const ValueKey('status-dot'),
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: (widget.state.selected?.callChecked ?? false) ? G.green.resolveFrom(context) : CupertinoColors.systemGrey.resolveFrom(context)),
-                ),
-                const SizedBox(width: 6),
-                Text(widget.state.bankName ?? '', style: G.footnote(context).copyWith(fontWeight: FontWeight.w600)),
-              ]),
             ),
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(16, 4, 16, 40),
               sliver: SliverList.list(children: [
-                if (widget.state.links.length > 1) _bankPicker(context),
                 Reveal(
                   child: GroupCard(
                     padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),

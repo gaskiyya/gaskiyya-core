@@ -34,13 +34,14 @@ if (process.env.SIM_ENABLED === 'true') {
     ussdToken: process.env.USSD_WEBHOOK_TOKEN || undefined,
     ...simOrgsFromEnv(),
     bankCode: process.env.SIM_BANK_CODE || undefined,
+    consoleCheck: (authorization: string | undefined) => system.consoleAccess.check(authorization),
   };
   await app.register(async (scope) => {
     await registerSimulator(scope, sim);
   });
 }
 
-const web = await registerWeb(app, { dir: process.env.WEB_DIST_DIR || undefined, console: process.env.SIM_ENABLED === 'true', admin: system.adminAuth ?? null });
+const web = await registerWeb(app, { dir: process.env.WEB_DIST_DIR || undefined, console: process.env.CONSOLE_ENABLED !== 'false', admin: system.adminAuth ?? null });
 
 system.store
   .ping()

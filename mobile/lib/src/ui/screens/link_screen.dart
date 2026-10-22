@@ -1,7 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
-import '../../core/api.dart';
 import '../../core/copy.dart';
 import '../../core/session.dart';
 import '../../core/text_tools.dart';
@@ -9,10 +10,8 @@ import '../theme.dart';
 import '../widgets/widgets.dart';
 
 class LinkScreen extends StatefulWidget {
-  const LinkScreen({super.key, required this.state, this.adding = false});
+  const LinkScreen({super.key, required this.state});
   final AppState state;
-
-  final bool adding;
 
   @override
   State<LinkScreen> createState() => _LinkScreenState();
@@ -21,84 +20,87 @@ class LinkScreen extends StatefulWidget {
 class _LinkScreenState extends State<LinkScreen> {
   final _ctrl = TextEditingController();
   final _focus = FocusNode();
+  Timer? _debounce;
+  int _lookup = 0;
+  String? _phone;
+  bool _finding = false;
   bool _busy = false;
   String? _error;
-  List<Bank>? _banks;
-  Bank? _bank;
-  bool _loadFailed = false;
+  List<BankLink>? _found;
 
   @override
   void initState() {
     super.initState();
-    if (widget.adding) _ctrl.text = widget.state.phone ?? '';
-    _loadBanks();
-  }
-
-  Future<void> _loadBanks() async {
-    setState(() => _loadFailed = false);
-    try {
-      final banks = await widget.state.loadBanks();
-      if (!mounted) return;
-      setState(() {
-        _banks = banks;
-        final linked = widget.state.links.map((l) => l.id).toSet();
-        final open = banks.where((b) => !linked.contains(b.id)).toList();
-        _bank = banks.length == 1 ? banks.single : (widget.adding && open.length == 1 ? open.single : null);
-      });
-      if (_bank != null) _focus.requestFocus();
-    } catch (_) {
-      if (mounted) setState(() => _loadFailed = true);
-    }
+    _ctrl.addListener(_onChanged);
   }
 
   @override
   void dispose() {
+    _debounce?.cancel();
+    widget.state.discard(_found ?? const []);
     _ctrl.dispose();
     _focus.dispose();
     super.dispose();
   }
 
-  void _choose(Bank bank) {
+  void _onChanged() {
+    final phone = normalisePhone(_ctrl.text);
+    if (phone == _phone) return;
+    _debounce?.cancel();
+    _lookup++;
+    widget.state.discard(_found ?? const []);
     setState(() {
-      _bank = bank;
+      _phone = phone;
+      _found = null;
+      _finding = false;
       _error = null;
     });
-    _focus.requestFocus();
+    if (phone != null) _debounce = Timer(const Duration(milliseconds: 350), () => _find(phone));
   }
 
-  Future<void> _signIn() async {
-    final bank = _bank;
-    if (bank == null) {
-      HapticFeedback.heavyImpact();
-      setState(() => _error = Copy.I.t('app.link.chooseBank'));
-      return;
-    }
-    final phone = normalisePhone(_ctrl.text);
-    if (phone == null) {
-      HapticFeedback.heavyImpact();
-      setState(() => _error = Copy.I.t('app.link.enterNumber'));
-      return;
-    }
-    setState(() {
-      _busy = true;
-      _error = null;
-    });
+  Future<void> _find(String phone) async {
+    final id = ++_lookup;
+    setState(() => _finding = true);
     try {
-      await widget.state.link(phone, bank);
-      HapticFeedback.mediumImpact();
-      if (widget.adding && mounted) Navigator.of(context).pop();
+      final found = await widget.state.discover(phone);
+      if (!mounted || id != _lookup) {
+        widget.state.discard(found);
+        return;
+      }
+      setState(() => _found = found);
+      HapticFeedback.selectionClick();
     } catch (_) {
-      setState(() => _error = Copy.I.t('app.link.cannotReachBank'));
+      if (mounted && id == _lookup) setState(() => _error = Copy.I.t('app.link.cannotReachBank'));
     } finally {
-      if (mounted) setState(() => _busy = false);
+      if (mounted && id == _lookup) setState(() => _finding = false);
     }
+  }
+
+  Future<void> _proceed() async {
+    final found = _found;
+    if (found == null || found.isEmpty) {
+      final phone = normalisePhone(_ctrl.text);
+      if (phone == null) {
+        HapticFeedback.heavyImpact();
+        setState(() => _error = Copy.I.t('app.link.enterNumber'));
+      } else if (!_finding) {
+        unawaited(_find(phone));
+      }
+      return;
+    }
+    setState(() => _busy = true);
+    _focus.unfocus();
+    HapticFeedback.mediumImpact();
+    _found = null;
+    await widget.state.adopt(found);
+    if (mounted) setState(() => _busy = false);
   }
 
   @override
   Widget build(BuildContext context) {
     final c = Copy.I;
+    final ready = (_found?.isNotEmpty ?? false) && !_finding;
     return CupertinoPageScaffold(
-      navigationBar: widget.adding ? CupertinoNavigationBar(middle: Text(Copy.I.t('banks.add')), border: null, transitionBetweenRoutes: false) : null,
       child: GestureDetector(
         onTap: () => _focus.unfocus(),
         child: SafeArea(
@@ -110,9 +112,9 @@ class _LinkScreenState extends State<LinkScreen> {
               const SizedBox(height: 18),
               Reveal(
                 delay: const Duration(milliseconds: 80),
-                child: Text(c.t('app.link.title'), textAlign: TextAlign.center, style: G.largeTitle(context)),
+                child: Semantics(header: true, child: Text(c.t('app.link.title'), textAlign: TextAlign.center, style: G.largeTitle(context))),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               Reveal(
                 delay: const Duration(milliseconds: 140),
                 child: Text(
@@ -122,12 +124,10 @@ class _LinkScreenState extends State<LinkScreen> {
                 ),
               ),
               const SizedBox(height: 30),
-              _bankSection(context),
-              const SizedBox(height: 14),
               Reveal(
                 delay: const Duration(milliseconds: 200),
                 child: GroupCard(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                  padding: const EdgeInsets.fromLTRB(16, 6, 8, 6),
                   child: Row(
                     children: [
                       const _NigeriaFlag(),
@@ -136,8 +136,10 @@ class _LinkScreenState extends State<LinkScreen> {
                       Container(width: 1, height: 28, margin: const EdgeInsets.symmetric(horizontal: 12), color: G.separator.resolveFrom(context)),
                       Expanded(
                         child: CupertinoTextField.borderless(
+                          key: const ValueKey('phone'),
                           controller: _ctrl,
                           focusNode: _focus,
+                          autofocus: true,
                           placeholder: c.t('app.link.mobileNumber'),
                           keyboardType: TextInputType.phone,
                           autofillHints: const [AutofillHints.telephoneNumber],
@@ -145,20 +147,19 @@ class _LinkScreenState extends State<LinkScreen> {
                           style: G.body(context).copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           textInputAction: TextInputAction.go,
-                          onSubmitted: (_) => _signIn(),
+                          onSubmitted: (_) => _proceed(),
                           inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d +]')), LengthLimitingTextInputFormatter(16)],
                         ),
                       ),
+                      _ProceedButton(ready: ready, finding: _finding || _busy, onTap: _proceed),
                     ],
                   ),
                 ),
               ),
-              if (G.reduceMotion(context)) _errorLine(context) else AnimatedSize(duration: G.springFast, curve: G.spring, child: _errorLine(context)),
-              const SizedBox(height: 14),
-              Reveal(
-                delay: const Duration(milliseconds: 260),
-                child: PrimaryButton(key: const ValueKey('signIn'), label: c.t('app.link.title'), loading: _busy, onTap: _signIn, gradient: true),
-              ),
+              if (G.reduceMotion(context))
+                _below(context)
+              else
+                AnimatedSize(duration: G.springFast, curve: G.spring, alignment: Alignment.topCenter, child: _below(context)),
               const SizedBox(height: 24),
             ],
           ),
@@ -167,72 +168,89 @@ class _LinkScreenState extends State<LinkScreen> {
     );
   }
 
-  Widget _errorLine(BuildContext context) => _error == null
-      ? const SizedBox(height: 12)
-      : Padding(
-          padding: const EdgeInsets.fromLTRB(6, 10, 6, 0),
-          child: Text(_error!, style: G.footnote(context).copyWith(color: G.red.resolveFrom(context))),
-        );
-
-  Widget _bankSection(BuildContext context) {
+  Widget _below(BuildContext context) {
     final c = Copy.I;
-    final banks = _banks;
-    if (_loadFailed) {
-      return GroupCard(
-        child: Row(
-          children: [
-            Expanded(child: Text(c.t('app.link.banksUnreachable'), style: G.subhead(context))),
-            CupertinoButton(padding: EdgeInsets.zero, onPressed: _loadBanks, child: Text(c.t('app.common.tryAgain'))),
-          ],
-        ),
+    if (_error != null) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(6, 10, 6, 0),
+        child: Text(_error!, style: G.footnote(context).copyWith(color: G.red.resolveFrom(context))),
       );
     }
-    if (banks == null) return const Padding(padding: EdgeInsets.symmetric(vertical: 14), child: CupertinoActivityIndicator());
-    if (banks.isEmpty) {
-      return GroupCard(child: Text(c.t('app.link.noBanks'), style: G.subhead(context)));
+    final found = _found;
+    if (_finding) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 16),
+        child: Text(c.t('app.link.finding'), textAlign: TextAlign.center, style: G.footnote(context)),
+      );
     }
-    return Reveal(
-      delay: const Duration(milliseconds: 180),
-      child: GroupCard(
-        padding: EdgeInsets.zero,
-        child: Column(
+    if (found == null) return const SizedBox(width: double.infinity);
+    if (found.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(6, 12, 6, 0),
+        child: Text(c.t('app.link.notFound'), textAlign: TextAlign.center, style: G.footnote(context)),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.only(top: 22),
+      child: Semantics(
+        container: true,
+        label: c.orList([for (final l in found) l.bank.name]),
+        excludeSemantics: true,
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 10,
+          runSpacing: 16,
           children: [
-            for (var i = 0; i < banks.length; i++) ...[
-              if (i > 0) Container(height: 0.5, margin: const EdgeInsets.only(left: 66), color: G.separator.resolveFrom(context)),
-              Pressable(
-                scale: 0.98,
-                onTap: _busy || banks.length == 1 ? null : () => _choose(banks[i]),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 38,
-                        height: 38,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(shape: BoxShape.circle, color: G.tint.resolveFrom(context)),
-                        child: Text(banks[i].name.substring(0, 1), style: G.subhead(context).copyWith(color: CupertinoColors.white, fontWeight: FontWeight.w700)),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(banks[i].name, style: G.headline(context)),
-                            if (banks[i].domains.isNotEmpty) Text(banks[i].domains.first, style: G.footnote(context)),
-                          ],
-                        ),
-                      ),
-                      if (_bank?.id == banks[i].id)
-                        Icon(CupertinoIcons.checkmark_alt, size: 20, color: G.tint.resolveFrom(context))
-                      else if (widget.state.links.any((l) => l.id == banks[i].id))
-                        Text(Copy.I.t('banks.linked'), style: G.footnote(context).copyWith(color: G.greenInk.resolveFrom(context))),
-                    ],
-                  ),
+            for (final (i, l) in found.indexed)
+              Reveal(
+                key: ValueKey('found-${l.id}'),
+                delay: Duration(milliseconds: 50 * i),
+                child: SizedBox(
+                  width: 92,
+                  child: Column(children: [
+                    BankLogo(name: l.bank.name, url: l.bank.logoUrl, size: 52),
+                    const SizedBox(height: 6),
+                    Text(l.bank.name, maxLines: 3, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: G.caption(context).copyWith(height: 1.25)),
+                  ]),
                 ),
               ),
-            ],
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ProceedButton extends StatelessWidget {
+  const _ProceedButton({required this.ready, required this.finding, required this.onTap});
+  final bool ready;
+  final bool finding;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final motion = G.motion(context, const Duration(milliseconds: 220));
+    return Semantics(
+      button: true,
+      enabled: ready,
+      label: Copy.I.t('app.common.continue'),
+      excludeSemantics: true,
+      child: Pressable(
+        key: const ValueKey('signIn'),
+        onTap: ready ? onTap : null,
+        child: AnimatedContainer(
+          duration: motion,
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: ready ? G.brandGradient : null,
+            color: ready ? null : G.fill.resolveFrom(context),
+          ),
+          alignment: Alignment.center,
+          child: finding
+              ? CupertinoActivityIndicator(color: ready ? CupertinoColors.white : null)
+              : Icon(CupertinoIcons.arrow_right, size: 20, color: ready ? CupertinoColors.white : G.label3.resolveFrom(context)),
         ),
       ),
     );

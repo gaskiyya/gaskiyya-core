@@ -1,6 +1,6 @@
 import { createHmac, randomBytes } from 'node:crypto';
 
-export type KeyPurpose = 'recipient' | 'content' | 'callback' | 'account' | 'receipt';
+export type KeyPurpose = 'recipient' | 'content' | 'callback' | 'account' | 'receipt' | 'console';
 
 export interface KeyService {
   keyed(tenantId: string, purpose: KeyPurpose, value: string, version?: number): string;

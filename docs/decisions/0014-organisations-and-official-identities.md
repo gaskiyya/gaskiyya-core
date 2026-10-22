@@ -12,7 +12,7 @@ Fraud gaps #14, #7 and #10. Impersonation is not limited to banks: fake road-saf
 - Agencies and companies register messages and open calls through the same bank-facing API, with the same recipient binding and the same verdict function. Nothing in `verdict.ts` depends on the kind.
 - Customer-facing text never says "your bank" for a non-bank. `copyForOrg(language, kind)` in `packages/schemas` returns the normal copy for a bank and, for an agency or company, swaps in the `official.org.*` variants. These name the organisation through the existing `{bank}` placeholder. The swap covers the verdict, explanation, call, link, report, activity, WhatsApp and USSD texts. The app has the same mapping (`Copy.tOrg`).
 - `GET /v1/organisations` lists every organisation with its kind, domains, sender IDs, official contacts and official apps. All of these are public by nature. `GET /v1/banks` keeps its shape and gains `kind`.
-- Demo data: "Road Safety Agency (demo)" and "Tax Office (demo)" (`apps/api/src/simulator/demo-orgs.json`). Both are fictional, run on reserved `.example` domains with made-up numbers, and carry no real name, logo or trademark. `pnpm dev` enrols them beside the demo bank unless `DEMO_ORGS=0`. The simulator sends as them with their own bank clients (`SIM_ORGS`).
+- Demo data: "Road Safety Agency (demo)" and "Tax Office (demo)" (`packages/api/src/simulator/demo-orgs.json`). Both are fictional, run on reserved `.example` domains with made-up numbers, and carry no real name, logo or trademark. `pnpm dev` enrols them beside the demo bank unless `DEMO_ORGS=0`. The simulator sends as them with their own bank clients (`SIM_ORGS`).
 
 ### Official contacts (#7)
 
@@ -74,4 +74,4 @@ Every USSD screen these keys make fits 160 plain ASCII characters in every langu
 - USSD's menu gains option 3, so `3` is no longer an invalid menu choice. USSD-7 now uses `4` as its invalid input.
 - The demo bank's preset keeps its identity fields unchanged. What it publishes sits beside them in `publishes`, and `demoTenant()` merges the two.
 - Model prompts still describe the sender as a bank. The model never decides, and its output is checked as before. The fixed fallback text names the organisation.
-- Requirements OFF-1 to OFF-12 (apps/web/docs/DESIGN.md) cover this note.
+- Requirements OFF-1 to OFF-12 (docs/DESIGN.md) cover this note.

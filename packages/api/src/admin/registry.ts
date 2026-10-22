@@ -76,7 +76,7 @@ export interface AdminRegistryOptions {
 }
 
 const ALL_ON = Object.fromEntries(ORG_FEATURES.map((f) => [f, true])) as Record<OrgFeature, boolean>;
-const PROFILE_FIELDS = ['name', 'legalName', 'technicalContact', 'kind', 'bankCode', 'domains', 'senderIds', 'officialContacts', 'officialApps', 'alertEmails', 'tokenKeysUrl', 'tokenKeys', 'customerTokenUrl', 'recordTtlDays'] as const;
+const PROFILE_FIELDS = ['name', 'legalName', 'technicalContact', 'kind', 'bankCode', 'domains', 'senderIds', 'officialContacts', 'officialApps', 'alertEmails', 'tokenKeysUrl', 'tokenKeys', 'customerTokenUrl', 'logoUrl', 'recordTtlDays'] as const;
 const TOUCH_INTERVAL_MS = 60_000;
 
 const keyAad = (tenantId: string, version: number) => `gaskiyya-key:${tenantId}:${version}`;

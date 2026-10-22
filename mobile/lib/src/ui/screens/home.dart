@@ -14,7 +14,6 @@ import '../widgets/widgets.dart';
 import 'alerts.dart';
 import 'calls_screen.dart';
 import 'check_screen.dart';
-import 'link_screen.dart';
 
 String sharedText(List<SharedMediaFile> files) =>
     files.where((f) => f.type == SharedMediaType.text || f.type == SharedMediaType.url).map((f) => f.path).join('\n');
@@ -242,41 +241,38 @@ class ActivityScreen extends StatefulWidget {
 }
 
 class _ActivityScreenState extends State<ActivityScreen> {
-  ({List<ActivityItem> items, String text})? _data;
-  bool _loaded = false;
-  String? _bankId;
+  List<({BankLink link, ({List<ActivityItem> items, String text})? data})>? _data;
+  String _ids = '';
+
+  String get _linkIds => widget.state.links.map((l) => l.id).join(',');
 
   @override
   void initState() {
     super.initState();
-    _bankId = widget.state.bank?.id;
-    widget.state.addListener(_onBank);
+    _ids = _linkIds;
+    widget.state.addListener(_onLinks);
     _load();
   }
 
   @override
   void dispose() {
-    widget.state.removeListener(_onBank);
+    widget.state.removeListener(_onLinks);
     super.dispose();
   }
 
-  void _onBank() {
-    if (widget.state.bank?.id == _bankId) return;
-    _bankId = widget.state.bank?.id;
-    setState(() => _loaded = false);
+  void _onLinks() {
+    if (_linkIds == _ids) return;
+    _ids = _linkIds;
+    setState(() => _data = null);
     _load();
   }
 
   Future<void> _load() async {
-    final id = widget.state.bank?.id;
+    final ids = _linkIds;
     unawaited(widget.state.refreshAdvisories());
-    final d = await widget.state.client?.activity();
-    if (mounted && id == widget.state.bank?.id) {
-      setState(() {
-        _data = d;
-        _loaded = true;
-      });
-    }
+    final links = widget.state.links;
+    final all = await Future.wait(links.map((l) async => (link: l, data: await l.client.activity())));
+    if (mounted && ids == _linkIds) setState(() => _data = all);
   }
 
   IconData _icon(String category) => switch (category) {
@@ -288,9 +284,67 @@ class _ActivityScreenState extends State<ActivityScreen> {
         _ => CupertinoIcons.phone_fill,
       };
 
+  /// Every organisation's last 24 hours as one list, the same category and channel added together.
+  List<ActivityItem> _merged(Iterable<({List<ActivityItem> items, String text})> all) {
+    final rows = <String, ActivityItem>{};
+    for (final d in all) {
+      for (final i in d.items) {
+        final k = '${i.category}/${i.channel}';
+        final had = rows[k];
+        rows[k] = had == null
+            ? i
+            : ActivityItem(category: i.category, channel: i.channel, count: had.count + i.count, anyWithLink: had.anyWithLink || i.anyWithLink);
+      }
+    }
+    return rows.values.toList()..sort((a, b) => b.count.compareTo(a.count));
+  }
+
+  Widget _rows(BuildContext context, List<ActivityItem> items) {
+    final c = Copy.I;
+    return GroupCard(
+      padding: EdgeInsets.zero,
+      child: Column(children: [
+        for (var i = 0; i < items.length; i++) ...[
+          if (i > 0) Container(height: 0.5, margin: const EdgeInsets.only(left: 62), color: G.separator.resolveFrom(context)),
+          Reveal(
+            delay: Duration(milliseconds: 60 * i),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              child: Row(children: [
+                Container(
+                  width: 34,
+                  height: 34,
+                  decoration: BoxDecoration(color: G.tint.resolveFrom(context).withValues(alpha: 0.12), borderRadius: BorderRadius.circular(9)),
+                  child: Icon(_icon(items[i].category), size: 19, color: G.tint.resolveFrom(context)),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(c.category(items[i].category).cap, style: G.headline(context)),
+                    Text('${c.t('app.activity.by', {'channel': c.channel(items[i].channel)})}${items[i].anyWithLink ? ' · ${c.t('app.activity.withLink')}' : ''}', style: G.footnote(context)),
+                  ]),
+                ),
+                Text('${items[i].count}', style: G.title3(context)),
+              ]),
+            ),
+          ),
+        ],
+      ]),
+    );
+  }
+
+  Widget _note(BuildContext context, IconData icon, String text) => GroupCard(
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Icon(icon, color: G.label2.resolveFrom(context), size: 22),
+          const SizedBox(width: 12),
+          Expanded(child: Text(text, style: G.subhead(context))),
+        ]),
+      );
+
   @override
   Widget build(BuildContext context) {
     final c = Copy.I;
+    final data = _data;
     return CupertinoPageScaffold(
       child: CustomScrollView(
         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
@@ -301,58 +355,25 @@ class _ActivityScreenState extends State<ActivityScreen> {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 40),
             sliver: SliverList.list(children: [
               AdvisoriesSection(state: widget.state),
-              const SizedBox(height: 16),
-              if (!_loaded)
+              SectionHeader(c.t('app.activity.last24h')),
+              if (data == null)
                 const GroupCard(child: Shimmer())
-              else if (_data == null)
-                GroupCard(child: Text(c.tOrg('verdict.cannot_check.body', widget.state.bank?.kind, {'bank': widget.state.bankName}), style: G.subhead(context)))
               else ...[
-                Reveal(
-                  child: GroupCard(
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(c.tOrg('activity.heading', widget.state.bank?.kind, {'bank': widget.state.bankName}), style: G.headline(context)),
-                      const SizedBox(height: 6),
-                      Text(_data!.text, style: G.callout(context).copyWith(color: G.label2.resolveFrom(context))),
-                    ]),
-                  ),
-                ),
-                if (_data!.items.isNotEmpty) ...[
-                  SectionHeader(c.t('app.activity.last24h')),
-                  GroupCard(
-                    padding: EdgeInsets.zero,
-                    child: Column(children: [
-                      for (var i = 0; i < _data!.items.length; i++) ...[
-                        if (i > 0) Container(height: 0.5, margin: const EdgeInsets.only(left: 62), color: G.separator.resolveFrom(context)),
-                        Reveal(
-                          delay: Duration(milliseconds: 60 * i),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                            child: Row(children: [
-                              Container(
-                                width: 34,
-                                height: 34,
-                                decoration: BoxDecoration(color: G.tint.resolveFrom(context).withValues(alpha: 0.12), borderRadius: BorderRadius.circular(9)),
-                                child: Icon(_icon(_data!.items[i].category), size: 19, color: G.tint.resolveFrom(context)),
-                              ),
-                              const SizedBox(width: 14),
-                              Expanded(
-                                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                  Text(c.category(_data!.items[i].category).cap, style: G.headline(context)),
-                                  Text('${c.t('app.activity.by', {'channel': c.channel(_data!.items[i].channel)})}${_data!.items[i].anyWithLink ? ' \u00B7 ${c.t('app.activity.withLink')}' : ''}', style: G.footnote(context)),
-                                ]),
-                              ),
-                              Text('${_data!.items[i].count}', style: G.title3(context)),
-                            ]),
-                          ),
-                        ),
-                      ],
-                    ]),
-                  ),
+                for (final e in data.where((e) => e.data == null)) ...[
+                  _note(context, CupertinoIcons.exclamationmark_circle, c.t('app.activity.unavailable', {'bank': e.link.bank.name})),
+                  const SizedBox(height: 12),
                 ],
+                if (data.any((e) => e.data != null))
+                  Reveal(
+                    key: const ValueKey('activity'),
+                    child: switch (_merged([for (final e in data) ?e.data])) {
+                      final items when items.isEmpty => _note(context, CupertinoIcons.tray, c.t('app.activity.none')),
+                      final items => _rows(context, items),
+                    },
+                  ),
               ],
               const SizedBox(height: 18),
-              Text(c.t('app.activity.footer'),
-                  textAlign: TextAlign.center, style: G.caption(context)),
+              Text(c.t('app.activity.footer'), textAlign: TextAlign.center, style: G.caption(context)),
             ]),
           ),
         ],
@@ -387,34 +408,14 @@ class SettingsScreen extends StatelessWidget {
     rebuildAllText();
   }
 
-  static Future<void> addBank(BuildContext context, AppState state) =>
-      Navigator.of(context, rootNavigator: true).push(CupertinoPageRoute<void>(builder: (_) => LinkScreen(state: state, adding: true)));
-
-  Future<void> _confirmRemove(BuildContext context, BankLink link) => showCupertinoDialog<void>(
-        context: context,
-        builder: (ctx) => CupertinoAlertDialog(
-          title: Text(Copy.I.t('banks.removeTitle', {'bank': link.bank.name})),
-          content: Text(Copy.I.t('banks.removeBody', {'bank': link.bank.name})),
-          actions: [
-            CupertinoDialogAction(onPressed: () => Navigator.pop(ctx), child: Text(Copy.I.t('banks.cancel'))),
-            CupertinoDialogAction(
-              isDestructiveAction: true,
-              onPressed: () {
-                Navigator.pop(ctx);
-                state.unlinkBank(link.id);
-              },
-              child: Text(Copy.I.t('banks.remove')),
-            ),
-          ],
-        ),
-      );
-
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(listenable: state, builder: (context, _) => _build(context));
   }
 
   static Widget _wrapped(String text) => Text(text, maxLines: 6, overflow: TextOverflow.visible);
+
+  static const _rowPadding = EdgeInsetsDirectional.fromSTEB(20, 11, 14, 11);
 
   static Widget _sectionHeader(BuildContext context, String text) =>
       Semantics(header: true, child: Text(text.toUpperCase(), style: G.footnote(context).copyWith(letterSpacing: 0.2)));
@@ -426,39 +427,6 @@ class SettingsScreen extends StatelessWidget {
         slivers: [
           CupertinoSliverNavigationBar(largeTitle: Text(c.t('app.tabs.settings')), border: null, backgroundColor: G.bg.resolveFrom(context).withValues(alpha: 0.85)),
           SliverList.list(children: [
-            CupertinoListSection.insetGrouped(
-              header: _sectionHeader(context, Copy.I.t('banks.heading')),
-              children: [
-                for (final link in state.links)
-                  CupertinoListTile(
-                    key: ValueKey('bank-${link.id}'),
-                    leadingSize: 44,
-                    leading: Container(
-                      decoration: const BoxDecoration(shape: BoxShape.circle, gradient: G.brandGradient),
-                      alignment: Alignment.center,
-                      child: Text(link.bank.name.substring(0, 1), style: G.title3(context).copyWith(color: CupertinoColors.white)),
-                    ),
-                    title: Text(link.bank.name),
-                    subtitle: Text(link.phone.length > 4 ? '\u2022\u2022\u2022\u2022 ${link.phone.substring(link.phone.length - 4)}' : link.phone),
-                    additionalInfo: Text(Copy.I.t('banks.linked'), style: TextStyle(color: G.greenInk.resolveFrom(context))),
-                    trailing: CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      minimumSize: const Size(44, 44),
-                      onPressed: () => _confirmRemove(context, link),
-                      child: Semantics(
-                        label: '${Copy.I.t('banks.remove')} ${link.bank.name}',
-                        child: Icon(CupertinoIcons.minus_circle_fill, color: G.red.resolveFrom(context), semanticLabel: null),
-                      ),
-                    ),
-                  ),
-                CupertinoListTile(
-                  key: const ValueKey('add-bank'),
-                  leading: Icon(CupertinoIcons.add_circled_solid, color: G.tint.resolveFrom(context)),
-                  title: Text(Copy.I.t('banks.add'), style: TextStyle(color: G.tint.resolveFrom(context))),
-                  onTap: () => addBank(context, state),
-                ),
-              ],
-            ),
             CupertinoListSection.insetGrouped(
               children: [
                 CupertinoListTile(
@@ -474,9 +442,9 @@ class SettingsScreen extends StatelessWidget {
             CupertinoListSection.insetGrouped(
               header: _sectionHeader(context, c.t('app.settings.privacy')),
               children: [
-                CupertinoListTile(leading: const Icon(CupertinoIcons.lock_fill), title: _wrapped(c.t('app.settings.textStays'))),
-                CupertinoListTile(leading: const Icon(CupertinoIcons.number), title: _wrapped(c.t('app.settings.numbersMasked'))),
-                CupertinoListTile(leading: const Icon(CupertinoIcons.hand_raised_fill), title: _wrapped(c.t('app.settings.reportsConsent'))),
+                CupertinoListTile(padding: _rowPadding, leading: const Icon(CupertinoIcons.lock_fill), title: _wrapped(c.t('app.settings.textStays'))),
+                CupertinoListTile(padding: _rowPadding, leading: const Icon(CupertinoIcons.number), title: _wrapped(c.t('app.settings.numbersMasked'))),
+                CupertinoListTile(padding: _rowPadding, leading: const Icon(CupertinoIcons.hand_raised_fill), title: _wrapped(c.t('app.settings.reportsConsent'))),
               ],
             ),
             CupertinoListSection.insetGrouped(

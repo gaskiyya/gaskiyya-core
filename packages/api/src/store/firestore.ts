@@ -9,6 +9,8 @@ import type {
   AuditEntry,
   Campaign,
   CallSession,
+  ConsoleCodeRecord,
+  ConsoleSession,
   Device,
   LanguagePreference,
   MessageRecord,
@@ -68,7 +70,7 @@ export class FirestoreStore implements Store {
   private readonly statsShards: number;
   readonly prefix: string;
   private c: Record<'messages' | 'idempotency' | 'receipts' | 'calls' | 'verifications' | 'devices' | 'languages' | 'reports' | 'campaigns' | 'alerts' | 'stats', CollectionReference>;
-  private a: Record<'orgs' | 'clients' | 'keys' | 'audit' | 'sessions' | 'usage' | 'errors', CollectionReference>;
+  private a: Record<'orgs' | 'clients' | 'keys' | 'audit' | 'sessions' | 'consoleCodes' | 'consoleSessions' | 'usage' | 'errors', CollectionReference>;
 
   constructor(o: FirestoreStoreOptions = {}) {
     this.db =
@@ -103,6 +105,8 @@ export class FirestoreStore implements Store {
       keys: col('admin_keys'),
       audit: col('admin_audit'),
       sessions: col('admin_sessions'),
+      consoleCodes: col('console_codes'),
+      consoleSessions: col('console_sessions'),
       usage: col('api_usage'),
       errors: col('api_errors'),
     };
@@ -573,6 +577,34 @@ export class FirestoreStore implements Store {
 
   async deleteAdminSession(idHash: string) {
     await timed(this.a.sessions.doc(idHash).delete());
+  }
+
+  async listConsoleCodes(tenantId: string) {
+    return (await timed(this.a.consoleCodes.where('tenantId', '==', tenantId).get())).docs.map((d) => d.data() as ConsoleCodeRecord);
+  }
+
+  async getConsoleCode(idHash: string) {
+    const snap = await timed(this.a.consoleCodes.doc(idHash).get());
+    return snap.exists ? (snap.data() as ConsoleCodeRecord) : null;
+  }
+
+  async putConsoleCode(code: ConsoleCodeRecord) {
+    await timed(this.a.consoleCodes.doc(code.idHash).set(clean(code)));
+  }
+
+  async putConsoleSession(session: ConsoleSession) {
+    await timed(this.a.consoleSessions.doc(session.idHash).set({ ...clean(session), expireAt: ts(session.expiresAt) }));
+  }
+
+  async getConsoleSession(idHash: string) {
+    const snap = await timed(this.a.consoleSessions.doc(idHash).get());
+    if (!snap.exists) return null;
+    const { expireAt: _e, ...rest } = snap.data()!;
+    return rest as ConsoleSession;
+  }
+
+  async deleteConsoleSession(idHash: string) {
+    await timed(this.a.consoleSessions.doc(idHash).delete());
   }
 
   private usageDoc(tenantId: string, day: string, shard: number) {

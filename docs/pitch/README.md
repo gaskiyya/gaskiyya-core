@@ -7,9 +7,9 @@ For the semi-final demo (23 Oct 2026, Lagos) and the final (28 Oct 2026). Judgin
 | [deck.md](deck.md) | Ten-slide outline: on-slide bullets, speaker notes and an evidence line per slide, plus the full **Sources** table for every figure |
 | [script.md](script.md) | The timed three-minute spoken pitch, and the 90-second live demo click path with a recovery line per step |
 | [qa.md](qa.md) | The fifteen hardest judge questions plus one on the rules ("Is anything live?"), with short answers and evidence pointers, plus what we cannot answer yet |
-| [tech-stack.md](tech-stack.md) | The tech-stack slide required by the rules (written separately; see also `apps/web/docs/TECH_STACK.md`) |
+| [tech-stack.md](tech-stack.md) | The tech-stack slide required by the rules (written separately; see also `docs/TECH_STACK.md`) |
 
-Related: [apps/web/docs/DEMO.md](../DEMO.md) (demo runbook and fallbacks), [video/VOICEOVER.md](../../../../video/VOICEOVER.md) (the 30-second film), [apps/web/docs/DESIGN.md](../DESIGN.md), [apps/web/docs/qa/2026-10-20-qa-report.md](../qa/2026-10-20-qa-report.md).
+Related: [docs/DEMO.md](../DEMO.md) (demo runbook and fallbacks), [video/VOICEOVER.md](../../../../video/VOICEOVER.md) (the 30-second film), [docs/DESIGN.md](../DESIGN.md), [docs/qa/2026-10-20-qa-report.md](../qa/2026-10-20-qa-report.md).
 
 ## Ground rules
 
@@ -17,7 +17,7 @@ Related: [apps/web/docs/DEMO.md](../DEMO.md) (demo runbook and fallbacks), [vide
 - Every product claim names a file or a requirement ID (for example REG-6, AI-7, USSD-2). Every feature cited is merged into `main`.
 - No Zenith logo or trademark. Zenith is named only as the host and a possible pilot bank.
 - Nothing is claimed that is not built: no live bank integration, no real USSD short code or MNO agreement, no production deployment, no pilot results. The demo runs on simulated bank systems only, and the deck, script and Q&A say so.
-- Load figures are laptop numbers on the memory store (`apps/web/docs/PERFORMANCE.md`); Firestore and production are not measured, and every mention says so.
+- Load figures are laptop numbers on the memory store (`docs/PERFORMANCE.md`); Firestore and production are not measured, and every mention says so.
 
 ## Placeholders the owner must fill
 

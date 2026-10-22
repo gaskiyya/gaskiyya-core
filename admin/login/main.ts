@@ -22,6 +22,18 @@ void fetch('/v1/admin/session', { headers }).then((r) => {
   if (r.ok) window.location.replace('/admin/');
 }).catch(() => {});
 
+// On a developer's machine the server hands over the local login, so the form is filled in.
+const username = form.elements.namedItem('username') as HTMLInputElement;
+void fetch('/v1/admin/login-hint', { headers, cache: 'no-store' })
+  .then((r) => (r.ok ? (r.json() as Promise<{ username: string; password: string }>) : null))
+  .then((login) => {
+    if (!login) return;
+    username.value = login.username;
+    password.value = login.password;
+    button.focus();
+  })
+  .catch(() => {});
+
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   const data = new FormData(form);
@@ -43,7 +55,6 @@ form.addEventListener('submit', async (e) => {
   } catch {
     error.textContent = 'The registry cannot be reached';
   }
-  password.value = '';
   error.hidden = false;
   button.disabled = false;
   button.textContent = 'Sign in';

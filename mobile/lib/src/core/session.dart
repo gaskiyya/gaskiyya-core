@@ -195,7 +195,10 @@ class AppState extends ChangeNotifier {
     for (final l in _links) {
       unawaited(l._refreshToken().then((_) => _listen(l)).catchError((_) {}));
     }
-    if (_links.isNotEmpty) unawaited(_startPush());
+    if (_links.isNotEmpty) {
+      unawaited(_startPush());
+      unawaited(_rediscover());
+    }
   }
 
   Future<void> _migrateSingleBank() async {
@@ -264,18 +267,72 @@ class AppState extends ChangeNotifier {
       l._close();
       rethrow;
     }
-    final i = _links.indexWhere((x) => x.id == b.id);
-    if (i >= 0) {
-      _links[i]._close();
-      _links[i] = l;
-    } else {
-      _links.add(l);
+    await adopt([l]);
+  }
+
+  /// Asks every organisation on the registry whether it knows this number. Each
+  /// one decides through its own customer-token endpoint; those that issue a
+  /// token come back as links that are not yet saved.
+  Future<List<BankLink>> discover(String e164) async {
+    final banks = await loadBanks();
+    final found = await Future.wait(banks.map((b) async {
+      final l = _newLink(b, e164);
+      try {
+        await l._refreshToken();
+        return l;
+      } catch (_) {
+        l._close();
+        return null;
+      }
+    }));
+    return found.whereType<BankLink>().toList();
+  }
+
+  void discard(List<BankLink> found) {
+    for (final l in found) {
+      if (!_links.contains(l)) l._close();
     }
-    _selectedId = b.id;
+  }
+
+  Future<void> adopt(List<BankLink> found) async {
+    if (found.isEmpty) return;
+    for (final l in found) {
+      final i = _links.indexWhere((x) => x.id == l.id);
+      if (i >= 0) {
+        _links[i]._close();
+        _links[i] = l;
+      } else {
+        _links.add(l);
+      }
+    }
+    _selectedId = found.first.id;
     await _save();
-    _listen(l);
+    for (final l in found) {
+      _listen(l);
+    }
     unawaited(_startPush());
     _notify();
+  }
+
+  Future<void> _rediscover() async {
+    final phone = this.phone;
+    if (phone == null) return;
+    try {
+      final found = await discover(phone);
+      final fresh = found.where((l) => !_links.any((x) => x.id == l.id)).toList();
+      discard(found.where((l) => !fresh.contains(l)).toList());
+      if (fresh.isEmpty || _disposed || this.phone != phone) {
+        discard(fresh);
+        return;
+      }
+      _links.addAll(fresh);
+      await _save();
+      for (final l in fresh) {
+        _listen(l);
+      }
+      unawaited(_startPush());
+      _notify();
+    } catch (_) {}
   }
 
   Future<void> select(String bankId) async {
@@ -466,9 +523,13 @@ class AppState extends ChangeNotifier {
       }()));
 
   Future<List<InboxMessage>> inbox() async {
-    final l = selected;
-    final url = l?.bank.demoInboxUrl;
-    if (l == null || url == null) return [];
+    final all = await Future.wait(_links.map(_inboxOf));
+    return all.expand((x) => x).toList()..sort((a, b) => b.at.compareTo(a.at));
+  }
+
+  Future<List<InboxMessage>> _inboxOf(BankLink l) async {
+    final url = l.bank.demoInboxUrl;
+    if (url == null) return [];
     try {
       Future<http.Response> get(String token) => _http.get(Uri.parse(url), headers: {'authorization': 'Bearer $token'}).timeout(const Duration(seconds: 6));
       var res = await get(await l.token());

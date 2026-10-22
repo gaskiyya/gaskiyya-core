@@ -35,6 +35,7 @@ import { senderWarnings } from './domain/sender.ts';
 import { activitySummaryEmail, advisoryApprovedEmail, testEmail, welcomeEmail, type BuiltEmail, type EmailOptions } from './emails/templates.ts';
 import type { RateLimiter, RateLimiterFactory } from './ratelimit/ratelimit.ts';
 import { registerAdminRoutes, type AdminDeps } from './admin/routes.ts';
+import { registerConsoleRoutes, type ConsoleDeps } from './console/routes.ts';
 import type { GaskiyaService, Registered } from './service.ts';
 import type { SimulatedMno } from './simswap/simswap.ts';
 import { featureOn, isSuspended, type ApiCallEvent, type OrgFeature, type Tenant } from './store/types.ts';
@@ -65,6 +66,7 @@ export interface AppDeps {
   logger?: boolean | object;
   logStream?: { write(line: string): void };
   admin?: AdminDeps | null;
+  console?: Omit<ConsoleDeps, 'runAgent' | 'onApproved'> | null;
   limiterFactory?: RateLimiterFactory;
   usage?: ((event: ApiCallEvent) => void) | null;
 }
@@ -287,7 +289,7 @@ export function buildApp(deps: AppDeps) {
   app.get('/v1/banks', async () => ({
     banks: [...svc.tenants.values()]
       .filter((t) => t.customerTokenUrl && !isSuspended(t))
-      .map((t) => ({ id: t.id, name: t.name, kind: t.kind ?? 'bank', domains: t.domains, customerTokenUrl: t.customerTokenUrl, demoInboxUrl: t.demoInboxUrl ?? null, ...(t.mode === 'sandbox' ? { sandbox: true } : {}) })),
+      .map((t) => ({ id: t.id, name: t.name, kind: t.kind ?? 'bank', domains: t.domains, customerTokenUrl: t.customerTokenUrl, logoUrl: t.logoUrl ?? null, demoInboxUrl: t.demoInboxUrl ?? null, ...(t.mode === 'sandbox' ? { sandbox: true } : {}) })),
   }));
 
   app.get('/v1/organisations', async () => ({
@@ -685,6 +687,17 @@ export function buildApp(deps: AppDeps) {
   });
 
   if (deps.admin) registerAdminRoutes(app, deps.admin);
+  if (deps.console) {
+    registerConsoleRoutes(app, {
+      ...deps.console,
+      runAgent: deps.runAgent,
+      onApproved: async (tenant, c) => {
+        if (!deps.mailer || !tenant.alertEmails?.length) return;
+        const r = await sendEmail(tenant, advisoryApprovedEmail(tenant, c, emailOpts()), tenant.alertEmails, `advisory-approved/${tenant.id}/${c.id}`);
+        if (!r.ok) throw new Error(r.error ?? 'email failed');
+      },
+    });
+  }
 
   return app;
 }

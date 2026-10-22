@@ -146,10 +146,15 @@ export function FAKE_CREDIT_ALERT(bank: string, phone: string, now = new Date())
   return `${bank}: Credit\nAmt: NGN${money(rand(30, 120) * 5_000)}\nAcc: ***${phone.slice(-4)}\nDesc: TRF FROM CHUKWUEMEKA O.\nDate: ${stamp(now)}\nBal: NGN${money(rand(400_000, 1_400_000) + rand(0, 99) / 100)}`;
 }
 
+const SIGN_IN_KEPT_MS = 7 * 24 * 3600_000;
+const SIGN_INS_KEPT = 200;
+
+// Every number that signs in to the app through the demo bank becomes a demo customer the console can message and call.
 export function rememberSignIn(list: Map<string, string>, phone: string, now = new Date()): void {
   list.delete(phone);
   list.set(phone, now.toISOString());
-  while (list.size > 30) list.delete(list.keys().next().value!);
+  for (const [p, at] of list) if (now.getTime() - Date.parse(at) > SIGN_IN_KEPT_MS) list.delete(p);
+  while (list.size > SIGN_INS_KEPT) list.delete(list.keys().next().value!);
 }
 
 export const recentSignIns = (list: Map<string, string>) => [...list].reverse().map(([phone, at]) => ({ phone, at }));

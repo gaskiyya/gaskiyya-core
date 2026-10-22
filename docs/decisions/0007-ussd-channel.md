@@ -45,7 +45,7 @@ the same on every channel.
 ## Consequences
 
 Requirements USSD-1 to USSD-8 were added to the acceptance list in
-`apps/web/docs/DESIGN.md`, with tests in `tests/ussd.test.ts`, `tests/console.test.ts`
+`docs/DESIGN.md`, with tests in `tests/ussd.test.ts`, `tests/console.test.ts`
 and `tests/sandbox.test.ts`. The bank console gained a feature-phone simulator
 that dials through the bank simulator, which holds the secret. "Today" is
 counted from midnight Africa/Lagos time, the same zone the WhatsApp replies

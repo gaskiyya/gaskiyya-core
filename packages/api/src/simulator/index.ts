@@ -40,6 +40,8 @@ export interface SimOptions {
   bankCode?: string;
   orgs?: SimOrg[];
   fakeCustomerCare?: { whatsapp: string; handle: string };
+  // When set, routes that act as the bank need a bank console session for this bank (its sign-in code).
+  consoleCheck?: (authorization: string | undefined) => Promise<{ tenantId: string } | null>;
 }
 
 export interface SimOrg {
@@ -185,6 +187,14 @@ export async function registerSimulator(app: FastifyInstance, o: SimOptions) {
     if (!route?.startsWith('/sim/') || OPEN_ROUTES.has(route)) return;
     if (LOOPBACK.has(req.socket.remoteAddress ?? '')) return;
     return fail(reply, 403, 'forbidden', 'The bank sandbox is available only on this machine while demo login is off');
+  });
+
+  app.addHook('onRequest', async (req, reply) => {
+    if (!o.consoleCheck || req.method === 'OPTIONS') return;
+    const route = req.routeOptions.url;
+    if (!route?.startsWith('/sim/') || OPEN_ROUTES.has(route)) return;
+    const who = await o.consoleCheck(req.headers.authorization).catch(() => null);
+    if (who?.tenantId !== o.tenantId) return fail(reply, 401, 'unauthorized', `Sign in to the bank console with ${o.bankName}'s code`);
   });
 
   app.get('/sim/.well-known/jwks.json', async () => ({ keys: [jwk] }));

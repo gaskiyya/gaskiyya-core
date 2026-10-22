@@ -22,6 +22,8 @@ class AdvisoriesSection extends StatelessWidget {
             children: [
               Semantics(header: true, child: SectionHeader(c.t('advisory.section'))),
               for (final l in links) ..._bank(context, l),
+              if (links.length > 1 && links.every((l) => l.advisories != null) && links.every((l) => l.advisories!.cannotCheck || l.advisories!.advisories.isEmpty) && links.any((l) => !l.advisories!.cannotCheck))
+                _none(context, c.t('advisory.noneAll')),
             ],
           );
         },
@@ -31,7 +33,7 @@ class AdvisoriesSection extends StatelessWidget {
     final c = Copy.I;
     final list = l.advisories;
     final name = l.bank.name;
-    if (list == null) return [const Padding(padding: EdgeInsets.only(bottom: 10), child: GroupCard(child: Shimmer(lines: 2)))];
+    if (list == null) return state.links.first == l ? [const Padding(padding: EdgeInsets.only(bottom: 10), child: GroupCard(child: Shimmer(lines: 2)))] : const [];
     if (list.cannotCheck) {
       return [
         Padding(
@@ -46,20 +48,7 @@ class AdvisoriesSection extends StatelessWidget {
         ),
       ];
     }
-    if (list.advisories.isEmpty) {
-      return [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: GroupCard(
-            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Icon(CupertinoIcons.shield, color: G.label2.resolveFrom(context), size: 22),
-              const SizedBox(width: 12),
-              Expanded(child: Text(c.t('advisory.none', {'bank': name}), style: G.subhead(context))),
-            ]),
-          ),
-        ),
-      ];
-    }
+    if (list.advisories.isEmpty) return state.links.length == 1 ? [_none(context, c.t('advisory.none', {'bank': name}))] : const [];
     return [
       for (final (i, a) in list.advisories.indexed)
         Padding(
@@ -69,6 +58,17 @@ class AdvisoriesSection extends StatelessWidget {
     ];
   }
 }
+
+Widget _none(BuildContext context, String text) => Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: GroupCard(
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Icon(CupertinoIcons.shield, color: G.label2.resolveFrom(context), size: 22),
+          const SizedBox(width: 12),
+          Expanded(child: Text(text, style: G.subhead(context))),
+        ]),
+      ),
+    );
 
 class AdvisoryCard extends StatelessWidget {
   const AdvisoryCard({super.key, required this.advisory});

@@ -9,6 +9,7 @@ const env = process.env;
 const PHONE = '+2348099990001';
 
 let failures = 0;
+let consoleToken = '';
 const ok = (name: string, detail = '') => console.log(`  \x1b[32m✓\x1b[0m ${name}${detail ? `  \x1b[2m${detail}\x1b[0m` : ''}`);
 const bad = (name: string, detail: string) => {
   failures++;
@@ -30,6 +31,7 @@ type Res = { status: number; data: any; headers: Headers };
 async function call(method: string, path: string, o: { body?: unknown; token?: string; form?: boolean; redirect?: RequestRedirect } = {}): Promise<Res> {
   const headers: Record<string, string> = {};
   if (o.token) headers.authorization = `Bearer ${o.token}`;
+  else if (consoleToken && path.startsWith('/sim/')) headers.authorization = `Bearer ${consoleToken}`;
   if (o.body !== undefined) headers['content-type'] = o.form ? 'application/x-www-form-urlencoded' : 'application/json';
   const r = await fetch(path.startsWith('http') ? path : `${base}${path}`, {
     method,
@@ -99,6 +101,12 @@ if (!sim) {
     const d = expect(await call('GET', '/sim/config'), 200, 'config');
     bankCode = d.bank?.bankCode ?? '';
     return `${d.bank?.name}, ${d.orgs?.length ?? 0} org(s), bank code ${bankCode || 'none'}`;
+  });
+  await check('Bank console: the demo bank signs in with the code on its sign-in page', async () => {
+    const demo = expect(await call('GET', '/v1/console/demo'), 200, 'demo code');
+    const s = expect(await call('POST', '/v1/console/session', { body: { code: demo.code } }), 200, 'console sign-in');
+    consoleToken = s.token;
+    return `${s.org?.name} (${String(demo.code).length}-character code)`;
   });
   await check('GET /sim/.well-known/jwks.json', async () => {
     const d = expect(await call('GET', '/sim/.well-known/jwks.json'), 200, 'jwks');

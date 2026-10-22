@@ -345,7 +345,7 @@ One risk is accepted in the first version. After a SIM swap, an attacker holding
 
 ### Registration anomaly guard
 
-Every registration that creates a record passes through a guard (`apps/api/src/guard.ts`) after it is stored. It raises an alert in two cases:
+Every registration that creates a record passes through a guard (`packages/api/src/guard.ts`) after it is stored. It raises an alert in two cases:
 
 - **Link domain outside the bank's own.** A declared `linkDomains` entry that is neither one of `tenant.domains` nor a subdomain of one. One alert per domain; later registrations with the same domain add to its count without a new email.
 - **Volume spike.** The registrations in the last `REG_SPIKE_WINDOW_MINUTES` (5) reach `REG_SPIKE_MIN_COUNT` (200) and exceed `REG_SPIKE_FACTOR` (5) times the rate over the `REG_SPIKE_BASELINE_MINUTES` (60) before the window. At most one alert per window. Counted per server instance, so with several instances each judges its own share; the minimum count keeps a cold start from alerting on ordinary traffic.

@@ -116,12 +116,12 @@ export function Copy({ text, label = 'Copy' }: { text: string; label?: string })
 }
 
 // A secret the server returns once and never again.
-export function SecretOnce({ title, items, note, onDone }: { title: string; items: { label: string; value: string; secret?: boolean }[]; note: ReactNode; onDone: () => void }) {
+export function SecretOnce({ title, items, note, onDone, lost = 'If it is lost, rotate it.' }: { title: string; items: { label: string; value: string; secret?: boolean }[]; note: ReactNode; onDone: () => void; lost?: string }) {
   const [stored, setStored] = useState(false);
   return (
     <Modal title={title} onClose={() => stored && onDone()}>
       <div className="stack">
-        <p className="notice warn">This is the only time the secret is shown. Gaskiyya keeps a one-way hash of it, so it cannot be shown again. If it is lost, rotate it.</p>
+        <p className="notice warn">This is the only time the secret is shown. Gaskiyya keeps a one-way hash of it, so it cannot be shown again. {lost}</p>
         {items.map((i) => (
           <div key={i.label} className="secret-row">
             <span className="field-label">{i.label}</span>
@@ -204,7 +204,7 @@ export function useToast(): [ReactNode, (s: string, tone?: 'error') => void] {
 const FIELD_KEYS = [
   'id', 'name', 'legalName', 'kind', 'bankCode', 'domains', 'senderIds',
   'officialContacts.phones', 'officialContacts.whatsapp', 'officialContacts.emails', 'officialContacts.social',
-  'officialApps.android', 'officialApps.ios', 'alertEmails', 'tokenKeysUrl', 'tokenKeys', 'customerTokenUrl',
+  'officialApps.android', 'officialApps.ios', 'alertEmails', 'tokenKeysUrl', 'tokenKeys', 'customerTokenUrl', 'logoUrl',
   'recordTtlDays', 'technicalContact', 'mode', 'features', 'limits', 'notes',
 ];
 

@@ -34,6 +34,7 @@ import { EMAIL_RE, orgErrors } from './orgs.ts';
 import { ManagedKeyService } from './keys/managed.ts';
 import { AdminRegistry } from './admin/registry.ts';
 import { AdminAuth, adminUsersFromEnv, type AdminUser } from './admin/session.ts';
+import { ConsoleAccess } from './console/access.ts';
 import { parseMasterKey } from './admin/crypto.ts';
 import { HttpWebhookSender, MemoryWebhookSender, type WebhookSender } from './channels/webhook.ts';
 
@@ -80,6 +81,9 @@ export interface SystemOptions {
   adminUsers?: AdminUser[];
   adminPassword?: { username: string; password: string } | null;
   adminSessionHours?: number;
+  consoleSessionHours?: number;
+  // The demo organisation whose console code is shown on the sign-in page (only while the simulator serves demo login).
+  consoleDemoTenantId?: string | null;
   adminLoginRateLimitPerMinute?: number;
   keyActivationSeconds?: number;
   webhooks?: WebhookSender;
@@ -150,6 +154,7 @@ export function createSystem(o: SystemOptions) {
     (o.adminUsers?.length ?? 0) > 0 || o.adminPassword
       ? new AdminAuth({ store, users: o.adminUsers ?? [], plain: o.adminPassword ?? null, sessionHours: o.adminSessionHours ?? 8, clock })
       : null;
+  const consoleAccess = new ConsoleAccess({ store, keys, tenant: (id) => tenants.get(id), clock, sessionHours: o.consoleSessionHours ?? 12, pepper: o.tokenSecret });
   const alerts = new CampaignAlerts(store, mailer, tenants, logger, emailOptions, o.clock, async (tenant, c, kind) =>
     (await registry.sendWebhook(tenant.id, 'campaign_alert', { campaignId: c.id, kind, reportCount: c.reportCount, linkDomains: c.linkDomains, status: c.status, firstSeen: c.firstSeen, lastSeen: c.lastSeen })).ok,
   );
@@ -214,10 +219,20 @@ export function createSystem(o: SystemOptions) {
     customerAuth,
     limiterFactory: limiters,
     usage: (e) => void store.recordApiCall(e).catch(() => {}),
+    console: {
+      access: consoleAccess,
+      registry,
+      svc,
+      loginLimiter: limiters('console-login', o.adminLoginRateLimitPerMinute ?? 10),
+      failLimiter: limiters('console-login-failures', 300),
+      limiter: limiters('console', 600),
+      demoTenantId: o.consoleDemoTenantId ?? null,
+    },
     admin: adminAuth
       ? {
           registry,
           auth: adminAuth,
+          consoleAccess,
           svc,
           mailer,
           emailOptions,
@@ -267,8 +282,14 @@ export function createSystem(o: SystemOptions) {
     } catch (err) {
       app.log.error({ err: { message: (err as Error).message } }, 'admin registry: could not load organisations from the store');
     }
+    try {
+      const issued = await consoleAccess.ensureAll(tenants.keys());
+      if (issued.length) app.log.info({ organisations: issued }, 'bank console codes issued');
+    } catch (err) {
+      app.log.error({ err: { message: (err as Error).message } }, 'bank console codes could not be issued');
+    }
   });
-  return { app, svc, store, model, agentModel: o.agentModel ?? model, push, messaging, mailer, events, tenants, alerts, guard, runAgent, registry, adminAuth, keys, webhooks, bankAuth };
+  return { app, svc, store, model, agentModel: o.agentModel ?? model, push, messaging, mailer, events, tenants, alerts, guard, runAgent, registry, adminAuth, keys, webhooks, bankAuth, consoleAccess };
 }
 
 export function modelFromEnv(env: NodeJS.ProcessEnv = process.env): ModelProvider {
@@ -659,6 +680,7 @@ export function buildSystemFromEnv(env: NodeJS.ProcessEnv = process.env) {
     adminUsers: cfg.admin.users,
     adminPassword: cfg.admin.plain,
     adminSessionHours: cfg.adminSettings.sessionHours,
+    consoleDemoTenantId: env.SIM_ENABLED === 'true' && env.SIM_DEMO_LOGIN === 'true' ? env.SIM_TENANT_ID || 'demobank' : null,
     adminLoginRateLimitPerMinute: cfg.adminSettings.loginRateLimitPerMinute,
     keyActivationSeconds: cfg.adminSettings.keyActivationSeconds,
     webhooks: new HttpWebhookSender(),
@@ -674,7 +696,10 @@ export function systemFromEnv(env: NodeJS.ProcessEnv = process.env) {
   const sweep = setInterval(() => (store instanceof MemoryStore ? store.sweep() : undefined), 60_000);
   sweep.unref();
   const reload = setInterval(() => {
-    sys.registry.refresh().catch((err: Error) => sys.app.log.error({ err: { message: err.message } }, 'admin registry refresh failed'));
+    sys.registry
+      .refresh()
+      .then(() => sys.consoleAccess.ensureAll(sys.tenants.keys()))
+      .catch((err: Error) => sys.app.log.error({ err: { message: err.message } }, 'admin registry refresh failed'));
   }, sys.adminSettings.refreshSeconds * 1000);
   reload.unref();
   if (sys.settings.agentInProcess) {

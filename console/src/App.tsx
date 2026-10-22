@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import copy from '../../packages/schemas/copy.json';
-import { sim, type Call, type Campaign, type Metrics, type Organisation, type RegistrationAlert, type SimConfig, type SimSwapAnswer, type Transfer } from './api.ts';
+import { setConsoleToken, sim, type Call, type Metrics, type Organisation, type SimConfig, type SimSwapAnswer, type Transfer } from './api.ts';
 import { fill, type Category, type LicenceResult } from '@gaskiya/schemas';
 import { genuineTemplate } from '../../packages/api/src/simulator/demo-data.ts';
 import { device, normalisePhone, type ContactCheck } from './device/api.ts';
@@ -8,23 +8,38 @@ import { Device, officialBankNumber } from './device/Device.tsx';
 import { FeaturePhone, type UssdHop } from './ussd/FeaturePhone.tsx';
 import {
   IconBadge,
-  IconChart,
+  IconBuilding,
   IconCheck,
+  IconClock,
+  IconHome,
   IconKeypad,
+  IconLogout,
   IconMessage,
   IconPhone,
+  IconPlug,
   IconReset,
   IconScissors,
   IconSend,
   IconShield,
-  IconSpark,
   IconTransfer,
   IconWarning,
 } from './icons.tsx';
+import { demoCode, demoWorkspace, liveWorkspace, loadSession, resume, saveSession, SignedOut, signOut, type OrgProfile, type StoredSession, type Workspace } from './workspace/data.ts';
+import { ActivityPage } from './workspace/Activity.tsx';
+import { FraudDeskPage } from './workspace/FraudDesk.tsx';
+import { IntegrationPage } from './workspace/Integration.tsx';
+import { OrganisationPage } from './workspace/Organisation.tsx';
+import { OverviewPage, type LiveEvent } from './workspace/Overview.tsx';
+import { SignIn } from './workspace/SignIn.tsx';
+import { ago, usePoll } from './workspace/ui.tsx';
 
-type Page = 'messages' | 'calls' | 'transfers' | 'ussd' | 'contacts' | 'licence' | 'fraud' | 'overview';
+type WorkPage = 'overview' | 'fraud' | 'integration' | 'organisation' | 'activity';
+type DemoPage = 'messages' | 'calls' | 'transfers' | 'ussd' | 'contacts' | 'licence';
+type Page = WorkPage | DemoPage;
 
 const SANDBOX = __SANDBOX__;
+const WORK_PAGES: WorkPage[] = ['overview', 'fraud', 'integration', 'organisation', 'activity'];
+const DEMO_PAGES: DemoPage[] = ['messages', 'calls', 'transfers', 'ussd', 'contacts', 'licence'];
 
 const label = (map: Record<string, string>, key: string) => {
   const s = map[key] ?? key.replace(/_/g, ' ');
@@ -34,22 +49,6 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).join('').sli
 const timeOf = (iso: string) => new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 const PALETTE = ['linear-gradient(160deg,#ff9f0a,#ff375f)', 'linear-gradient(160deg,#64d2ff,#0a7aff)', 'linear-gradient(160deg,#bf5af2,#5e5ce6)'];
 
-function usePoll<T>(fn: () => Promise<T>, ms: number, deps: unknown[] = []): [T | null, () => void, boolean] {
-  const [data, setData] = useState<T | null>(null);
-  const [ok, setOk] = useState(true);
-  const ref = useRef(fn);
-  ref.current = fn;
-  const load = useCallback(() => {
-    ref.current().then((d) => (setData(d), setOk(true))).catch(() => setOk(false));
-  }, []);
-  useEffect(() => {
-    load();
-    const t = setInterval(load, ms);
-    return () => clearInterval(t);
-  }, [ms, load, ...deps]);
-  return [data, load, ok];
-}
-
 function useToast(): [ReactNode, (s: string) => void] {
   const [msg, setMsg] = useState<{ text: string; key: number } | null>(null);
   useEffect(() => {
@@ -57,14 +56,7 @@ function useToast(): [ReactNode, (s: string) => void] {
     const t = setTimeout(() => setMsg(null), 2600);
     return () => clearTimeout(t);
   }, [msg]);
-  return [msg ? <div className="toast" key={msg.key}>{msg.text}</div> : null, (text) => setMsg({ text, key: Date.now() })];
-}
-
-interface LiveEvent {
-  key: number;
-  at: Date;
-  tone: 'green' | 'orange' | 'red' | 'blue';
-  text: string;
+  return [msg ? <div className="toast" role="status" key={msg.key}>{msg.text}</div> : null, (text) => setMsg({ text, key: Date.now() })];
 }
 
 const VERDICT_TONE: Record<string, LiveEvent['tone']> = { confirmed: 'green', calling: 'green', not_confirmed: 'orange', not_calling: 'orange', mismatch: 'red', cannot_check: 'red' };
@@ -104,21 +96,131 @@ function useLiveEvents(metrics: Metrics | null): LiveEvent[] {
   return events;
 }
 
+const pageFromHash = (): Page | null => {
+  const h = window.location.hash.replace(/^#\/?/, '') as Page;
+  return [...WORK_PAGES, ...DEMO_PAGES].includes(h) ? h : null;
+};
+
+type DemoCode = { name: string; code: string } | null;
+type State =
+  | { kind: 'loading' }
+  | { kind: 'signin'; config: SimConfig | null; demo: DemoCode }
+  | { kind: 'ready'; ws: Workspace; config: SimConfig | null; session: StoredSession | null };
+
+const demoCodeFor = async (config: SimConfig | null): Promise<DemoCode> =>
+  SANDBOX ? (config?.consoleCode ? { name: config.bank.name, code: config.consoleCode } : null) : demoCode();
+
+// The demo bank, signed in with its own code, also gets the tools that act as its systems and customers.
+function withDemoTools(ws: Workspace, config: SimConfig | null): Workspace {
+  if (!config || ws.profile.id !== config.bank.id) return ws;
+  return {
+    ...ws,
+    sendAdvisory: async (id) => (await sim.sendAdvisory(id)).sent,
+    seedReports: async () => (await sim.seedReports()).reported,
+    reset: async () => void (await sim.reset()),
+  };
+}
+
 export function App() {
-  const [page, setPage] = useState<Page>('messages');
-  const [config, setConfig] = useState<SimConfig | null>(null);
-  const [phone, setPhone] = useState<string>('');
+  const [state, setState] = useState<State>({ kind: 'loading' });
   const [toast, notify] = useToast();
-  const [metrics, reloadMetrics, online] = usePoll(() => sim.metrics(), 2000);
+
+  const toSignIn = useCallback(async (config: SimConfig | null) => {
+    setConsoleToken(null);
+    setState({ kind: 'signin', config, demo: await demoCodeFor(config) });
+  }, []);
+
+  const openLive = useCallback((session: StoredSession, profile: OrgProfile, accessLabel: string, config: SimConfig | null) => {
+    saveSession(session);
+    setConsoleToken(config && profile.id === config.bank.id ? session.token : null);
+    setState({ kind: 'ready', ws: withDemoTools(liveWorkspace(session.token, profile, accessLabel), config), config, session });
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const config = await sim.config().catch(() => null);
+      const stored = loadSession();
+      if (stored && !SANDBOX) {
+        try {
+          const r = await resume(stored);
+          if (!cancelled) openLive(stored, r.profile, r.accessLabel, config);
+          return;
+        } catch (e) {
+          if (e instanceof SignedOut) saveSession(null);
+        }
+      }
+      // Nothing opens without a code; a demo server shows its demo bank's code on this page.
+      if (!cancelled) await toSignIn(config);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [openLive, toSignIn]);
+
+  if (state.kind === 'loading') {
+    return (
+      <div className="boot" aria-busy="true">
+        <img src="favicon.svg" alt="" />
+      </div>
+    );
+  }
+  if (state.kind === 'signin') {
+    const { config } = state;
+    return (
+      <>
+        <SignIn
+          demo={state.demo}
+          onSandboxDemo={config ? () => void demoWorkspace(config).then((ws) => setState({ kind: 'ready', ws, config, session: null })) : undefined}
+          onSignedIn={(s, p, l) => openLive(s, p, l, config)}
+        />
+        {toast}
+      </>
+    );
+  }
+  return (
+    <Shell
+      key={state.ws.profile.id + state.ws.kind}
+      ws={state.ws}
+      config={state.config}
+      notify={notify}
+      toast={toast}
+      onSignOut={async () => {
+        if (state.session) await signOut(state.session);
+        await toSignIn(state.config);
+        notify('Signed out');
+      }}
+      onExpired={() => {
+        saveSession(null);
+        void toSignIn(state.config);
+        notify('Your session ended. Sign in again with your code.');
+      }}
+    />
+  );
+}
+
+function Shell({ ws, config, notify, toast, onSignOut, onExpired }: {
+  ws: Workspace;
+  config: SimConfig | null;
+  notify: (s: string) => void;
+  toast: ReactNode;
+  onSignOut: () => void;
+  onExpired: () => void;
+}) {
+  const demo = config !== null && ws.profile.id === config.bank.id;
+  const [page, setPageState] = useState<Page>(() => {
+    const p = pageFromHash();
+    return p && (demo || WORK_PAGES.includes(p as WorkPage)) ? p : 'overview';
+  });
+  const [phone, setPhone] = useState(config?.customers[0]?.phone ?? '');
+  const [metrics, reloadMetrics, online] = usePoll(() => ws.metrics(), 2500, [ws], onExpired);
   const events = useLiveEvents(metrics);
   const seen = useRef(0);
 
-  useEffect(() => {
-    sim.config().then((c) => {
-      setConfig(c);
-      setPhone(c.customers[0]!.phone);
-    }).catch(() => notify('Cannot reach the bank simulator'));
-  }, []);
+  const setPage = (p: Page) => {
+    setPageState(p);
+    history.replaceState(null, '', `#/${p}`);
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -130,88 +232,106 @@ export function App() {
     if (e) seen.current = e.key;
   }, [events]);
 
-  const nav: { id: Page; name: string; icon: ReactNode }[] = [
-    { id: 'messages', name: 'Messages', icon: <IconMessage /> },
-    { id: 'calls', name: 'Calls', icon: <IconPhone /> },
-    { id: 'transfers', name: 'Transfers', icon: <IconTransfer /> },
-    { id: 'ussd', name: 'USSD', icon: <IconKeypad /> },
-    { id: 'contacts', name: 'Contacts', icon: <IconCheck /> },
-    { id: 'licence', name: 'Licence check', icon: <IconBadge /> },
+  const work: { id: WorkPage; name: string; icon: ReactNode }[] = [
+    { id: 'overview', name: 'Overview', icon: <IconHome /> },
     { id: 'fraud', name: 'Fraud desk', icon: <IconShield /> },
-    { id: 'overview', name: 'Overview', icon: <IconChart /> },
+    { id: 'integration', name: 'Integration', icon: <IconPlug /> },
+    { id: 'organisation', name: 'Organisation', icon: <IconBuilding /> },
+    { id: 'activity', name: 'Activity', icon: <IconClock /> },
   ];
+  const tools: { id: DemoPage; name: string; icon: ReactNode }[] = demo
+    ? [
+        { id: 'messages', name: 'Messages', icon: <IconMessage /> },
+        { id: 'calls', name: 'Calls', icon: <IconPhone /> },
+        { id: 'transfers', name: 'Transfers', icon: <IconTransfer /> },
+        { id: 'ussd', name: 'USSD', icon: <IconKeypad /> },
+        { id: 'contacts', name: 'Contacts', icon: <IconCheck /> },
+        { id: 'licence', name: 'Licence check', icon: <IconBadge /> },
+      ]
+    : [];
 
   const reset = async () => {
-    if (!confirm('Reset all demo data in the registry and the simulator?')) return;
-    await sim.reset();
+    if (!ws.reset || !confirm('Reset all demo data in the registry and the simulator?')) return;
+    await ws.reset();
     reloadMetrics();
-    notify('Reset');
+    notify('Demo reset');
   };
 
+  const badge = ws.kind === 'demo' ? 'Demo' : ws.profile.mode === 'live' ? 'Live' : 'Sandbox';
   const status = (
     <span className={`live-pill ${online ? '' : 'off'}`}>
       <span className="status-dot" />
-      {online ? (SANDBOX ? 'Sandbox \u00b7 this browser' : 'Registry live') : 'Registry unreachable'}
+      {online ? (SANDBOX ? 'Sandbox · this browser' : 'Registry connected') : 'Registry unreachable'}
     </span>
+  );
+  const navButton = (n: { id: Page; name: string; icon: ReactNode }) => (
+    <button key={n.id} className={`nav-item ${page === n.id ? 'active' : ''}`} aria-current={page === n.id ? 'page' : undefined} onClick={() => setPage(n.id)}>
+      {n.icon}
+      <span>{n.name}</span>
+    </button>
   );
 
   return (
     <div className="shell">
       <aside className="sidebar">
-        <div className="brand">
-          <img className="brand-mark" src="favicon.svg" alt="" />
-          <div>
-            <div className="brand-name">Gaskiyya</div>
-            <div className="brand-sub">Bank sandbox console</div>
+        <div className="org-switch">
+          <div className="org-mark">{ws.profile.name.slice(0, 1)}</div>
+          <div className="org-text">
+            <div className="org-name">{ws.profile.name}</div>
+            <div className="org-sub"><span className={`mode ${badge.toLowerCase()}`}>{badge}</span>{ws.accessLabel && <span className="muted">{ws.accessLabel}</span>}</div>
           </div>
         </div>
-        <nav className="nav" aria-label="Sections">
-          {nav.map((n) => (
-            <button key={n.id} className={`nav-item ${page === n.id ? 'active' : ''}`} aria-current={page === n.id ? 'page' : undefined} onClick={() => setPage(n.id)}>
-              {n.icon}
-              <span>{n.name}</span>
-            </button>
-          ))}
+        <nav className="nav" aria-label="Workspace">
+          <div className="nav-label">Workspace</div>
+          {work.map(navButton)}
+          {tools.length > 0 && (
+            <>
+              <div className="nav-label">Demo tools</div>
+              {tools.map(navButton)}
+            </>
+          )}
         </nav>
         <div className="sidebar-foot">
           {status}
-          <button className="btn plain small" onClick={reset}>
-            <IconReset /> Reset
-          </button>
+          {ws.reset && <button className="btn plain small muted-btn" onClick={reset}><IconReset /> <span>Reset demo</span></button>}
+          <button className="btn plain small" onClick={onSignOut}><IconLogout /> <span>Sign out</span></button>
+          <div className="powered"><img src="favicon.svg" alt="" /> Gaskiyya bank console</div>
         </div>
       </aside>
       <header className="topbar">
-        <div className="brand">
-          <img className="brand-mark" src="favicon.svg" alt="" />
-          <div className="brand-name">{config?.bank.name ?? 'Gaskiyya'}</div>
+        <div className="org-switch compact">
+          <div className="org-mark">{ws.profile.name.slice(0, 1)}</div>
+          <div className="org-text">
+            <div className="org-name">{ws.profile.name}</div>
+            <div className="org-sub"><span className={`mode ${badge.toLowerCase()}`}>{badge}</span></div>
+          </div>
         </div>
-        {status}
-        <button className="icon-btn" aria-label="Reset" onClick={reset}><IconReset /></button>
+        {ws.reset && <button className="icon-btn" aria-label="Reset demo" onClick={reset}><IconReset /></button>}
+        <button className="icon-btn" aria-label="Sign out" onClick={onSignOut}><IconLogout /></button>
       </header>
       <main>
-        {SANDBOX && (
+        {demo && (
           <p className="sandbox-note">
-            <b>Live sandbox.</b> DemoBank and the Gaskiyya registry run in this browser tab, with the registry's own code. Nothing leaves your device; reload to start fresh.
+            <b>{SANDBOX ? 'Live sandbox.' : 'Demo bank.'}</b>{' '}
+            {SANDBOX
+              ? 'DemoBank and the Gaskiyya registry run in this browser tab, with the registry’s own code. Nothing leaves your device; reload to start fresh.'
+              : 'The demo tools act as the bank’s systems and its customers. Anyone who signs in to the Gaskiyya app with their number appears as a recipient.'}
           </p>
         )}
-        {config && page === 'messages' && <MessagesPage config={config} phone={phone} setPhone={setPhone} notify={notify} />}
-        {config && page === 'calls' && <CallsPage config={config} phone={phone} setPhone={setPhone} notify={notify} />}
-        {config && page === 'transfers' && <TransfersPage config={config} notify={notify} />}
-        {config && page === 'ussd' && <UssdPage config={config} phone={phone} setPhone={setPhone} />}
-        {config && page === 'contacts' && <ContactsPage config={config} phone={phone} setPhone={setPhone} notify={notify} />}
-        {config && page === 'licence' && <LicencePage config={config} phone={phone} setPhone={setPhone} />}
-        {config && page === 'fraud' && <FraudPage notify={notify} />}
-        {config && page === 'overview' && <OverviewPage metrics={metrics} events={events} />}
-        {!config && (
-          <div className="card empty">
-            <IconWarning />
-            <h2>Connecting to the bank simulator</h2>
-            <p className="small">Start it with <span className="mono">pnpm dev</span>.</p>
-          </div>
-        )}
+        {page === 'overview' && <OverviewPage ws={ws} metrics={metrics} events={events} go={setPage} onSignedOut={onExpired} />}
+        {page === 'fraud' && <FraudDeskPage ws={ws} notify={notify} onSignedOut={onExpired} />}
+        {page === 'integration' && <IntegrationPage ws={ws} onSignedOut={onExpired} />}
+        {page === 'organisation' && <OrganisationPage ws={ws} />}
+        {page === 'activity' && <ActivityPage ws={ws} onSignedOut={onExpired} />}
+        {demo && page === 'messages' && <MessagesPage config={config} phone={phone} setPhone={setPhone} notify={notify} />}
+        {demo && page === 'calls' && <CallsPage config={config} phone={phone} setPhone={setPhone} notify={notify} />}
+        {demo && page === 'transfers' && <TransfersPage config={config} notify={notify} />}
+        {demo && page === 'ussd' && <UssdPage config={config} phone={phone} setPhone={setPhone} />}
+        {demo && page === 'contacts' && <ContactsPage config={config} phone={phone} setPhone={setPhone} notify={notify} />}
+        {demo && page === 'licence' && <LicencePage config={config} phone={phone} setPhone={setPhone} />}
       </main>
       <nav className="tabbar" aria-label="Sections">
-        {nav.map((n) => (
+        {[...work, ...tools].map((n) => (
           <button key={n.id} className={page === n.id ? 'on' : ''} aria-current={page === n.id ? 'page' : undefined} onClick={() => setPage(n.id)}>
             {n.icon}
             <span>{n.name}</span>
@@ -231,8 +351,8 @@ function People({ config, phone, setPhone }: { config: SimConfig; phone: string;
   const [typed, setTyped] = useState('');
   const [bad, setBad] = useState(false);
   const demo = new Set(config.customers.map((c) => c.phone));
-  const others = (recent?.customers ?? []).map((c) => c.phone).filter((p) => !demo.has(p));
-  if (phone && !demo.has(phone) && !others.includes(phone)) others.unshift(phone);
+  const appUsers = (recent?.customers ?? []).filter((c) => !demo.has(c.phone));
+  const typedOnly = phone && !demo.has(phone) && !appUsers.some((c) => c.phone === phone) ? phone : null;
   const use = (e: FormEvent) => {
     e.preventDefault();
     const p = normalisePhone(typed);
@@ -255,16 +375,34 @@ function People({ config, phone, setPhone }: { config: SimConfig; phone: string;
           </button>
         ))}
       </div>
-      {others.length > 0 && (
-        <div>
-          <div className="muted small" style={{ marginBottom: 6 }}>Signed in to Gaskiyya</div>
-          <div className="chips">
-            {others.map((p) => (
-              <button key={p} className={`chip mono ${p === phone ? 'on' : ''}`} aria-pressed={p === phone} onClick={() => setPhone(p)}>{showPhone(p)}</button>
+      <div>
+        <div className="people-label">
+          <span>Signed in to the Gaskiyya app</span>
+          <span className="muted small">{appUsers.length ? `${appUsers.length} demo user${appUsers.length === 1 ? '' : 's'}` : 'Anyone who signs in with their number appears here'}</span>
+        </div>
+        {(appUsers.length > 0 || typedOnly) && (
+          <div className="people">
+            {typedOnly && (
+              <button className="person on" onClick={() => setPhone(typedOnly)}>
+                <span className="avatar app">#</span>
+                <span>
+                  <div className="person-name">Typed number</div>
+                  <div className="person-phone">{showPhone(typedOnly)}</div>
+                </span>
+              </button>
+            )}
+            {appUsers.map((c) => (
+              <button key={c.phone} className={`person ${c.phone === phone ? 'on' : ''}`} aria-pressed={c.phone === phone} onClick={() => setPhone(c.phone)}>
+                <span className="avatar app">{c.phone.slice(-2)}</span>
+                <span>
+                  <div className="person-name">{showPhone(c.phone)}</div>
+                  <div className="person-phone">App user &middot; {ago(c.at)}</div>
+                </span>
+              </button>
             ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
       <form className="row" onSubmit={use} style={{ gap: 8 }}>
         <input
           style={{ flex: 1 }}
@@ -968,286 +1106,6 @@ function LicencePage({ config, phone, setPhone }: { config: SimConfig; phone: st
 
 const fillText = (t: string, v: Record<string, string>) => t.replace(/\{(\w+)\}/g, (m, k: string) => v[k] ?? m);
 
-function FraudPage({ notify }: { notify: (s: string) => void }) {
-  const [data, reload] = usePoll(() => sim.campaigns(), 3000);
-  const campaigns = (data?.campaigns ?? []).filter((c) => c.status !== 'dismissed');
-  const [analyst, setAnalyst] = useState(() => {
-    try {
-      return localStorage.getItem('gaskiya.analyst') ?? '';
-    } catch {
-      return '';
-    }
-  });
-  const saveAnalyst = (v: string) => {
-    setAnalyst(v);
-    try {
-      localStorage.setItem('gaskiya.analyst', v);
-    } catch {
-      // The demo can still run when browser storage is unavailable.
-    }
-  };
-
-  const run = async () => {
-    const r = await sim.runAgent();
-    reload();
-    notify(r.campaignsTouched.length ? `Agent updated ${r.campaignsTouched.length} campaign(s)` : 'No new reports to group');
-  };
-  const seed = async () => {
-    const r = await sim.seedReports();
-    notify(`${r.reported} customer reports submitted`);
-  };
-  const action = async (c: Campaign, a: 'approve' | 'dismiss' | 'withdraw') => {
-    await sim.campaignAction(c.id, a, analyst.trim());
-    reload();
-    notify(a === 'approve' ? 'Advisory approved: customers\u2019 apps now show the warning' : a === 'withdraw' ? 'Advisory withdrawn from customers\u2019 apps' : 'Campaign dismissed');
-  };
-  const send = async (c: Campaign) => {
-    const r = await sim.sendAdvisory(c.id);
-    reload();
-    notify(`Warning sent to ${r.sent} customers by SMS, each one registered`);
-  };
-
-  return (
-    <div className="page">
-      <div className="page-head">
-        <div>
-          <h1>Fraud desk</h1>
-          <p>Customer reports grouped into campaigns. Advisories stay drafts until an analyst approves them.</p>
-        </div>
-        <div className="row">
-          <button className="btn secondary" onClick={seed}>Simulate 3 reports</button>
-          <button className="btn" onClick={run}><IconSpark /> Run agent</button>
-        </div>
-      </div>
-      <RegistrationAlerts />
-      <div className="section-label">Scam campaigns</div>
-      {campaigns.length === 0 ? (
-        <div className="card empty">
-          <IconShield />
-          <h2>No campaigns</h2>
-          <p className="small">When customers report fakes that share a link, number or lure, they appear here as one campaign.</p>
-        </div>
-      ) : (
-        <div className="stack">
-          {campaigns.map((c) => (
-            <div className="card campaign" key={c.id}>
-              <div className="campaign-head">
-                <div>
-                  <div className="row" style={{ marginBottom: 6 }}>
-                    <span className={`tag ${c.status === 'confirmed' ? 'green' : 'orange'}`}>{c.status === 'confirmed' ? 'Confirmed' : 'New'}</span>
-                    <span className="muted small">First seen {timeOf(c.firstSeen)} · last seen {timeOf(c.lastSeen)}</span>
-                  </div>
-                  <h2>{c.summary}</h2>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: 34, fontWeight: 700, lineHeight: 1 }}>{c.reportCount}</div>
-                  <div className="muted small">reports</div>
-                </div>
-              </div>
-              <div className="chips">
-                {c.indicators.map((i) => <span className="tag red" key={i}>{label(copy.indicators, i)}</span>)}
-                {c.linkDomains.map((d) => <span className="tag mono" key={d}>{d}</span>)}
-                {c.callbackKeyCount > 0 && <span className="tag">{c.callbackKeyCount} callback number{c.callbackKeyCount > 1 ? 's' : ''}</span>}
-              </div>
-              {c.briefing && (
-                <div>
-                  <div className="row" style={{ marginBottom: 6 }}>
-                    <h3 style={{ margin: 0 }}>Briefing</h3>
-                    <span className="tag blue">{CHANNEL_LABEL[c.briefing.channel]}</span>
-                    <span className="tag">{c.briefing.source === 'model' ? 'Written by AI, check before use' : 'Built from report data'}</span>
-                  </div>
-                  <p style={{ margin: 0 }}>{c.briefing.pattern}</p>
-                </div>
-              )}
-              <div>
-                <h3>{c.advisory.status === 'approved' ? 'Approved advisory' : c.advisory.status === 'withdrawn' ? 'Withdrawn advisory' : 'Suggested advisory (draft)'}</h3>
-                <div className="advisory">{c.advisory.text}</div>
-              </div>
-              <div className="row" style={{ justifyContent: 'space-between' }}>
-                <span className="muted small">
-                  {c.advisory.status === 'approved'
-                    ? `Approved by ${c.advisory.approvedBy} at ${timeOf(c.advisory.approvedAt!)}${c.advisory.expiresAt ? ` \u00b7 shown in customers\u2019 apps until ${timeOf(c.advisory.expiresAt)}` : ''}`
-                    : c.advisory.status === 'withdrawn'
-                      ? `Withdrawn by ${c.advisory.withdrawnBy} at ${timeOf(c.advisory.withdrawnAt!)}`
-                      : 'Approving shows the warning in customers\u2019 apps. Nothing is sent by SMS until you send it.'}
-                </span>
-                {c.advisory.status === 'approved' && (
-                  <div className="row">
-                    <button className="btn plain" disabled={analyst.trim().length < 2} title={analyst.trim().length < 2 ? 'Enter your name to withdraw' : undefined} onClick={() => action(c, 'withdraw')}>Withdraw</button>
-                    <input
-                      aria-label="Your name, recorded with the withdrawal"
-                      placeholder="Your name"
-                      value={analyst}
-                      onChange={(e) => saveAnalyst(e.target.value)}
-                      maxLength={100}
-                    />
-                    <button className="btn" onClick={() => send(c)} title="Sends this warning by SMS through the bank's gateway, registering each message so customers can check it">Send to customers</button>
-                  </div>
-                )}
-                {c.advisory.status === 'draft' && (
-                  <div className="row">
-                    <button className="btn plain" onClick={() => action(c, 'dismiss')}>Dismiss</button>
-                    <input
-                      aria-label="Your name, recorded with the approval"
-                      placeholder="Your name"
-                      value={analyst}
-                      onChange={(e) => saveAnalyst(e.target.value)}
-                      maxLength={100}
-                    />
-                    <button className="btn success" disabled={analyst.trim().length < 2} title={analyst.trim().length < 2 ? 'Enter your name to approve' : undefined} onClick={() => action(c, 'approve')}><IconCheck /> Approve advisory</button>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-const CHANNEL_LABEL: Record<NonNullable<Campaign['briefing']>['channel'], string> = {
-  sms: 'Impersonates SMS',
-  whatsapp: 'Impersonates WhatsApp',
-  call: 'Impersonates phone calls',
-  email: 'Impersonates email',
-  social: 'Impersonates social media',
-  unknown: 'Channel unclear',
-};
-
-function RegistrationAlerts() {
-  const [data] = usePoll(() => sim.alerts(), 3000);
-  const alerts = data?.alerts ?? [];
-  const describe = (a: RegistrationAlert) =>
-    a.kind === 'unknown_link_domain'
-      ? `Registered message links to ${a.domain}, not one of the bank's domains`
-      : `${a.count.toLocaleString()} registrations in ${a.windowMinutes} min (about ${(a.expected ?? 0).toLocaleString()} expected)`;
-  return (
-    <>
-      <div className="section-label" style={{ marginTop: 0 }}>Registration alerts</div>
-      <div className="card registration-alerts">
-        {alerts.length === 0 ? (
-          <p className="muted small" style={{ margin: 0 }}>Nothing unusual. Registrations that link outside the bank's domains, or a sudden jump in volume, appear here and are emailed to the fraud desk. They are never blocked.</p>
-        ) : (
-          alerts.map((a) => (
-            <div className="kbd-row" key={a.id}>
-              <span>
-                <span className={`tag ${a.kind === 'unknown_link_domain' ? 'orange' : 'red'}`} style={{ marginRight: 8 }}>{a.kind === 'unknown_link_domain' ? 'Link domain' : 'Volume'}</span>
-                {describe(a)}
-              </span>
-              <span className="muted small">{a.kind === 'unknown_link_domain' && a.count > 1 ? `${a.count} messages \u00b7 ` : ''}{timeOf(a.lastSeen)}</span>
-            </div>
-          ))
-        )}
-      </div>
-    </>
-  );
-}
-
-const CHECK_CHANNELS: Record<string, string> = { app: 'app', whatsapp: 'WhatsApp', ussd: 'USSD' };
-const pct = (r: number | null | undefined) => (r === null || r === undefined ? 'n/a' : `${(r * 100).toFixed(1)}%`);
-
-function OverviewPage({ metrics, events }: { metrics: Metrics | null; events: LiveEvent[] }) {
-  const v = metrics?.verifications ?? {};
-  const cov = metrics?.coverage;
-  const totalChecks = (v.confirmed ?? 0) + (v.not_confirmed ?? 0) + (v.cannot_check ?? 0);
-  const segs = useMemo(
-    () => [
-      { k: 'confirmed', c: 'var(--green)' },
-      { k: 'not_confirmed', c: 'var(--orange)' },
-      { k: 'cannot_check', c: 'var(--red)' },
-    ],
-    [],
-  );
-  const tiles = [
-    { k: 'Messages registered', v: metrics?.registrations ?? 0, color: 'var(--blue)' },
-    { k: 'Confirmed checks', v: v.confirmed ?? 0, color: 'var(--green)' },
-    { k: 'Not confirmed', v: v.not_confirmed ?? 0, color: 'var(--orange)' },
-    { k: 'Links checked', v: Object.values(metrics?.links ?? {}).reduce((a, b) => a + b, 0), color: 'var(--teal)' },
-    { k: 'Open call sessions', v: metrics?.openCalls ?? 0, color: 'var(--indigo)' },
-    { k: 'Reports', v: metrics?.reports ?? 0, color: 'var(--red)' },
-  ];
-  return (
-    <div className="page">
-      <div className="page-head">
-        <div>
-          <h1>Overview</h1>
-          <p>Registration coverage and verification outcomes. Counts only, never content.</p>
-        </div>
-      </div>
-      <div className="tiles">
-        {tiles.map((t) => (
-          <div className="card tile" key={t.k}>
-            <div className="k"><span className="status-dot" style={{ background: t.color, boxShadow: 'none' }} />{t.k}</div>
-            <div className="v">{t.v.toLocaleString()}</div>
-          </div>
-        ))}
-      </div>
-      <div className="grid-2 overview-grid">
-        <div>
-          <div className="section-label" style={{ marginTop: 0 }}>Message check outcomes</div>
-          <div className="card stack">
-            <div className="bar">
-              {segs.map((s) => <span key={s.k} style={{ width: `${totalChecks ? ((v[s.k] ?? 0) / totalChecks) * 100 : 0}%`, background: s.c }} />)}
-            </div>
-            <div className="row small">
-              {segs.map((s) => (
-                <span key={s.k} className="row" style={{ gap: 6, marginRight: 14 }}>
-                  <span className="status-dot" style={{ background: s.c, boxShadow: 'none' }} />
-                  {label({ confirmed: 'Confirmed', not_confirmed: 'Not confirmed', cannot_check: 'Cannot check' }, s.k)} · {v[s.k] ?? 0}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className="section-label">Coverage</div>
-          <div className="card coverage">
-            <div className="kbd-row"><span>Registered</span><b style={{ fontVariantNumeric: 'tabular-nums' }}>{(cov?.registered ?? 0).toLocaleString()}</b></div>
-            <div className="kbd-row"><span>Verified (confirmed checks)</span><b style={{ fontVariantNumeric: 'tabular-nums' }}>{(cov?.confirmed ?? 0).toLocaleString()}</b></div>
-            <div className="kbd-row"><span>Message checks</span><b style={{ fontVariantNumeric: 'tabular-nums' }}>{(cov?.checked ?? 0).toLocaleString()}</b></div>
-            <div className="kbd-row"><span>Not-confirmed rate</span><b style={{ fontVariantNumeric: 'tabular-nums' }}>{pct(cov?.notConfirmedRate)}</b></div>
-            {Object.entries(cov?.checksByChannel ?? {}).map(([k, n]) => (
-              <div className="kbd-row" key={k}>
-                <span className="muted">Checks by {label(CHECK_CHANNELS, k)}</span>
-                <b style={{ fontVariantNumeric: 'tabular-nums' }}>{n.toLocaleString()}</b>
-              </div>
-            ))}
-            <div className="kbd-row"><span>Registration alerts (see Fraud desk)</span><b style={{ fontVariantNumeric: 'tabular-nums' }}>{Object.values(metrics?.registrationAlerts ?? {}).reduce((a, b) => a + b, 0).toLocaleString()}</b></div>
-            <p className="muted small" style={{ margin: '8px 0 0' }}>A high not-confirmed rate means many fakes, or genuine messages that were never registered.</p>
-          </div>
-          <div className="section-label">Registered by type</div>
-          <div className="card">
-            {Object.keys(metrics?.registrationsByCategory ?? {}).length === 0 && <p className="muted small" style={{ margin: 0 }}>Nothing registered yet.</p>}
-            {Object.entries(metrics?.registrationsByCategory ?? {}).map(([k, n]) => (
-              <div className="kbd-row" key={k}>
-                <span>{label(copy.categories, k)}</span>
-                <b style={{ fontVariantNumeric: 'tabular-nums' }}>{n}</b>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="card feed">
-          <div className="feed-head">
-            <h3>Live activity</h3>
-            <span className="live-dot" aria-hidden="true" />
-          </div>
-          {events.length === 0 ? (
-            <p className="muted small" style={{ margin: 0 }}>Checks from the customer app appear here as they happen.</p>
-          ) : (
-            <ol className="feed-list" aria-live="polite">
-              {events.map((e) => (
-                <li key={e.key}>
-                  <span className={`feed-dot ${e.tone}`} />
-                  <span className="feed-text">{e.text}</span>
-                  <time className="muted small">{e.at.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</time>
-                </li>
-              ))}
-            </ol>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function contactKindLabel(c: { type: string; value: string; platform?: string }, platforms?: string[]): string {
   const k = copy.official.contact.kinds;
