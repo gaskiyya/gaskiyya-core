@@ -64,13 +64,16 @@ enum ShieldSetup {
 }
 
 // Bank calls on iPhone. The bank's announced call arrives as a VoIP push and rings through
-// CallKit: the iPhone call screen and the ringtone chosen in Settings > Sounds. The caller name
-// carries the call code. Answering plays the same agent voice as the console's simulated phone.
-// What happens on the call screen (rang, answered, ended, missed) goes to Flutter as "callEvent" for the
-// call log and the in-call screen, held in UserDefaults until Flutter asks for them with "drainEvents".
+// CallKit: the iPhone call screen and the ringtone chosen in Settings > Sounds. The caller name on
+// that screen is the calling bank's name and the call code ("DemoBank · Code 4821"), so the person
+// compares the code there; the app draws no call screen of its own. Answering plays the same agent
+// voice as the console's simulated phone. What happens on the call screen (rang, answered, ended,
+// missed) goes to Flutter as "callEvent" for the call log, held in UserDefaults until Flutter asks
+// for them with "drainEvents".
 final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
   private static let tokenKey = "gk.voipToken"
   private static let eventsKey = "gk.callEvents"
+  private static let labelsKey = "gk.callLabels"
   private static let ringSeconds: TimeInterval = 30
 
   private struct Incoming {
@@ -119,9 +122,14 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
         self?.listening = true
         result(UserDefaults.standard.array(forKey: BankCalls.eventsKey) ?? [])
         UserDefaults.standard.removeObject(forKey: BankCalls.eventsKey)
+      case "labels":
+        // The call screen's words in the app's language, kept for calls that ring while the app is closed.
+        BankCalls.saveLabels(call.arguments)
+        result(nil)
       case "ring":
         // The app heard the call on its live connection; rings the same way without waiting for a VoIP push.
         if let p = call.arguments as? [String: Any], let id = p["callId"] as? String, self?.rung.contains(id) == false {
+          BankCalls.saveLabels(p["labels"])
           self?.incoming(p) {}
         }
         result(nil)
@@ -170,7 +178,7 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
 
     let update = CXCallUpdate()
     update.remoteHandle = CXHandle(type: .generic, value: bank)
-    update.localizedCallerName = code.isEmpty ? bank : "\(bank) · Code \(code)"
+    update.localizedCallerName = BankCalls.callerName(bank: bank, code: code)
     update.hasVideo = false
     update.supportsHolding = false
     update.supportsGrouping = false
@@ -322,6 +330,20 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
     } else {
       ids = ids.filter { $0.value != uuid }
     }
+  }
+
+  // What the iPhone call screen shows as the caller: the calling bank and its code, e.g. "DemoBank · Code 4821",
+  // in the app's language once Flutter has sent its labels.
+  static func callerName(bank: String, code: String) -> String {
+    guard !code.isEmpty else { return bank }
+    let labels = UserDefaults.standard.dictionary(forKey: labelsKey) as? [String: String]
+    let template = labels?["caller"].flatMap { $0.contains("{bank}") && $0.contains("{code}") ? $0 : nil } ?? "{bank} · Code {code}"
+    return template.replacingOccurrences(of: "{bank}", with: bank).replacingOccurrences(of: "{code}", with: code)
+  }
+
+  private static func saveLabels(_ value: Any?) {
+    guard let labels = value as? [String: String], !labels.isEmpty else { return }
+    UserDefaults.standard.set(labels, forKey: labelsKey)
   }
 
   private static func parseDate(_ s: String) -> Date? {

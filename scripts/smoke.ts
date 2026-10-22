@@ -244,6 +244,15 @@ if (env.SMOKE_ADMIN_USER && env.SMOKE_ADMIN_PASSWORD) {
   for (const p of ['/v1/admin/session', '/v1/admin/overview', '/v1/admin/orgs', '/v1/admin/audit', '/v1/admin/settings']) {
     await check(`GET ${p}`, async () => void expect(await call('GET', p, { token: admin }), 200, p));
   }
+  // Push being off is easy to miss: calls still reach an open app, so it is reported here rather than failing the deploy.
+  const integrations = (await call('GET', '/v1/admin/settings', { token: admin }).catch(() => null))?.data?.integrations;
+  for (const [key, name] of [['push', 'Push notifications'], ['iosCalls', 'iPhone call ringing']] as const) {
+    const state = String(integrations?.[key] ?? 'unknown');
+    if (state.startsWith('off')) {
+      skip(name, state);
+      if (env.GITHUB_ACTIONS) console.log(`::warning::${name}: ${state}. The server needs the settings in docs/CONFIGURATION.md.`);
+    } else ok(name, state);
+  }
   await check('GET /admin/ with a session', async () => {
     const r = await fetch(`${base}/admin/`, { headers: { cookie: `gaskiyya_admin=${admin}` }, redirect: 'manual' });
     if (r.status !== 200) throw new Error(`HTTP ${r.status}`);

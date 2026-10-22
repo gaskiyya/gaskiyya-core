@@ -32,7 +32,7 @@
   },
   "call": {
     "calling": {
-      "title": "{bank} dey call you now",
+      "title": "{bank} dey call you",
       "body": "Wetin the call be for: {purpose}. The agent go read this code out. Compare am before you continue.",
       "codeLabel": "Call code"
     },
@@ -40,8 +40,8 @@
       "title": "Your bank no dey call you",
       "body": "No call from {bank} dey go on now. If anybody for phone talk say dem come from your bank, cut the call."
     },
-    "mismatch": "If the person wey dey call no fit read this exact code, cut the call.",
-    "mismatchMany": "If the person wey dey call no fit read one of these codes exactly, cut the call."
+    "mismatch": "The person wey dey call must read this code give you. If e no fit, cut the call.",
+    "mismatchMany": "The person wey dey call must read the code for im bank give you. If e no fit, cut the call."
   },
   "activity": {
     "heading": "Wetin your bank send recently"
@@ -170,12 +170,16 @@
     },
     "calls": {
       "checkAgain": "Check again",
-      "howItWorks": "When your bank call you, notice and four-digit code go show here sharp sharp. People fit fake caller ID; dem no fit fake this code.",
+      "howItWorks": "When one of your banks call you, im name and code go show for your phone call screen and here. People fit fake caller ID; dem no fit fake this code.",
       "validFor": "Code go work for {time}",
       "recent": "Calls wey just pass",
       "codeIs": "Code {code}",
       "inCall": "You dey talk with {bank}",
       "end": "End call",
+      "answer": "Pick am",
+      "decline": "No pick",
+      "callerName": "{bank} \u00b7 Code {code}",
+      "noneCalling": "None of your banks dey call you",
       "outcome": {
         "ringing": "E dey call now",
         "active": "For call",
@@ -193,7 +197,8 @@
     "settings": {
       "linked": "Linked",
       "privacy": "Privacy",
-      "textStays": "We no dey store message text. To explain result, we go send the text one time with long numbers hidden.",
+      "textStays": "We no dey store message text",
+      "textStaysBody": "To explain result, we go send the text one time with long numbers hidden.",
       "numbersMasked": "We dey always hide long numbers",
       "reportsConsent": "We dey report only when you agree",
       "about": "About",

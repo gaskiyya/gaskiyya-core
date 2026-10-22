@@ -7,7 +7,12 @@ import '../../core/copy.dart';
 import '../../core/session.dart';
 import '../theme.dart';
 import '../widgets/widgets.dart';
-import 'in_call_screen.dart';
+
+String callTime(Duration d) {
+  final s = d.inSeconds.clamp(0, 359999);
+  final mmss = '${(s ~/ 60) % 60}:${(s % 60).toString().padLeft(2, '0')}';
+  return s >= 3600 ? '${s ~/ 3600}:${mmss.padLeft(5, '0')}' : mmss;
+}
 
 class CallsScreen extends StatefulWidget {
   const CallsScreen({super.key, required this.state});
@@ -166,7 +171,7 @@ class _CallsScreenState extends State<CallsScreen> {
         const SizedBox(height: 4),
         const Art3D('call', size: 230),
         const SizedBox(height: 6),
-        Text(named ? c.t('official.org.notCallingTitle', {'bank': bank}) : c.t('call.not_calling.title', {'bank': bank}),
+        Text(named ? c.t('official.org.notCallingTitle', {'bank': bank}) : c.t('app.calls.noneCalling'),
             textAlign: TextAlign.center, style: G.title1(context)),
         const SizedBox(height: 10),
         Padding(

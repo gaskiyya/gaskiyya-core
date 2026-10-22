@@ -1,6 +1,10 @@
+import { execFileSync } from 'node:child_process';
 import { generateKeyPairSync } from 'node:crypto';
+import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { createServer, type IncomingMessage, type Server } from 'node:http';
 import type { AddressInfo } from 'node:net';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { jwtVerify } from 'jose';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { contentDigest } from '@gaskiya/canonical';
@@ -100,7 +104,7 @@ describe('push: Firebase Cloud Messaging', () => {
     await fcm().send('device-token-1', notice());
     const m = hits.find((h) => h.path.endsWith('/messages:send'))!.body.message;
     expect(m.token).toBe('device-token-1');
-    expect(m.notification.title).toBe('DemoBank is calling you now');
+    expect(m.notification.title).toBe('DemoBank is calling you');
     expect(m.notification.body).toContain('4821');
     expect(m.data).toMatchObject({ type: 'call.opened', callId: 'call_abc', code: '4821', purpose: 'card_activation' });
     for (const v of Object.values(m.data)) expect(typeof v).toBe('string');
@@ -154,6 +158,17 @@ describe('push: Firebase Cloud Messaging', () => {
     expect(serviceAccountFromEnv({ FCM_SERVICE_ACCOUNT_JSON: Buffer.from(json).toString('base64') })?.client_email).toContain('@');
     expect(serviceAccountFromEnv({})).toBeNull();
     expect(() => serviceAccountFromEnv({ FCM_SERVICE_ACCOUNT_JSON: '{"project_id":"x"}' })).toThrow(/client_email/);
+  });
+
+  it('a service account written into prod.env the way the deploy job does it switches push on', () => {
+    // The deploy job turns the multi-line JSON secret into one base64 line, then base64-encodes that again for the SSM command.
+    const line = Buffer.from(JSON.stringify(serviceAccount(), null, 2)).toString('base64');
+    const envFile = join(mkdtempSync(join(tmpdir(), 'gaskiya-env-')), 'prod.env');
+    writeFileSync(envFile, 'FCM_SERVICE_ACCOUNT_JSON=old\nSTORE=mongo\n');
+    execFileSync('bash', ['scripts/server-env.sh', 'FCM_SERVICE_ACCOUNT_JSON', Buffer.from(line).toString('base64')], { env: { ...process.env, GASKIYA_ENV_FILE: envFile } });
+    const env = Object.fromEntries(readFileSync(envFile, 'utf8').trim().split('\n').map((l) => [l.slice(0, l.indexOf('=')), l.slice(l.indexOf('=') + 1)]));
+    expect(env.STORE).toBe('mongo');
+    expect(serviceAccountFromEnv(env)?.project_id).toBe('gaskiya-test');
   });
 });
 

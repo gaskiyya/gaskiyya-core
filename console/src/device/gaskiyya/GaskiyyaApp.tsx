@@ -606,7 +606,7 @@ function SettingsTab({ session, onAdd, onSignOut }: { session: Session; bank: st
 
         <div className="gk-list-head">{s.privacy}</div>
         <div className="gk-list">
-          <div className="gk-li static"><span className="gk-li-lead">{I.lock_fill!()}</span><span className="gk-li-main">{s.textStays}</span></div>
+          <div className="gk-li static"><span className="gk-li-lead">{I.lock_fill!()}</span><span className="gk-li-main">{s.textStays}{s.textStaysBody && <small>{s.textStaysBody}</small>}</span></div>
           <div className="gk-li static"><span className="gk-li-lead">{I.number!()}</span><span className="gk-li-main">{s.numbersMasked}</span></div>
           <div className="gk-li static"><span className="gk-li-lead">{I.hand_raised_fill!()}</span><span className="gk-li-main">{s.reportsConsent}</span></div>
         </div>

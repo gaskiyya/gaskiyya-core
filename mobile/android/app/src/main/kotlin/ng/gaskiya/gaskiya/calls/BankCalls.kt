@@ -24,17 +24,45 @@ import org.json.JSONObject
 
 // Bank calls on Android, mirroring CallKit on iPhone: the phone's own ringtone and an incoming-call
 // notification (full screen on a locked phone) until the call is answered, declined or runs out.
-// Answering opens the app and plays the same agent voice as the iPhone and the console's simulated phone.
-// What happens to each call (rang, answered, ended, missed) goes to Flutter for the call log and the in-call screen.
+// The caller on that call screen is the calling bank's name and the call code ("DemoBank · Code 4821"),
+// so the person compares the code there; the app draws no call screen of its own. Answering opens the
+// app, plays the same agent voice as the iPhone and the console's simulated phone, and leaves an ongoing
+// call notification with the bank, the code and End call until the call ends.
+// What happens to each call (rang, answered, ended, missed) goes to Flutter for the call log.
 object BankCalls {
     const val ACTION_ANSWER = "ng.gaskiya.calls.ANSWER"
     const val ACTION_DECLINE = "ng.gaskiya.calls.DECLINE"
+    const val ACTION_END = "ng.gaskiya.calls.END"
     const val EXTRA_CALL_ID = "callId"
     private const val CHANNEL = "incoming_calls"
+    private const val ONGOING_CHANNEL = "ongoing_calls"
     private const val NOTIFICATION_ID = 7301
+    private const val ONGOING_ID = 7302
     private const val RING_MS = 30_000L
 
-    private data class Incoming(val callId: String, val orgId: String, val bank: String, val code: String)
+    private data class Incoming(val callId: String, val orgId: String, val bank: String, val code: String, val labels: Labels)
+
+    // The call screen's words, in the app's language when Flutter sends them.
+    private data class Labels(val caller: String, val incoming: String, val inCall: String, val answer: String, val decline: String, val end: String) {
+        fun callerName(bank: String, code: String) =
+            if (code.isEmpty()) bank else caller.replace("{bank}", bank).replace("{code}", code)
+
+        companion object {
+            fun from(raw: Any?): Labels {
+                val m = raw as? Map<*, *> ?: emptyMap<Any, Any>()
+                fun text(key: String, fallback: String) = (m[key] as? String)?.takeIf { it.isNotBlank() } ?: fallback
+                val caller = text("caller", "{bank} · Code {code}").takeIf { "{bank}" in it && "{code}" in it } ?: "{bank} · Code {code}"
+                return Labels(
+                    caller = caller,
+                    incoming = text("incoming", "The caller must read this code to you. If they can't, hang up."),
+                    inCall = text("inCall", "On a call with {bank}"),
+                    answer = text("answer", "Answer"),
+                    decline = text("decline", "Decline"),
+                    end = text("end", "End call"),
+                )
+            }
+        }
+    }
 
     private val main = Handler(Looper.getMainLooper())
     private var current: Incoming? = null
@@ -67,6 +95,7 @@ object BankCalls {
             orgId = args["orgId"] as? String ?: "",
             bank = args["bank"] as? String ?: "Your bank",
             code = (args["code"] as? String ?: "").filter(Char::isDigit),
+            labels = Labels.from(args["labels"]),
         )
         val left = (args["expiresInMs"] as? Number)?.toLong() ?: RING_MS
         if (left <= 0) return
@@ -88,7 +117,16 @@ object BankCalls {
         val ctx = context.applicationContext
         stopRinging(ctx)
         voice = AgentVoice(ctx, call.orgId, call.code).also { it.start() }
+        notifyOngoing(ctx, call)
         emit("answered", call)
+    }
+
+    // End call on the ongoing call notification.
+    fun hangUp(context: Context, callId: String?) {
+        val call = current ?: return
+        if (callId != null && call.callId != callId) return
+        stopAll(context.applicationContext)
+        emit("ended", call)
     }
 
     fun decline(context: Context, callId: String?) {
@@ -104,6 +142,7 @@ object BankCalls {
 
     private fun stopAll(ctx: Context) {
         stopRinging(ctx)
+        ctx.getSystemService(NotificationManager::class.java)?.cancel(ONGOING_ID)
         voice?.stop()
         voice = null
         current = null
@@ -174,13 +213,14 @@ object BankCalls {
             Intent(ctx, CallActionReceiver::class.java).setAction(ACTION_DECLINE).putExtra(EXTRA_CALL_ID, call.callId),
             flags,
         )
-        val caller = if (call.code.isEmpty()) call.bank else "${call.bank} · Code ${call.code}"
+        // The phone's incoming call screen names the calling bank and shows its code as the caller.
+        val caller = call.labels.callerName(call.bank, call.code)
         @Suppress("DEPRECATION")
         val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Notification.Builder(ctx, CHANNEL) else Notification.Builder(ctx)
         builder
             .setSmallIcon(android.R.drawable.sym_call_incoming)
             .setContentTitle(caller)
-            .setContentText("Incoming call")
+            .setContentText(call.labels.incoming)
             .setCategory(Notification.CATEGORY_CALL)
             .setOngoing(true)
             .setAutoCancel(false)
@@ -193,10 +233,50 @@ object BankCalls {
             @Suppress("DEPRECATION")
             builder
                 .setPriority(Notification.PRIORITY_MAX)
-                .addAction(android.R.drawable.ic_menu_close_clear_cancel, "Decline", decline)
-                .addAction(android.R.drawable.sym_action_call, "Answer", answer)
+                .addAction(android.R.drawable.ic_menu_close_clear_cancel, call.labels.decline, decline)
+                .addAction(android.R.drawable.sym_action_call, call.labels.answer, answer)
         }
         runCatching { manager.notify(NOTIFICATION_ID, builder.build()) }
+    }
+
+    // While the call is on: the bank, its code, a running timer and End call, in the status bar and on the lock screen.
+    // A plain ongoing notification, as CallStyle needs a foreground service or a full-screen intent.
+    private fun notifyOngoing(ctx: Context, call: Incoming) {
+        val manager = ctx.getSystemService(NotificationManager::class.java) ?: return
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            manager.createNotificationChannel(
+                NotificationChannel(ONGOING_CHANNEL, "Bank call in progress", NotificationManager.IMPORTANCE_LOW).apply {
+                    description = "Shows the bank and its call code while you're on a call through Gaskiyya."
+                    setSound(null, null)
+                    enableVibration(false)
+                },
+            )
+        }
+        val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        val open = PendingIntent.getActivity(ctx, 3, Intent(ctx, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP), flags)
+        val end = PendingIntent.getBroadcast(
+            ctx, 4,
+            Intent(ctx, CallActionReceiver::class.java).setAction(ACTION_END).putExtra(EXTRA_CALL_ID, call.callId),
+            flags,
+        )
+        val caller = call.labels.callerName(call.bank, call.code)
+        @Suppress("DEPRECATION")
+        val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Notification.Builder(ctx, ONGOING_CHANNEL) else Notification.Builder(ctx)
+        builder
+            .setSmallIcon(android.R.drawable.sym_action_call)
+            .setContentTitle(caller)
+            .setContentText(call.labels.inCall.replace("{bank}", call.bank))
+            .setCategory(Notification.CATEGORY_CALL)
+            .setOngoing(true)
+            .setAutoCancel(false)
+            .setOnlyAlertOnce(true)
+            .setShowWhen(true)
+            .setWhen(System.currentTimeMillis())
+            .setUsesChronometer(true)
+            .setVisibility(Notification.VISIBILITY_PUBLIC)
+            .setContentIntent(open)
+            .addAction(android.R.drawable.ic_menu_close_clear_cancel, call.labels.end, end)
+        runCatching { manager.notify(ONGOING_ID, builder.build()) }
     }
 }
 

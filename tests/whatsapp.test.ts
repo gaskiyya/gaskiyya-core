@@ -57,7 +57,7 @@ describe('WhatsApp route', () => {
     expect((await send(h, 'CALL')).body).toContain(copy.call.not_calling.title);
     const call = await h.sys.app.inject({ method: 'POST', url: '/v1/calls', headers: { authorization: `Bearer ${h.bankToken}` }, payload: { recipient: ALICE, purpose: 'fraud_check', agentRef: 'a1' } });
     const reply = await send(h, 'call');
-    expect(reply.body).toContain('DemoBank is calling you now');
+    expect(reply.body).toContain('DemoBank is calling you');
     expect(reply.body).toContain(call.json().code);
   });
 

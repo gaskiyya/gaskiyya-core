@@ -88,12 +88,12 @@ void main() {
     // Calls: not calling, then announce and call, then end.
     await tester.tap(find.text('Calls'));
     await _settle(tester);
-    expect(_onCalls(find.text('DemoBank is calling you now')), findsNothing);
+    expect(_onCalls(find.text('DemoBank is calling you')), findsNothing);
 
     final call = await _console('POST', '/sim/calls', {'phone': _phone, 'purpose': 'card_activation'});
     final code = call['code'] as String;
     await _until(tester, _code(code));
-    expect(_onCalls(find.text('DemoBank is calling you now')), findsOneWidget);
+    expect(_onCalls(find.text('DemoBank is calling you')), findsOneWidget);
 
     await _console('PATCH', '/sim/calls/${call['id']}', {'status': 'answered'});
     await _console('PATCH', '/sim/calls/${call['id']}', {'status': 'ended'});

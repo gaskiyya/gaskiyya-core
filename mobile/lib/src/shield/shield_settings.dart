@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 import '../core/copy.dart';
 import '../ui/theme.dart';
+import '../ui/widgets/widgets.dart';
 
 class ShieldStatus {
   const ShieldStatus({this.screening = false, this.redirection = false, this.overlay = false, this.notifications = false, this.alerts = false, this.supported = false});
@@ -51,7 +52,7 @@ class ShieldSetup {
 class ShieldSettingsSection extends StatefulWidget {
   const ShieldSettingsSection({super.key, required this.header});
 
-  final Widget header;
+  final String header;
 
   @override
   State<ShieldSettingsSection> createState() => _ShieldSettingsSectionState();
@@ -89,22 +90,26 @@ class _ShieldSettingsSectionState extends State<ShieldSettingsSection> with Widg
     await _refresh();
   }
 
+  static const _icons = <String, (IconData, CupertinoDynamicColor)>{
+    'calls': (CupertinoIcons.phone_fill, G.green),
+    'dialled': (CupertinoIcons.phone_fill_arrow_up_right, G.blue),
+    'overlay': (CupertinoIcons.square_stack_fill, G.indigo),
+    'messages': (CupertinoIcons.chat_bubble_text_fill, G.orange),
+    'alerts': (CupertinoIcons.bell_fill, G.red),
+  };
+
   Widget _row(BuildContext context, String perm, bool on, String method, {String? copy}) {
     final c = Copy.I;
     final k = copy ?? 'shield.perm.$perm';
-    return CupertinoListTile(
+    final (icon, color) = _icons[perm]!;
+    return SettingsRow(
       key: ValueKey('shield-$perm'),
-      title: Text(c.t('$k.title'), maxLines: 3, overflow: TextOverflow.visible),
-      subtitle: Text(c.t('$k.body'), maxLines: 6, overflow: TextOverflow.visible),
+      icon: icon,
+      iconColor: color.resolveFrom(context),
+      title: c.t('$k.title'),
+      subtitle: c.t('$k.body'),
       onTap: on ? null : () => _turnOn(method),
-      trailing: on
-          ? Text(c.t('shield.on'), style: TextStyle(color: G.greenInk.resolveFrom(context)))
-          : CupertinoButton(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              minimumSize: const Size(44, 44),
-              onPressed: () => _turnOn(method),
-              child: Text(c.t('shield.turnOn')),
-            ),
+      trailing: on ? SettingsOn(c.t('shield.on')) : SettingsButton(label: c.t('shield.turnOn'), onTap: () => _turnOn(method)),
     );
   }
 
@@ -113,9 +118,9 @@ class _ShieldSettingsSectionState extends State<ShieldSettingsSection> with Widg
     final c = Copy.I;
     final s = _status;
     final android = ShieldSetup.available;
-    return CupertinoListSection.insetGrouped(
+    return SettingsSection(
       header: widget.header,
-      footer: Text(c.t(android ? 'shield.settingsIntro' : 'shield.ios.note')),
+      footer: c.t(android ? 'shield.settingsIntro' : 'shield.ios.note'),
       children: [
         if (!android)
           _row(context, 'alerts', s?.alerts ?? false, 'requestAlerts', copy: 'shield.ios.alerts')

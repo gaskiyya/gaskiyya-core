@@ -52,19 +52,34 @@ Future<void> _onBackgroundMessage(RemoteMessage message) async {
 }
 
 class FirebasePushTransport implements PushTransport {
+  // Linking banks restarts push, sometimes twice at once; Firebase is set up only once.
+  static Future<bool>? _ready;
+
   @override
-  Future<bool> start() async {
+  Future<bool> start() => _ready ??= _init().then((ok) {
+        if (!ok) _ready = null;
+        return ok;
+      });
+
+  static Future<bool> _init() async {
     final options = FirebaseConfig.options;
-    if (options == null) return false;
+    if (options == null) {
+      // Without the Firebase app keys for this platform the device never registers, so no push reaches it.
+      debugPrint('Push is off: build with --dart-define-from-file holding the FIREBASE_* keys for ${defaultTargetPlatform.name}');
+      return false;
+    }
     try {
       await Firebase.initializeApp(options: options);
       FirebaseMessaging.onBackgroundMessage(_onBackgroundMessage);
-      // The device registers even if alerts are declined: an iPhone still rings bank calls through CallKit.
-      await FirebaseMessaging.instance.requestPermission(alert: true, sound: true, badge: false);
-      return true;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Push is off: Firebase did not start ($e)');
       return false;
     }
+    // The device registers even if alerts are declined or the prompt fails: an iPhone still rings bank calls through CallKit.
+    try {
+      await FirebaseMessaging.instance.requestPermission(alert: true, sound: true, badge: false);
+    } catch (_) {}
+    return true;
   }
 
   @override
@@ -114,8 +129,10 @@ class PushService {
     required void Function(Map<String, dynamic> data) onNotice,
     required void Function(Map<String, dynamic> data) onOpened,
   }) async {
-    await stop();
+    // Read the run before waiting: a second start during the wait must leave this one stale, not share its run.
+    final stopping = stop();
     final run = _run;
+    await stopping;
     final all = [?client, ...clients];
     enabled = await transport.start();
     if (!enabled || run != _run) return;

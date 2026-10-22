@@ -81,7 +81,7 @@ void main() {
       expect(state.callUnchecked.map((l) => l.id), ['demobank', 'acme']);
       expect(find.text(Copy.I.t('verdict.cannot_check.title')), findsOneWidget);
       expect(find.text(Copy.I.orList(['DemoBank', 'Acme Bank'])), findsOneWidget);
-      expect(find.text(Copy.I.t('call.not_calling.title')), findsNothing);
+      expect(find.text(Copy.I.t('app.calls.noneCalling')), findsNothing);
       expect(find.textContaining(Copy.I.t('call.not_calling.body', {'bank': 'DemoBank'})), findsNothing);
 
       registry.failingCallChecks.remove('demobank');
@@ -89,7 +89,7 @@ void main() {
       expect(find.text(Copy.I.t('verdict.cannot_check.title')), findsOneWidget);
       expect(find.text('Acme Bank'), findsOneWidget);
       expect(find.text(Copy.I.t('call.not_calling.body', {'bank': 'DemoBank'})), findsNothing);
-      expect(find.text(Copy.I.t('call.not_calling.title')), findsNothing);
+      expect(find.text(Copy.I.t('app.calls.noneCalling')), findsNothing);
 
       registry.failingCallChecks.remove('acme');
       registry.calling['acme'] = '1442';
@@ -103,7 +103,7 @@ void main() {
       registry.failingCallChecks.clear();
       registry.calling.clear();
       await settle();
-      expect(find.text(Copy.I.t('call.not_calling.title')), findsOneWidget);
+      expect(find.text(Copy.I.t('app.calls.noneCalling')), findsOneWidget);
       expect(find.text(Copy.I.t('verdict.cannot_check.title')), findsNothing);
       await tester.pumpWidget(hostWith(const SizedBox()));
       state.dispose();

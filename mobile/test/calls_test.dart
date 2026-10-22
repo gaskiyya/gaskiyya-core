@@ -76,6 +76,30 @@ void main() {
     await registry.close();
   });
 
+  testWidgets('the phone\'s call screen names the bank that is calling, with its code, for any linked bank', (tester) async {
+    final native = <MethodCall>[];
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(const MethodChannel('ng.gaskiya/calls'), (c) async {
+      native.add(c);
+      return null;
+    });
+    final registry = FakeRegistry([testBank('demobank', 'DemoBank'), testBank('acme', 'Acme Bank')])..calling['acme'] = '4719';
+    final state = (await tester.runAsync(() => linkedState(registry, ['demobank', 'acme'])))!;
+    await tester.runAsync(state.refreshCall);
+
+    final ring = native.singleWhere((c) => c.method == 'ring').arguments as Map;
+    expect(ring, containsPair('bank', 'Acme Bank'));
+    expect(ring, containsPair('code', '4719'));
+    final labels = Map<String, String>.from(ring['labels'] as Map);
+    final caller = labels['caller']!.replaceAll('{bank}', ring['bank'] as String).replaceAll('{code}', ring['code'] as String);
+    expect(caller, Copy.I.t('app.calls.callerName', {'bank': 'Acme Bank', 'code': '4719'}));
+    expect(caller, allOf(contains('Acme Bank'), contains('4719')));
+    expect(caller, isNot(contains('DemoBank')));
+    expect(labels.values.where((v) => v.contains('DemoBank')), isEmpty);
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(const MethodChannel('ng.gaskiya/calls'), null);
+    state.dispose();
+    await registry.close();
+  });
+
   testWidgets('a bank call rings the phone once, before it is answered, and stops when the bank closes it', (tester) async {
     final native = <MethodCall>[];
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(const MethodChannel('ng.gaskiya/calls'), (c) async {

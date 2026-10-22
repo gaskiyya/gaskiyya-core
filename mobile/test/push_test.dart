@@ -178,6 +178,35 @@ void main() {
     }
   });
 
+  test('push restarted while it is still starting (sign-in, then more banks found) registers with every bank', () async {
+    final first = registry();
+    final second = registry();
+    final t = _SlowStart();
+    final push = PushService(t);
+    final notices = <Map<String, dynamic>>[];
+    final a = push.start(client: first.client, onNotice: notices.add, onOpened: (_) {});
+    final b = push.start(clients: [first.client, second.client], onNotice: notices.add, onOpened: (_) {});
+    t.ready.complete(true);
+    await Future.wait([a, b]);
+    expect(push.enabled, isTrue);
+    expect(first.devices, [
+      {'pushToken': 'fcm-token-1', 'platform': 'android'},
+    ]);
+    expect(second.devices, [
+      {'pushToken': 'fcm-token-1', 'platform': 'android'},
+    ]);
+    t.incoming.add(opened('4821'));
+    await pumpEventQueue();
+    expect(notices, hasLength(1));
+    await push.stop();
+  });
+
+  test('the Firebase transport without app keys is off, and is tried again on the next start', () async {
+    final t = FirebasePushTransport();
+    expect(await t.start(), isFalse);
+    expect(await t.start(), isFalse);
+  });
+
   test('without Firebase configured, push stays off and nothing is registered', () async {
     final r = registry();
     final push = PushService(FakeTransport(available: false));
@@ -199,4 +228,10 @@ class _LateToken extends FakeTransport {
     if (failures-- > 0) throw StateError('apns-token-not-set');
     return 'fcm-token-1';
   }
+}
+
+class _SlowStart extends FakeTransport {
+  final ready = Completer<bool>();
+  @override
+  Future<bool> start() => ready.future;
 }

@@ -59,6 +59,20 @@ describe.skipIf(!client)('MongoDB store', () => {
     expect((await s.putMessage(record({ id: 'rec_9' }), 'idem-1')).created).toBe(true);
   });
 
+  it('MONGO-5: push devices are kept per number and token, updated in place, listed per bank and removed one by one', async () => {
+    const s = store();
+    const at = new Date().toISOString();
+    await s.putDevice({ tenantId: 'demobank', recipientKey: 'r1', pushToken: 'tok-a', platform: 'android', updatedAt: at });
+    await s.putDevice({ tenantId: 'demobank', recipientKey: 'r1', pushToken: 'tok-a', platform: 'ios', voipToken: 'ab'.repeat(32), updatedAt: at });
+    await s.putDevice({ tenantId: 'demobank', recipientKey: 'r2', pushToken: 'tok-b', platform: 'android', updatedAt: at });
+    await s.putDevice({ tenantId: 'otherbank', recipientKey: 'r1', pushToken: 'tok-a', platform: 'android', updatedAt: at });
+    expect(await s.devices('demobank', 'r1')).toEqual([{ tenantId: 'demobank', recipientKey: 'r1', pushToken: 'tok-a', platform: 'ios', voipToken: 'ab'.repeat(32), updatedAt: at }]);
+    expect((await s.tenantDevices('demobank')).map((d) => d.pushToken).sort()).toEqual(['tok-a', 'tok-b']);
+    await s.removeDevice('demobank', 'r1', 'tok-a');
+    expect(await s.devices('demobank', 'r1')).toEqual([]);
+    expect(await s.devices('otherbank', 'r1')).toHaveLength(1);
+  });
+
   it('MONGO-4: resetTenant removes one bank\'s data and leaves the others', async () => {
     const s = store();
     await s.putMessages([{ record: record() }, { record: record({ tenantId: 'otherbank', id: 'o1' }) }]);

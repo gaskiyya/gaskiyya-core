@@ -230,7 +230,7 @@ void main() {
       final state = await linkedState(registry, ['demobank', 'acme']);
       await tester.pumpWidget(hostWith(CallsScreen(state: state), disableAnimations: true));
       await tester.pump();
-      expect(find.text(Copy.I.t('call.not_calling.title')), findsOneWidget);
+      expect(find.text(Copy.I.t('app.calls.noneCalling')), findsOneWidget);
       expect(find.text(Copy.I.t('call.not_calling.body', {'bank': Copy.I.t('app.common.yourBank')})), findsOneWidget);
       expect(find.textContaining('Acme Bank'), findsNothing);
       await tester.pumpWidget(hostWith(const SizedBox()));

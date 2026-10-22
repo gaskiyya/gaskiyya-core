@@ -8,8 +8,6 @@ import 'package:gaskiya/src/core/copy.dart';
 import 'package:gaskiya/src/core/session.dart';
 import 'package:gaskiya/src/ui/screens/calls_screen.dart';
 import 'package:gaskiya/src/ui/screens/home.dart';
-import 'package:gaskiya/src/ui/screens/in_call_screen.dart';
-import 'package:gaskiya/src/ui/widgets/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'support.dart';
@@ -77,7 +75,7 @@ void main() {
     await tidy(tester, state, registry);
   });
 
-  testWidgets('answering on the phone keeps the person on an in-call screen until they end it, then logs it as answered', (tester) async {
+  testWidgets('answering on the phone draws no call screen over the app; ending it on the phone logs it as answered', (tester) async {
     phoneSize(tester);
     mockSharing(tester);
     final registry = FakeRegistry([testBank('demobank', 'DemoBank')]);
@@ -86,45 +84,34 @@ void main() {
     await settle(tester);
     state.handleNotice(opened('call_1', '4821'), state.links.single);
     await settle(tester);
-    expect(find.byType(InCallScreen), findsNothing);
 
     await nativeEvent(tester, 'answered', 'call_1');
     await settle(tester);
     expect(state.activeCall?.id, 'call_1');
-    expect(find.byType(InCallScreen), findsOneWidget);
-    expect(find.text(Copy.I.t('app.calls.inCall', {'bank': 'DemoBank'})), findsOneWidget);
-    expect(find.descendant(of: find.byType(InCallScreen), matching: find.byWidgetPredicate((w) => w is CodeDigits && w.code == '4821')), findsOneWidget);
-    expect(find.descendant(of: find.byType(InCallScreen), matching: find.text(Copy.I.purpose('fraud_check').cap)), findsOneWidget);
-    expect(find.byKey(const ValueKey('callTimer')), findsOneWidget);
+    expect(find.text(Copy.I.t('app.calls.inCall', {'bank': 'DemoBank'})), findsNothing);
+    expect(find.bySemanticsLabel(Copy.I.t('app.calls.end')), findsNothing);
 
-    await tester.tap(find.bySemanticsLabel(Copy.I.t('app.calls.end')));
+    await nativeEvent(tester, 'ended', 'call_1');
     await settle(tester);
-    expect(find.byType(InCallScreen), findsNothing);
     final r = state.callLog.single;
     expect(r.outcome, CallOutcome.answered);
     expect(r.endedAt, isNotNull);
     await tidy(tester, state, registry);
   });
 
-  testWidgets('one in-call screen fills the phone, and answering another call ends the first', (tester) async {
-    phoneSize(tester);
-    mockSharing(tester);
+  testWidgets('answering another call ends the first', (tester) async {
     final registry = FakeRegistry([testBank('demobank', 'DemoBank')]);
     final state = (await tester.runAsync(() => linkedState(registry, ['demobank'])))!;
-    await tester.pumpWidget(hostWith(HomeScreen(state: state), disableAnimations: true));
-    await settle(tester);
     state.handleNotice(opened('call_1', '4821'), state.links.single);
     state.handleNotice(opened('call_2', '7730'), state.links.single);
     await nativeEvent(tester, 'answered', 'call_1');
-    await settle(tester);
     await nativeEvent(tester, 'answered', 'call_2');
-    await settle(tester);
+    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 5)));
 
     expect(state.activeCall?.id, 'call_2');
     expect(state.callLog.firstWhere((r) => r.id == 'call_1').outcome, CallOutcome.answered);
-    expect(find.byType(InCallScreen), findsOneWidget);
-    expect(tester.getSize(find.byType(InCallScreen)), tester.getSize(find.byType(HomeScreen)));
-    await tidy(tester, state, registry);
+    state.dispose();
+    await registry.close();
   });
 
   testWidgets('an answered call ends when the bank closes it', (tester) async {

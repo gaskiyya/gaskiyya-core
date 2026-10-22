@@ -109,7 +109,7 @@ export class FcmPush implements PushProvider {
     return {
       token,
       data,
-      notification: { title: `${n.bank} is calling you now`, body: `Call code ${n.code}. Compare it with what the agent reads to you.` },
+      notification: { title: `${n.bank} is calling you`, body: `Call code ${n.code}. Compare it with what the agent reads to you.` },
       android: {
         priority: 'HIGH',
         ttl: `${ttlSeconds}s`,

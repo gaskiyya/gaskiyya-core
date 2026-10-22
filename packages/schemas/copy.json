@@ -32,7 +32,7 @@
   },
   "call": {
     "calling": {
-      "title": "{bank} is calling you now",
+      "title": "{bank} is calling you",
       "body": "Purpose: {purpose}. The caller will read this code to you.",
       "codeLabel": "Call code"
     },
@@ -40,8 +40,8 @@
       "title": "Your bank isn't calling you",
       "body": "If someone says they're from {bank}, hang up."
     },
-    "mismatch": "If the caller can't read this exact code, hang up.",
-    "mismatchMany": "If the caller can't read one of these codes exactly, hang up."
+    "mismatch": "The caller must read this code to you. If they can't, hang up.",
+    "mismatchMany": "The caller must read the code for their bank to you. If they can't, hang up."
   },
   "activity": {
     "heading": "What your bank sent recently",
@@ -179,12 +179,16 @@
     },
     "calls": {
       "checkAgain": "Check Again",
-      "howItWorks": "When your bank calls, its code appears here. Caller ID can be faked. This code can't.",
+      "howItWorks": "When one of your banks calls, its name and code show on your phone's call screen and here. Caller ID can be faked. This code can't.",
       "validFor": "Expires in {time}",
       "recent": "Recent calls",
       "codeIs": "Code {code}",
       "inCall": "On a call with {bank}",
       "end": "End call",
+      "answer": "Answer",
+      "decline": "Decline",
+      "callerName": "{bank} · Code {code}",
+      "noneCalling": "None of your banks is calling you",
       "outcome": {
         "ringing": "Calling now",
         "active": "In call",
@@ -204,15 +208,16 @@
     "settings": {
       "linked": "Linked",
       "privacy": "Privacy",
-      "textStays": "Message text isn't stored. It's sent only to explain an unconfirmed result.",
+      "textStays": "Message text isn't stored",
+      "textStaysBody": "It's sent once, with long numbers hidden, only to explain an unconfirmed result.",
       "numbersMasked": "Long numbers are always hidden",
-      "reportsConsent": "Reports only with your consent",
+      "reportsConsent": "Reports are sent only with your consent",
       "about": "About",
-      "showIntro": "Show Introduction",
-      "unlink": "Sign Out",
+      "showIntro": "Show introduction",
+      "unlink": "Sign out",
       "unlinkConfirm": "Sign out?",
-      "unlinkBody": "You can sign in again anytime.",
-      "unlinkAction": "Sign Out"
+      "unlinkBody": "You can sign in again at any time.",
+      "unlinkAction": "Sign out"
     },
     "language": {
       "title": "Language",
@@ -462,7 +467,7 @@
       "note": "On iPhone, apps can't check calls and messages as they arrive. To check a message, share it to Gaskiyya."
     },
     "on": "On",
-    "turnOn": "Turn On",
+    "turnOn": "Turn on",
     "perm": {
       "calls": {
         "title": "Check incoming calls",
@@ -477,7 +482,7 @@
         "body": "Shows the result over the call screen."
       },
       "messages": {
-        "title": "Check new SMS and WhatsApp messages",
+        "title": "Check SMS and WhatsApp messages",
         "body": "Allow notification access. Only bank messages are checked, and only on your phone."
       }
     },

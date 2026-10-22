@@ -6,15 +6,16 @@ import 'package:flutter/services.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 import '../../core/api.dart';
+import '../../core/calls.dart';
 import '../../core/copy.dart';
 import '../../core/session.dart';
 import '../../shield/shield_settings.dart';
 import '../theme.dart';
+import '../widgets/tab_bar.dart';
 import '../widgets/widgets.dart';
 import 'alerts.dart';
 import 'calls_screen.dart';
 import 'check_screen.dart';
-import 'in_call_screen.dart';
 
 String sharedText(List<SharedMediaFile> files) =>
     files.where((f) => f.type == SharedMediaType.text || f.type == SharedMediaType.url).map((f) => f.path).join('\n');
@@ -46,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     _tabs.addListener(_onTab);
     widget.state.startCallPolling();
+    unawaited(NativeCalls.instance.sendLabels());
     _initSharing();
   }
 
@@ -140,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       children: [
         CupertinoTabScaffold(
           controller: _tabs,
-          tabBar: CupertinoTabBar(
+          tabBar: GTabBar(
             backgroundColor: CupertinoTheme.of(context).barBackgroundColor,
             items: [
               BottomNavigationBarItem(icon: const Icon(CupertinoIcons.checkmark_shield), activeIcon: const Icon(CupertinoIcons.checkmark_shield_fill), label: Copy.I.t('app.tabs.check')),
@@ -159,32 +161,15 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           ),
         ),
         AlertBanner(bank: _banner == null ? _alertBank : null, onTap: () => widget.state.openAlerts.value++),
+        // The bank that is actually calling, never the bank picked in Settings. An answered call has no
+        // screen in the app: the bank and its code are on the phone's own call screen (core/calls.dart).
         _CallBanner(
           call: _banner,
-          bank: _bannerBank ?? widget.state.bankName ?? Copy.I.t('app.common.yourBank').cap,
+          bank: _bannerBank ?? Copy.I.t('app.common.yourBank').cap,
           onTap: () {
             setState(() => _banner = null);
             _tabs.index = 1;
           },
-        ),
-        Positioned.fill(
-          child: ListenableBuilder(
-            listenable: widget.state,
-            builder: (context, _) {
-              final call = widget.state.activeCall;
-              return AnimatedSwitcher(
-                duration: G.motion(context, G.springFast),
-                switchInCurve: G.spring,
-                switchOutCurve: Curves.easeIn,
-                layoutBuilder: (current, previous) => Stack(fit: StackFit.expand, children: [?current]),
-                transitionBuilder: (child, a) => FadeTransition(
-                  opacity: a,
-                  child: SlideTransition(position: Tween(begin: const Offset(0, 0.06), end: Offset.zero).animate(a), child: child),
-                ),
-                child: call == null ? const SizedBox.shrink() : InCallScreen(key: ValueKey(call.id), call: call, onEnd: widget.state.hangUp),
-              );
-            },
-          ),
         ),
       ],
     );
@@ -433,12 +418,27 @@ class SettingsScreen extends StatelessWidget {
     return ListenableBuilder(listenable: state, builder: (context, _) => _build(context));
   }
 
-  static Widget _wrapped(String text) => Text(text, maxLines: 6, overflow: TextOverflow.visible);
-
-  static const _rowPadding = EdgeInsetsDirectional.fromSTEB(20, 11, 14, 11);
-
-  static Widget _sectionHeader(BuildContext context, String text) =>
-      Semantics(header: true, child: Text(text.toUpperCase(), style: G.footnote(context).copyWith(letterSpacing: 0.2)));
+  void _confirmSignOut(BuildContext context) {
+    final c = Copy.I;
+    showCupertinoDialog<void>(
+      context: context,
+      builder: (ctx) => CupertinoAlertDialog(
+        title: Text(c.t('app.settings.unlinkConfirm')),
+        content: Text(c.t('app.settings.unlinkBody')),
+        actions: [
+          CupertinoDialogAction(onPressed: () => Navigator.pop(ctx), child: Text(c.t('app.common.cancel'))),
+          CupertinoDialogAction(
+            isDestructiveAction: true,
+            onPressed: () {
+              Navigator.pop(ctx);
+              state.unlink();
+            },
+            child: Text(c.t('app.settings.unlinkAction')),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _build(BuildContext context) {
     final c = Copy.I;
@@ -446,64 +446,56 @@ class SettingsScreen extends StatelessWidget {
       child: CustomScrollView(
         slivers: [
           CupertinoSliverNavigationBar(largeTitle: Text(c.t('app.tabs.settings')), border: null, backgroundColor: G.bg.resolveFrom(context).withValues(alpha: 0.85)),
-          SliverList.list(children: [
-            CupertinoListSection.insetGrouped(
-              children: [
-                CupertinoListTile(
-                  key: const ValueKey('language'),
-                  leading: const Icon(CupertinoIcons.globe),
-                  title: Text(c.t('app.language.title')),
-                  additionalInfo: Text(c.t('app.language.names.${c.language}')),
-                  trailing: const CupertinoListTileChevron(),
-                  onTap: () => _pickLanguage(context),
-                ),
-              ],
-            ),
-            CupertinoListSection.insetGrouped(
-              header: _sectionHeader(context, c.t('app.settings.privacy')),
-              children: [
-                CupertinoListTile(padding: _rowPadding, leading: const Icon(CupertinoIcons.lock_fill), title: _wrapped(c.t('app.settings.textStays'))),
-                CupertinoListTile(padding: _rowPadding, leading: const Icon(CupertinoIcons.number), title: _wrapped(c.t('app.settings.numbersMasked'))),
-                CupertinoListTile(padding: _rowPadding, leading: const Icon(CupertinoIcons.hand_raised_fill), title: _wrapped(c.t('app.settings.reportsConsent'))),
-              ],
-            ),
-            CupertinoListSection.insetGrouped(
-              header: _sectionHeader(context, c.t('app.settings.about')),
-              footer: Text(c.t('safety.neverAsks')),
-              children: [
-                CupertinoListTile(
-                  leading: const Icon(CupertinoIcons.play_circle_fill),
-                  title: Text(c.t('app.settings.showIntro')),
-                  trailing: const CupertinoListTileChevron(),
-                  onTap: state.resetOnboarding,
-                ),
-                CupertinoListTile(
-                  leading: Icon(CupertinoIcons.square_arrow_right, color: G.red.resolveFrom(context)),
-                  title: Text(c.t('app.settings.unlink'), style: TextStyle(color: G.red.resolveFrom(context))),
-                  onTap: () => showCupertinoDialog<void>(
-                    context: context,
-                    builder: (ctx) => CupertinoAlertDialog(
-                      title: Text(c.t('app.settings.unlinkConfirm')),
-                      content: Text(c.t('app.settings.unlinkBody')),
-                      actions: [
-                        CupertinoDialogAction(onPressed: () => Navigator.pop(ctx), child: Text(c.t('app.common.cancel'))),
-                        CupertinoDialogAction(
-                          isDestructiveAction: true,
-                          onPressed: () {
-                            Navigator.pop(ctx);
-                            state.unlink();
-                          },
-                          child: Text(c.t('app.settings.unlinkAction')),
-                        ),
-                      ],
-                    ),
+          SliverSafeArea(
+            top: false,
+            sliver: SliverToBoxAdapter(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                SettingsSection(children: [
+                  SettingsRow(
+                    key: const ValueKey('language'),
+                    icon: CupertinoIcons.globe,
+                    iconColor: G.blue.resolveFrom(context),
+                    title: c.t('app.language.title'),
+                    value: c.t('app.language.names.${c.language}'),
+                    chevron: true,
+                    onTap: () => _pickLanguage(context),
                   ),
+                ]),
+                ShieldSettingsSection(header: c.t('shield.settingsTitle')),
+                SettingsSection(
+                  header: c.t('app.settings.privacy'),
+                  children: [
+                    SettingsRow(icon: CupertinoIcons.lock_fill, iconColor: G.tint.resolveFrom(context), title: c.t('app.settings.textStays'), subtitle: c.t('app.settings.textStaysBody')),
+                    SettingsRow(icon: CupertinoIcons.eye_slash_fill, iconColor: G.indigo.resolveFrom(context), title: c.t('app.settings.numbersMasked')),
+                    SettingsRow(icon: CupertinoIcons.hand_raised_fill, iconColor: G.orange.resolveFrom(context), title: c.t('app.settings.reportsConsent')),
+                  ],
                 ),
-              ],
+                SettingsSection(
+                  header: c.t('app.settings.about'),
+                  footer: c.t('safety.neverAsks'),
+                  children: [
+                    SettingsRow(
+                      icon: CupertinoIcons.play_fill,
+                      iconColor: G.teal.resolveFrom(context),
+                      title: c.t('app.settings.showIntro'),
+                      chevron: true,
+                      onTap: state.resetOnboarding,
+                    ),
+                  ],
+                ),
+                SettingsSection(children: [
+                  SettingsRow(
+                    key: const ValueKey('sign-out'),
+                    icon: CupertinoIcons.square_arrow_right,
+                    destructive: true,
+                    title: c.t('app.settings.unlink'),
+                    onTap: () => _confirmSignOut(context),
+                  ),
+                ]),
+                const SizedBox(height: 36),
+              ]),
             ),
-            ShieldSettingsSection(header: _sectionHeader(context, c.t('shield.settingsTitle'))),
-            const SizedBox(height: 30),
-          ]),
+          ),
         ],
       ),
     );

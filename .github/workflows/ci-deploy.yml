@@ -91,17 +91,37 @@ jobs:
           INSTANCE_ID: ${{ vars.AWS_INSTANCE_ID }}
           GH_TOKEN: ${{ github.token }}
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          FCM_SERVICE_ACCOUNT_JSON: ${{ secrets.FCM_SERVICE_ACCOUNT_JSON }}
+          APNS_KEY_P8: ${{ secrets.APNS_KEY_P8 }}
+          APNS_KEY_ID: ${{ vars.APNS_KEY_ID }}
+          APNS_TEAM_ID: ${{ vars.APNS_TEAM_ID }}
+          APNS_BUNDLE_ID: ${{ vars.APNS_BUNDLE_ID }}
+          APNS_PRODUCTION: ${{ vars.APNS_PRODUCTION }}
         run: |
           # The job's read-only token fetches the commit; it expires when this job ends and is never stored on the server.
           auth=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
           echo "::add-mask::$auth"
-          # The database connection string comes from the MONGODB_URI secret and is written into prod.env before the swap.
+          # Settings from the production environment's secrets and variables are written into prod.env before the swap.
+          # One left unset keeps whatever prod.env already has.
           env_steps=""
+          put() {
+            local value=$2
+            # prod.env holds one line per setting: the service account JSON and the .p8 key go in as base64, which the server accepts.
+            case "$value" in *$'\n'*) value=$(printf '%s' "$value" | base64 -w0) ;; esac
+            local b64
+            b64=$(printf '%s' "$value" | base64 -w0)
+            echo "::add-mask::$b64"
+            env_steps="${env_steps}sudo scripts/server-env.sh $1 $b64 && "
+          }
           if [ -n "$MONGODB_URI" ]; then
-            uri=$(printf '%s' "$MONGODB_URI" | base64 -w0)
-            echo "::add-mask::$uri"
-            env_steps="sudo scripts/server-env.sh MONGODB_URI $uri && sudo scripts/server-env.sh STORE $(printf mongo | base64 -w0) && "
+            put MONGODB_URI "$MONGODB_URI"
+            put STORE mongo
           fi
+          # Push notifications: without the Firebase service account the server sends no pushes at all.
+          for name in FCM_SERVICE_ACCOUNT_JSON APNS_KEY_P8 APNS_KEY_ID APNS_TEAM_ID APNS_BUNDLE_ID APNS_PRODUCTION; do
+            if [ -n "${!name}" ]; then put "$name" "${!name}"; fi
+          done
+          [ -n "$FCM_SERVICE_ACCOUNT_JSON" ] || echo "::warning::FCM_SERVICE_ACCOUNT_JSON is not set in the production environment, so unless prod.env already has it the server sends no push notifications"
           script="cd /opt/gaskiyya/repo && sudo -u ubuntu git -c http.extraHeader='AUTHORIZATION: basic $auth' fetch --quiet origin main && sudo -u ubuntu git checkout --quiet --force $GITHUB_SHA && ${env_steps}sudo -u ubuntu scripts/server-deploy.sh $GITHUB_SHA"
           id=$(aws ssm send-command --instance-ids "$INSTANCE_ID" --document-name AWS-RunShellScript \
             --comment "deploy ${GITHUB_SHA::12}" --timeout-seconds 600 \

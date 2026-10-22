@@ -3,8 +3,11 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
+import 'copy.dart';
+
 // Bank calls that ring like a phone call: CallKit on iPhone (ios/Runner/AppDelegate.swift) and an
 // incoming-call notification with the phone's ringtone on Android (android/.../calls/BankCalls.kt).
+// The calling bank's name and the call code are on the phone's own call screen; the app draws no call screen.
 class NativeCalls {
   NativeCalls._() {
     _channel.setMethodCallHandler((call) async {
@@ -75,7 +78,31 @@ class NativeCalls {
         'code': code,
         'expiresAt': expiresAt.toUtc().toIso8601String(),
         'expiresInMs': expiresAt.difference(DateTime.now()).inMilliseconds,
+        'labels': labels(),
       });
+    } catch (_) {}
+  }
+
+  /// The words on the phone's call screen, in the app's language. "caller" keeps {bank} and {code} for the
+  /// phone to fill in, so an iPhone woken by a VoIP push with the app closed uses the last ones it was given.
+  static Map<String, String> labels() {
+    if (!Copy.loaded) return const {};
+    final c = Copy.I;
+    return {
+      'caller': c.t('app.calls.callerName'),
+      'incoming': c.t('call.mismatch'),
+      'inCall': c.t('app.calls.inCall'),
+      'answer': c.t('app.calls.answer'),
+      'decline': c.t('app.calls.decline'),
+      'end': c.t('app.calls.end'),
+    };
+  }
+
+  /// Hands the iPhone the call screen's words before any call rings, for calls that arrive while the app is closed.
+  Future<void> sendLabels() async {
+    if (!_ios) return;
+    try {
+      await _channel.invokeMethod<void>('labels', labels());
     } catch (_) {}
   }
 

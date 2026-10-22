@@ -33,6 +33,12 @@ Run the smoke test against any server yourself with `pnpm smoke <url>` (set `SMO
 | Secret | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | the access key of the `gaskiyya-github-deploy` IAM user |
 | Secret | `SMOKE_ADMIN_USER`, `SMOKE_ADMIN_PASSWORD` | an admin login for the smoke test |
 | Secret | `AGENT_JOB_TOKEN` | the same value as in `prod.env` |
+| Environment secret (`production`) | `MONGODB_URI` | the database connection string; the deploy writes it and `STORE=mongo` into `prod.env` |
+| Environment secret (`production`) | `FCM_SERVICE_ACCOUNT_JSON` | the Firebase service account JSON of the project the app is built with; without it the server sends no push notifications |
+| Environment secret (`production`) | `APNS_KEY_P8` | the APNs `.p8` key, for iPhone call ringing (optional) |
+| Environment variable (`production`) | `APNS_KEY_ID`, `APNS_TEAM_ID`, `APNS_BUNDLE_ID`, `APNS_PRODUCTION` | the rest of the APNs settings (optional) |
+
+The deploy job writes each of the last four rows into `prod.env` with [scripts/server-env.sh](../scripts/server-env.sh) before the swap. One left unset keeps whatever `prod.env` already has. The smoke test reports whether push and iPhone call ringing are on, and warns when they are off.
 
 ## One-time AWS setup
 

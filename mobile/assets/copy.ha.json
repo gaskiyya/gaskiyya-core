@@ -32,7 +32,7 @@
   },
   "call": {
     "calling": {
-      "title": "{bank} yana kiran ku yanzu",
+      "title": "{bank} yana kiran ku",
       "body": "Dalili: {purpose}. Ma\u2019aikacin zai karanta wannan lambar da baki. Ku kwatanta ta kafin ku ci gaba.",
       "codeLabel": "Lambar kira"
     },
@@ -40,8 +40,8 @@
       "title": "Bankinku ba ya kiran ku",
       "body": "Babu kira daga {bank} da ke gudana yanzu. Idan wani a waya ya ce daga bankinku yake, ku katse wayar."
     },
-    "mismatch": "Idan mai kiran ba zai iya karanta wannan lambar daidai ba, ku katse wayar.",
-    "mismatchMany": "Idan mai kiran bai iya karanta \u0257aya daga cikin lambobin nan daidai ba, ku katse wayar."
+    "mismatch": "Dole mai kiran ya karanta muku wannan lambar. Idan bai iya ba, ku katse wayar.",
+    "mismatchMany": "Dole mai kiran ya karanta muku lambar bankinsa. Idan bai iya ba, ku katse wayar."
   },
   "activity": {
     "heading": "Abin da bankinku ya aiko kwanan nan"
@@ -170,12 +170,16 @@
     },
     "calls": {
       "checkAgain": "Sake dubawa",
-      "howItWorks": "Idan bankinku ya kira, sanarwa da lamba mai lambobi hu\u0257u za su bayyana a nan nan take. Ana iya yin jabun lambar mai kira; wannan lambar ba za a iya ba.",
+      "howItWorks": "Idan \u0257aya daga cikin bankunanku ya kira, sunansa da lambarsa za su bayyana a allon kiran wayarku da kuma nan. Ana iya yin jabun lambar mai kira; wannan lambar ba za a iya ba.",
       "validFor": "Lambar tana aiki na {time}",
       "recent": "Kiran kwanan nan",
       "codeIs": "Lamba {code}",
       "inCall": "Kuna magana da {bank}",
       "end": "Kashe kira",
+      "answer": "Amsa",
+      "decline": "Ki",
+      "callerName": "{bank} \u00b7 Lamba {code}",
+      "noneCalling": "Babu \u0257aya daga cikin bankunanku da ke kiran ku",
       "outcome": {
         "ringing": "Yana kira yanzu",
         "active": "Ana kira",
@@ -193,7 +197,8 @@
     "settings": {
       "linked": "An ha\u0257a",
       "privacy": "Sirri",
-      "textStays": "Ba a adana rubutun sa\u0199o. Don bayyana sakamako, ana aika rubutun sau \u0257aya tare da \u0253oye dogayen lambobi.",
+      "textStays": "Ba a adana rubutun sa\u0199o",
+      "textStaysBody": "Don bayyana sakamako, ana aika rubutun sau \u0257aya tare da \u0253oye dogayen lambobi.",
       "numbersMasked": "Ana \u0253oye dogayen lambobi koyaushe",
       "reportsConsent": "Rahoto sai da izininku",
       "about": "Game da",

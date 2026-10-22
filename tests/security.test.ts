@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { contentDigest } from '@gaskiya/canonical';
 import { configFromEnv, maskDigits } from '../packages/api/src/index.ts';
@@ -11,7 +11,8 @@ const FAKE_TEXT = 'Your DemoBank card is blocked. Call 08031234567 or visit http
 
 function trackedFiles(): string[] {
   const out = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard'], { encoding: 'utf8' });
-  return out.split('\n').filter(Boolean);
+  // A file deleted in the working tree stays in the index until the deletion is committed.
+  return out.split('\n').filter((f) => f && existsSync(f));
 }
 
 describe('security and privacy', () => {

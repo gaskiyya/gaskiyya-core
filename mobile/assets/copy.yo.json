@@ -32,7 +32,7 @@
   },
   "call": {
     "calling": {
-      "title": "{bank} n pe \u1ecd bayii",
+      "title": "{bank} n pe \u1ecd",
       "body": "Idi: {purpose}. O\u1e63i\u1e63\u1eb9 banki yoo ka koodu yii soke. Fi wera ki o to t\u1eb9siwaju.",
       "codeLabel": "Koodu ipe"
     },
@@ -40,8 +40,8 @@
       "title": "Banki r\u1eb9 ko pe \u1ecd",
       "body": "Ko si ipe kankan lati \u1ecdd\u1ecd {bank} l\u1ecdw\u1ecdl\u1ecdw\u1ecd. Ti \u1eb9nikan lori foonu ba s\u1ecd pe oun wa lati banki r\u1eb9, ge ipe naa."
     },
-    "mismatch": "Ti olupe ko ba le ka koodu yii g\u1eb9g\u1eb9 bi o ti ri, ge ipe naa.",
-    "mismatchMany": "Ti olupe ko ba le ka \u1ecdkan ninu aw\u1ecdn koodu yii g\u1eb9g\u1eb9 bi o ti ri, ge ipe naa."
+    "mismatch": "Olupe gb\u1ecdd\u1ecd ka koodu yii fun \u1ecd. Ti ko ba le ka a, ge ipe naa.",
+    "mismatchMany": "Olupe gb\u1ecdd\u1ecd ka koodu banki ti o n pe fun \u1ecd. Ti ko ba le ka a, ge ipe naa."
   },
   "activity": {
     "heading": "Ohun ti banki r\u1eb9 fi ran\u1e63\u1eb9 laip\u1eb9"
@@ -170,12 +170,16 @@
     },
     "calls": {
       "checkAgain": "\u1e62ay\u1eb9wo l\u1eb9\u1eb9kansi",
-      "howItWorks": "Nigba ti banki r\u1eb9 ba pe, akiyesi ati koodu oni-nomba m\u1eb9rin yoo han nibi l\u1eb9s\u1eb9k\u1eb9s\u1eb9. A le \u1e63e ayederu n\u1ecdmba olupe; a ko le \u1e63e ayederu koodu yii.",
+      "howItWorks": "Nigba ti \u1ecdkan ninu aw\u1ecdn banki r\u1eb9 ba pe, oruk\u1ecd r\u1eb9 ati koodu r\u1eb9 yoo han loju iboju ipe foonu r\u1eb9 ati nibi. A le \u1e63e ayederu n\u1ecdmba olupe; a ko le \u1e63e ayederu koodu yii.",
       "validFor": "Koodu yoo \u1e63i\u1e63\u1eb9 fun {time}",
       "recent": "Aw\u1ecdn ipe aip\u1eb9",
       "codeIs": "Koodu {code}",
       "inCall": "\u1eb8 n ba {bank} s\u1ecdr\u1ecd",
       "end": "Pa ipe",
+      "answer": "Gbe e",
+      "decline": "K\u1ecd \u1ecd",
+      "callerName": "{bank} \u00b7 Koodu {code}",
+      "noneCalling": "Ko si \u1ecdkan ninu aw\u1ecdn banki r\u1eb9 to n pe \u1ecd",
       "outcome": {
         "ringing": "O n pe bayii",
         "active": "Lori ipe",
@@ -193,7 +197,8 @@
     "settings": {
       "linked": "Ti so p\u1ecd",
       "privacy": "A\u1e63iri",
-      "textStays": "A ko t\u1ecdju \u1ecdr\u1ecd ifiran\u1e63\u1eb9. Lati \u1e63alaye abajade, a n fi \u1ecdr\u1ecd naa ran\u1e63\u1eb9 l\u1eb9\u1eb9kan p\u1eb9lu aw\u1ecdn n\u1ecdmba gigun ti a fi pam\u1ecd.",
+      "textStays": "A ko t\u1ecdju \u1ecdr\u1ecd ifiran\u1e63\u1eb9",
+      "textStaysBody": "Lati \u1e63alaye abajade, a n fi \u1ecdr\u1ecd naa ran\u1e63\u1eb9 l\u1eb9\u1eb9kan p\u1eb9lu aw\u1ecdn n\u1ecdmba gigun ti a fi pam\u1ecd.",
       "numbersMasked": "A maa n bo aw\u1ecdn n\u1ecdmba gigun nigbagbogbo",
       "reportsConsent": "Ijab\u1ecd p\u1eb9lu ifohunsi r\u1eb9 nikan",
       "about": "Nipa",

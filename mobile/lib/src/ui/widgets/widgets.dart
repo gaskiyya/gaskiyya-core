@@ -392,3 +392,209 @@ class BankLogo extends StatelessWidget {
     );
   }
 }
+
+/// A grouped settings list in the iOS inset style: a small grey capitals header, one rounded card of
+/// rows divided by hairlines inset to the row text, and an optional grey footer.
+class SettingsSection extends StatelessWidget {
+  const SettingsSection({super.key, this.header, this.footer, required this.children});
+  final String? header;
+  final String? footer;
+  final List<Widget> children;
+
+  /// Where row text starts inside the card: the row inset, the icon badge and the gap after it.
+  static const textStart = SettingsRow.inset + SettingsRow.badge + SettingsRow.gap;
+
+  @override
+  Widget build(BuildContext context) {
+    final line = G.separator.resolveFrom(context);
+    final hairline = 1 / MediaQuery.devicePixelRatioOf(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        if (header != null)
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(SettingsRow.inset, 26, SettingsRow.inset, 7),
+            child: Semantics(header: true, child: Text(header!.toUpperCase(), style: G.footnote(context).copyWith(letterSpacing: 0.2))),
+          )
+        else
+          const SizedBox(height: 20),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: ColoredBox(
+            color: G.card.resolveFrom(context),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              for (var i = 0; i < children.length; i++) ...[
+                if (i > 0)
+                  Padding(
+                    padding: EdgeInsetsDirectional.only(start: children[i] is SettingsRow && (children[i] as SettingsRow).icon == null ? SettingsRow.inset : textStart),
+                    child: Container(height: hairline, color: line),
+                  ),
+                children[i],
+              ],
+            ]),
+          ),
+        ),
+        if (footer != null)
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(SettingsRow.inset, 7, SettingsRow.inset, 0),
+            child: Text(footer!, style: G.footnote(context)),
+          ),
+      ]),
+    );
+  }
+}
+
+/// One settings row: an optional coloured icon badge, a title with an optional grey subtitle, and a
+/// right-aligned value, control or chevron. Titles in a section all start on the same vertical line.
+class SettingsRow extends StatefulWidget {
+  const SettingsRow({
+    super.key,
+    required this.title,
+    this.subtitle,
+    this.icon,
+    this.iconColor,
+    this.value,
+    this.trailing,
+    this.onTap,
+    this.chevron = false,
+    this.destructive = false,
+  });
+
+  static const inset = 16.0;
+  static const badge = 30.0;
+  static const gap = 14.0;
+
+  final String title;
+  final String? subtitle;
+  final IconData? icon;
+  final Color? iconColor;
+  final String? value;
+  final Widget? trailing;
+  final VoidCallback? onTap;
+  final bool chevron;
+  final bool destructive;
+
+  @override
+  State<SettingsRow> createState() => _SettingsRowState();
+}
+
+class _SettingsRowState extends State<SettingsRow> {
+  bool _down = false;
+
+  void _press(bool down) {
+    if (_down != down) setState(() => _down = down);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final w = widget;
+    final red = G.red.resolveFrom(context);
+    final badgeColor = w.destructive ? red : (w.iconColor ?? G.tint.resolveFrom(context));
+    // At accessibility text sizes the value or control moves under the title, as iOS does, so the title keeps the width.
+    final stacked = MediaQuery.textScalerOf(context).scale(10) >= 16;
+    final row = Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(SettingsRow.inset, 10, w.chevron ? 12 : SettingsRow.inset, 10),
+      child: Row(children: [
+        if (w.icon != null) ...[
+          Container(
+            width: SettingsRow.badge,
+            height: SettingsRow.badge,
+            decoration: BoxDecoration(color: badgeColor, borderRadius: BorderRadius.circular(8)),
+            child: Icon(w.icon, size: 18, color: CupertinoColors.white),
+          ),
+          const SizedBox(width: SettingsRow.gap),
+        ],
+        Expanded(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+            Text(w.title, maxLines: 3, overflow: TextOverflow.ellipsis, style: G.body(context).copyWith(color: w.destructive ? red : null)),
+            if (w.subtitle != null) ...[
+              const SizedBox(height: 2),
+              Text(w.subtitle!, style: G.footnote(context)),
+            ],
+            if (stacked && w.value != null) Text(w.value!, style: G.body(context).copyWith(color: G.label2.resolveFrom(context))),
+            if (stacked && w.trailing != null) Padding(padding: const EdgeInsets.only(top: 4), child: w.trailing),
+          ]),
+        ),
+        if (!stacked && w.value != null) ...[
+          const SizedBox(width: 10),
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * 0.32),
+            child: Text(w.value!, maxLines: 1, overflow: TextOverflow.ellipsis, style: G.body(context).copyWith(color: G.label2.resolveFrom(context))),
+          ),
+        ],
+        if (!stacked && w.trailing != null) ...[const SizedBox(width: 10), w.trailing!],
+        if (w.chevron) ...[
+          const SizedBox(width: 6),
+          Icon(CupertinoIcons.chevron_forward, size: 16, color: G.label3.resolveFrom(context)),
+        ],
+      ]),
+    );
+    final body = AnimatedContainer(
+      duration: G.motion(context, Duration(milliseconds: _down ? 0 : 220)),
+      color: _down ? CupertinoColors.systemFill.resolveFrom(context) : const Color(0x00000000),
+      constraints: const BoxConstraints(minHeight: 52),
+      alignment: AlignmentDirectional.centerStart,
+      child: row,
+    );
+    if (w.onTap == null) return MergeSemantics(child: body);
+    return MergeSemantics(
+      child: Semantics(
+        button: true,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTapDown: (_) => _press(true),
+          onTapUp: (_) => _press(false),
+          onTapCancel: () => _press(false),
+          onTap: w.onTap,
+          child: body,
+        ),
+      ),
+    );
+  }
+}
+
+/// A small tinted capsule button for a settings row, keeping a 44pt tap target.
+class SettingsButton extends StatelessWidget {
+  const SettingsButton({super.key, required this.label, required this.onTap});
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = G.tint.resolveFrom(context);
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Semantics(
+        button: true,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 44, minWidth: 44),
+          child: Center(
+            widthFactor: 1,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(color: c.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(980)),
+              child: Text(label, maxLines: 1, style: G.subhead(context).copyWith(color: c, fontWeight: FontWeight.w600)),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A plain "On" status for a settings row, with a check mark so it does not rely on colour alone.
+class SettingsOn extends StatelessWidget {
+  const SettingsOn(this.label, {super.key});
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = G.greenInk.resolveFrom(context);
+    return Row(mainAxisSize: MainAxisSize.min, children: [
+      Icon(CupertinoIcons.checkmark_alt, size: 16, color: c),
+      const SizedBox(width: 4),
+      Text(label, maxLines: 1, style: G.body(context).copyWith(color: c)),
+    ]);
+  }
+}

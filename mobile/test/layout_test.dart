@@ -5,11 +5,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:gaskiya/src/core/copy.dart';
 import 'package:gaskiya/src/ui/screens/check_screen.dart';
 import 'package:gaskiya/src/ui/screens/home.dart';
+import 'package:gaskiya/src/ui/widgets/tab_bar.dart';
 
 import 'support.dart';
 
 void main() {
-  setUpAll(() => Copy.fromJson(File('assets/copy.json').readAsStringSync()));
+  setUpAll(() => Copy.fromJson(File('assets/copy.json').readAsStringSync(),
+      overlays: {for (final l in Copy.languages.where((l) => l != 'en')) l: File('assets/copy.$l.json').readAsStringSync()}));
 
   testWidgets('F24: Settings section headers are small grey capitals, and privacy rows wrap', (tester) async {
     phoneSize(tester);
@@ -80,4 +82,46 @@ void main() {
     state.dispose();
     await registry.close();
   });
+
+  for (final lang in ['en', 'pcm', 'ha', 'yo', 'ig']) {
+    testWidgets('Settings rows line up and the tab bar fits a 320pt phone in $lang', (tester) async {
+      tester.view.physicalSize = const Size(320 * 3, 568 * 3);
+      tester.view.devicePixelRatio = 3;
+      tester.view.padding = const FakeViewPadding(bottom: 34 * 3);
+      addTearDown(tester.view.reset);
+      mockSharing(tester);
+      Copy.I.language = lang;
+      addTearDown(() => Copy.I.language = 'en');
+      final registry = FakeRegistry([testBank('demobank', 'DemoBank')]);
+      final state = await linkedState(registry, ['demobank']);
+      await tester.pumpWidget(hostWith(HomeScreen(state: state), disableAnimations: true));
+      await tester.pump();
+      await tester.tap(find.text(Copy.I.t('app.tabs.settings')));
+      for (var i = 0; i < 4; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+      expect(tester.takeException(), isNull);
+
+      final bar = tester.getRect(find.byType(GTabBar));
+      expect(bar.bottom, 568);
+      expect(bar.height, GTabBar.barHeight + 34);
+      final labels = [for (final t in ['check', 'calls', 'activity', 'settings']) find.descendant(of: find.byType(GTabBar), matching: find.text(Copy.I.t('app.tabs.$t')))];
+      final centres = [for (final l in labels) tester.getCenter(l)];
+      for (var i = 0; i < labels.length; i++) {
+        expect(tester.widget<Text>(labels[i]).maxLines, 1);
+        expect(centres[i].dy, closeTo(centres[0].dy, 0.01));
+        expect(centres[i].dx, closeTo(6 + (320 - 12) / 4 * (i + 0.5), 1));
+      }
+
+      final starts = {
+        for (final key in ['app.language.title', 'app.settings.textStays', 'app.settings.numbersMasked', 'app.settings.showIntro', 'app.settings.unlink'])
+          key: tester.getTopLeft(find.text(Copy.I.t(key), skipOffstage: false)).dx,
+      };
+      expect(starts.values.toSet(), hasLength(1), reason: '$starts');
+      await tester.pumpWidget(hostWith(const SizedBox()));
+      await tester.pump(const Duration(seconds: 7));
+      state.dispose();
+      await registry.close();
+    });
+  }
 }

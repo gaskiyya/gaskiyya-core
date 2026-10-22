@@ -32,7 +32,7 @@
   },
   "call": {
     "calling": {
-      "title": "{bank} na-akp\u1ecd g\u1ecb ugbu a",
+      "title": "{bank} na-akp\u1ecd g\u1ecb",
       "body": "Ebumnuche: {purpose}. Onye \u1ecdr\u1ee5 ah\u1ee5 ga-ag\u1ee5p\u1ee5ta koodu a n\u2019olu. T\u1ee5lee ya tupu \u1ecb gaa n\u2019ihu.",
       "codeLabel": "Koodu oku"
     },
@@ -40,8 +40,8 @@
       "title": "\u1ee4l\u1ecd ak\u1ee5 g\u1ecb anagh\u1ecb akp\u1ecd g\u1ecb",
       "body": "Enwegh\u1ecb oku sitere na {bank} na-aga ugbu a. \u1ecc b\u1ee5r\u1ee5 na onye n\u1ecd na ekwent\u1ecb ekwuo na o si n\u2019\u1ee5l\u1ecd ak\u1ee5 g\u1ecb, kw\u1ee5s\u1ecb oku ah\u1ee5."
     },
-    "mismatch": "\u1ecc b\u1ee5r\u1ee5 na onye na-akp\u1ecd oku enwegh\u1ecb ike \u1ecbg\u1ee5 koodu a kp\u1ecdmkwem, kw\u1ee5s\u1ecb oku ah\u1ee5.",
-    "mismatchMany": "\u1ecc b\u1ee5r\u1ee5 na onye na-akp\u1ecd oku enwegh\u1ecb ike \u1ecbg\u1ee5 otu n\u2019ime koodu nd\u1ecb a kp\u1ecdmkwem, kw\u1ee5s\u1ecb oku ah\u1ee5."
+    "mismatch": "Onye na-akp\u1ecd oku ga-ag\u1ee5r\u1ecbr\u1ecb g\u1ecb koodu a. \u1ecc b\u1ee5r\u1ee5 na o nwegh\u1ecb ike, kw\u1ee5s\u1ecb oku ah\u1ee5.",
+    "mismatchMany": "Onye na-akp\u1ecd oku ga-ag\u1ee5r\u1ecbr\u1ecb g\u1ecb koodu nke \u1ee5l\u1ecd ak\u1ee5 ya. \u1ecc b\u1ee5r\u1ee5 na o nwegh\u1ecb ike, kw\u1ee5s\u1ecb oku ah\u1ee5."
   },
   "activity": {
     "heading": "Ihe \u1ee5l\u1ecd ak\u1ee5 g\u1ecb zitere n\u2019oge na-ad\u1ecbbegh\u1ecb anya"
@@ -170,12 +170,16 @@
     },
     "calls": {
       "checkAgain": "Lelee \u1ecdz\u1ecd",
-      "howItWorks": "Mgbe \u1ee5l\u1ecd ak\u1ee5 g\u1ecb kp\u1ecdr\u1ecd, \u1ecdkwa na koodu nwere \u1ecdn\u1ee5\u1ecdg\u1ee5g\u1ee5 an\u1ecd ga-egosi ebe a ozugbo. E nwere ike \u1ecbme n\u1ecdmba onye na-akp\u1ecd ka \u1ecd d\u1ecb ka nke ezi; koodu a enwegh\u1ecb ike.",
+      "howItWorks": "Mgbe otu n\u2019ime \u1ee5l\u1ecd ak\u1ee5 g\u1ecb kp\u1ecdr\u1ecd, aha ya na koodu ya ga-egosi na ihuenyo oku ekwent\u1ecb g\u1ecb na ebe a. E nwere ike \u1ecbme n\u1ecdmba onye na-akp\u1ecd ka \u1ecd d\u1ecb ka nke ezi; koodu a enwegh\u1ecb ike.",
       "validFor": "Koodu ga-ar\u1ee5 \u1ecdr\u1ee5 maka {time}",
       "recent": "Oku na-ad\u1ecbbegh\u1ecb anya",
       "codeIs": "Koodu {code}",
       "inCall": "\u1eca na-akpar\u1ecbta \u1ee5ka na {bank}",
       "end": "Kw\u1ee5s\u1ecb oku",
+      "answer": "Zaa",
+      "decline": "J\u1ee5\u1ecd",
+      "callerName": "{bank} \u00b7 Koodu {code}",
+      "noneCalling": "Onweghi \u1ee5l\u1ecd ak\u1ee5 g\u1ecb na-akp\u1ecd g\u1ecb",
       "outcome": {
         "ringing": "\u1ecc na-akp\u1ecd ugbu a",
         "active": "Na oku",
@@ -193,7 +197,8 @@
     "settings": {
       "linked": "Ejik\u1ecdtara",
       "privacy": "Nzuzo",
-      "textStays": "A anagh\u1ecb echekwa ederede ozi. Iji kow\u1ee5ta nsonaaz\u1ee5, a na-eziga ederede ah\u1ee5 otu ugboro, ebe e zoro ogologo n\u1ecdmba.",
+      "textStays": "A anagh\u1ecb echekwa ederede ozi",
+      "textStaysBody": "Iji kow\u1ee5ta nsonaaz\u1ee5, a na-eziga ederede ah\u1ee5 otu ugboro, ebe e zoro ogologo n\u1ecdmba.",
       "numbersMasked": "A na-ezochi n\u1ecdmba toro ogologo mgbe niile",
       "reportsConsent": "Ak\u1ee5k\u1ecd naan\u1ecb site n\u2019ikike g\u1ecb",
       "about": "Gbasara",
