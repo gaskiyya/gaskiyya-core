@@ -207,7 +207,6 @@ export async function registerSimulator(app: FastifyInstance, o: SimOptions) {
   app.get('/sim/config', async () => ({
     bank: { id: o.tenantId, name: o.bankName, domain: o.domain, bankCode },
     apiUrl: o.apiUrl,
-    customers: DEMO_CUSTOMERS,
     categories: CATEGORIES,
     purposes: CALL_PURPOSES,
     ussdCode: USSD_CODE,
@@ -347,7 +346,6 @@ export async function registerSimulator(app: FastifyInstance, o: SimOptions) {
     return c;
   });
 
-  const customerName = (phone: string) => DEMO_CUSTOMERS.find((c) => c.phone === phone)?.name ?? phone;
   app.post<{ Body: { from?: string; to?: string; amountKobo?: number } }>('/sim/transfers', async (req, reply) => {
     const { from, to, amountKobo } = req.body ?? {};
     if (!phoneOk(from) || !phoneOk(to) || from === to) return fail(reply, 400, 'invalid_request', 'from and to must be two different E.164 numbers');
@@ -356,7 +354,7 @@ export async function registerSimulator(app: FastifyInstance, o: SimOptions) {
     const t: Transfer = {
       id: randomUUID(),
       kind: 'genuine',
-      payer: customerName(from),
+      payer: from,
       merchant: to,
       account: demoAccount(to),
       amountKobo: amountKobo!,

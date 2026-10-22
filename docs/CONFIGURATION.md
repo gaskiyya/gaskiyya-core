@@ -74,13 +74,13 @@ API routes (`/v1`, `/health`, `/webhooks`, `/sim`, `/internal`) are never shadow
 
 `SIM_DEMO_LOGIN` is off unless it is set to `true`. `pnpm dev` and `pnpm demo:offline` set it to `true` when `.env` leaves it empty, so the local demo works as before; set `SIM_DEMO_LOGIN=false` in `.env` to try the closed mode locally. A demo deployment that serves the simulator (`SIM_ENABLED=true`) and wants phones to sign in must set `SIM_DEMO_LOGIN=true` itself, and must never do so in a pilot ([decision 0003](decisions/0003-demo-identity.md)).
 
-While demo login is on, `POST /sim/customer-token` issues a token for any valid number from the demo bank, so every number that signs in to the app becomes a demo bank customer. The other demo organisations (`?tenant=<id>`) issue one only for the demo customers in `/sim/config` and answer 404 for any other number, which the app reads as "does not know this number". Each sign-in is kept in the store (`app_users` in Firestore) with its first and last time, and the console lists the demo bank's under *Customers* (`GET /sim/customers/recent`).
+While demo login is on, `POST /sim/customer-token` issues a token for any valid number from the demo bank, so every number that signs in to the app becomes a demo bank customer. The other demo organisations (`?tenant=<id>`) issue one only for the three demo numbers (+2348012345678, +2348098765432, +2348031112222) and answer 404 for any other number, which the app reads as "does not know this number". Each sign-in is kept in the store (`app_users` in Firestore) with its first and last time, and the console lists the demo bank's under *Customers* (`GET /sim/customers/recent`); they are the only people its demo tools offer as recipients.
 
 While demo login is off:
 
 - `POST /sim/customer-token` answers 404.
 - Every `/sim` route that acts as the bank answers 403 unless the request comes from this machine: `/sim/send`, `/sim/send-tampered`, `/sim/send-fake`, `/sim/calls` (GET, POST, PATCH), `/sim/campaigns` and its actions, `/sim/agent/run`, `/sim/alerts`, `/sim/metrics`, `/sim/seed-reports`, `/sim/send-fake-care`, `/sim/ussd`, `/sim/reset` and `/sim/inbox/admin`. "This machine" is the TCP socket address (127.0.0.1 or ::1); `X-Forwarded-For` is not read, so a server behind a proxy refuses these routes to everyone, which is the intent.
-- These stay reachable from anywhere: `/sim/.well-known/jwks.json` (public key), `/sim/config` (demo bank name and customers), `/sim/organisations` (what each organisation publishes), `/sim/inbox` (needs a customer token) and `/sim/registry/*` (the console phone's customer calls, which need a customer token).
+- These stay reachable from anywhere: `/sim/.well-known/jwks.json` (public key), `/sim/config` (demo bank and organisations), `/sim/organisations` (what each organisation publishes), `/sim/inbox` (needs a customer token) and `/sim/registry/*` (the console phone's customer calls, which need a customer token).
 
 ### Rotating a bank's hashing key
 
@@ -138,7 +138,7 @@ The in-browser sandbox console (the static build with no server) always uses Dem
 
 `packages/api/src/simulator/demo-orgs.json` holds two **fictional** organisations that are not banks: "Road Safety Agency (demo)" (`roadsafety`) and "Tax Office (demo)" (`taxoffice`). Both are `kind: "agency"`, use `.example` domains and made-up numbers, and carry no real agency's name, logo or trademark. The demo banks' presets also say what each bank publishes (`publishes`: kind, official contacts, official apps) and give a scam "customer care" number (`fakeCustomerCare`) for the fake customer care step. None of those numbers is in service.
 
-`pnpm dev` enrols both organisations in `.env` beside the bank, each with its own hashing key and bank client (`roadsafety-sim`, `taxoffice-sim`). It also fills in what the bank publishes when an older `.env` lacks it. Set `DEMO_ORGS=0` to leave the organisations out. The console then shows a *Send as* choice on Messages and a Contacts page. While demo login is on, the app is offered the organisations too: their sign-in is the simulator's `/sim/customer-token?tenant=<id>`, which knows only the demo customers.
+`pnpm dev` enrols both organisations in `.env` beside the bank, each with its own hashing key and bank client (`roadsafety-sim`, `taxoffice-sim`). It also fills in what the bank publishes when an older `.env` lacks it. Set `DEMO_ORGS=0` to leave the organisations out. The console then shows a *Send as* choice on Messages and a Contacts page. While demo login is on, the app is offered the organisations too: their sign-in is the simulator's `/sim/customer-token?tenant=<id>`, which knows only the three demo numbers.
 
 | Variable | Value |
 | --- | --- |

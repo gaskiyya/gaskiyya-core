@@ -33,7 +33,7 @@ import { IntegrationPage } from './workspace/Integration.tsx';
 import { OrganisationPage } from './workspace/Organisation.tsx';
 import { OverviewPage, type LiveEvent } from './workspace/Overview.tsx';
 import { SignIn } from './workspace/SignIn.tsx';
-import { ago, usePoll } from './workspace/ui.tsx';
+import { ago, Empty, usePoll } from './workspace/ui.tsx';
 
 type WorkPage = 'overview' | 'fraud' | 'integration' | 'organisation' | 'activity';
 type DemoPage = 'customers' | 'messages' | 'calls' | 'transfers' | 'ussd' | 'contacts' | 'licence';
@@ -47,9 +47,7 @@ const label = (map: Record<string, string>, key: string) => {
   const s = map[key] ?? key.replace(/_/g, ' ');
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
-const initials = (name: string) => name.split(' ').map((p) => p[0]).join('').slice(0, 2);
 const timeOf = (iso: string) => new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-const PALETTE = ['linear-gradient(160deg,#ff9f0a,#ff375f)', 'linear-gradient(160deg,#64d2ff,#0a7aff)', 'linear-gradient(160deg,#bf5af2,#5e5ce6)'];
 
 function useToast(): [ReactNode, (s: string) => void] {
   const [msg, setMsg] = useState<{ text: string; key: number } | null>(null);
@@ -214,7 +212,7 @@ function Shell({ ws, config, notify, toast, onSignOut, onExpired }: {
     const p = pageFromHash();
     return p && (demo || WORK_PAGES.includes(p as WorkPage)) ? p : 'overview';
   });
-  const [phone, setPhone] = useState(config?.customers[0]?.phone ?? '');
+  const [phone, setPhone] = useState('');
   const [placed, setPlaced] = useState<Call | null>(null);
   const [metrics, reloadMetrics, online] = usePoll(() => ws.metrics(), 2500, [ws], onExpired);
   const events = useLiveEvents(metrics);
@@ -348,7 +346,7 @@ function Shell({ ws, config, notify, toast, onSignOut, onExpired }: {
         {demo && page === 'transfers' && <TransfersPage config={config} notify={notify} />}
         {demo && page === 'ussd' && <UssdPage config={config} phone={phone} setPhone={setPhone} />}
         {demo && page === 'contacts' && <ContactsPage config={config} phone={phone} setPhone={setPhone} notify={notify} />}
-        {demo && page === 'licence' && <LicencePage config={config} phone={phone} setPhone={setPhone} />}
+        {demo && page === 'licence' && <LicencePage phone={phone} setPhone={setPhone} />}
       </main>
       <nav className="tabbar" aria-label="Sections">
         {[...work, ...tools].map((n) => (
@@ -364,15 +362,22 @@ function Shell({ ws, config, notify, toast, onSignOut, onExpired }: {
 }
 
 const showPhone = (p: string) => p.replace(/^(\+\d{3})(\d{3})(\d{3})(\d+)$/, '$1 $2 $3 $4');
-const nameOf = (config: SimConfig, phone: string) => config.customers.find((c) => c.phone === phone)?.name ?? phone;
+const NoPhone = () => (
+  <div className="card">
+    <Empty icon={<IconPhone />} title="No customer picked">Pick a customer, or type their number, to see their phone.</Empty>
+  </div>
+);
 
-function People({ config, phone, setPhone }: { config: SimConfig; phone: string; setPhone: (p: string) => void }) {
+function People({ phone, setPhone, except }: { phone: string; setPhone: (p: string) => void; except?: string }) {
   const [recent] = usePoll(() => sim.recentCustomers(), 3000);
   const [typed, setTyped] = useState('');
   const [bad, setBad] = useState(false);
-  const demo = new Set(config.customers.map((c) => c.phone));
-  const appUsers = (recent?.customers ?? []).filter((c) => !demo.has(c.phone));
-  const typedOnly = phone && !demo.has(phone) && !appUsers.some((c) => c.phone === phone) ? phone : null;
+  const all = recent?.customers ?? [];
+  const appUsers = all.filter((c) => c.phone !== except);
+  const typedOnly = phone && !appUsers.some((c) => c.phone === phone) ? phone : null;
+  useEffect(() => {
+    if (!phone && appUsers[0]) setPhone(appUsers[0].phone);
+  }, [phone, appUsers[0]?.phone]);
   const use = (e: FormEvent) => {
     e.preventDefault();
     const p = normalisePhone(typed);
@@ -384,45 +389,38 @@ function People({ config, phone, setPhone }: { config: SimConfig; phone: string;
   };
   return (
     <div className="stack" style={{ gap: 12 }}>
-      <div className="people">
-        {config.customers.map((c, i) => (
-          <button key={c.phone} className={`person ${c.phone === phone ? 'on' : ''}`} onClick={() => setPhone(c.phone)}>
-            <span className="avatar" style={{ background: PALETTE[i % PALETTE.length] }}>{initials(c.name)}</span>
-            <span>
-              <div className="person-name">{c.name}</div>
-              <div className="person-phone">{showPhone(c.phone)}</div>
-            </span>
-          </button>
-        ))}
+      <div className="people-label">
+        <span>Signed in to the Gaskiyya app</span>
+        {appUsers.length > 0 && <span className="muted small">{appUsers.length} app user{appUsers.length === 1 ? '' : 's'}</span>}
       </div>
-      <div>
-        <div className="people-label">
-          <span>Signed in to the Gaskiyya app</span>
-          <span className="muted small">{appUsers.length ? `${appUsers.length} demo user${appUsers.length === 1 ? '' : 's'}` : 'Anyone who signs in with their number appears here'}</span>
+      {!recent ? (
+        <p className="muted small flat">Loading&hellip;</p>
+      ) : appUsers.length === 0 && !typedOnly ? (
+        <Empty icon={<IconUsers />} title={all.length ? 'No one else has signed in to the app yet' : 'No one has signed in to the app yet'}>
+          Anyone who signs in to the Gaskiyya app with their number appears here. Or type a number below.
+        </Empty>
+      ) : (
+        <div className="people">
+          {typedOnly && (
+            <button className="person on" onClick={() => setPhone(typedOnly)}>
+              <span className="avatar app">#</span>
+              <span>
+                <div className="person-name">Typed number</div>
+                <div className="person-phone">{showPhone(typedOnly)}</div>
+              </span>
+            </button>
+          )}
+          {appUsers.map((c) => (
+            <button key={c.phone} className={`person ${c.phone === phone ? 'on' : ''}`} aria-pressed={c.phone === phone} onClick={() => setPhone(c.phone)}>
+              <span className="avatar app">{c.phone.slice(-2)}</span>
+              <span>
+                <div className="person-name">{showPhone(c.phone)}</div>
+                <div className="person-phone">App user &middot; {ago(c.lastSeenAt)}</div>
+              </span>
+            </button>
+          ))}
         </div>
-        {(appUsers.length > 0 || typedOnly) && (
-          <div className="people">
-            {typedOnly && (
-              <button className="person on" onClick={() => setPhone(typedOnly)}>
-                <span className="avatar app">#</span>
-                <span>
-                  <div className="person-name">Typed number</div>
-                  <div className="person-phone">{showPhone(typedOnly)}</div>
-                </span>
-              </button>
-            )}
-            {appUsers.map((c) => (
-              <button key={c.phone} className={`person ${c.phone === phone ? 'on' : ''}`} aria-pressed={c.phone === phone} onClick={() => setPhone(c.phone)}>
-                <span className="avatar app">{c.phone.slice(-2)}</span>
-                <span>
-                  <div className="person-name">{showPhone(c.phone)}</div>
-                  <div className="person-phone">App user &middot; {ago(c.lastSeenAt)}</div>
-                </span>
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
+      )}
       <form className="row" onSubmit={use} style={{ gap: 8 }}>
         <input
           style={{ flex: 1 }}
@@ -461,8 +459,6 @@ function MessagesPage({ config, phone, setPhone, notify }: { config: SimConfig; 
   const [inbox, reload] = usePoll(() => sim.inbox(phone), 2000, [phone]);
   const items = inbox?.items ?? [];
   const lastGenuine = items.find((i) => i.kind === 'genuine');
-  const customer = config.customers.find((c) => c.phone === phone);
-
   const act = async (fn: () => Promise<unknown>, done: string) => {
     setBusy(true);
     try {
@@ -488,7 +484,7 @@ function MessagesPage({ config, phone, setPhone, notify }: { config: SimConfig; 
         <div className="stack">
           <div className="card">
             <h3>Recipient</h3>
-            <People config={config} phone={phone} setPhone={setPhone} />
+            <People phone={phone} setPhone={setPhone} />
           </div>
 
           <div className="card stack">
@@ -536,7 +532,7 @@ function MessagesPage({ config, phone, setPhone, notify }: { config: SimConfig; 
               </span>
               <button
                 className="btn"
-                disabled={busy}
+                disabled={busy || !phone}
                 onClick={() =>
                   act(async () => {
                     const r = await sim.send(phone, asOther ? 'service_update' : category, (asOther && !edited ? '' : text.trim()) || undefined, asOther ? org : undefined);
@@ -558,13 +554,13 @@ function MessagesPage({ config, phone, setPhone, notify }: { config: SimConfig; 
               <p className="muted small" style={{ margin: '4px 0 0' }}>These are never registered, so customers see them as not confirmed.</p>
             </div>
             <div className="row">
-              <button className="btn danger" disabled={busy} onClick={() => act(() => sim.sendTampered(phone, lastGenuine?.id), 'Tampered copy sent')}>
+              <button className="btn danger" disabled={busy || !phone} onClick={() => act(() => sim.sendTampered(phone, lastGenuine?.id), 'Tampered copy sent')}>
                 <IconScissors /> Tampered copy{lastGenuine ? '' : ' of a link'}
               </button>
-              <button className="btn secondary" disabled={busy} onClick={() => act(() => sim.sendFake(phone, Math.floor(Math.random() * 4)), 'Fake message sent')}>
+              <button className="btn secondary" disabled={busy || !phone} onClick={() => act(() => sim.sendFake(phone, Math.floor(Math.random() * 4)), 'Fake message sent')}>
                 <IconWarning /> Fake message
               </button>
-              <button className="btn secondary" disabled={busy} onClick={() => act(() => sim.sendFake(phone, 'credit_alert'), 'Fake credit alert sent')}>
+              <button className="btn secondary" disabled={busy || !phone} onClick={() => act(() => sim.sendFake(phone, 'credit_alert'), 'Fake credit alert sent')}>
                 <IconWarning /> Fake credit alert
               </button>
             </div>
@@ -574,17 +570,16 @@ function MessagesPage({ config, phone, setPhone, notify }: { config: SimConfig; 
             </p>
           </div>
 
-          {config.simSwap ? <SimSwapCard phone={phone} name={customer?.name ?? ''} notify={notify} /> : null}
+          {config.simSwap && phone ? <SimSwapCard phone={phone} notify={notify} /> : null}
         </div>
 
-        <Device key={phone} phone={phone} name={nameOf(config, phone)} bank={config.bank.name} bankId={config.bank.id} />
+        {phone ? <Device key={phone} phone={phone} bank={config.bank.name} bankId={config.bank.id} /> : <NoPhone />}
       </div>
     </div>
   );
 }
 
-function SimSwapCard({ phone, name, notify }: { phone: string; name: string; notify: (s: string) => void }) {
-  const who = name || 'the customer';
+function SimSwapCard({ phone, notify }: { phone: string; notify: (s: string) => void }) {
   const [answer, setAnswer] = useState<SimSwapAnswer | null>(null);
   const [busy, setBusy] = useState(false);
   useEffect(() => setAnswer(null), [phone]);
@@ -611,7 +606,7 @@ function SimSwapCard({ phone, name, notify }: { phone: string; name: string; not
       <div>
         <h2>SIM swap</h2>
         <p className="muted small" style={{ margin: '4px 0 0' }}>
-          A fraudster talks the mobile network into moving {who}&apos;s number to a new SIM, and starts receiving their one-time codes. The bank asks first.
+          A fraudster talks the mobile network into moving the customer&apos;s number to a new SIM, and starts receiving their one-time codes. The bank asks first.
         </p>
       </div>
       <div className="row">
@@ -698,7 +693,7 @@ function CallsPage({ config, phone, setPhone, notify, placed }: { config: SimCon
         <div className="stack">
           <div className="card">
             <h3>Customer</h3>
-            <People config={config} phone={phone} setPhone={setPhone} />
+            <People phone={phone} setPhone={setPhone} />
           </div>
           <div className="card stack">
             <h2>Purpose</h2>
@@ -710,7 +705,7 @@ function CallsPage({ config, phone, setPhone, notify, placed }: { config: SimCon
               ))}
             </div>
             <div className="row" style={{ justifyContent: 'flex-end' }}>
-              <button className="btn" onClick={place} disabled={Boolean(active)}>
+              <button className="btn" onClick={place} disabled={Boolean(active) || !phone}>
                 <IconPhone /> Announce and call
               </button>
             </div>
@@ -745,7 +740,7 @@ function CallsPage({ config, phone, setPhone, notify, placed }: { config: SimCon
             {(calls?.calls ?? []).map((c) => (
               <div className="kbd-row" key={c.id}>
                 <span>
-                  <b>{nameOf(config, c.phone)}</b>
+                  <b>{showPhone(c.phone)}</b>
                   <span className="muted small"> · {label(copy.purposes, c.purpose)} · {timeOf(c.openedAt)}</span>
                 </span>
                 <span className={`tag ${c.status === 'ended' ? '' : Date.parse(c.expiresAt) > Date.now() ? 'blue' : ''}`}>
@@ -756,7 +751,7 @@ function CallsPage({ config, phone, setPhone, notify, placed }: { config: SimCon
           </div>
         </div>
 
-        <Device key={phone} phone={phone} name={nameOf(config, phone)} bank={config.bank.name} bankId={config.bank.id} />
+        {phone ? <Device key={phone} phone={phone} bank={config.bank.name} bankId={config.bank.id} /> : <NoPhone />}
       </div>
     </div>
   );
@@ -788,7 +783,7 @@ function FraudCallCard({ config, phone, announced, notify }: { config: SimConfig
         </p>
       </div>
       <div className="row">
-        <button className="btn danger" disabled={busy || announced} onClick={ring} title={announced ? 'End the announced call first' : undefined}>
+        <button className="btn danger" disabled={busy || announced || !phone} onClick={ring} title={announced ? 'End the announced call first' : undefined}>
           <IconPhone /> Fraudster calls from the bank&rsquo;s number
         </button>
       </div>
@@ -803,8 +798,8 @@ const KIND_LABEL: Record<Transfer['kind'], string> = { genuine: 'Genuine', fake_
 const VERDICT_TAG: Record<string, string> = { received: 'green', not_confirmed: 'red', cannot_check: 'orange' };
 
 function TransfersPage({ config, notify }: { config: SimConfig; notify: (s: string) => void }) {
-  const [payer, setPayer] = useState(config.customers[1]?.phone ?? config.customers[0]!.phone);
-  const [merchant, setMerchant] = useState(config.customers[0]!.phone);
+  const [payer, setPayer] = useState('');
+  const [merchant, setMerchant] = useState('');
   const [amount, setAmount] = useState('25000');
   const [busy, setBusy] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
@@ -812,7 +807,6 @@ function TransfersPage({ config, notify }: { config: SimConfig; notify: (s: stri
   const transfers = list?.transfers ?? [];
   const shown = transfers.find((t) => t.id === selected) ?? transfers[0] ?? null;
   const lastGenuine = transfers.find((t) => t.kind === 'genuine');
-  const nameOf = (phone: string) => config.customers.find((c) => c.phone === phone)?.name ?? phone;
   const receipt = copy.receipt.verdict;
 
   const act = async (fn: () => Promise<{ transfer: Transfer }>, done: (t: Transfer) => string) => {
@@ -850,24 +844,18 @@ function TransfersPage({ config, notify }: { config: SimConfig; notify: (s: stri
             </div>
             <div>
               <h3>Payer</h3>
-              <People config={config} phone={payer} setPhone={(p) => { setPayer(p); if (p === merchant) setMerchant(config.customers.find((c) => c.phone !== p)!.phone); }} />
+              <People phone={payer} setPhone={(p) => { setPayer(p); if (p === merchant) setMerchant(''); }} />
             </div>
             <div>
               <h3>Merchant (paid into)</h3>
-              <div className="chips">
-                {config.customers.filter((c) => c.phone !== payer).map((c) => (
-                  <button key={c.phone} className={`chip ${merchant === c.phone ? 'on' : ''}`} onClick={() => setMerchant(c.phone)}>
-                    {c.name} <span className="mono">{c.phone.slice(-10).replace(/^(\d{6})/, '******')}</span>
-                  </button>
-                ))}
-              </div>
+              <People phone={merchant} setPhone={setMerchant} except={payer} />
             </div>
             <div className="row" style={{ justifyContent: 'space-between' }}>
               <label className="row small muted">
                 Amount (NGN)
                 <input aria-label="Amount in naira" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} style={{ width: 140 }} />
               </label>
-              <button className="btn" disabled={busy || !amountOk || payer === merchant} onClick={() => act(() => sim.pay(payer, merchant, kobo), (t) => (t.registered ? 'Paid. Receipt registered.' : 'Paid, but the receipt was not stored'))}>
+              <button className="btn" disabled={busy || !amountOk || !payer || !merchant || payer === merchant} onClick={() => act(() => sim.pay(payer, merchant, kobo), (t) => (t.registered ? 'Paid. Receipt registered.' : 'Paid, but the receipt was not stored'))}>
                 <IconSend /> Pay and register
               </button>
             </div>
@@ -896,7 +884,7 @@ function TransfersPage({ config, notify }: { config: SimConfig; notify: (s: stri
               <div className="kbd-row" key={t.id} onClick={() => setSelected(t.id)} style={{ cursor: 'pointer', background: shown?.id === t.id ? 'var(--fill-2)' : undefined }}>
                 <span>
                   <b>{nairaText(t.amountKobo)}</b>
-                  <span className="muted small"> &middot; {t.payer} to {nameOf(t.merchant)} &middot; {timeOf(t.at)}</span>
+                  <span className="muted small"> &middot; {showPhone(t.payer)} to {showPhone(t.merchant)} &middot; {timeOf(t.at)}</span>
                   <div className="small mono muted">{groupSession(t.reference)}</div>
                 </span>
                 <span className="row" style={{ gap: 6 }}>
@@ -921,8 +909,8 @@ function TransfersPage({ config, notify }: { config: SimConfig; notify: (s: stri
               <div className="receipt-amount">{nairaText(shown.amountKobo)}</div>
               <div className="muted small">Transfer successful</div>
               <dl className="receipt-fields">
-                <dt>From</dt><dd>{shown.payer}</dd>
-                <dt>To</dt><dd>{nameOf(shown.merchant)}, {config.bank.name}</dd>
+                <dt>From</dt><dd>{showPhone(shown.payer)}</dd>
+                <dt>To</dt><dd>{showPhone(shown.merchant)}, {config.bank.name}</dd>
                 <dt>Account</dt><dd className="mono">{shown.account}</dd>
                 <dt>Session ID</dt><dd className="mono">{groupSession(shown.reference)}</dd>
                 <dt>Date</dt><dd>{shown.valueDate}</dd>
@@ -961,7 +949,6 @@ function TransfersPage({ config, notify }: { config: SimConfig; notify: (s: stri
 function UssdPage({ config, phone, setPhone }: { config: SimConfig; phone: string; setPhone: (p: string) => void }) {
   const [hops, setHops] = useState<(UssdHop & { key: number })[]>([]);
   useEffect(() => setHops([]), [phone]);
-  const customer = config.customers.find((c) => c.phone === phone);
 
   return (
     <div className="page">
@@ -977,13 +964,13 @@ function UssdPage({ config, phone, setPhone }: { config: SimConfig; phone: strin
         <div className="stack">
           <div className="card">
             <h3>Customer</h3>
-            <People config={config} phone={phone} setPhone={setPhone} />
+            <People phone={phone} setPhone={setPhone} />
           </div>
           <div className="card stack">
             <div>
               <h2>How it works</h2>
               <p className="muted small" style={{ margin: '4px 0 0' }}>
-                The mobile network tells Gaskiyya which number is dialling, so {customer?.name ?? 'the customer'} only ever sees calls and messages bound to their own number. Message
+                The mobile network tells Gaskiyya which number is dialling, so the customer only ever sees calls and messages bound to their own number. Message
                 text is never stored, so the list shows the type, channel and time only. Announce a call on the Calls page or send a message on the Messages page, then dial.
               </p>
             </div>
@@ -1009,7 +996,7 @@ function UssdPage({ config, phone, setPhone }: { config: SimConfig; phone: strin
           </div>
         </div>
 
-        <FeaturePhone phone={phone} code={config.ussdCode} onHop={(h) => setHops((list) => [{ ...h, key: Math.random() }, ...list].slice(0, 8))} />
+        {phone ? <FeaturePhone phone={phone} code={config.ussdCode} onHop={(h) => setHops((list) => [{ ...h, key: Math.random() }, ...list].slice(0, 8))} /> : <NoPhone />}
       </div>
     </div>
   );
@@ -1023,13 +1010,13 @@ const LICENCE_EXAMPLES = [
 
 const LICENCE_TONE = { licensed: 'var(--blue)', not_listed: 'var(--orange)', cannot_check: 'var(--red)' } as const;
 
-function LicencePage({ config, phone, setPhone }: { config: SimConfig; phone: string; setPhone: (p: string) => void }) {
+function LicencePage({ phone, setPhone }: { phone: string; setPhone: (p: string) => void }) {
   const [query, setQuery] = useState('');
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<LicenceResult | null>(null);
   const l = copy.licence;
   const run = async (q: string) => {
-    if (q.trim().length < 2) return;
+    if (!phone || q.trim().length < 2) return;
     setQuery(q);
     setBusy(true);
     try {
@@ -1051,7 +1038,7 @@ function LicencePage({ config, phone, setPhone }: { config: SimConfig; phone: st
         <div className="stack">
           <div className="card">
             <h3>Customer</h3>
-            <People config={config} phone={phone} setPhone={setPhone} />
+            <People phone={phone} setPhone={setPhone} />
           </div>
           <div className="card stack">
             <h2>{l.title}</h2>
@@ -1070,7 +1057,7 @@ function LicencePage({ config, phone, setPhone }: { config: SimConfig; phone: st
               }}
             >
               <input aria-label={l.placeholder} placeholder={l.placeholder} value={query} maxLength={200} onChange={(e) => setQuery(e.target.value)} style={{ flex: 1 }} />
-              <button className="btn" disabled={busy || query.trim().length < 2}>{l.check}</button>
+              <button className="btn" disabled={busy || !phone || query.trim().length < 2}>{l.check}</button>
             </form>
             <p className="muted small" style={{ margin: 0 }}>
               The name is checked and dropped: the registry stores only a count of each answer.
@@ -1153,7 +1140,7 @@ function ContactsPage({ config, phone, setPhone, notify }: { config: SimConfig; 
   const t = copy.official.contact;
 
   const check = async (value = contact) => {
-    if (!value.trim()) return;
+    if (!phone || !value.trim()) return;
     setBusy(true);
     try {
       setResult(await device.verifyContact(phone, value.trim()));
@@ -1174,7 +1161,7 @@ function ContactsPage({ config, phone, setPhone, notify }: { config: SimConfig; 
         <div className="stack">
           <div className="card">
             <h3>Customer</h3>
-            <People config={config} phone={phone} setPhone={setPhone} />
+            <People phone={phone} setPhone={setPhone} />
           </div>
 
           <div className="card stack">
@@ -1184,7 +1171,7 @@ function ContactsPage({ config, phone, setPhone, notify }: { config: SimConfig; 
             </div>
             <input aria-label="Contact to check" placeholder={copy.official.app.placeholder} value={contact} onChange={(e) => setContact(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && void check()} />
             <div className="row" style={{ justifyContent: 'flex-end' }}>
-              <button className="btn" disabled={busy || !contact.trim()} onClick={() => void check()}>
+              <button className="btn" disabled={busy || !phone || !contact.trim()} onClick={() => void check()}>
                 <IconCheck /> Check
               </button>
             </div>
@@ -1226,7 +1213,7 @@ function ContactsPage({ config, phone, setPhone, notify }: { config: SimConfig; 
               <div className="row">
                 <button
                   className="btn danger"
-                  disabled={busy}
+                  disabled={busy || !phone}
                   onClick={async () => {
                     try {
                       const r = await sim.sendFakeCare(phone);

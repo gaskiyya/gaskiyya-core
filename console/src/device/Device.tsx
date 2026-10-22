@@ -93,7 +93,7 @@ function Linkified({ text }: { text: string }) {
   return <>{parts.map((p, i) => (i % 2 ? <span className="ios-link" key={i}>{p}</span> : p))}</>;
 }
 
-export function Device({ phone, name, bank, bankId = '' }: { phone: string; name: string; bank: string; bankId?: string }) {
+export function Device({ phone, bank, bankId = '' }: { phone: string; bank: string; bankId?: string }) {
   const wrap = useRef<HTMLDivElement>(null);
   const screen = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.85);
@@ -363,7 +363,7 @@ export function Device({ phone, name, bank, bankId = '' }: { phone: string; name
                       onLicence={() => setSheet({ type: 'licence' })}
                     />
                   )}
-                  {app === 'bank' && <BankApp bank={bank} name={name} items={items ?? []} onVerify={(el) => openApp('gaskiyya', el)} />}
+                  {app === 'bank' && <BankApp bank={bank} items={items ?? []} onVerify={(el) => openApp('gaskiyya', el)} />}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -776,15 +776,15 @@ function CallScreen({
   );
 }
 
-function BankApp({ bank, name, items, onVerify }: { bank: string; name: string; items: InboxItem[]; onVerify: (el: Element) => void }) {
+function BankApp({ bank, items, onVerify }: { bank: string; items: InboxItem[]; onVerify: (el: Element) => void }) {
   const alerts = items.filter((i) => i.kind === 'genuine' && i.category === 'transaction_alert');
   const balance = alerts[0]?.text.match(/Bal:\s*NGN([\d,]+\.\d{2})/)?.[1] ?? '664,898.26';
   const hour = new Date().getHours();
   return (
     <div className="ios-bank">
       <div className="ios-bank-head">
-        <p>Good {hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening'},</p>
-        <h1>{name.split(' ')[0]}</h1>
+        <p>{bank}</p>
+        <h1>Good {hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening'}</h1>
         <div className="ios-bank-card">
           <small>Savings &middot; &bull;&bull;&bull;&bull;5678</small>
           <b>&#x20A6;{balance}</b>

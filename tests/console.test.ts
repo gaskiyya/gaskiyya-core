@@ -348,7 +348,7 @@ describe('console and bank simulator', () => {
     const merchant = DEMO_CUSTOMERS[0]!.phone;
     const payer = DEMO_CUSTOMERS[1]!.phone;
     const paid = (await post('/sim/transfers', { from: payer, to: merchant, amountKobo: 2_500_000 })).json().transfer;
-    expect(paid).toMatchObject({ kind: 'genuine', registered: true, account: demoAccount(merchant), payer: DEMO_CUSTOMERS[1]!.name });
+    expect(paid).toMatchObject({ kind: 'genuine', registered: true, account: demoAccount(merchant), payer });
     expect(paid.account).toBe('8012345678');
     expect(paid.reference).toMatch(/^999001[0-9]{24}$/);
     const check = async (id: string) => (await post(`/sim/transfers/${id}/check`, {})).json().transfer.check;

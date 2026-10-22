@@ -79,6 +79,9 @@ export function createSandbox() {
   svc.guard = new RegistrationGuard(store);
   svc.licences = { registry: new MemoryLicenceRegistry(BUNDLED_LICENCES), maxAgeDays: 120 };
 
+  const at = new Date().toISOString();
+  for (const c of DEMO_CUSTOMERS.slice(0, 2).reverse()) void store.recordAppUser(BANK.id, c.phone, at);
+
   const mno = new SimulatedMno();
   svc.simSwap = new SimSwapMonitor(mno, DEFAULT_SIM_SWAP, { clock: () => new Date(), log: { warn: () => {} }, count: (t, k) => void store.countSimSwap(t, k) });
 
@@ -199,7 +202,6 @@ export function createSandbox() {
           body: {
             bank: { id: BANK.id, name: BANK.name, bankCode: DEMO_BANK_CODE },
             apiUrl: '(in this browser)',
-            customers: DEMO_CUSTOMERS,
             categories: CATEGORIES,
             purposes: CALL_PURPOSES,
             ussdCode: USSD_CODE,
@@ -328,7 +330,7 @@ export function createSandbox() {
         const t: Transfer = {
           id: crypto.randomUUID(),
           kind: 'genuine',
-          payer: DEMO_CUSTOMERS.find((c) => c.phone === from)?.name ?? from,
+          payer: from,
           merchant: to,
           account: demoAccount(to),
           amountKobo,

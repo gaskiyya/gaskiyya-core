@@ -34,7 +34,7 @@ export function CustomersPage({ config, notify, onCalled, onOpen }: {
         {!list ? (
           <p className="muted small flat">Loading&hellip;</p>
         ) : users.length === 0 ? (
-          <Empty icon={<IconPhone />} title="No one yet">When someone signs in to the Gaskiyya app with their number, they appear here.</Empty>
+          <Empty icon={<IconPhone />} title="No one has signed in to the app yet">When someone signs in to the Gaskiyya app with their number, they appear here.</Empty>
         ) : (
           <ul className="app-users">
             {users.map((u) => (
@@ -65,13 +65,12 @@ function AppUserRow({ user, config, tool, setTool, notify, onCalled, onOpen }: {
   onCalled: (call: Call) => void;
   onOpen: (phone: string) => void;
 }) {
-  const name = config.customers.find((c) => c.phone === user.phone)?.name;
   const [busy, setBusy] = useState(false);
   const [purpose, setPurpose] = useState(config.purposes[0]!);
   const draft = (c: string) => genuineTemplate(c as Category, config.bank.name, user.phone, new Date(), config.bank.domain).text;
   const [category, setCategory] = useState('security_notice');
   const [text, setText] = useState(() => draft('security_notice'));
-  const who = name ?? showPhone(user.phone);
+  const who = showPhone(user.phone);
 
   const act = async (fn: () => Promise<unknown>) => {
     setBusy(true);
@@ -90,9 +89,9 @@ function AppUserRow({ user, config, tool, setTool, notify, onCalled, onOpen }: {
       <div className="app-user">
         <span className="avatar app">{user.phone.slice(-2)}</span>
         <div className="grow">
-          <div className="strong">{name ?? showPhone(user.phone)}</div>
+          <div className="strong">{who}</div>
           <div className="muted small">
-            {name && <>{showPhone(user.phone)} &middot; </>}Joined {fmtTime(user.firstSeenAt)} &middot; Last seen {ago(user.lastSeenAt).toLowerCase()}
+            Joined {fmtTime(user.firstSeenAt)} &middot; Last seen {ago(user.lastSeenAt).toLowerCase()}
           </div>
         </div>
         <div className="row app-user-actions">

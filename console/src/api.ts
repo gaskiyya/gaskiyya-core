@@ -1,8 +1,3 @@
-export interface Customer {
-  name: string;
-  phone: string;
-}
-
 export interface AppUser {
   phone: string;
   at: string;
@@ -137,7 +132,6 @@ export interface SimConfig {
   orgs?: OrgSummary[];
   fakeCustomerCare?: { whatsapp: string; handle: string } | null;
   apiUrl: string;
-  customers: Customer[];
   categories: string[];
   purposes: string[];
   ussdCode: string;

@@ -58,15 +58,15 @@ Set-up before going on stage (`docs/DEMO.md`, sections 1 to 3):
 
 - `pnpm dev` running on the laptop; `curl http://localhost:8080/health` returns `{"ok":true}`.
 - The console at `http://localhost:8080/console/` on the projector. Press **Reset** in the console header once.
-- The phone on the same hotspot, running the app (`flutter run --dart-define=API_URL=http://<LAN-ip>:8080`), linked to DemoBank as Amina Bello (`8012345678` after `+234`). From the phone's browser, `http://<LAN-ip>:8080/health` shows `{"ok":true}`.
+- The phone on the same hotspot, running the app (`flutter run --dart-define=API_URL=http://<LAN-ip>:8080`), signed in to DemoBank with Amina's number (`8012345678` after `+234`), so the console lists it. From the phone's browser, `http://<LAN-ip>:8080/health` shows `{"ok":true}`.
 - For step (e), nothing extra: `pnpm dev` sets `USSD_WEBHOOK_TOKEN` for the registry and the console when `.env` lacks one (`scripts/dev.mjs`), and the console's **USSD** page posts Africa's Talking-style callbacks for the demo code `*347*123#` through the console server, which holds the token. If the page says "USSD is off", the token is missing: stop and restart `pnpm dev`.
 - The fallback recording and the showcase film copied to `~/Desktop/gaskiyya-demo/` and opened once (`docs/DEMO.md`, section 7).
 
-Demo customers: Amina Bello (+2348012345678), Tunde Okafor (+2348098765432), Chidinma Eze (+2348031112222).
+Demo numbers: Amina +2348012345678 (the phone), Tunde +2348098765432 (typed into the console in step c). The console lists only numbers that have signed in to the app.
 
 ### (a) A genuine SMS shows "Sent by your bank" (0:00-0:15)
 
-1. Console, **Messages**. Under *Recipient*, click **Amina Bello**.
+1. Console, **Messages**. Under *Recipient*, click **+234 801 234 5678** (picked already if the phone signed in last).
 2. Under *Send a genuine message*, click the **Transaction alert** chip. Before sending, click in the text box and press **Cmd+A, Cmd+C** (you need this text in step c).
 3. Click **Send**. The console shows "Searchable in N ms".
 4. Phone: under *Recent messages*, tap the new alert. Result: **Sent by your bank**, with channel, date and time.
@@ -86,7 +86,7 @@ Say: "One hyphen. Different fingerprint. Not confirmed, and it tells Amina what 
 
 ### (c) The same message replayed to another number shows "Not confirmed" (0:30-0:45)
 
-1. Console, **Messages**, *Recipient*: click **Tunde Okafor**. The simulated iPhone on the right is now Tunde's phone.
+1. Console, **Messages**, *Recipient*: type `0809 876 5432` and click **Use**. The simulated iPhone on the right is now Tunde's phone.
 2. On the simulated iPhone, open the **Gaskiyya** app. In *Check a message*, click the text box and press **Cmd+V** (Amina's genuine alert from step a). Click **Check**.
 3. Result: **Not confirmed**.
 
@@ -96,7 +96,7 @@ Say: "Word for word the bank's real message. But the bank sent it to Amina, not 
 
 ### (d) A bank call with its code (0:45-0:58)
 
-1. Console, **Calls**. Recipient: **Amina Bello**. Pick a purpose chip, then click **Announce and call**. The *Agent screen* shows four digits and a 3:00 countdown.
+1. Console, **Calls**. Recipient: **+234 801 234 5678**. Pick a purpose chip, then click **Announce and call**. The *Agent screen* shows four digits and a 3:00 countdown.
 2. Phone: the call banner and the **Calls** tab show the same four digits.
 3. Click **End call** in the console. On the phone's Calls tab, tap **Check again**: "Your bank is not calling you".
 
@@ -107,7 +107,7 @@ Say: "Caller ID can be faked. This code cannot. If the caller cannot read it, ha
 ### (e) USSD from the console's feature phone (0:58-1:12)
 
 1. Leave a call open: click **Announce and call** again for Amina.
-2. Console, **USSD**. Recipient: **Amina Bello**. On the feature phone, key in `*347*123#` (the demo code, not a real short code) and press the green call key. The menu appears: "1. Is my bank calling me?", "2. Messages my bank sent me today".
+2. Console, **USSD**. Recipient: **+234 801 234 5678**. On the feature phone, key in `*347*123#` (the demo code, not a real short code) and press the green call key. The menu appears: "1. Is my bank calling me?", "2. Messages my bank sent me today".
 3. Key **1**, press **Send**: "DemoBank is calling you now. Call code: ..." with the same code as the agent screen.
 4. Hang up, dial again, key **2**, **Send**: today's messages as time, category and channel only, ending "A message from today that is not listed is not confirmed."
 
