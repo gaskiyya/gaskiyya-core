@@ -99,6 +99,20 @@ void main() {
     await push.stop();
   });
 
+  test('a push token that is late is asked for again until there is one, then registered', () async {
+    final r = registry();
+    final t = _LateToken(failures: 2);
+    final push = PushService(t, retryDelays: const [Duration(milliseconds: 5)]);
+    await push.start(client: r.client, onNotice: (_) {}, onOpened: (_) {});
+    expect(r.devices, isEmpty);
+    await Future<void>.delayed(const Duration(milliseconds: 60));
+    expect(t.asked, greaterThanOrEqualTo(3));
+    expect(r.devices, [
+      {'pushToken': 'fcm-token-1', 'platform': 'android'},
+    ]);
+    await push.stop();
+  });
+
   test('stopping push stops the retries', () async {
     var tries = 0;
     final client = GaskiyaClient(
@@ -173,4 +187,16 @@ void main() {
     expect(FirebaseConfig.options, isNull);
     expect(kIsWeb, isFalse);
   });
+}
+
+class _LateToken extends FakeTransport {
+  _LateToken({required this.failures});
+  int failures;
+  int asked = 0;
+  @override
+  Future<String?> token() async {
+    asked++;
+    if (failures-- > 0) throw StateError('apns-token-not-set');
+    return 'fcm-token-1';
+  }
 }

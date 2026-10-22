@@ -93,8 +93,7 @@ function Linkified({ text }: { text: string }) {
   return <>{parts.map((p, i) => (i % 2 ? <span className="ios-link" key={i}>{p}</span> : p))}</>;
 }
 
-// realPhone: the number is signed in to the Gaskiyya app. Unless this phone signed in with it, the
-// customer's own phone rings for bank calls, so this one stays silent and never answers or ends them.
+// realPhone: a real app user's number. Their own phone takes bank calls unless this one signed in with it.
 export function Device({ phone, bank, bankId = '', realPhone = false }: { phone: string; bank: string; bankId?: string; realPhone?: boolean }) {
   const wrap = useRef<HTMLDivElement>(null);
   const screen = useRef<HTMLDivElement>(null);
@@ -264,7 +263,6 @@ export function Device({ phone, bank, bankId = '', realPhone = false }: { phone:
     Promise.all([sim.calls(), sim.fraudCalls().catch(() => ({ calls: [] }))])
       .then(([bankCalls, fraud]) => {
         const live = (x: { phone: string; status: string; expiresAt: string; id: string }) => x.phone === phone && (x.status === 'open' || x.status === 'answered') && Date.parse(x.expiresAt) > Date.now() && !declined.current.has(x.id);
-        // A number this phone signed in with itself is a demo customer, so it still rings here.
         const b = realPhone && !sessionRef.current ? undefined : (bankCalls.calls.find((x) => x.id === callRef.current?.id && live(x)) ?? bankCalls.calls.find(live));
         const f = fraud.calls.find((x) => x.phone === phone && (x.status === 'answered' || (x.status === 'ringing' && Date.parse(x.expiresAt) > Date.now())) && !declined.current.has(x.id));
         const c: PhoneCall | null = b ? { kind: 'bank', id: b.id, status: b.status, code: b.code, purpose: b.purpose } : f ? { kind: 'fraud', id: f.id, status: f.status === 'ringing' ? 'open' : 'answered' } : null;

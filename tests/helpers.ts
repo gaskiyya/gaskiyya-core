@@ -230,10 +230,7 @@ export function demoEnv(extra: Record<string, string> = {}): NodeJS.ProcessEnv {
   };
 }
 
-/**
- * A second session to the same number, written straight to the store. The API refuses it while the first
- * is open, but sessions opened before that rule can still be open together, and every channel must show both.
- */
+/** Writes a second open session for the same number straight to the store, which the API itself refuses. */
 export async function seedSecondCall(h: Harness, firstId: string, purpose: string, code: string, laterMs = 1000) {
   const first = (await h.sys.store.getCall('demobank', firstId))!;
   const second = { ...first, id: `${firstId}_2`, purpose: purpose as typeof first.purpose, code, openedAt: new Date(Date.parse(first.openedAt) + laterMs).toISOString() };

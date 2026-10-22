@@ -184,6 +184,40 @@ describe('bank console access codes', () => {
   });
 });
 
+describe('bank console: editing the organisation', () => {
+  it('CON-11: a bank edits its own contacts, apps, alert emails and technical contact; the change is checked, applied and audited', async () => {
+    const { h, admin } = await setup();
+    const { token } = (await signIn(h, await codeOf(admin, 'demobank'))).json();
+    const patch = (payload: unknown) => h.sys.app.inject({ method: 'PATCH', url: '/v1/console/organisation', headers: { authorization: `Bearer ${token}` }, payload: payload as object });
+    const r = await patch({
+      officialContacts: { phones: ['+2342019990000'], whatsapp: ['+2349019990000'], emails: ['care@demobank.ng'], social: [{ platform: 'x', handle: 'DemoBankNG' }] },
+      officialApps: { android: ['ng.demobank.mobile'], ios: [] },
+      alertEmails: ['fraud@demobank.ng'],
+      technicalContact: { name: 'Ada Obi', email: 'ada@demobank.ng' },
+    });
+    expect(r.statusCode, r.body).toBe(200);
+    expect(r.json().org).toMatchObject({ alertEmails: ['fraud@demobank.ng'], technicalContact: { name: 'Ada Obi' }, officialContacts: { phones: ['+2342019990000'] } });
+    expect(h.sys.svc.tenant('demobank')!.alertEmails).toEqual(['fraud@demobank.ng']);
+    const contact = await h.sys.app.inject({ method: 'POST', url: '/v1/verify/contact', headers: { authorization: `Bearer ${await h.customerToken(ALICE)}` }, payload: { contact: '+2342019990000' } });
+    expect(contact.json()).toMatchObject({ verdict: 'official', matches: [{ id: 'demobank' }] });
+    const audit = (await as(h, token)('GET', '/v1/console/activity')).json().entries;
+    expect(audit[0]).toMatchObject({ action: 'org.update', details: { fields: expect.arrayContaining(['officialContacts', 'alertEmails']) } });
+  });
+
+  it('CON-12: domains, sender IDs, name and features stay with Gaskiyya, and bad values or another organisation are refused', async () => {
+    const { h, admin } = await setup();
+    const { token } = (await signIn(h, await codeOf(admin, 'demobank'))).json();
+    const patch = (payload: unknown, bearer = token) => h.sys.app.inject({ method: 'PATCH', url: '/v1/console/organisation', headers: { authorization: `Bearer ${bearer}` }, payload: payload as object });
+    for (const locked of [{ domains: ['evil.example'] }, { senderIds: ['DemoBank'] }, { name: 'Other' }, { features: { calls: false } }, { bankCode: '999999' }]) {
+      expect((await patch(locked)).statusCode, JSON.stringify(locked)).toBe(400);
+    }
+    expect((await patch({})).statusCode).toBe(400);
+    expect((await patch({ officialContacts: { phones: ['not a number'] } })).json()).toMatchObject({ code: 'invalid_organisation' });
+    expect(h.sys.svc.tenant('demobank')!.domains).not.toContain('evil.example');
+    expect((await patch({ alertEmails: ['x@y.ng'] }, 'gsc_not_a_session')).statusCode).toBe(401);
+  });
+});
+
 describe('admin sign-in page', () => {
   it('ADM-FILL: fills in the local admin login on this machine only, never for staff stored as hashes', async () => {
     const { h } = await setup();

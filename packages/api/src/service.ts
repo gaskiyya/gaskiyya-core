@@ -59,7 +59,6 @@ export class AdvisoryError extends Error {
   }
 }
 
-/** A call to this number is already open; the bank ends it before announcing another. */
 export class CallInProgressError extends Error {
   readonly statusCode = 409;
   readonly code = 'call_in_progress';
@@ -605,7 +604,7 @@ export class GaskiyaService {
 
   private async notify(tenant: Tenant, c: CallSession, notice: CallNotice) {
     this.events.publish(`${tenant.id}:${c.recipientKey}`, notice);
-    // The call is already stored: a failed device lookup costs the push, never the call itself.
+    // The call is stored; a failed lookup only skips the push.
     let devices: Device[];
     try {
       devices = await this.store.devices(tenant.id, c.recipientKey);
@@ -641,7 +640,7 @@ export class GaskiyaService {
 
   private readonly callLocks = new Map<string, Promise<unknown>>();
 
-  /** One open call per number: requests for the same number run one after another, and a second waits for the first to end. */
+  /** One open call per number. Requests for the same number run in turn. */
   async openCall(tenantId: string, input: { recipient: string; purpose: CallPurpose; agentRef: string }) {
     const recipientKey = this.keys.keyed(tenantId, 'recipient', input.recipient);
     const lock = `${tenantId}:${recipientKey}`;

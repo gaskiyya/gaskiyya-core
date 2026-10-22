@@ -341,7 +341,7 @@ class AppState extends ChangeNotifier {
   /// one decides through its own customer-token endpoint; those that issue a
   /// token come back as links that are not yet saved.
   Future<List<BankLink>> discover(String e164) async {
-    // Only banks are linked; agencies and companies are still checked through official contacts.
+    // Only banks are linked.
     final banks = (await loadBanks()).where((b) => b.kind == 'bank');
     final found = await Future.wait(banks.map((b) async {
       final l = _newLink(b, e164);
@@ -571,7 +571,7 @@ class AppState extends ChangeNotifier {
     for (final c in l.liveCalls) {
       if (c.code.isNotEmpty) _logCall(id: c.id, orgId: l.id, bank: l.bank.name, code: c.code, purpose: c.purpose);
     }
-    // Calls arriving together ring once, for the newest: the phone shows one incoming call at a time.
+    // Ring only the newest of calls that arrive together.
     final fresh = [for (final c in l.liveCalls) if (c.status == 'open' && c.code.isNotEmpty && _rung.add(c.id)) c];
     if (fresh.isNotEmpty) {
       final c = fresh.first;
@@ -633,7 +633,6 @@ class AppState extends ChangeNotifier {
   void answerCall(String id, [DateTime? at]) {
     final r = _callLog.where((r) => r.id == id).firstOrNull;
     if (r == null || r.settled) return;
-    // Answering one call ends any other, so only one in-call screen is ever shown.
     for (final other in _callLog.where((o) => o.id != id && o.outcome == CallOutcome.active).toList()) {
       unawaited(NativeCalls.instance.endCall(other.id));
       _settle(other.id);

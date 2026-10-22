@@ -17,6 +17,9 @@ export interface OrgProfile {
   features: Record<string, boolean>;
 }
 
+/** Fields a bank may edit from the console. */
+export type ProfileEdit = Partial<Pick<OrgProfile, 'officialContacts' | 'officialApps' | 'alertEmails' | 'technicalContact'>>;
+
 export interface UsageDay {
   day: string;
   calls: number;
@@ -88,6 +91,7 @@ export interface Workspace {
   alerts(): Promise<RegistrationAlert[]>;
   integration(): Promise<Integration>;
   activity(): Promise<ActivityEntry[]>;
+  updateProfile(edit: ProfileEdit): Promise<OrgProfile>;
   // Demo only: these act as DemoBank's own systems and its customers.
   sendAdvisory?(id: string): Promise<number>;
   seedReports?(): Promise<number>;
@@ -185,6 +189,7 @@ export function liveWorkspace(token: string, profile: OrgProfile, accessLabel: s
     alerts: async () => (await get<{ alerts: RegistrationAlert[] }>('/v1/console/alerts')).alerts,
     integration: () => get<Integration>('/v1/console/integration'),
     activity: async () => (await get<{ entries: ActivityEntry[] }>('/v1/console/activity')).entries,
+    updateProfile: async (edit) => (await request<{ org: OrgProfile }>('PATCH', '/v1/console/organisation', token, edit)).org,
   };
 }
 
@@ -265,6 +270,12 @@ export async function demoWorkspace(config: SimConfig): Promise<Workspace> {
       };
     },
     activity: async () => [...log],
+    // Demo: kept for this session.
+    updateProfile: async (edit) => {
+      Object.assign(profile, edit);
+      record('org.update', profile.id, { fields: Object.keys(edit) });
+      return { ...profile };
+    },
     sendAdvisory: async (id) => {
       const r = await sim.sendAdvisory(id);
       record('console.advisory_send', id, { customers: r.sent });

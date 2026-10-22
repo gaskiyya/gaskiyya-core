@@ -42,7 +42,6 @@ class _CallsScreenState extends State<CallsScreen> {
                 listenable: widget.state,
                 builder: (context, _) {
                   final state = widget.state;
-                  // Every linked bank's open calls in one list, newest first; each card names its bank.
                   final calls = [for (final l in state.calling) for (final x in l.liveCalls) (bank: l.bank.name, call: x)];
                   final unchecked = state.callUnchecked;
                   final names = state.links.map((l) => l.bank.name).toList();
@@ -53,7 +52,7 @@ class _CallsScreenState extends State<CallsScreen> {
                       duration: G.motion(context, const Duration(milliseconds: 520)),
                       switchInCurve: G.spring,
                       switchOutCurve: Curves.easeIn,
-                      // Only the current view stays on screen, so calls arriving close together never stack.
+                      // Drop the outgoing view so quick updates never overlap.
                       layoutBuilder: (current, previous) => Stack(alignment: Alignment.topCenter, children: [?current]),
                       transitionBuilder: (child, a) => FadeTransition(
                         opacity: a,

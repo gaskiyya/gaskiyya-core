@@ -127,7 +127,7 @@ export function fakeReceipt(source: Transfer, kind: 'fake_amount' | 'fake_refere
   };
 }
 
-/** A receipt nobody paid or registered: the fraudster types every field and makes up the session ID. */
+/** An unregistered receipt with a made-up session ID. */
 export function forgedReceipt(payer: string, merchant: string, amountKobo: number, bankCode: string, id: string, now = new Date()): Transfer {
   return {
     id,

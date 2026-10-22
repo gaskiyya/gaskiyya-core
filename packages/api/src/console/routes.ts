@@ -2,7 +2,8 @@ import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { z } from 'zod';
 import { ApproveAdvisory, WithdrawAdvisory } from '@gaskiya/schemas';
 import { orgChecklist, orgSummary, utcDays } from '../admin/routes.ts';
-import type { AdminRegistry } from '../admin/registry.ts';
+import { AdminError, type AdminRegistry } from '../admin/registry.ts';
+import { ConsoleEditOrg } from '../admin/schemas.ts';
 import { coverage } from '../domain/coverage.ts';
 import type { RateLimiter } from '../ratelimit/ratelimit.ts';
 import type { GaskiyaService } from '../service.ts';
@@ -192,6 +193,17 @@ export function registerConsoleRoutes(app: FastifyInstance, d: ConsoleDeps) {
       errors,
       checklist: orgChecklist(t, summary),
     };
+  });
+
+  app.patch('/v1/console/organisation', signedIn, async (req, reply) => {
+    const body = ConsoleEditOrg.safeParse(req.body ?? {});
+    if (!body.success) return fail(reply, 400, 'invalid_request', body.error.issues.map((i) => (i.path.length ? `${i.path.join('.')}: ${i.message}` : i.message)).join('; '));
+    try {
+      return { org: consoleProfile(await registry.updateOrg(req.console!.tenantId, body.data, actor(req))) };
+    } catch (err) {
+      if (err instanceof AdminError) return fail(reply, err.statusCode, err.code, err.message);
+      throw err;
+    }
   });
 
   app.get('/v1/console/activity', signedIn, async (req) => ({

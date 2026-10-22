@@ -100,7 +100,7 @@ class PushService {
 
   final PushTransport transport;
 
-  /// How long to wait before registering again after a failure; the last delay repeats until it succeeds.
+  /// Delays between registration attempts; the last one repeats.
   final List<Duration> retryDelays;
   final _subs = <StreamSubscription<dynamic>>[];
   Timer? _retry;
@@ -124,19 +124,27 @@ class PushService {
     var attempts = 0;
     Future<void> register(String? token) async {
       if (token != null && token.isNotEmpty) latest = token;
-      final t = latest;
-      if (t == null || run != _run) return;
-      final voip = await calls.voipToken();
-      var failed = false;
-      for (final c in all) {
+      if (run != _run) return;
+      // On iOS the token waits for APNs, so it can be missing at first.
+      if (latest == null) {
         try {
-          await c.registerDevice(t, transport.platform, voipToken: voip);
+          final fresh = await transport.token();
+          if (fresh != null && fresh.isNotEmpty) latest = fresh;
+        } catch (_) {}
+        if (run != _run) return;
+      }
+      final t = latest;
+      final voip = t == null ? null : await calls.voipToken();
+      var failed = t == null;
+      for (final c in t == null ? const <GaskiyaClient>[] : all) {
+        try {
+          await c.registerDevice(t!, transport.platform, voipToken: voip);
           registeredToken = t;
         } catch (_) {
           failed = true;
         }
       }
-      // A device the registry never heard of gets no call or warning pushes, so keep trying until it lands.
+      // An unregistered device gets no pushes, so keep retrying.
       _retry?.cancel();
       if (failed && run == _run) {
         final wait = retryDelays[attempts.clamp(0, retryDelays.length - 1)];
@@ -152,11 +160,7 @@ class PushService {
     _subs
       ..add(transport.tokenRefresh.listen(register))
       ..add(calls.tokenRefresh.listen((_) => register(null)));
-    String? first;
-    try {
-      first = await transport.token();
-    } catch (_) {}
-    await register(first);
+    await register(null);
     if (run != _run) return;
     _subs
       ..add(transport.messages.listen(onNotice))

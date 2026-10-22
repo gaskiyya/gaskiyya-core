@@ -176,7 +176,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 duration: G.motion(context, G.springFast),
                 switchInCurve: G.spring,
                 switchOutCurve: Curves.easeIn,
-                // The in-call screen fills the phone, and only the current call's screen stays on it.
                 layoutBuilder: (current, previous) => Stack(fit: StackFit.expand, children: [?current]),
                 transitionBuilder: (child, a) => FadeTransition(
                   opacity: a,

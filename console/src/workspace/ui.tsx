@@ -21,10 +21,7 @@ export function usePoll<T>(fn: () => Promise<T>, ms: number, deps: unknown[] = [
   return [data, load, ok];
 }
 
-/**
- * The dashboard's running actions, one key per button. A key that is running ignores further clicks at once,
- * before React re-renders, so a double click never sends twice; only that button shows it is working.
- */
+/** Running actions, one key per button. Clicks on a running key are ignored. */
 export function useActions(onError: (e: Error) => void) {
   const running = useRef(new Set<string>());
   const [, rerender] = useState(0);
@@ -43,9 +40,7 @@ export function useActions(onError: (e: Error) => void) {
       rerender((n) => n + 1);
     }
   }, []);
-  /** True while this action runs. */
   const busy = (key: string) => running.current.has(key);
-  /** True while any action whose key starts with this prefix runs, such as every action on one campaign. */
   const busyOn = (prefix: string) => [...running.current].some((k) => k.startsWith(prefix));
   return { run, busy, busyOn };
 }
@@ -85,12 +80,10 @@ export function Stat({ label, value, hint, tone, loading = false }: { label: str
   );
 }
 
-/** A placeholder block that shimmers while data loads. */
 export function Skeleton({ w = '100%', h = 12, r }: { w?: number | string; h?: number | string; r?: number }) {
   return <span className="skel" style={{ width: w, height: h, borderRadius: r }} aria-hidden="true" />;
 }
 
-/** Placeholder rows for a list that is loading: an optional leading avatar, square or dot, a title and a line under it. */
 export function SkeletonRows({ rows = 3, lead, label = 'Loading' }: { rows?: number; lead?: 'avatar' | 'square' | 'dot'; label?: string }) {
   const size = lead === 'dot' ? 9 : 36;
   return (
@@ -108,7 +101,6 @@ export function SkeletonRows({ rows = 3, lead, label = 'Loading' }: { rows?: num
   );
 }
 
-/** Placeholder for the 14-day bar chart. */
 export function SkeletonBars({ label = 'Loading' }: { label?: string }) {
   return (
     <div className="skel-bars" role="status" aria-label={label}>
@@ -136,7 +128,6 @@ export interface Scenario<T extends string> {
   fraud?: boolean;
 }
 
-/** Choose what to send: the genuine version or one of the fraudster's versions, all one click away. */
 export function Scenarios<T extends string>({ label, value, options, onChange }: { label: string; value: T; options: Scenario<T>[]; onChange: (v: T) => void }) {
   return (
     <div className="scenarios" role="radiogroup" aria-label={label}>

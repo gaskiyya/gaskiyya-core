@@ -321,7 +321,12 @@ svg.orange { color: var(--orange); } svg.red { color: var(--red); } svg.muted { 
 .btn.plain:disabled { background: transparent; }
 .btn.wide { width: 100%; min-height: 46px; }
 .btn svg { width: 17px; height: 17px; }
-/* A button whose own action is running: a spinner takes the icon's place */
+.btn.small { min-height: 32px; padding: 6px 12px; font-size: 13px; }
+.edit-row { display: flex; align-items: center; gap: 6px; }
+.edit-row input { flex: 1; min-width: 0; }
+.edit-row select { flex: none; width: auto; }
+.add-row { justify-self: start; }
+/* Busy buttons */
 .btn[aria-busy='true'], .chip[aria-busy='true'] { cursor: progress; }
 .btn[aria-busy='true']:disabled { opacity: 0.8; }
 .btn[aria-busy='true'] > svg { display: none; }
@@ -338,7 +343,7 @@ svg.orange { color: var(--orange); } svg.red { color: var(--red); } svg.muted { 
 .segmented button { border: 0; background: transparent; padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 550; cursor: pointer; color: var(--label-2); transition: background 0.2s, box-shadow 0.2s, color 0.2s; }
 .segmented button.on { background: var(--surface); color: var(--label); box-shadow: 0 1px 3px rgba(16, 24, 20, 0.12); font-weight: 650; }
 
-/* What to send: the genuine version or a fraudster's version */
+/* Scenario picker */
 .scenarios { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; }
 .scenario {
   display: flex; align-items: flex-start; gap: 10px; text-align: left; padding: 11px 12px; border-radius: 12px; cursor: pointer;
@@ -382,7 +387,7 @@ textarea { resize: vertical; min-height: 86px; line-height: 1.45; }
 .empty h2, .empty h3 { font-size: 16px; color: var(--label); text-transform: none; letter-spacing: -0.01em; margin: 0; }
 .empty p { margin: 0; font-size: 13.5px; max-width: 460px; }
 
-/* Loading placeholders, shaped like the content they stand in for */
+/* Skeletons */
 .skel { display: block; flex: none; max-width: 100%; background: var(--fill); border-radius: 6px; position: relative; overflow: hidden; }
 .skel::after {
   content: ''; position: absolute; inset: 0; transform: translateX(-100%);

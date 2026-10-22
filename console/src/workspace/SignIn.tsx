@@ -12,7 +12,6 @@ export function SignIn({ onSignedIn, demo, onSandboxDemo }: {
 }) {
   const [code, setCode] = useState(NO_CODE);
   const [error, setError] = useState<string | null>(null);
-  // Which button started the sign-in; a second click is ignored until it finishes.
   const [busy, setBusy] = useState<'code' | 'demo' | null>(null);
   const complete = code.length === CODE_LENGTH;
 

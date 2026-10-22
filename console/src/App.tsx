@@ -316,7 +316,7 @@ function Shell({ ws, config, notify, toast, onSignOut, onExpired }: {
         {page === 'overview' && <OverviewPage ws={ws} metrics={metrics} events={events} go={setPage} onSignedOut={onExpired} />}
         {page === 'fraud' && <FraudDeskPage ws={ws} notify={notify} onSignedOut={onExpired} />}
         {page === 'integration' && <IntegrationPage ws={ws} onSignedOut={onExpired} />}
-        {page === 'organisation' && <OrganisationPage ws={ws} />}
+        {page === 'organisation' && <OrganisationPage ws={ws} notify={notify} />}
         {page === 'activity' && <ActivityPage ws={ws} onSignedOut={onExpired} />}
         {demo && page === 'customers' && (
           <CustomersPage
@@ -358,7 +358,6 @@ const NoPhone = () => (
   </div>
 );
 
-// Whether this number is signed in to the real Gaskiyya app.
 function useAppUser(phone: string) {
   const [recent] = usePoll(() => sim.recentCustomers(), 4000);
   return Boolean(phone && recent?.customers.some((c) => c.phone === phone));
@@ -555,7 +554,6 @@ function MessagesPage({ config, phone, setPhone, notify }: { config: SimConfig; 
 
 function SimSwapCard({ phone, notify }: { phone: string; notify: (s: string) => void }) {
   const [answer, setAnswer] = useState<SimSwapAnswer | null>(null);
-  // The three actions change or read one SIM, so each waits for the others.
   const { run, busy, busyOn } = useActions((e) => notify(e.message));
   useEffect(() => setAnswer(null), [phone]);
   const verdict =
@@ -630,7 +628,6 @@ function CallsPage({ config, phone, setPhone, notify, placed }: { config: SimCon
   useEffect(() => {
     void officialBankNumber(config.bank.name).then(setNumber);
   }, [config.bank.name]);
-  // One open session per customer: the agent screen follows the selected number's session.
   const listed = calls?.calls.find((c) => c.phone === phone && liveCall(c)) ?? null;
   const open = listed ?? (fresh && fresh.phone === phone && liveCall(fresh) && !calls?.calls.some((c) => c.id === fresh.id) ? fresh : null);
 
@@ -650,7 +647,6 @@ function CallsPage({ config, phone, setPhone, notify, placed }: { config: SimCon
       }
       reload();
     });
-  // Answered and End call act on the same call, so each waits for the other.
   const update = (status: 'answered' | 'ended') =>
     run(`call:${status}`, async () => {
       if (!open) return;
@@ -764,7 +760,7 @@ function TransfersPage({ config, notify }: { config: SimConfig; notify: (s: stri
   const shown = transfers.find((t) => t.id === selected) ?? transfers[0] ?? null;
   const receipt = copy.receipt.verdict;
   const kobo = Math.round(Number(amount.replace(/,/g, '')) * 100);
-  // An altered receipt starts from a real payment of a tenth of the amount, which must itself be at least NGN1.
+  // An altered receipt pays a tenth first, which must be at least NGN1.
   const amountOk = Number.isSafeInteger(kobo) && kobo >= (mode === 'fake_amount' ? 1000 : 100) && kobo <= 100_000_000_000;
   const paidPart = Math.round(kobo / 10);
   const modes: Scenario<ReceiptMode>[] = [

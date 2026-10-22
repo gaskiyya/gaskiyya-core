@@ -47,12 +47,14 @@ export class ApnsVoipPush implements VoipPush {
   private jwt: { value: string; issuedAt: number } | null = null;
   private session: ClientHttp2Session | null = null;
   readonly host: string;
+  private readonly timeoutMs: number;
 
   constructor(
     private cfg: ApnsConfig,
-    opts: { host?: string } = {},
+    opts: { host?: string; timeoutMs?: number } = {},
   ) {
     this.host = opts.host ?? (cfg.production ? 'https://api.push.apple.com' : 'https://api.sandbox.push.apple.com');
+    this.timeoutMs = opts.timeoutMs ?? 10_000;
   }
 
   get topic() {
@@ -108,6 +110,7 @@ export class ApnsVoipPush implements VoipPush {
       req.on('data', (d: string) => (text += d));
       req.on('end', () => {
         if (status === 200) return resolve();
+        if (status === 0) return reject(new Error('APNs request timed out'));
         let reason: string;
         try {
           reason = (JSON.parse(text) as { reason?: string }).reason ?? '';
@@ -117,7 +120,9 @@ export class ApnsVoipPush implements VoipPush {
         reject(new Error(`APNs ${status} ${reason}`.trim()));
       });
       req.on('error', reject);
-      req.setTimeout(10_000, () => req.close());
+      // A closed stream may never emit 'end'.
+      req.on('close', () => reject(new Error(status ? `APNs ${status} closed` : 'APNs request timed out')));
+      req.setTimeout(this.timeoutMs, () => req.close());
       req.end(body);
     });
   }

@@ -58,7 +58,6 @@ void main() {
     expect(code('4719'), findsOneWidget);
     final demo = state.links.firstWhere((l) => l.id == 'demobank');
     expect(demo.liveCalls.map((c) => c.code), ['9031', '1442']);
-    // One list for every bank, with one warning and one button under it.
     expect(find.text(Copy.I.t('call.mismatchMany')), findsOneWidget);
     expect(find.text(Copy.I.t('call.mismatch')), findsNothing);
     expect(find.text(Copy.I.t('app.calls.checkAgain')), findsOneWidget);

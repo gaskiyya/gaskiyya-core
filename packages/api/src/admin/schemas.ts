@@ -82,6 +82,17 @@ export const UpdateOrg = z
   .refine((o) => Object.keys(o).length > 0, 'nothing to change');
 export type UpdateOrg = z.infer<typeof UpdateOrg>;
 
+// Fields a bank may edit itself. Domains and sender IDs stay with Gaskiyya.
+export const ConsoleEditOrg = z
+  .strictObject({
+    technicalContact: Profile.technicalContact,
+    officialContacts: Profile.officialContacts,
+    officialApps: Profile.officialApps,
+    alertEmails: Profile.alertEmails,
+  })
+  .refine((o) => Object.keys(o).length > 0, 'nothing to change');
+export type ConsoleEditOrg = z.infer<typeof ConsoleEditOrg>;
+
 export const SuspendOrg = z.strictObject({ reason: text(500) });
 export const CreateClient = z.strictObject({ label: text(60) });
 export const RotateClient = z.strictObject({ graceMinutes: z.number().int().min(0).max(1440).default(0) });
