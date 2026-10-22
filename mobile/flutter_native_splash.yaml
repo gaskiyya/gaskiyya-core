@@ -1,6 +1,6 @@
 # Native launch screens for Android and iOS, shown until Flutter draws its
-# first frame. Colours match the app's background (AppColors.bg) so the hand-off
-# is seamless. Regenerate after changing this file or the artwork:
+# first frame. Colours match the app's background (AppColors.bg) so there is no
+# flash at the hand-off. Regenerate after changing this file or the artwork:
 #   dart run flutter_native_splash:create
 # Artwork in assets/splash is rendered from the brand mark (brand/gaskiya-logo.svg).
 flutter_native_splash:

@@ -75,35 +75,35 @@ Customers can't be expected to spot that. The bank's own records can, once every
 
 ## How customers check
 
-One question, a straight answer. Customers check inside their bank's own app through the Gaskiyya API, or in the Gaskiyya app. Either way, the answer comes from the bank's records.
+Customers check inside their bank's own app through the Gaskiyya API, or in the Gaskiyya app. Either way, the answer comes from the bank's records.
 
 1. **Paste it, share it, or snap it.** Copy a suspicious SMS or WhatsApp message, share it straight from your messages app, paste a link, or send a screenshot.
 2. **Fingerprinted on your phone.** Gaskiyya turns the message into a fingerprint on your phone. Only the fingerprint decides the result, never your words. To explain a result that is not confirmed, the text is sent once with long numbers hidden.
 3. **Your bank's records answer.** If your bank sent that exact message to your number, you'll see *Sent by your bank*, with the channel, date and time.
-4. **Not on record? You'll know why.** You'll see what your bank really sent you recently, and plain-language reasons the message looks like a scam.
+4. **If it's not on record, you'll know why.** You'll see what your bank really sent you recently, and plain-language reasons the message looks like a scam.
 
 Change one character and the check fails. Extra spaces don't matter. A changed letter, digit or dot does. The check is also tied to your phone number, so a real message forwarded to someone else will not verify for them.
 
 ## Calls
 
-A code only your bank can read to you. Caller ID can be faked. This can't. When your bank calls, Gaskiyya shows you a four-digit code at the same moment it appears on the agent's screen. If the caller can't read it, hang up.
+Caller ID can be faked, so Gaskiyya uses a code that only your bank can read to you. When your bank calls, Gaskiyya shows you a four-digit code at the same moment it appears on the agent's screen. If the caller can't read it, hang up.
 
 - The notice arrives the instant the bank dials.
 - The code expires after three minutes.
-- No call on record? Gaskiyya tells you the bank isn't calling.
+- With no call on record, Gaskiyya tells you the bank isn't calling.
 
 ## The app
 
 - **Check any link.** Lookalike addresses, shortened links and disguised characters are caught. Only your bank's registered domains pass.
 - **Know why it's fake.** Plain-language reasons, from urgent threats to links that aren't your bank's.
-- **Never asks for secrets.** No PIN, password, card number or one-time code. Ever. If something asks, it isn't us.
+- **Never asks for secrets.** Gaskiyya never asks for your PIN, password, card number or one-time code. If something asks, it isn't us.
 - **See what your bank really sent.** Your bank's recent messages to you, at a glance. Counts and types only, never the text.
 - **Easy to read, day or night.** Follows your phone's light or dark setting.
 - **Know who is calling.** When your bank calls, the app says so. When it isn't calling, the app says that too.
 
 ## Privacy
 
-Built so there's nothing to leak.
+Gaskiyya is built so there is nothing to leak.
 
 - **Your words stay on your phone.** Messages are fingerprinted on your device. The text is never sent or stored.
 - **No phone numbers stored.** Records hold scrambled keys only. Even a breach reveals no numbers and no messages.
@@ -112,7 +112,7 @@ Built so there's nothing to leak.
 
 ## For banks
 
-One API call. Fewer customers fooled.
+One API call per message, and fewer customers fooled.
 
 Register a fingerprint when you send. Announce calls before you dial. Customers verify in your app through the Gaskiyya API, or in the Gaskiyya app. No access to core banking, accounts or transactions. Run it in your own cloud, or ours.
 

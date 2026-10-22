@@ -22,7 +22,6 @@ button.link:hover { text-decoration: underline; }
 .notice.error { background: rgba(255, 59, 48, 0.1); color: var(--label); }
 .notice ul { margin: 6px 0 0; padding-left: 20px; }
 
-/* forms */
 .field { display: grid; gap: 6px; align-content: start; min-width: 0; }
 .field-label { font-size: 13px; font-weight: 600; color: var(--label); display: flex; align-items: center; gap: 8px; }
 .optional { font-size: 11px; font-weight: 500; color: var(--label-3); text-transform: uppercase; letter-spacing: 0.04em; }
@@ -52,7 +51,6 @@ textarea.mono { font-family: var(--mono); font-size: 13px; }
 .chip-item.mono { font-family: var(--mono); font-size: 12.5px; }
 .chip-item button { border: 0; background: transparent; cursor: pointer; color: var(--label-2); font-size: 16px; line-height: 1; padding: 0 4px; }
 
-/* stepper */
 .steps { list-style: none; display: flex; gap: 6px; padding: 0; margin: 0 0 18px; flex-wrap: wrap; }
 .steps button { display: inline-flex; align-items: center; gap: 8px; border: 0; background: var(--fill-2); color: var(--label-2); padding: 8px 14px 8px 8px; border-radius: 980px; font-size: 13.5px; font-weight: 500; cursor: pointer; }
 .steps button:disabled { cursor: default; }
@@ -67,7 +65,6 @@ textarea.mono { font-family: var(--mono); font-size: 13px; }
 .review-row { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 10px; padding: 6px 0; font-size: 14px; border-bottom: 1px solid var(--separator); }
 .review-row:last-child { border-bottom: 0; }
 
-/* tables */
 .table-wrap { overflow-x: auto; margin: 0 -4px; }
 .table { width: 100%; border-collapse: collapse; font-size: 14px; }
 .table th { text-align: left; font-size: 12px; font-weight: 600; color: var(--label-2); text-transform: uppercase; letter-spacing: 0.04em; padding: 8px 10px; border-bottom: 1px solid var(--separator); white-space: nowrap; }
@@ -79,7 +76,6 @@ textarea.mono { font-family: var(--mono); font-size: 13px; }
 .table.clickable tbody tr { cursor: pointer; transition: background 0.15s; }
 .table.clickable tbody tr:hover, .table.clickable tbody tr:focus { background: var(--fill-2); outline: none; }
 
-/* tabs */
 .tabs { display: flex; gap: 4px; margin: 0 0 20px; border-bottom: 1px solid var(--separator); overflow-x: auto; }
 .tabs button { border: 0; background: transparent; padding: 10px 14px; font-size: 14px; font-weight: 500; color: var(--label-2); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; display: inline-flex; gap: 6px; align-items: center; }
 .tabs button.on { color: var(--blue); border-bottom-color: var(--blue); font-weight: 650; }
@@ -110,7 +106,6 @@ textarea.mono { font-family: var(--mono); font-size: 13px; }
 .filters input { flex: 1; min-width: 220px; }
 .filters select { width: auto; }
 
-/* modal */
 .modal-backdrop { position: fixed; inset: 0; z-index: 40; background: rgba(0, 0, 0, 0.36); display: grid; place-items: center; padding: 16px; animation: fade 0.2s both; }
 .modal { width: min(560px, 100%); max-height: calc(100vh - 32px); overflow-y: auto; animation: rise 0.3s var(--spring) both; }
 .modal.wide { width: min(820px, 100%); }
@@ -121,7 +116,6 @@ textarea.mono { font-family: var(--mono); font-size: 13px; }
 .secret.is-secret { background: rgba(255, 149, 0, 0.12); }
 .toast-error { background: rgba(200, 30, 30, 0.92); }
 
-/* sign in */
 .signin-wrap { min-height: 100vh; display: grid; place-items: center; padding: 32px 16px; }
 .signin-col { width: min(380px, 100%); display: grid; gap: 20px; }
 .signin-head { display: grid; justify-items: center; gap: 6px; text-align: center; }
