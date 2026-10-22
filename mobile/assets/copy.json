@@ -1,5 +1,5 @@
 {
-  "_note": "The single source of fixed customer-facing text (CH-4). Every verdict screen and bot reply reads from here. Changing verdict wording needs a decision note in apps/web/docs/decisions.",
+  "_note": "The single source of fixed customer-facing text (CH-4). Every verdict screen and bot reply reads from here. Changing verdict wording needs a decision note in docs/decisions.",
   "verdict": {
     "confirmed": {
       "title": "Sent by your bank",

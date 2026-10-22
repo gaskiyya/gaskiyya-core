@@ -289,7 +289,7 @@ function SettingsPage({ notify }: { notify: (s: string, tone?: 'error') => void 
       <div className="page-head">
         <div>
           <h1>Platform</h1>
-          <p>Server-wide settings. These come from environment variables (apps/web/docs/CONFIGURATION.md) and change with a redeploy; per-organisation limits are set on each organisation.</p>
+          <p>Server-wide settings. These come from environment variables (docs/CONFIGURATION.md) and change with a redeploy; per-organisation limits are set on each organisation.</p>
         </div>
         <button className="btn secondary" onClick={() => void admin.refresh().then(() => (load(), notify('Registry reloaded from the store'))).catch((e: Error) => notify(e.message, 'error'))}>Reload registry</button>
       </div>

@@ -158,7 +158,7 @@ export function Section({ title, intro, children }: { title: string; intro?: Rea
 export function IdentitySection({ d, set, errs, editing }: SectionProps) {
   return (
     <Section title="Organisation" intro="Who the organisation is. The name is what customers see in every verdict.">
-      <Field label="Organisation ID" error={errs.id} help="Lowercase letters, digits and dashes, 3 to 32 characters. It becomes the iss claim of customer tokens and cannot change later." doc="apps/web/docs/CONFIGURATION.md, Tenant entry">
+      <Field label="Organisation ID" error={errs.id} help="Lowercase letters, digits and dashes, 3 to 32 characters. It becomes the iss claim of customer tokens and cannot change later." doc="docs/CONFIGURATION.md, Tenant entry">
         <input value={d.id} disabled={editing} placeholder="e.g. firstcitybank" onChange={(e) => set({ id: e.target.value.toLowerCase() })} />
       </Field>
       <Field label="Display name" error={errs.name} help="Short name shown to customers, e.g. in &quot;Sent by First City Bank&quot;.">
@@ -230,8 +230,8 @@ export function PublicSection({ d, set, errs }: SectionProps) {
 
 export function IntegrationSection({ d, set, errs }: SectionProps) {
   return (
-    <Section title="Integration" intro="How the organisation's systems and customers connect. The bank API reference (apps/web/banks.html) describes each call.">
-      <Field label="Customer token keys" error={[...(errs.tokenKeysUrl ?? []), ...(errs.tokenKeys ?? [])]} help="The JSON Web Key Set that verifies customer tokens: iss = organisation ID, sub = the customer's E.164 number, aud = gaskiya, ES256, RS256 or EdDSA, at most 15 minutes." doc="apps/web/docs/CONFIGURATION.md, tokenKeysUrl">
+    <Section title="Integration" intro="How the organisation's systems and customers connect. The bank API reference (site/banks.html) describes each call.">
+      <Field label="Customer token keys" error={[...(errs.tokenKeysUrl ?? []), ...(errs.tokenKeys ?? [])]} help="The JSON Web Key Set that verifies customer tokens: iss = organisation ID, sub = the customer's E.164 number, aud = gaskiya, ES256, RS256 or EdDSA, at most 15 minutes." doc="docs/CONFIGURATION.md, tokenKeysUrl">
         <div className="segmented" role="tablist">
           <button type="button" className={d.keysMode === 'url' ? 'on' : ''} onClick={() => set({ keysMode: 'url' })}>JWKS URL</button>
           <button type="button" className={d.keysMode === 'inline' ? 'on' : ''} onClick={() => set({ keysMode: 'inline' })}>Paste JWKS</button>
@@ -242,7 +242,7 @@ export function IntegrationSection({ d, set, errs }: SectionProps) {
           <textarea className="mono" rows={6} value={d.tokenKeysJson} placeholder='{ "keys": [ { "kty": "EC", "crv": "P-256", "x": "...", "y": "...", "kid": "k1" } ] }' onChange={(e) => set({ tokenKeysJson: e.target.value })} />
         )}
       </Field>
-      <Field label="Customer sign-in URL" optional error={errs.customerTokenUrl} help="Where the Gaskiyya app signs this organisation's customers in. It answers POST { phone } with { token, expiresIn } once the bank has authenticated the customer. Without it, customers verify only inside the organisation's own app." doc="apps/web/docs/CONFIGURATION.md, customerTokenUrl">
+      <Field label="Customer sign-in URL" optional error={errs.customerTokenUrl} help="Where the Gaskiyya app signs this organisation's customers in. It answers POST { phone } with { token, expiresIn } once the bank has authenticated the customer. Without it, customers verify only inside the organisation's own app." doc="docs/CONFIGURATION.md, customerTokenUrl">
         <input value={d.customerTokenUrl} placeholder="https://api.firstcitybank.ng/gaskiyya/customer-token" onChange={(e) => set({ customerTokenUrl: e.target.value })} />
       </Field>
       <Field label="Logo URL" optional error={errs.logoUrl} help="The organisation's own logo, shown in the Gaskiyya app when a customer signs in. A square PNG or JPEG of at least 256 by 256 pixels, served over https.">

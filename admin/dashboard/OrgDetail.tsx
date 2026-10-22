@@ -325,7 +325,7 @@ function AccessTab({ d, reload, notify }: { d: Detail; reload: () => void; notif
       <div className="card stack">
         <h2>Quick start</h2>
         <p className="muted small">
-          Send this to the organisation's engineers with the client ID. It holds no secret. The full reference is the bank API guide (<code>apps/web/banks.html</code>): batch registration, receipts, SIM swap checks, campaigns and metrics.
+          Send this to the organisation's engineers with the client ID. It holds no secret. The full reference is the bank API guide (<code>site/banks.html</code>): batch registration, receipts, SIM swap checks, campaigns and metrics.
         </p>
         <div className="code-block">
           <div className="row end"><Copy text={quickstart(origin, first?.clientId ?? '<client id>')} /></div>
