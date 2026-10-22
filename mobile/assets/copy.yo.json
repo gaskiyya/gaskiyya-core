@@ -152,7 +152,8 @@
       "fingerprintNote": "A n ya at\u1eb9ka ifiran\u1e63\u1eb9 naa lori foonu yii. At\u1eb9ka naa nikan ni a n fi ran\u1e63\u1eb9 lati \u1e63ay\u1eb9wo ifiran\u1e63\u1eb9 naa. Ti a ko ba j\u1eb9risi r\u1eb9, a o fi \u1ecdr\u1ecd naa ran\u1e63\u1eb9, p\u1eb9lu aw\u1ecdn n\u1ecdmba gigun ti a fi pam\u1ecd, lati \u1e63alaye idi.",
       "recentMessages": "Aw\u1ecdn ifiran\u1e63\u1eb9 aip\u1eb9",
       "demoInbox": "Apoti idanwo",
-      "inboxEmpty": "Aw\u1ecdn ifiran\u1e63\u1eb9 ti banki r\u1eb9 fi ran\u1e63\u1eb9 si n\u1ecdmba yii yoo han nibi. O tun le pin ifiran\u1e63\u1eb9 eyikeyi si Gaskiyya lati app miiran."
+      "inboxEmpty": "Aw\u1ecdn ifiran\u1e63\u1eb9 ti banki r\u1eb9 fi ran\u1e63\u1eb9 si n\u1ecdmba yii yoo han nibi. O tun le pin ifiran\u1e63\u1eb9 eyikeyi si Gaskiyya lati app miiran.",
+      "newMessage": "\u00ccfir\u00e1n\u1e63\u1eb9\u0301 tuntun. T\u1eb9\u0300 \u1eb9\u0301 l\u00e1ti \u1e63\u00e0y\u1eb9\u0300w\u00f2 r\u1eb9\u0300."
     },
     "result": {
       "linkCheck": "Ay\u1eb9wo link",
@@ -179,6 +180,10 @@
       "answer": "Gbe e",
       "decline": "K\u1ecd \u1ecd",
       "callerName": "{bank} \u00b7 Koodu {code}",
+      "unverifiedCaller": "{caller} \u00b7 Gaskiyya ko j\u1eb9risi r\u1eb9",
+      "unverified": "Gaskiyya ko j\u1eb9risi ipe yii. Ma \u1e63e fun \u1eb9nik\u1eb9ni ni koodu, PIN tabi \u1ecdr\u1ecd igbaniw\u1ecdle.",
+      "notVerified": "Gaskiyya ko j\u1eb9risi r\u1eb9",
+      "empty": "Ko si ipe sib\u1eb9sib\u1eb9",
       "noneCalling": "Ko si \u1ecdkan ninu aw\u1ecdn banki r\u1eb9 to n pe \u1ecd",
       "outcome": {
         "ringing": "O n pe bayii",

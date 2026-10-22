@@ -67,20 +67,32 @@ enum ShieldSetup {
 // CallKit: the iPhone call screen and the ringtone chosen in Settings > Sounds. The caller name on
 // that screen is the calling bank's name and the call code ("DemoBank · Code 4821"), so the person
 // compares the code there; the app draws no call screen of its own. Answering plays the same agent
-// voice as the console's simulated phone. What happens on the call screen (rang, answered, ended,
-// missed) goes to Flutter as "callEvent" for the call log, held in UserDefaults until Flutter asks
-// for them with "drainEvents".
+// voice as the console's simulated phone, saying the code again and again until the call ends.
+// What happens on the call screen (rang, answered, ended, missed, closed by the bank) goes to Flutter
+// as "callEvent" for the call log, held in UserDefaults until Flutter asks for them with "drainEvents".
+//
+// Both ends hang up together. Answering or ending here tells the registry with the call's own token
+// (sent with the ring), so it works with the app closed; the agent's console then ends its side. While
+// a call rings or is on, the registry is asked every few seconds whether the agent has hung up, and
+// the call ends here too (Apple wants every VoIP push to ring a new call, so no push says "ended").
+//
+// The demo's fraud call ("unverified") rings the same way with the spoofed caller and no code, says
+// it is not verified by Gaskiyya, and plays no agent voice.
 final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
   private static let tokenKey = "gk.voipToken"
   private static let eventsKey = "gk.callEvents"
   private static let labelsKey = "gk.callLabels"
+  private static let apiKey = "gk.apiUrl"
   private static let ringSeconds: TimeInterval = 30
+  private static let pollSeconds: TimeInterval = 3
 
   private struct Incoming {
     let callId: String
     let orgId: String
     let bank: String
     let code: String
+    let token: String
+    let unverified: Bool
     var answered = false
     var timeout: DispatchWorkItem?
   }
@@ -93,6 +105,7 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
   private var rung: Set<String> = []
   private var voice: AgentVoice?
   private var listening = false
+  private var poll: Timer?
 
   override init() {
     let config = CXProviderConfiguration()
@@ -126,10 +139,17 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
         // The call screen's words in the app's language, kept for calls that ring while the app is closed.
         BankCalls.saveLabels(call.arguments)
         result(nil)
+      case "config":
+        // The registry's address, kept so the call screen can answer and end calls with the app closed.
+        if let url = (call.arguments as? [String: Any])?["apiUrl"] as? String, !url.isEmpty {
+          UserDefaults.standard.set(url, forKey: BankCalls.apiKey)
+        }
+        result(nil)
       case "ring":
         // The app heard the call on its live connection; rings the same way without waiting for a VoIP push.
         if let p = call.arguments as? [String: Any], let id = p["callId"] as? String, self?.rung.contains(id) == false {
           BankCalls.saveLabels(p["labels"])
+          if let url = p["apiUrl"] as? String, !url.isEmpty { UserDefaults.standard.set(url, forKey: BankCalls.apiKey) }
           self?.incoming(p) {}
         }
         result(nil)
@@ -168,9 +188,12 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
 
   private func incoming(_ p: [AnyHashable: Any], completion: @escaping () -> Void) {
     let callId = p["callId"] as? String ?? UUID().uuidString
+    let unverified = (p["kind"] as? String) == "unverified"
     let bank = p["bank"] as? String ?? "Your bank"
-    let code = (p["code"] as? String ?? "").filter(\.isNumber)
+    // An unverified call never shows a code, whatever the payload says.
+    let code = unverified ? "" : (p["code"] as? String ?? "").filter(\.isNumber)
     let orgId = p["orgId"] as? String ?? ""
+    let token = p["token"] as? String ?? ""
     let expiresAt = (p["expiresAt"] as? String).flatMap(BankCalls.parseDate)
     let uuid = ids[callId] ?? UUID()
     ids[callId] = uuid
@@ -178,7 +201,7 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
 
     let update = CXCallUpdate()
     update.remoteHandle = CXHandle(type: .generic, value: bank)
-    update.localizedCallerName = BankCalls.callerName(bank: bank, code: code)
+    update.localizedCallerName = unverified ? BankCalls.unverifiedName(caller: bank) : BankCalls.callerName(bank: bank, code: code)
     update.hasVideo = false
     update.supportsHolding = false
     update.supportsGrouping = false
@@ -191,7 +214,7 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
       defer { completion() }
       guard let self, error == nil else { return }
       let ringFor = min(BankCalls.ringSeconds, expiresAt?.timeIntervalSinceNow ?? BankCalls.ringSeconds)
-      let call = Incoming(callId: callId, orgId: orgId, bank: bank, code: code)
+      let call = Incoming(callId: callId, orgId: orgId, bank: bank, code: code, token: token, unverified: unverified)
       self.emit("rang", call)
       if ringFor <= 0 {
         self.provider.reportCall(with: uuid, endedAt: nil, reason: .unanswered)
@@ -200,8 +223,11 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
         return
       }
       let timeout = DispatchWorkItem { [weak self] in self?.missed(uuid) }
-      self.calls[uuid] = Incoming(callId: callId, orgId: orgId, bank: bank, code: code, timeout: timeout)
+      var ringing = call
+      ringing.timeout = timeout
+      self.calls[uuid] = ringing
       DispatchQueue.main.asyncAfter(deadline: .now() + ringFor, execute: timeout)
+      self.watch()
       BankCalls.trace("ringing \(update.localizedCallerName ?? "") for \(Int(ringFor))s")
     }
   }
@@ -247,6 +273,7 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
     calls.values.forEach { $0.timeout?.cancel() }
     calls.removeAll()
     ids.removeAll()
+    stopWatching()
   }
 
   func provider(_ provider: CXProvider, perform action: CXAnswerCallAction) {
@@ -254,12 +281,16 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
     call.timeout?.cancel()
     call.answered = true
     calls[action.callUUID] = call
-    // .voiceChat adds voice processing that turns playback down; nothing is recorded, so plain playback is louder.
-    try? AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .default, options: [])
     voice?.stop()
-    voice = AgentVoice(orgId: call.orgId, code: call.code)
+    voice = nil
+    if !call.unverified {
+      // .voiceChat adds voice processing that turns playback down; nothing is recorded, so plain playback is louder.
+      try? AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .default, options: [])
+      voice = AgentVoice(orgId: call.orgId, code: call.code)
+    }
     action.fulfill()
     emit("answered", call)
+    report("answer", call)
     BankCalls.trace("answered")
   }
 
@@ -272,6 +303,7 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
     voice?.stop()
   }
 
+  // The person declined or hung up on the call screen: the agent's call ends too.
   func provider(_ provider: CXProvider, perform action: CXEndCallAction) {
     if let call = calls[action.callUUID] {
       if call.answered {
@@ -279,6 +311,7 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
         voice = nil
       }
       emit("ended", call)
+      report("end", call)
     }
     forget(action.callUUID)
     action.fulfill()
@@ -288,6 +321,70 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
   func provider(_ provider: CXProvider, perform action: CXSetMutedCallAction) {
     voice?.muted = action.isMuted
     action.fulfill()
+  }
+
+  // MARK: Registry
+
+  private func request(_ action: String, _ call: Incoming) -> URLRequest? {
+    guard !call.token.isEmpty, var base = UserDefaults.standard.string(forKey: BankCalls.apiKey) else { return nil }
+    while base.hasSuffix("/") { base.removeLast() }
+    let id = call.callId.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? call.callId
+    guard let url = URL(string: "\(base)/v1/calls/\(id)/\(action)") else { return nil }
+    var r = URLRequest(url: url, timeoutInterval: 10)
+    r.httpMethod = "POST"
+    r.setValue("application/json", forHTTPHeaderField: "content-type")
+    r.httpBody = try? JSONSerialization.data(withJSONObject: ["token": call.token])
+    return r
+  }
+
+  // Tells the registry the person answered or ended, with a little background time so it goes out
+  // even as iOS suspends the app. Flutter sends the same again when it runs; the registry ignores repeats.
+  private func report(_ action: String, _ call: Incoming) {
+    guard let req = request(action, call) else { return }
+    var task = UIBackgroundTaskIdentifier.invalid
+    let done = {
+      guard task != .invalid else { return }
+      UIApplication.shared.endBackgroundTask(task)
+      task = .invalid
+    }
+    task = UIApplication.shared.beginBackgroundTask(withName: "gk.call.\(action)") { done() }
+    URLSession.shared.dataTask(with: req) { _, response, error in
+      BankCalls.trace("report \(action): \((response as? HTTPURLResponse)?.statusCode ?? 0) \(error?.localizedDescription ?? "")")
+      DispatchQueue.main.async { done() }
+    }.resume()
+  }
+
+  // While a call rings or is on, asks whether the agent has hung up.
+  private func watch() {
+    guard poll == nil else { return }
+    poll = Timer.scheduledTimer(withTimeInterval: BankCalls.pollSeconds, repeats: true) { [weak self] _ in self?.check() }
+  }
+
+  private func stopWatching() {
+    poll?.invalidate()
+    poll = nil
+  }
+
+  private func check() {
+    if calls.isEmpty { return stopWatching() }
+    for call in calls.values {
+      guard let req = request("status", call) else { continue }
+      URLSession.shared.dataTask(with: req) { [weak self] data, response, _ in
+        guard (response as? HTTPURLResponse)?.statusCode == 200, let data,
+          let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+          let status = json["status"] as? String, status == "ended" || status == "expired"
+        else { return }
+        DispatchQueue.main.async { self?.closed(call.callId) }
+      }.resume()
+    }
+  }
+
+  // The bank (or the console) ended the call: the call screen goes away and the voice stops at once.
+  private func closed(_ callId: String) {
+    guard let uuid = ids[callId], let call = calls[uuid] else { return }
+    end(callId: callId, reason: .remoteEnded)
+    emit("closed", call)
+    BankCalls.trace("closed by the other side")
   }
 
   // MARK: Helpers
@@ -311,10 +408,11 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
   }
 
   private func emit(_ event: String, _ call: Incoming) {
-    let e: [String: Any] = [
+    var e: [String: Any] = [
       "event": event, "callId": call.callId, "orgId": call.orgId, "bank": call.bank, "code": call.code,
       "at": Int(Date().timeIntervalSince1970 * 1000),
     ]
+    if call.unverified { e["kind"] = "unverified" }
     if listening, let channel {
       channel.invokeMethod("callEvent", arguments: e)
       return
@@ -330,6 +428,7 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
     } else {
       ids = ids.filter { $0.value != uuid }
     }
+    if calls.isEmpty { stopWatching() }
   }
 
   // What the iPhone call screen shows as the caller: the calling bank and its code, e.g. "DemoBank · Code 4821",
@@ -339,6 +438,13 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
     let labels = UserDefaults.standard.dictionary(forKey: labelsKey) as? [String: String]
     let template = labels?["caller"].flatMap { $0.contains("{bank}") && $0.contains("{code}") ? $0 : nil } ?? "{bank} · Code {code}"
     return template.replacingOccurrences(of: "{bank}", with: bank).replacingOccurrences(of: "{code}", with: code)
+  }
+
+  // A call nobody vouches for (the demo's fraud call): the name it shows, and that Gaskiyya has not verified it.
+  static func unverifiedName(caller: String) -> String {
+    let labels = UserDefaults.standard.dictionary(forKey: labelsKey) as? [String: String]
+    let template = labels?["unverifiedCaller"].flatMap { $0.contains("{caller}") ? $0 : nil } ?? "{caller} · Not verified by Gaskiyya"
+    return template.replacingOccurrences(of: "{caller}", with: caller)
   }
 
   private static func saveLabels(_ value: Any?) {
@@ -356,16 +462,20 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
 }
 
 // The agent's voice, timed like console/src/device/agentVoice.ts: the organisation's opening
-// ("Hello, good day. I am calling from DemoBank. Your code is"), then each digit of the code,
-// using the same clips (assets/audio/agent) and the pauses in voice.json.
+// ("Hello, good day. I am calling from DemoBank. Your code is") once, then each digit of the code,
+// then the code again after a short pause, round after round until the call ends (stop()). Same
+// clips (assets/audio/agent) and pauses (voice.json) as the console.
 final class AgentVoice {
   private let ids: [String]
-  private var pauses: (afterOpening: TimeInterval, betweenDigits: TimeInterval) = (0.38, 0.24)
-  private var players: [AVAudioPlayer] = []
+  private var pauses: (afterOpening: TimeInterval, betweenDigits: TimeInterval, betweenRepeats: TimeInterval) = (0.38, 0.24, 1.8)
+  private var opening: AVAudioPlayer?
+  private var digits: [AVAudioPlayer] = []
+  private var next: DispatchWorkItem?
   private var started = false
+  private var stopped = false
 
   var muted = false {
-    didSet { players.forEach { $0.volume = muted ? 0 : 1 } }
+    didSet { ([opening].compactMap { $0 } + digits).forEach { $0.volume = muted ? 0 : 1 } }
   }
 
   init(orgId: String, code: String) {
@@ -376,7 +486,7 @@ final class AgentVoice {
     {
       clips = Set((json["clips"] as? [String: Any])?.keys.map { $0 } ?? [])
       if let p = json["pauses"] as? [String: Double] {
-        pauses = ((p["afterOpening"] ?? 380) / 1000, (p["betweenDigits"] ?? 240) / 1000)
+        pauses = ((p["afterOpening"] ?? 380) / 1000, (p["betweenDigits"] ?? 240) / 1000, (p["betweenRepeats"] ?? 1800) / 1000)
       }
     }
     let opening = clips.contains("opening-\(orgId)") ? "opening-\(orgId)" : "opening-generic"
@@ -385,25 +495,44 @@ final class AgentVoice {
   }
 
   func start() {
-    guard !started else { return }
+    guard !started, !stopped else { return }
     started = true
-    let loaded = ids.compactMap { id in AgentVoice.asset("\(id).wav").flatMap { try? AVAudioPlayer(contentsOf: $0) }.map { (id, $0) } }
-    players = loaded.map(\.1)
-    guard let first = players.first else { return BankCalls.trace("voice clips missing") }
-    let now = first.deviceCurrentTime
-    var at = now + 0.6
-    for (i, (id, player)) in loaded.enumerated() {
+    let loaded = ids.map { id in AgentVoice.asset("\(id).wav").flatMap { try? AVAudioPlayer(contentsOf: $0) } }
+    guard let first = loaded.first ?? nil else { return BankCalls.trace("voice clips missing") }
+    opening = first
+    digits = loaded.dropFirst().compactMap { $0 }
+    for player in [first] + digits {
       player.volume = muted ? 0 : 1
       player.prepareToPlay()
-      player.play(atTime: at)
-      BankCalls.trace(String(format: "voice %@ at +%.2fs (%.2fs)", id, at - now, player.duration))
-      at += player.duration + (i == 0 ? pauses.afterOpening : pauses.betweenDigits)
     }
+    let at = first.deviceCurrentTime + 0.6
+    first.play(atTime: at)
+    round(at: at + first.duration + pauses.afterOpening)
+  }
+
+  // One saying of the code from `start`, then the next round is queued just before this one ends.
+  private func round(at start: TimeInterval) {
+    guard !stopped, let clock = opening, !digits.isEmpty else { return }
+    var at = start
+    for (i, player) in digits.enumerated() {
+      player.currentTime = 0
+      player.play(atTime: at)
+      at += player.duration + (i < digits.count - 1 ? pauses.betweenDigits : 0)
+    }
+    let nextAt = at + pauses.betweenRepeats
+    let work = DispatchWorkItem { [weak self] in self?.round(at: nextAt) }
+    next = work
+    DispatchQueue.main.asyncAfter(deadline: .now() + max(0, nextAt - clock.deviceCurrentTime - 0.3), execute: work)
   }
 
   func stop() {
-    players.forEach { $0.stop() }
-    players.removeAll()
+    stopped = true
+    next?.cancel()
+    next = nil
+    opening?.stop()
+    digits.forEach { $0.stop() }
+    opening = nil
+    digits.removeAll()
   }
 
   private static func asset(_ name: String) -> URL? {

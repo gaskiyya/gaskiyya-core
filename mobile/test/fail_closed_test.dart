@@ -103,8 +103,11 @@ void main() {
       registry.failingCallChecks.clear();
       registry.calling.clear();
       await settle();
-      expect(find.text(Copy.I.t('app.calls.noneCalling')), findsOneWidget);
+      // Checked and nobody is calling: a calm tab, with no "not calling" warning and nothing to check again.
       expect(find.text(Copy.I.t('verdict.cannot_check.title')), findsNothing);
+      expect(find.text(Copy.I.t('app.calls.noneCalling')), findsNothing);
+      expect(find.text(Copy.I.t('app.calls.howItWorks')), findsOneWidget);
+      expect(find.text(Copy.I.t('app.calls.checkAgain')), findsNothing);
       await tester.pumpWidget(hostWith(const SizedBox()));
       state.dispose();
       await registry.close();

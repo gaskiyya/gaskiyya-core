@@ -30,8 +30,13 @@ String _formatTime(DateTime d) => '${d.hour.toString().padLeft(2, '0')}:${d.minu
 String formatNaira(int kobo) => 'NGN${formatKobo(kobo)}';
 
 class ReceiptScreen extends StatefulWidget {
-  const ReceiptScreen({super.key, required this.client, this.reader, this.pickImage, this.now});
+  const ReceiptScreen({super.key, required this.client, this.reader, this.pickImage, this.now, this.amountKobo, this.reference, this.valueDate});
   final GaskiyaClient client;
+
+  /// Filled in from a payment alert the person tapped, so the receipt is ready to check.
+  final int? amountKobo;
+  final String? reference;
+  final String? valueDate;
 
   final TextReader? reader;
 
@@ -63,6 +68,9 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
   @override
   void initState() {
     super.initState();
+    if (widget.amountKobo != null) _amount.text = formatKobo(widget.amountKobo!);
+    if (widget.reference != null) _reference.text = widget.reference!;
+    if (widget.valueDate != null && RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(widget.valueDate!)) _date = widget.valueDate!;
     _load();
   }
 

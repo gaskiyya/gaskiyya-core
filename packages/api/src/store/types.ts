@@ -218,6 +218,9 @@ export interface CallSession {
   status: CallStatus;
   openedAt: string;
   expiresAt: string;
+  endedBy?: 'agent' | 'customer';
+  // The customer ended it before answering.
+  declined?: boolean;
 }
 
 export interface VerificationLog {
@@ -323,7 +326,7 @@ export interface Store {
   putCall(call: CallSession): Promise<void>;
   getCall(tenantId: string, id: string): Promise<CallSession | null>;
   openCalls(tenantId: string, recipientKey: string, now: Date): Promise<CallSession[]>;
-  updateCall(tenantId: string, id: string, patch: Partial<Pick<CallSession, 'status' | 'expiresAt'>>): Promise<CallSession | null>;
+  updateCall(tenantId: string, id: string, patch: Partial<Pick<CallSession, 'status' | 'expiresAt' | 'endedBy' | 'declined'>>): Promise<CallSession | null>;
 
   logVerification(log: VerificationLog): Promise<void>;
   countSimSwap(tenantId: string, key: string): Promise<void>;
@@ -390,6 +393,8 @@ export interface Store {
   deleteConsoleSession(idHash: string): Promise<void>;
   recordAppUser(tenantId: string, phone: string, at: string): Promise<AppUser>;
   listAppUsers(tenantId: string, limit: number): Promise<AppUser[]>;
+  /** Drops a number from the console's customer list. True if it was listed; missing is not an error. */
+  removeAppUser(tenantId: string, phone: string): Promise<boolean>;
   recordApiCall(event: ApiCallEvent): Promise<void>;
   apiUsage(tenantId: string, days: string[]): Promise<ApiUsageDay[]>;
   apiErrors(tenantId: string, limit: number): Promise<ApiCallEvent[]>;

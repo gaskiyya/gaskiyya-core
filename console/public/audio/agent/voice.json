@@ -5,7 +5,8 @@
   "sampleRate": 24000,
   "pauses": {
     "afterOpening": 380,
-    "betweenDigits": 240
+    "betweenDigits": 240,
+    "betweenRepeats": 1800
   },
   "clips": {
     "opening-demobank": {

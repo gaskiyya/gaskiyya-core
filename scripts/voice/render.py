@@ -23,7 +23,8 @@ OPENINGS = {
     "zb": "Hello, good day. I am calling from ZB Demo Bank. Your code is",
     "generic": "Hello, good day. I am calling from your bank. Your code is",
 }
-PAUSES = {"afterOpening": 380, "betweenDigits": 240}
+# betweenRepeats: the gap before the agent says the code again; the code repeats until the call ends.
+PAUSES = {"afterOpening": 380, "betweenDigits": 240, "betweenRepeats": 1800}
 DIGITS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
 SOUNDS_LIKE = {"too": "two", "to": "two", "won": "one", "for": "four", "fore": "four", "ate": "eight", "oh": "zero", "o": "zero"}
 HARVEST = ["".join(str((i + k) % 10) for k in (1, 3, 7)) + str(i) for i in range(10)]

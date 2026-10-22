@@ -1,12 +1,20 @@
 import { EventEmitter } from 'node:events';
 
 export interface CallNotice {
-  type: 'call.opened' | 'call.closed';
+  // call.unverified: the demo's fraud call, ringing from a spoofed number. It has no code and no session.
+  type: 'call.opened' | 'call.closed' | 'call.unverified';
   callId: string;
   bank: string;
   purpose: string;
   code: string | null;
   expiresAt: string;
+  // call.opened and call.unverified: lets the phone answer or end this one call without the app running.
+  token?: string;
+  // call.closed: who ended it.
+  endedBy?: 'agent' | 'customer';
+  // call.unverified: the name and number the caller shows.
+  caller?: string;
+  number?: string;
 }
 
 export interface AdvisoryNotice {
@@ -17,7 +25,40 @@ export interface AdvisoryNotice {
   expiresAt: string;
 }
 
-export type Notice = CallNotice | AdvisoryNotice;
+/**
+ * A demo message the bank console placed in a customer's demo inbox (simulator only). It plays the
+ * part of the phone's own SMS or WhatsApp alert, so it carries the sender and a short preview. The
+ * registry never stores it: the text lives only in the simulator's in-memory demo inbox.
+ */
+export interface MessageNotice {
+  type: 'message.received';
+  itemId: string;
+  orgId: string;
+  from: string;
+  preview: string;
+  channel: 'sms' | 'whatsapp';
+}
+
+/**
+ * A demo payment alert (simulator only): a transfer the console made, or a fake receipt it sent.
+ * "transfer.received" goes to the payee, who can check the receipt in the app; "transfer.sent" to
+ * the payer. It never says whether the receipt is genuine: checking it is the point.
+ */
+export interface TransferNotice {
+  type: 'transfer.received' | 'transfer.sent';
+  transferId: string;
+  orgId: string;
+  from: string;
+  amountKobo: number;
+  // Last four digits only.
+  accountLast4: string;
+  reference: string;
+  valueDate: string;
+}
+
+export type DemoNotice = MessageNotice | TransferNotice;
+
+export type Notice = CallNotice | AdvisoryNotice | DemoNotice;
 
 export interface PushProvider {
   send(token: string, notice: Notice): Promise<void>;

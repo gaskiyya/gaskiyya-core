@@ -112,6 +112,9 @@ export const device = {
   explain: (phone: string, text: string) => registry<Explained>(phone, 'POST', '/v1/explain', { maskedText: maskDigits(text), language: 'en' }).catch(() => null),
   checkCall: (phone: string): Promise<CallState> =>
     registry<OpenCall>(phone, 'GET', '/v1/calls/open').then(callState, () => callState(null)),
+  // The customer answering or hanging up on this phone: the agent's call ends with it.
+  answerCall: (phone: string, id: string) => registry<{ status: string }>(phone, 'POST', `/v1/calls/${encodeURIComponent(id)}/answer`, {}),
+  endCall: (phone: string, id: string) => registry<{ status: string }>(phone, 'POST', `/v1/calls/${encodeURIComponent(id)}/end`, {}),
   report: (phone: string, text: string, indicators: string[]) =>
     registry<{ id: string }>(phone, 'POST', '/v1/reports', { maskedText: maskDigits(text), consent: true, indicators }),
   activity: (phone: string) => registry<{ recentActivity: ActivityItem[]; activityText: string; bank: string }>(phone, 'GET', '/v1/activity'),

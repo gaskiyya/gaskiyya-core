@@ -6,7 +6,7 @@ import { MemoryVoipPush } from '../packages/api/src/channels/voip.ts';
 import { MemoryPush } from '../packages/api/src/channels/channels.ts';
 import { MemoryStore } from '../packages/api/src/store/memory.ts';
 import { buildSimulator, DEMO_CUSTOMERS, knowsNumber } from '../packages/api/src/simulator/index.ts';
-import { BANK_CLIENT, clientFor, TENANT, TOKEN_SECRET } from './helpers.ts';
+import { BANK_CLIENT, clientFor, TENANT, testStore, TOKEN_SECRET } from './helpers.ts';
 
 const NEWCOMER = '+2348161234567';
 const CONSOLE = { authorization: 'Bearer console-session' };
@@ -150,5 +150,49 @@ describe('app users: anyone who signs in by number is a demo bank customer the c
     const fake = await asConsole('POST', '/sim/send-fake', { phone: NEWCOMER, template: 0 });
     expect(fake.statusCode).toBe(200);
     expect((await registry(token, 'POST', '/v1/verify/message', { contentDigest: contentDigest(fake.json().item.text) })).body.verdict).toBe('not_confirmed');
+  });
+
+  it('the console removes a customer from its list only; signing in again lists them again', async () => {
+    const { token } = (await signIn(NEWCOMER)).json();
+    const sent = await asConsole('POST', '/sim/send', { phone: NEWCOMER, category: 'security_notice' });
+    expect(sent.statusCode).toBe(200);
+    const url = `/sim/customers/${encodeURIComponent(NEWCOMER)}`;
+    expect((await sim.app.inject({ method: 'DELETE', url })).statusCode).toBe(401);
+    expect((await sim.app.inject({ method: 'DELETE', url, headers: { authorization: 'Bearer wrong' } })).statusCode).toBe(401);
+    expect((await asConsole('GET', '/sim/customers/recent')).json().customers.map((c: { phone: string }) => c.phone)).toContain(NEWCOMER);
+
+    const removed = await sim.app.inject({ method: 'DELETE', url, headers: CONSOLE });
+    expect(removed.statusCode).toBe(204);
+    expect((await asConsole('GET', '/sim/customers/recent')).json().customers.map((c: { phone: string }) => c.phone)).not.toContain(NEWCOMER);
+    // Registry records are untouched: the message still checks as sent by the bank.
+    expect((await registry(token, 'POST', '/v1/verify/message', { contentDigest: contentDigest(sent.json().item.text) })).body.verdict).toBe('confirmed');
+
+    const again = await sim.app.inject({ method: 'DELETE', url, headers: CONSOLE });
+    expect(again.statusCode).toBe(404);
+    expect(again.json()).toMatchObject({ code: 'not_found' });
+    const bad = await sim.app.inject({ method: 'DELETE', url: '/sim/customers/12345', headers: CONSOLE });
+    expect(bad.statusCode).toBe(400);
+    expect(bad.json()).toMatchObject({ code: 'invalid_request' });
+
+    expect((await signIn(NEWCOMER)).statusCode).toBe(200);
+    expect((await asConsole('GET', '/sim/customers/recent')).json().customers[0]).toMatchObject({ phone: NEWCOMER });
+  });
+});
+
+describe('removeAppUser in the store', () => {
+  it('removes one number for one organisation, and is safe to repeat', async () => {
+    const store = testStore();
+    const at = new Date().toISOString();
+    await store.recordAppUser('demobank', NEWCOMER, at);
+    await store.recordAppUser('demobank', DEMO_CUSTOMERS[0]!.phone, at);
+    await store.recordAppUser('acme', NEWCOMER, at);
+    expect(await store.removeAppUser('demobank', NEWCOMER)).toBe(true);
+    expect((await store.listAppUsers('demobank', 10)).map((u) => u.phone)).toEqual([DEMO_CUSTOMERS[0]!.phone]);
+    expect((await store.listAppUsers('acme', 10)).map((u) => u.phone)).toEqual([NEWCOMER]);
+    expect(await store.removeAppUser('demobank', NEWCOMER)).toBe(false);
+    expect(await store.removeAppUser('nobody', '+2348000000000')).toBe(false);
+    const back = await store.recordAppUser('demobank', NEWCOMER, new Date(Date.now() + 1000).toISOString());
+    expect(back.firstSeenAt).not.toBe(at);
+    expect((await store.listAppUsers('demobank', 10)).map((u) => u.phone)).toContain(NEWCOMER);
   });
 });

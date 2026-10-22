@@ -30,9 +30,13 @@ class MainActivity : FlutterActivity() {
             val advisories = NotificationChannel("advisories", "Fraud warnings from your bank", NotificationManager.IMPORTANCE_DEFAULT).apply {
                 description = "Warnings your bank's fraud team approved about scams using its name."
             }
+            val messages = NotificationChannel("messages", "Messages and payment alerts", NotificationManager.IMPORTANCE_HIGH).apply {
+                description = "Messages and payment receipts your bank sent you, ready to check."
+            }
             val manager = getSystemService(NotificationManager::class.java)
             manager.createNotificationChannel(channel)
             manager.createNotificationChannel(advisories)
+            manager.createNotificationChannel(messages)
         }
     }
 

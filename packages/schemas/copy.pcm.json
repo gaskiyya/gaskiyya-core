@@ -152,7 +152,8 @@
       "fingerprintNote": "Na for this phone we dey fingerprint the message. Na only the fingerprint we dey send to check the message. If e no confirm, we go send the text, with long numbers hidden, to explain why.",
       "recentMessages": "Recent messages",
       "demoInbox": "Demo inbox",
-      "inboxEmpty": "Messages wey your bank send to this number go show here. You fit also share any message give Gaskiyya from another app."
+      "inboxEmpty": "Messages wey your bank send to this number go show here. You fit also share any message give Gaskiyya from another app.",
+      "newMessage": "New message don land. Tap am make you check am."
     },
     "result": {
       "linkCheck": "Link check",
@@ -179,6 +180,10 @@
       "answer": "Pick am",
       "decline": "No pick",
       "callerName": "{bank} \u00b7 Code {code}",
+      "unverifiedCaller": "{caller} \u00b7 Gaskiyya never confirm am",
+      "unverified": "Gaskiyya never confirm this call. No give anybody any code, PIN or password.",
+      "notVerified": "Gaskiyya never confirm am",
+      "empty": "No call yet",
       "noneCalling": "None of your banks dey call you",
       "outcome": {
         "ringing": "E dey call now",

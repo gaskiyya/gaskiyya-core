@@ -346,7 +346,7 @@ export class FirestoreStore implements Store {
       .sort((a, b) => Date.parse(b.openedAt) - Date.parse(a.openedAt));
   }
 
-  async updateCall(tenantId: string, id: string, patch: Partial<Pick<CallSession, 'status' | 'expiresAt'>>) {
+  async updateCall(tenantId: string, id: string, patch: Partial<Pick<CallSession, 'status' | 'expiresAt' | 'endedBy' | 'declined'>>) {
     const ref = this.c.calls.doc(id);
     return this.db.runTransaction(async (tx) => {
       const snap = await tx.get(ref);
@@ -617,6 +617,17 @@ export class FirestoreStore implements Store {
         const user: AppUser = { tenantId, phone, firstSeenAt: (snap.data() as AppUser | undefined)?.firstSeenAt ?? at, lastSeenAt: at };
         tx.set(ref, user);
         return user;
+      }),
+    );
+  }
+
+  async removeAppUser(tenantId: string, phone: string) {
+    const ref = this.a.appUsers.doc(hashId(tenantId, phone));
+    return timed(
+      this.db.runTransaction(async (tx) => {
+        const listed = (await tx.get(ref)).exists;
+        if (listed) tx.delete(ref);
+        return listed;
       }),
     );
   }

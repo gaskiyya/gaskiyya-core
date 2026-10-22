@@ -99,6 +99,7 @@ export function GaskiyyaApp({
   bank,
   items,
   callId,
+  spoofedCall = false,
   session,
   onSession,
   onCheck,
@@ -108,6 +109,8 @@ export function GaskiyyaApp({
   bank: string;
   items: InboxItem[];
   callId: string | null;
+  // A call is ringing or on that no bank announced (the fraudster's): the Calls tab warns while it lasts.
+  spoofedCall?: boolean;
   session: Session | null;
   onSession: (s: Session | null) => void;
   onCheck: (req: CheckReq) => void;
@@ -137,7 +140,7 @@ export function GaskiyyaApp({
   return (
     <div className="gk">
       {tab === 'check' && <CheckTab session={session} items={items} onCheck={onCheck} onLicence={onLicence} />}
-      {tab === 'calls' && <CallsTab session={session} callId={callId} />}
+      {tab === 'calls' && <CallsTab session={session} callId={callId} spoofedCall={spoofedCall} />}
       {tab === 'activity' && <ActivityTab session={session} />}
       {tab === 'settings' && <SettingsTab session={session} bank={bank} onAdd={() => setAdding(true)} onSignOut={() => onSession(null)} />}
       <nav className="gk-tabbar">
@@ -379,7 +382,7 @@ export function CodeDigits({ code, light }: { code: string; light?: boolean }) {
   );
 }
 
-function CallsTab({ session, callId }: { session: Session; callId: string | null }) {
+function CallsTab({ session, callId, spoofedCall }: { session: Session; callId: string | null; spoofedCall: boolean }) {
   const [state, setState] = useState<CallState | null>(null);
   const [checking, setChecking] = useState(false);
   const refresh = async () => {
@@ -389,7 +392,7 @@ function CallsTab({ session, callId }: { session: Session; callId: string | null
   };
   useEffect(() => {
     void refresh();
-  }, [session.phone, callId]);
+  }, [session.phone, callId, spoofedCall]);
   const bank = session.bankName;
   const again = <Primary label={copy.app.calls.checkAgain} icon={I.arrow_clockwise!()} loading={checking} onClick={() => void refresh()} />;
 
@@ -423,15 +426,23 @@ function CallsTab({ session, callId }: { session: Session; callId: string | null
         {again}
       </div>
     );
-  } else if (state.kind === 'not_calling') {
+  } else if (state.kind === 'not_calling' && spoofedCall) {
+    // A phone call is ringing that the bank never announced: it isn't the bank.
     body = (
       <div className="gk-reveal gk-center">
-        <img className="gk-art" src={art('call')} alt="" width={230} height={230} style={{ margin: '4px auto 0' }} />
-        <h2 className="gk-title1" style={{ margin: '6px 0 0' }}>{copy.call.not_calling.title}</h2>
+        <span style={{ color: 'var(--gk-red)', display: 'inline-flex' }}>{I.exclamationmark_shield_fill!({ size: 72 })}</span>
+        <h2 className="gk-title1" style={{ margin: '14px 0 0' }}>{fill(copy.official.org.notCallingTitle, { bank })}</h2>
         <p className="gk-callout" style={{ margin: '10px 8px 0', color: 'var(--gk-label-2)', lineHeight: 1.45 }}>{fill(copy.call.not_calling.body, { bank })}</p>
         <div style={{ height: 26 }} />
         {again}
-        <div style={{ height: 22 }} />
+      </div>
+    );
+  } else if (state.kind === 'not_calling') {
+    // Nobody is calling: a calm tab with how it works, and nothing to check again.
+    body = (
+      <div className="gk-reveal gk-center">
+        <img className="gk-art" src={art('call')} alt="" width={200} height={200} style={{ margin: '4px auto 0' }} />
+        <h2 className="gk-title2" style={{ margin: '6px 0 18px' }}>{copy.app.calls.empty}</h2>
         <div className="gk-card gk-row top" style={{ textAlign: 'left', gap: 14 }}>
           <span className="gk-icon-tile s36 green">{I.bolt_fill!({ size: 18 })}</span>
           <p className="gk-subhead gk-grow">{copy.app.calls.howItWorks}</p>

@@ -18,6 +18,7 @@ import {
   WelcomeEmails,
   TokenRequest,
   UpdateCall,
+  CustomerCallAction,
   VerifyContact,
   VerifyIndicators,
   VerifyLicence,
@@ -36,7 +37,7 @@ import { activitySummaryEmail, advisoryApprovedEmail, testEmail, welcomeEmail, t
 import type { RateLimiter, RateLimiterFactory } from './ratelimit/ratelimit.ts';
 import { registerAdminRoutes, type AdminDeps } from './admin/routes.ts';
 import { registerConsoleRoutes, type ConsoleDeps } from './console/routes.ts';
-import { CallInProgressError, type GaskiyaService, type Registered } from './service.ts';
+import { CallInProgressError, type CallParty, type GaskiyaService, type Registered } from './service.ts';
 import type { SimulatedMno } from './simswap/simswap.ts';
 import { featureOn, isSuspended, type ApiCallEvent, type OrgFeature, type Tenant } from './store/types.ts';
 import { cannotCheck, handleUssd } from './ussd.ts';
@@ -379,6 +380,12 @@ export function buildApp(deps: AppDeps) {
     return r;
   });
 
+  app.get<{ Params: { id: string } }>('/v1/calls/:id', { preHandler: [requireBank, needs('calls')] }, async (req, reply) => {
+    const r = await svc.getCallState(req.bank!.tenantId, req.params.id);
+    if (!r) return fail(reply, 404, 'not_found', 'No such call session');
+    return r;
+  });
+
   app.get('/v1/campaigns', { preHandler: requireBank }, async (req) => ({
     campaigns: await svc.store.listCampaigns(req.bank!.tenantId),
   }));
@@ -580,6 +587,30 @@ export function buildApp(deps: AppDeps) {
     const warnings = [...(result.warnings ?? []), ...(result.verdict === 'confirmed' ? [] : senderWarnings(extracted.sender, tenant.senderIds))];
     return { ...result, extractedText: extracted.text, sender: extracted.sender, warnings };
   });
+
+  // The phone answers, ends or checks one call. A customer reaches only calls to their own number; a call
+  // token (sent with the ring) reaches only its own call. Unknown and other people's calls are both 404.
+  const callParty = async (req: FastifyRequest, reply: FastifyReply): Promise<CallParty | undefined> => {
+    const body = parse(CustomerCallAction, req.body ?? {}, reply);
+    if (!body) return undefined;
+    if (req.headers.authorization) {
+      const customer = await customerAuth.verify(req.headers.authorization);
+      if (customer) return { tenant: customer.tenant, phone: customer.phone };
+      if (!body.token) return void fail(reply, 401, 'unauthorized', 'Valid customer token required');
+    }
+    if (body.token) return { token: body.token };
+    return void fail(reply, 401, 'unauthorized', 'Valid customer token or call token required');
+  };
+  const customerCall = (action: 'answered' | 'ended' | 'status') => async (req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+    const who = await callParty(req, reply);
+    if (!who) return;
+    const r = action === 'status' ? await svc.customerCallState(req.params.id, who) : await svc.customerUpdateCall(req.params.id, who, action);
+    if (!r) return fail(reply, 404, 'not_found', 'No such call');
+    return r;
+  };
+  app.post<{ Params: { id: string } }>('/v1/calls/:id/answer', customerCall('answered'));
+  app.post<{ Params: { id: string } }>('/v1/calls/:id/end', customerCall('ended'));
+  app.post<{ Params: { id: string } }>('/v1/calls/:id/status', customerCall('status'));
 
   app.get('/v1/calls/open', { preHandler: requireCustomer }, async (req) => {
     const { tenant, phone } = req.customer!;

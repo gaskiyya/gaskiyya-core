@@ -224,14 +224,16 @@ void main() {
       await registry.close();
     });
 
-    testWidgets('with no call from any organisation, the calls screen says so without listing them', (tester) async {
+    testWidgets('with no call from any organisation, the calls screen stays calm and lists none of them', (tester) async {
       phoneSize(tester);
       final registry = twoBanks();
       final state = await linkedState(registry, ['demobank', 'acme']);
       await tester.pumpWidget(hostWith(CallsScreen(state: state), disableAnimations: true));
       await tester.pump();
-      expect(find.text(Copy.I.t('app.calls.noneCalling')), findsOneWidget);
-      expect(find.text(Copy.I.t('call.not_calling.body', {'bank': Copy.I.t('app.common.yourBank')})), findsOneWidget);
+      expect(find.text(Copy.I.t('app.calls.noneCalling')), findsNothing);
+      expect(find.text(Copy.I.t('call.not_calling.body', {'bank': Copy.I.t('app.common.yourBank')})), findsNothing);
+      expect(find.text(Copy.I.t('app.calls.howItWorks')), findsOneWidget);
+      expect(find.text(Copy.I.t('app.calls.empty')), findsOneWidget);
       expect(find.textContaining('Acme Bank'), findsNothing);
       await tester.pumpWidget(hostWith(const SizedBox()));
       state.dispose();

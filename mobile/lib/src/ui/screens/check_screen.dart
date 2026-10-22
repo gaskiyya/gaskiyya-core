@@ -53,12 +53,23 @@ class _CheckScreenState extends State<CheckScreen> {
   void initState() {
     super.initState();
     _ctrl.addListener(() => setState(() {}));
+    widget.state.inboxChanged.addListener(_loadInbox);
+    widget.state.openMessage.addListener(_openPending);
+    widget.state.openReceipt.addListener(_openReceipt);
     _loadInbox();
     _poll = Timer.periodic(const Duration(seconds: 4), (_) => _loadInbox());
+    // A notification tapped before this screen was built.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _openPending();
+      _openReceipt();
+    });
   }
 
   @override
   void dispose() {
+    widget.state.inboxChanged.removeListener(_loadInbox);
+    widget.state.openMessage.removeListener(_openPending);
+    widget.state.openReceipt.removeListener(_openReceipt);
     _poll?.cancel();
     _ctrl.dispose();
     _focus.dispose();
@@ -69,6 +80,46 @@ class _CheckScreenState extends State<CheckScreen> {
     final id = widget.state.bank?.id;
     final items = await widget.state.inbox();
     if (mounted && id == widget.state.bank?.id) setState(() => _inbox = items);
+  }
+
+  bool _opening = false;
+
+  /// Opens the message a tapped notification points at, once it is in the inbox.
+  Future<void> _openPending() async {
+    final id = widget.state.openMessage.value;
+    if (id == null || _opening || !mounted) return;
+    _opening = true;
+    InboxMessage? item;
+    try {
+      item = _inbox.where((m) => m.id == id).firstOrNull;
+      if (item == null) {
+        final items = await widget.state.inbox();
+        if (mounted) setState(() => _inbox = items);
+        item = items.where((m) => m.id == id).firstOrNull;
+      }
+    } finally {
+      _opening = false;
+    }
+    if (!mounted) return;
+    if (widget.state.openMessage.value == id) widget.state.openMessage.value = null;
+    if (item == null) return;
+    // Over whatever was open on this tab, so the message is what the person sees.
+    Navigator.of(context).popUntil((r) => r.isFirst);
+    await _preview(item);
+  }
+
+  /// Opens the receipt check filled in from a tapped payment alert.
+  void _openReceipt() {
+    final r = widget.state.openReceipt.value;
+    if (r == null || !mounted) return;
+    final client = widget.state.clientFor(r.orgId);
+    widget.state.openReceipt.value = null;
+    if (client == null) return;
+    _focus.unfocus();
+    final nav = Navigator.of(context)..popUntil((route) => route.isFirst);
+    nav.push(CupertinoPageRoute<void>(
+      builder: (_) => ReceiptScreen(key: const ValueKey('receipt-from-alert'), client: client, amountKobo: r.amountKobo, reference: r.reference, valueDate: r.valueDate),
+    ));
   }
 
   Future<void> _paste() async {

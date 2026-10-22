@@ -66,6 +66,9 @@ export const IconKey = (p: P) => (
 export const IconArrow = (p: P) => (
   <svg {...base} {...p}><path d="M9 6l6 6-6 6" /></svg>
 );
+export const IconTrash = (p: P) => (
+  <svg {...base} {...p}><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4.5A1.5 1.5 0 0 1 10.5 3h3A1.5 1.5 0 0 1 15 4.5V7" /></svg>
+);
 export const IconExternal = (p: P) => (
   <svg {...base} {...p}><path d="M14 4h6v6M20 4l-9 9M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10" /></svg>
 );

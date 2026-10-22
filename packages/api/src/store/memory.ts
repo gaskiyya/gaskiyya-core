@@ -151,7 +151,7 @@ export class MemoryStore implements Store {
     return out.sort((a, b) => Date.parse(b.openedAt) - Date.parse(a.openedAt));
   }
 
-  async updateCall(tenantId: string, id: string, patch: Partial<Pick<CallSession, 'status' | 'expiresAt'>>) {
+  async updateCall(tenantId: string, id: string, patch: Partial<Pick<CallSession, 'status' | 'expiresAt' | 'endedBy' | 'declined'>>) {
     const c = await this.getCall(tenantId, id);
     if (!c) return null;
     const next = { ...c, ...patch };
@@ -408,6 +408,10 @@ export class MemoryStore implements Store {
     this.appUsers.delete(k);
     this.appUsers.set(k, user);
     return { ...user };
+  }
+
+  async removeAppUser(tenantId: string, phone: string) {
+    return this.appUsers.delete(pairKey(tenantId, phone));
   }
 
   async listAppUsers(tenantId: string, limit: number) {

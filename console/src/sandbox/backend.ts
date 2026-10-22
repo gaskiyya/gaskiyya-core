@@ -239,6 +239,13 @@ export function createSandbox() {
       case method === 'GET' && path === '/sim/customers/recent':
         return { status: 200, body: { customers: (await store.listAppUsers(BANK.id, APP_USERS_LISTED)).map(appUserView) } };
 
+      case method === 'DELETE' && path.startsWith('/sim/customers/'): {
+        const phone = decodeURIComponent(path.slice('/sim/customers/'.length));
+        if (!phoneOk(phone)) return fail(400, 'invalid_request', 'phone must be E.164');
+        if (!(await store.removeAppUser(BANK.id, phone))) return fail(404, 'not_found', 'This number is not on the customer list');
+        return { status: 204, body: undefined };
+      }
+
       case method === 'GET' && path === '/sim/inbox': {
         const who = session(auth);
         return who ? { status: 200, body: { items: (inbox.get(who.phone) ?? []).filter((i) => (i.tenantId ?? BANK.id) === who.tenantId) } } : fail(401, 'unauthorized', 'Customer token required');

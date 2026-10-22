@@ -68,18 +68,41 @@ class NativeCalls {
     } catch (_) {}
   }
 
-  Future<void> ring({required String callId, required String orgId, required String bank, required String code, required DateTime expiresAt}) async {
+  /// Rings the phone's call screen. [token] and [apiUrl] let it answer and end the call with the registry itself,
+  /// so the agent's side hangs up too. [unverified]: the demo's fraud call: [bank] is the name the caller shows,
+  /// there is no code, the screen says Gaskiyya has not verified it, and no agent voice plays.
+  Future<void> ring({
+    required String callId,
+    required String orgId,
+    required String bank,
+    required String code,
+    required DateTime expiresAt,
+    String? token,
+    String? apiUrl,
+    bool unverified = false,
+  }) async {
     if (!supported) return;
     try {
       await _channel.invokeMethod<void>('ring', {
         'callId': callId,
         'orgId': orgId,
         'bank': bank,
-        'code': code,
+        'code': unverified ? '' : code,
         'expiresAt': expiresAt.toUtc().toIso8601String(),
         'expiresInMs': expiresAt.difference(DateTime.now()).inMilliseconds,
         'labels': labels(),
+        'kind': unverified ? 'unverified' : 'bank',
+        'token': ?token,
+        'apiUrl': ?apiUrl,
       });
+    } catch (_) {}
+  }
+
+  /// Hands the iPhone the registry's address, for the call screen to answer and end calls with the app closed.
+  Future<void> sendConfig(String apiUrl) async {
+    if (!_ios) return;
+    try {
+      await _channel.invokeMethod<void>('config', {'apiUrl': apiUrl});
     } catch (_) {}
   }
 
@@ -95,6 +118,8 @@ class NativeCalls {
       'answer': c.t('app.calls.answer'),
       'decline': c.t('app.calls.decline'),
       'end': c.t('app.calls.end'),
+      'unverifiedCaller': c.t('app.calls.unverifiedCaller'),
+      'unverified': c.t('app.calls.unverified'),
     };
   }
 

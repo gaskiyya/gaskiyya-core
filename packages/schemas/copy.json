@@ -161,7 +161,8 @@
       "fingerprintNote": "Only a fingerprint is sent to check. If it isn't confirmed, the text is sent to explain why, with long numbers hidden.",
       "recentMessages": "Recent messages",
       "demoInbox": "Demo inbox",
-      "inboxEmpty": "Messages from your bank appear here. You can also share one from any app."
+      "inboxEmpty": "Messages from your bank appear here. You can also share one from any app.",
+      "newMessage": "New message. Tap to check it."
     },
     "result": {
       "linkCheck": "Link check",
@@ -188,6 +189,10 @@
       "answer": "Answer",
       "decline": "Decline",
       "callerName": "{bank} · Code {code}",
+      "unverifiedCaller": "{caller} · Not verified by Gaskiyya",
+      "unverified": "Gaskiyya has not verified this call. Don't share any code, PIN or password.",
+      "notVerified": "Not verified by Gaskiyya",
+      "empty": "No calls yet",
       "noneCalling": "None of your banks is calling you",
       "outcome": {
         "ringing": "Calling now",

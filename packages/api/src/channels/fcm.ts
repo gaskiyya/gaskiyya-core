@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { importPKCS8, SignJWT } from 'jose';
 import { copy } from '@gaskiya/schemas';
-import { InvalidPushTokenError, type AdvisoryNotice, type CallNotice, type Notice, type PushProvider } from './channels.ts';
+import { InvalidPushTokenError, type AdvisoryNotice, type CallNotice, type MessageNotice, type Notice, type PushProvider, type TransferNotice } from './channels.ts';
 
 export interface ServiceAccount {
   project_id: string;
@@ -69,7 +69,45 @@ export class FcmPush implements PushProvider {
 
   static message(token: string, n: Notice) {
     if ('advisoryId' in n) return FcmPush.advisoryMessage(token, n);
+    if ('itemId' in n) return FcmPush.demoMessage(token, n);
+    if ('transferId' in n) return FcmPush.transferMessage(token, n);
     return FcmPush.callMessage(token, n);
+  }
+
+  // A demo message alert, shown like the phone's own SMS or WhatsApp notification.
+  static demoMessage(token: string, n: MessageNotice) {
+    // The title already names the sender, so a "DemoBank:" prefix in the text is not repeated.
+    const sender = n.from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const body = n.preview.replace(new RegExp(`^${sender}\\s*:\\s*`, 'i'), '') || n.preview;
+    return {
+      token,
+      data: { type: n.type, itemId: n.itemId, orgId: n.orgId, bank: n.from, channel: n.channel },
+      notification: { title: n.channel === 'whatsapp' ? `${n.from} \u00b7 WhatsApp` : n.from, body },
+      android: { priority: 'HIGH', ttl: '86400s', notification: { channel_id: 'messages', tag: n.itemId } },
+      apns: {
+        headers: { 'apns-push-type': 'alert', 'apns-priority': '10', 'apns-collapse-id': n.itemId },
+        payload: { aps: { sound: 'default' } },
+      },
+    };
+  }
+
+  // A demo payment alert. The wording is the same for a genuine and a fake receipt: the app's check tells them apart.
+  static transferMessage(token: string, n: TransferNotice) {
+    const amount = `NGN${(n.amountKobo / 100).toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    const body =
+      n.type === 'transfer.received'
+        ? `${amount} paid into your account ****${n.accountLast4}. Tap to check the receipt.`
+        : `You sent ${amount} from ****${n.accountLast4}.`;
+    return {
+      token,
+      data: { type: n.type, transferId: n.transferId, orgId: n.orgId, bank: n.from, amountKobo: String(n.amountKobo), reference: n.reference, valueDate: n.valueDate },
+      notification: { title: n.from, body },
+      android: { priority: 'HIGH', ttl: '86400s', notification: { channel_id: 'messages', tag: n.transferId } },
+      apns: {
+        headers: { 'apns-push-type': 'alert', 'apns-priority': '10', 'apns-collapse-id': n.transferId },
+        payload: { aps: { sound: 'default' } },
+      },
+    };
   }
 
   static advisoryMessage(token: string, n: AdvisoryNotice) {
@@ -96,8 +134,31 @@ export class FcmPush implements PushProvider {
   }
 
   static callMessage(token: string, n: CallNotice) {
-    const data = { type: n.type, callId: n.callId, bank: n.bank, purpose: n.purpose, code: n.code ?? '', expiresAt: n.expiresAt };
+    const data = {
+      type: n.type,
+      callId: n.callId,
+      bank: n.bank,
+      purpose: n.purpose,
+      code: n.code ?? '',
+      expiresAt: n.expiresAt,
+      ...(n.token ? { token: n.token } : {}),
+      ...(n.endedBy ? { endedBy: n.endedBy } : {}),
+      ...(n.type === 'call.unverified' ? { caller: n.caller ?? '', number: n.number ?? '' } : {}),
+    };
     const ttlSeconds = Math.max(1, Math.round((Date.parse(n.expiresAt) - Date.now()) / 1000));
+    if (n.type === 'call.unverified') {
+      // The demo's spoofed call: rings the app's call screen with no code, and says nothing vouches for it.
+      return {
+        token,
+        data,
+        notification: { title: `${n.caller || n.bank} is calling`, body: `Not verified by Gaskiyya. ${n.bank} has no call open to you.` },
+        android: { priority: 'HIGH', ttl: `${ttlSeconds}s`, notification: { channel_id: 'calls', tag: n.callId } },
+        apns: {
+          headers: { 'apns-push-type': 'alert', 'apns-priority': '10', 'apns-collapse-id': n.callId },
+          payload: { aps: { sound: 'default' } },
+        },
+      };
+    }
     if (n.type === 'call.closed') {
       return {
         token,

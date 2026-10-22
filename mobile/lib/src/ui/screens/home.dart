@@ -36,6 +36,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   String? _bannerBank;
 
   String? _alertBank;
+  ArrivedNotice? _arrived;
 
   @override
   void initState() {
@@ -44,6 +45,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     widget.state.openCallsTab.addListener(_showCalls);
     widget.state.openAlerts.addListener(_showAlerts);
     widget.state.arrivedAlert.addListener(_onAlert);
+    widget.state.arrivedMessage.addListener(_onMessage);
+    widget.state.openMessage.addListener(_showCheck);
+    widget.state.openReceipt.addListener(_showCheck);
     WidgetsBinding.instance.addObserver(this);
     _tabs.addListener(_onTab);
     widget.state.startCallPolling();
@@ -69,6 +73,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     widget.state.openCallsTab.removeListener(_showCalls);
     widget.state.openAlerts.removeListener(_showAlerts);
     widget.state.arrivedAlert.removeListener(_onAlert);
+    widget.state.arrivedMessage.removeListener(_onMessage);
+    widget.state.openMessage.removeListener(_showCheck);
+    widget.state.openReceipt.removeListener(_showCheck);
     _share?.cancel();
     _tabs.dispose();
     super.dispose();
@@ -109,6 +116,25 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     setState(() => _alertBank = a.bank);
     Future<void>.delayed(const Duration(seconds: 8), () {
       if (mounted && widget.state.arrivedAlert.value == a) setState(() => _alertBank = null);
+    });
+  }
+
+  // A tapped message or payment alert opens on the Check tab, which shows it.
+  void _showCheck() {
+    if (!mounted || (widget.state.openMessage.value == null && widget.state.openReceipt.value == null)) return;
+    setState(() {
+      _arrived = null;
+      _tabs.index = 0;
+    });
+  }
+
+  void _onMessage() {
+    final m = widget.state.arrivedMessage.value;
+    if (!mounted || m == null) return;
+    HapticFeedback.mediumImpact();
+    setState(() => _arrived = m);
+    Future<void>.delayed(const Duration(seconds: 6), () {
+      if (mounted && _arrived == m) setState(() => _arrived = null);
     });
   }
 
@@ -161,6 +187,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           ),
         ),
         AlertBanner(bank: _banner == null ? _alertBank : null, onTap: () => widget.state.openAlerts.value++),
+        MessageBanner(
+          notice: _banner == null && _alertBank == null ? _arrived : null,
+          onTap: () {
+            final m = _arrived;
+            if (m != null) widget.state.openArrived(m);
+          },
+        ),
         // The bank that is actually calling, never the bank picked in Settings. An answered call has no
         // screen in the app: the bank and its code are on the phone's own call screen (core/calls.dart).
         _CallBanner(
@@ -172,6 +205,56 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           },
         ),
       ],
+    );
+  }
+}
+
+/// A message or payment alert that arrived while the app is open, like the phone's own banner.
+class MessageBanner extends StatelessWidget {
+  const MessageBanner({super.key, required this.notice, required this.onTap});
+  final ArrivedNotice? notice;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final top = MediaQuery.paddingOf(context).top;
+    final n = notice;
+    final motion = G.motion(context, const Duration(milliseconds: 520));
+    final from = n == null || n.from.isEmpty ? Copy.I.t('app.common.yourBank').cap : n.from;
+    return AnimatedPositioned(
+      duration: motion,
+      curve: n != null ? G.spring : Curves.easeInCubic,
+      top: n != null ? top + 6 : -220,
+      left: 10,
+      right: 10,
+      child: Semantics(
+        button: true,
+        liveRegion: n != null,
+        label: n == null ? null : '$from. ${Copy.I.t('app.check.newMessage')}',
+        excludeSemantics: true,
+        child: Pressable(
+          key: const ValueKey('message-banner'),
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(14, 12, 16, 12),
+            decoration: BoxDecoration(
+              color: const Color(0xF2111113),
+              borderRadius: BorderRadius.circular(26),
+              boxShadow: const [BoxShadow(color: Color(0x40000000), blurRadius: 30, offset: Offset(0, 12))],
+            ),
+            child: Row(children: [
+              Icon(n?.receipt != null ? CupertinoIcons.creditcard_fill : CupertinoIcons.chat_bubble_text_fill, color: CupertinoColors.white, size: 24),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+                  Text(n == null ? '' : from, maxLines: 1, overflow: TextOverflow.ellipsis, style: G.headline(context).copyWith(color: CupertinoColors.white, fontSize: 15)),
+                  Text(Copy.I.t('app.check.newMessage'), style: G.footnote(context).copyWith(color: const Color(0xB3FFFFFF))),
+                ]),
+              ),
+            ]),
+          ),
+        ),
+      ),
     );
   }
 }

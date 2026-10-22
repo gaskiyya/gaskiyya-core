@@ -52,6 +52,11 @@ class _CallsScreenState extends State<CallsScreen> {
                   final names = state.links.map((l) => l.bank.name).toList();
                   final bank = names.length == 1 ? names.single : c.t('app.common.yourBank');
                   final log = state.callLog;
+                  // Only while a call no bank vouches for is ringing or on (the demo's fraud call): say who isn't calling.
+                  final spoofed = state.unverifiedCall;
+                  final spoofedBank = spoofed == null
+                      ? null
+                      : state.links.where((l) => l.id == spoofed.orgId).firstOrNull?.bank.name ?? (spoofed.bank.isNotEmpty ? spoofed.bank : bank);
                   return Column(children: [
                     AnimatedSwitcher(
                       duration: G.motion(context, const Duration(milliseconds: 520)),
@@ -67,7 +72,9 @@ class _CallsScreenState extends State<CallsScreen> {
                           ? _calling(context, c, calls)
                           : unchecked.isNotEmpty
                               ? _cannotCheck(context, c, [for (final l in unchecked) l.bank.name], named: names.length > 1)
-                              : _notCalling(context, c, bank, named: names.length == 1),
+                              : spoofedBank != null
+                                  ? _notCalling(context, c, spoofedBank)
+                                  : _idle(context, c, empty: log.isEmpty),
                     ),
                     if (log.isNotEmpty) ...[
                       SectionHeader(c.t('app.calls.recent')),
@@ -164,15 +171,47 @@ class _CallsScreenState extends State<CallsScreen> {
     );
   }
 
-  Widget _notCalling(BuildContext context, Copy c, String bank, {bool named = false}) {
+  // No call is coming in: nothing to warn about. How it works, and the call log below (or that there is none yet).
+  Widget _idle(BuildContext context, Copy c, {required bool empty}) {
+    return Column(
+      key: const ValueKey('idle'),
+      children: [
+        if (empty) ...[
+          const SizedBox(height: 4),
+          const Art3D('call', size: 200),
+          const SizedBox(height: 6),
+          Text(c.t('app.calls.empty'), textAlign: TextAlign.center, style: G.title2(context)),
+          const SizedBox(height: 18),
+        ],
+        _howItWorks(context, c),
+      ],
+    );
+  }
+
+  Widget _howItWorks(BuildContext context, Copy c) {
+    return GroupCard(
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(color: G.green.resolveFrom(context).withValues(alpha: 0.14), borderRadius: BorderRadius.circular(10)),
+          child: Icon(CupertinoIcons.bolt_fill, size: 18, color: G.greenInk.resolveFrom(context)),
+        ),
+        const SizedBox(width: 14),
+        Expanded(child: Text(c.t('app.calls.howItWorks'), style: G.subhead(context))),
+      ]),
+    );
+  }
+
+  // A phone call is ringing or on that no bank vouches for: the bank it claims to be isn't calling.
+  Widget _notCalling(BuildContext context, Copy c, String bank) {
     return Column(
       key: const ValueKey('none'),
       children: [
         const SizedBox(height: 4),
-        const Art3D('call', size: 230),
-        const SizedBox(height: 6),
-        Text(named ? c.t('official.org.notCallingTitle', {'bank': bank}) : c.t('app.calls.noneCalling'),
-            textAlign: TextAlign.center, style: G.title1(context)),
+        Icon(CupertinoIcons.exclamationmark_shield_fill, size: 72, color: G.red.resolveFrom(context)),
+        const SizedBox(height: 14),
+        Text(c.t('official.org.notCallingTitle', {'bank': bank}), textAlign: TextAlign.center, style: G.title1(context)),
         const SizedBox(height: 10),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -181,22 +220,6 @@ class _CallsScreenState extends State<CallsScreen> {
         ),
         const SizedBox(height: 26),
         PrimaryButton(label: c.t('app.calls.checkAgain'), icon: CupertinoIcons.arrow_clockwise, loading: _checking, onTap: _refresh),
-        const SizedBox(height: 22),
-        GroupCard(
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(color: G.green.resolveFrom(context).withValues(alpha: 0.14), borderRadius: BorderRadius.circular(10)),
-              child: Icon(CupertinoIcons.bolt_fill, size: 18, color: G.greenInk.resolveFrom(context)),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Text(c.t('app.calls.howItWorks'),
-                  style: G.subhead(context)),
-            ),
-          ]),
-        ),
       ],
     );
   }
@@ -312,6 +335,7 @@ class _LogRow extends StatelessWidget {
     final duration = r.duration;
     final outcome = c.t('app.calls.outcome.${r.outcome.name}');
     final detail = [
+      if (r.unverified) c.t('app.calls.notVerified'),
       if (r.code.isNotEmpty) c.t('app.calls.codeIs', {'code': r.code}),
       if (r.purpose != null) c.purpose(r.purpose!),
     ].join(' \u00b7 ');

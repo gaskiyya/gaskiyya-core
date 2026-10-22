@@ -152,7 +152,8 @@
       "fingerprintNote": "Ana \u0257aukar alamar sa\u0199on a wannan wayar. Alamar ce ka\u0257ai ake aikawa don duba sa\u0199on. Idan ba a tabbatar da shi ba, ana aika rubutun, tare da \u0253oye dogayen lambobi, don bayyana dalili.",
       "recentMessages": "Sa\u0199onnin kwanan nan",
       "demoInbox": "Akwatin gwaji",
-      "inboxEmpty": "Sa\u0199onnin da bankinku ya aiko zuwa wannan lambar za su bayyana a nan. Kuna iya tura kowane sa\u0199o zuwa Gaskiyya daga wata manhaja."
+      "inboxEmpty": "Sa\u0199onnin da bankinku ya aiko zuwa wannan lambar za su bayyana a nan. Kuna iya tura kowane sa\u0199o zuwa Gaskiyya daga wata manhaja.",
+      "newMessage": "Sabon sa\u0199o. Ta\u0253a don ka duba shi."
     },
     "result": {
       "linkCheck": "Duba link",
@@ -179,6 +180,10 @@
       "answer": "Amsa",
       "decline": "Ki",
       "callerName": "{bank} \u00b7 Lamba {code}",
+      "unverifiedCaller": "{caller} \u00b7 Gaskiyya bai tabbatar ba",
+      "unverified": "Gaskiyya bai tabbatar da wannan kira ba. Kada ku bayar da wata lamba, PIN ko kalmar sirri.",
+      "notVerified": "Gaskiyya bai tabbatar ba",
+      "empty": "Babu kira tukuna",
       "noneCalling": "Babu \u0257aya daga cikin bankunanku da ke kiran ku",
       "outcome": {
         "ringing": "Yana kira yanzu",

@@ -158,7 +158,7 @@ Build the hackathon app in Flutter, but keep canonicalisation and the API client
 
 **Identity.** Gaskiyya never sees login credentials. The bank's backend issues a token valid for a few minutes that names the bank and the customer's phone number. Gaskiyya checks the signature and nothing else.
 
-**Push.** Call notices travel through the bank app's own push channel, so they appear to come from the bank app. The hackathon build sends them directly through Firebase Cloud Messaging.
+**Push.** Call notices travel through the bank app's own push channel, so they appear to come from the bank app. The hackathon build sends them directly through Firebase Cloud Messaging. In the demo only, what the bank console sends a customer (a message in the demo inbox, a payment receipt) also arrives as a push alert, standing in for the phone's own SMS or bank alert: the sender's name with a short preview of the demo message, or the amount, last four account digits and reference of the receipt. The simulator sends it to the devices linked to the sending organisation and stores nothing; the registry itself still receives and keeps hashes only. Genuine and fake items read the same in the alert, so the customer checks them in the app.
 
 **Sharing in.** The app registers as a share target on Android and iOS. The customer selects message text or a screenshot in any app and shares it to Verify. The app does not read the SMS inbox. iOS does not permit it, Google Play restricts it to default messaging apps and narrow exceptions, and a bank would not accept the privacy cost.
 
@@ -259,6 +259,7 @@ Firestore is adequate for the hackathon, with a time-to-live policy handling exp
 | POST /v1/receipts/batch | Register many transfers in one request |
 | POST /v1/calls | Open a call session. Returns the session ID and code |
 | PATCH /v1/calls/{id} | Mark a session answered or ended |
+| GET /v1/calls/{id} | Where a session stands: open, answered, ended (endedBy agent or customer, declined) or expired, so the agent's screen hangs up when the customer does |
 | POST /v1/sim-swap/check | Whether a number's SIM changed in the last N hours, asked before sending an OTP or approving a large transfer: swapped, not_swapped, or unknown when the network cannot answer (never not_swapped). Rate limited, counted in metrics (decision 0017) |
 | GET /v1/campaigns | List campaigns and their indicators |
 | POST /v1/campaigns/{id}/approve | A named analyst approves the advisory; it is published to the bank's app users until it expires |
@@ -277,6 +278,7 @@ Firestore is adequate for the hackathon, with a time-to-live policy handling exp
 | POST /v1/verify/receipt | Check a transfer receipt for one of the customer's own accounts (from the token's accts claim). Returns received, not confirmed or cannot check |
 | POST /v1/verify/licence | Check a lender's name, website or app ID against regulators' licence lists: licensed, not_listed or cannot_check |
 | GET /v1/calls/open | Whether the bank is calling this customer: every open call session and its code, newest first; cannot_check if the registry cannot be read |
+| POST /v1/calls/{id}/answer, /end, /status | The phone answers, ends (or declines) or checks one call addressed to the customer, so both ends hang up together. Customer token, or the call's own token from the ring when the app is closed |
 | GET /v1/activity | Recent activity summary |
 | GET /v1/advisories | The bank's approved, unexpired fraud advisories; cannot_check if the registry cannot be read |
 | POST /v1/explain | Explain a not-confirmed message from masked text |

@@ -1,4 +1,4 @@
-import { randomInt, randomUUID } from 'node:crypto';
+import { randomInt, randomUUID, timingSafeEqual } from 'node:crypto';
 import {
   activityText,
   copy,
@@ -25,7 +25,7 @@ import { guardAdvisory } from './ai/briefing.ts';
 import { explain, type ExplainResult } from './ai/explain.ts';
 import type { ModelProvider } from './ai/provider.ts';
 import { InvalidPushTokenError, type AdvisoryNotice, type CallNotice, type EventHub, type PushProvider } from './channels/channels.ts';
-import type { VoipPush } from './channels/voip.ts';
+import type { VoipCall, VoipPush } from './channels/voip.ts';
 import { REGULATORS, type LicenceSource } from '@gaskiya/licences';
 import { contactFacts, contactPhone, parseContact, type ContactFacts } from './domain/contact.ts';
 import { decideContactVerdict, decideLicenceVerdict, decideOtpHold, decideReceiptVerdict, decideSimSwapStatus, decideSimSwapWarnings, decideVerdict, type SimSwapProbe } from './domain/verdict.ts';
@@ -127,6 +127,33 @@ export interface CallView {
   status: CallSession['status'];
   openedAt: string;
   expiresAt: string;
+  token?: string;
+}
+
+export type CallActor = 'agent' | 'customer';
+
+/** Who is acting on a call from the phone: the signed-in customer, or the call's own token. */
+export type CallParty = { tenant: Tenant; phone: string } | { token: string };
+
+export interface CallState {
+  id: string;
+  status: 'open' | 'answered' | 'ended' | 'expired';
+  expiresAt: string;
+  code?: string;
+  endedBy?: CallActor;
+  declined?: boolean;
+}
+
+interface UnverifiedCall {
+  id: string;
+  tenantId: string;
+  recipientKey: string;
+  caller: string;
+  number: string;
+  status: 'open' | 'answered' | 'ended';
+  expiresAt: string;
+  endedBy?: CallActor;
+  declined?: boolean;
 }
 
 export type CallCheck =
@@ -598,24 +625,56 @@ export class GaskiyaService {
       .finally(() => clearTimeout(t));
   }
 
-  private notice(type: CallNotice['type'], tenant: Tenant, c: CallSession): CallNotice {
-    return { type, callId: c.id, bank: tenant.name, purpose: c.purpose, code: type === 'call.opened' ? c.code : null, expiresAt: c.expiresAt };
+  /** A token that lets the phone answer or end this one call without the customer's sign-in, e.g. from CallKit with the app closed. */
+  callToken(tenantId: string, callId: string) {
+    return `${tenantId}.${this.keys.keyed(tenantId, 'call', callId)}`;
   }
 
-  private async notify(tenant: Tenant, c: CallSession, notice: CallNotice) {
-    this.events.publish(`${tenant.id}:${c.recipientKey}`, notice);
+  private tokenTenant(callId: string, token: string): string | null {
+    const dot = token.lastIndexOf('.');
+    if (dot <= 0) return null;
+    const tenantId = token.slice(0, dot);
+    const given = Buffer.from(token.slice(dot + 1));
+    if (!this.tenants.has(tenantId) || !this.keys.has(tenantId)) return null;
+    const ok = this.keys.versions(tenantId).some((v) => {
+      const want = Buffer.from(this.keys.keyed(tenantId, 'call', callId, v));
+      return want.length === given.length && timingSafeEqual(want, given);
+    });
+    return ok ? tenantId : null;
+  }
+
+  private callState(c: { id: string; code?: string; status: string; expiresAt: string; endedBy?: CallActor; declined?: boolean }): CallState {
+    const status = c.status === 'ended' ? 'ended' : c.status === 'expired' || Date.parse(c.expiresAt) <= this.now().getTime() ? 'expired' : (c.status as 'open' | 'answered');
+    return { id: c.id, status, expiresAt: c.expiresAt, ...(c.code ? { code: c.code } : {}), ...(c.endedBy ? { endedBy: c.endedBy } : {}), ...(c.declined ? { declined: true } : {}) };
+  }
+
+  private notice(type: 'call.opened' | 'call.closed', tenant: Tenant, c: CallSession): CallNotice {
+    const base = { callId: c.id, bank: tenant.name, purpose: c.purpose, expiresAt: c.expiresAt };
+    if (type === 'call.opened') return { type, ...base, code: c.code, token: this.callToken(tenant.id, c.id) };
+    return { type, ...base, code: null, ...(c.endedBy ? { endedBy: c.endedBy } : {}) };
+  }
+
+  private async notify(tenant: Tenant, recipientKey: string, notice: CallNotice) {
+    this.events.publish(`${tenant.id}:${recipientKey}`, notice);
     // The call is stored; a failed lookup only skips the push.
     let devices: Device[];
     try {
-      devices = await this.store.devices(tenant.id, c.recipientKey);
+      devices = await this.store.devices(tenant.id, recipientKey);
     } catch (err) {
       this.log.warn({ err: (err as Error).message }, 'call push: device list failed');
       return;
     }
     const voip = this.voip;
+    const base = { callId: notice.callId, orgId: tenant.id, expiresAt: notice.expiresAt, ...(notice.token ? { token: notice.token } : {}) };
+    const voipCall: VoipCall | null =
+      notice.type === 'call.opened' && notice.code
+        ? { ...base, bank: tenant.name, code: notice.code, kind: 'bank' }
+        : notice.type === 'call.unverified'
+          ? { ...base, bank: notice.caller ?? tenant.name, code: '', kind: 'unverified', number: notice.number ?? '' }
+          : null;
     const ring = (d: Device) =>
-      voip && d.voipToken && notice.type === 'call.opened' && notice.code
-        ? voip.send(d.voipToken, { callId: c.id, orgId: tenant.id, bank: tenant.name, code: notice.code, expiresAt: c.expiresAt }).then(
+      voip && d.voipToken && voipCall
+        ? voip.send(d.voipToken, voipCall).then(
             () => true,
             (err: Error) => {
               this.log.warn({ err: err.message }, 'voip push failed');
@@ -629,7 +688,7 @@ export class GaskiyaService {
         if (await ring(d)) return;
         await this.push.send(d.pushToken, notice).catch(async (err: Error) => {
           if (err instanceof InvalidPushTokenError) {
-            await this.store.removeDevice(tenant.id, c.recipientKey, d.pushToken).catch(() => {});
+            await this.store.removeDevice(tenant.id, recipientKey, d.pushToken).catch(() => {});
           } else {
             this.log.warn({ err: err.message }, 'push failed');
           }
@@ -671,24 +730,115 @@ export class GaskiyaService {
       expiresAt: new Date(now.getTime() + this.cfg.callRingSeconds * 1000).toISOString(),
     };
     await this.store.putCall(call);
-    await this.notify(tenant, call, this.notice('call.opened', tenant, call));
+    await this.notify(tenant, recipientKey, this.notice('call.opened', tenant, call));
     return { id: call.id, code: call.code, status: call.status, expiresAt: call.expiresAt };
   }
 
-  async updateCall(tenantId: string, id: string, status: 'answered' | 'ended') {
+  async getCallState(tenantId: string, id: string): Promise<CallState | null> {
+    const c = await this.store.getCall(tenantId, id);
+    return c ? this.callState(c) : null;
+  }
+
+  /** The agent (by default) or the customer answers or ends the call. Ending it ends it on the other side too. */
+  async updateCall(tenantId: string, id: string, status: 'answered' | 'ended', by: CallActor = 'agent'): Promise<CallState | null> {
     const tenant = this.tenants.get(tenantId)!;
     const current = await this.store.getCall(tenantId, id);
     if (!current) return null;
     const now = this.now();
-    if (current.status === 'ended' || current.status === 'expired' || Date.parse(current.expiresAt) <= now.getTime()) {
-      return { id, status: current.status === 'ended' ? 'ended' : 'expired', expiresAt: current.expiresAt, code: current.code };
-    }
+    if (current.status === 'ended' || current.status === 'expired' || Date.parse(current.expiresAt) <= now.getTime()) return this.callState(current);
     const cap = Date.parse(current.openedAt) + (this.cfg.callRingSeconds + this.cfg.callMaxSeconds) * 1000;
-    const expiresAt =
-      status === 'ended' ? now.toISOString() : new Date(Math.min(now.getTime() + this.cfg.callMaxSeconds * 1000, cap)).toISOString();
-    const updated = (await this.store.updateCall(tenantId, id, { status, expiresAt }))!;
-    if (status === 'ended') await this.notify(tenant, updated, this.notice('call.closed', tenant, updated));
-    return { id, status: updated.status, expiresAt: updated.expiresAt, code: updated.code };
+    const patch =
+      status === 'ended'
+        ? { status, expiresAt: now.toISOString(), endedBy: by, ...(by === 'customer' && current.status === 'open' ? { declined: true } : {}) }
+        : { status, expiresAt: new Date(Math.min(now.getTime() + this.cfg.callMaxSeconds * 1000, cap)).toISOString() };
+    const updated = (await this.store.updateCall(tenantId, id, patch))!;
+    if (status === 'ended') await this.notify(tenant, updated.recipientKey, this.notice('call.closed', tenant, updated));
+    return this.callState(updated);
+  }
+
+  /** The call this customer may act on: one addressed to their number, or the one their call token names. */
+  private async partyCall(id: string, who: CallParty) {
+    const tenantId = 'token' in who ? this.tokenTenant(id, who.token) : who.tenant.id;
+    if (!tenantId) return null;
+    const keys = 'token' in who ? null : new Set(this.recipientKeys(tenantId, who.phone));
+    const mine = (k: string) => !keys || keys.has(k);
+    const u = this.unverified.get(id);
+    if (u) return u.tenantId === tenantId && mine(u.recipientKey) ? { kind: 'unverified' as const, unverified: u } : null;
+    const call = await this.store.getCall(tenantId, id);
+    return call && mine(call.recipientKey) ? { kind: 'call' as const, call } : null;
+  }
+
+  async customerCallState(id: string, who: CallParty): Promise<CallState | null> {
+    const r = await this.partyCall(id, who);
+    if (!r) return null;
+    return this.callState(r.kind === 'call' ? r.call : r.unverified);
+  }
+
+  /** The customer answered, declined or hung up on the phone. Only a call addressed to them. */
+  async customerUpdateCall(id: string, who: CallParty, status: 'answered' | 'ended'): Promise<CallState | null> {
+    const r = await this.partyCall(id, who);
+    if (!r) return null;
+    if (r.kind === 'unverified') return this.updateUnverified(r.unverified, status, 'customer');
+    return this.updateCall(r.call.tenantId, id, status, 'customer');
+  }
+
+  // Demo only: the console's fraud calls, ringing the customer's real phone from a spoofed number.
+  // They are not call sessions: there is no code, the registry still says the bank is not calling,
+  // and they live in memory only, for the phone and the console to end them on both sides.
+  private readonly unverified = new Map<string, UnverifiedCall>();
+
+  async ringUnverified(tenantId: string, phone: string, input: { id: string; caller: string; number: string; expiresAt: string }): Promise<CallState | null> {
+    const tenant = this.tenants.get(tenantId);
+    if (!tenant || !this.keys.has(tenantId)) return null;
+    const cutoff = this.now().getTime() - 10 * 60_000;
+    for (const [k, v] of this.unverified) if (Date.parse(v.expiresAt) < cutoff) this.unverified.delete(k);
+    const u: UnverifiedCall = {
+      id: input.id,
+      tenantId,
+      recipientKey: this.recipientKey(tenantId, phone),
+      caller: input.caller.slice(0, 64),
+      number: input.number.slice(0, 24),
+      status: 'open',
+      expiresAt: input.expiresAt,
+    };
+    this.unverified.set(u.id, u);
+    await this.notify(tenant, u.recipientKey, {
+      type: 'call.unverified',
+      callId: u.id,
+      bank: tenant.name,
+      purpose: 'unverified',
+      code: null,
+      expiresAt: u.expiresAt,
+      token: this.callToken(tenantId, u.id),
+      caller: u.caller,
+      number: u.number,
+    });
+    return this.callState(u);
+  }
+
+  unverifiedState(id: string): CallState | null {
+    const u = this.unverified.get(id);
+    return u ? this.callState(u) : null;
+  }
+
+  async endUnverified(id: string): Promise<CallState | null> {
+    const u = this.unverified.get(id);
+    return u ? this.updateUnverified(u, 'ended', 'agent') : null;
+  }
+
+  private async updateUnverified(u: UnverifiedCall, status: 'answered' | 'ended', by: CallActor): Promise<CallState> {
+    const now = this.now();
+    if (u.status === 'ended' || Date.parse(u.expiresAt) <= now.getTime()) return this.callState(u);
+    if (status === 'answered') {
+      Object.assign(u, { status, expiresAt: new Date(now.getTime() + this.cfg.callMaxSeconds * 1000).toISOString() });
+      return this.callState(u);
+    }
+    Object.assign(u, { status, expiresAt: now.toISOString(), endedBy: by, ...(by === 'customer' && u.status === 'open' ? { declined: true } : {}) });
+    const tenant = this.tenants.get(u.tenantId);
+    if (tenant) {
+      await this.notify(tenant, u.recipientKey, { type: 'call.closed', callId: u.id, bank: tenant.name, purpose: 'unverified', code: null, expiresAt: u.expiresAt, endedBy: by });
+    }
+    return this.callState(u);
   }
 
   async languageFor(tenant: Tenant, phone: string): Promise<Language> {
@@ -722,7 +872,16 @@ export class GaskiyaService {
       return { verdict: 'cannot_check', bank: tenant.name };
     }
     const views = calls.map(
-      (c): CallView => ({ id: c.id, purpose: c.purpose, code: c.code, status: c.status, openedAt: c.openedAt, expiresAt: c.expiresAt }),
+      (c): CallView => ({
+        id: c.id,
+        purpose: c.purpose,
+        code: c.code,
+        status: c.status,
+        openedAt: c.openedAt,
+        expiresAt: c.expiresAt,
+        // The app hands it to the phone's call screen, which can then end the call with the app closed.
+        ...(channelUsed === 'app' ? { token: this.callToken(tenant.id, c.id) } : {}),
+      }),
     );
     const [call] = views;
     this.logCallCheck(tenant, recipientKey, channelUsed, call ? 'calling' : 'not_calling', call?.id ?? null);

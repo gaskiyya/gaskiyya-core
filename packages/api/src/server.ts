@@ -1,5 +1,6 @@
 import { OllamaProvider, systemFromEnv } from './index.ts';
 import { demoLoginFromEnv, registerSimulator, simOrgsFromEnv } from './simulator/index.ts';
+import { demoCustomerPusher } from './simulator/message-push.ts';
 import { registerWeb } from './web.ts';
 
 let system: ReturnType<typeof systemFromEnv>;
@@ -36,6 +37,8 @@ if (process.env.SIM_ENABLED === 'true') {
     bankCode: process.env.SIM_BANK_CODE || undefined,
     appUsers: system.store,
     consoleCheck: (authorization: string | undefined) => system.consoleAccess.check(authorization),
+    demoCalls: system.svc,
+    notifyCustomer: demoCustomerPusher(system.svc, system.push, app.log),
   };
   await app.register(async (scope) => {
     await registerSimulator(scope, sim);

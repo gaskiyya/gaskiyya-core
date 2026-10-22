@@ -294,7 +294,12 @@ export function Device({ phone, bank, bankId = '', realPhone = false }: { phone:
       .catch(() => {});
   }, 1500, [phone]);
 
-  const updateCall = (c: PhoneCall, status: 'answered' | 'ended') => (c.kind === 'bank' ? sim.updateCall(c.id, status) : sim.updateFraudCall(c.id, status)).catch(() => {});
+  // As the customer, so the console's agent sees who hung up. Falls back to the bank's side if the customer route fails.
+  const updateCall = (c: PhoneCall, status: 'answered' | 'ended') =>
+    (c.kind === 'bank'
+      ? (status === 'answered' ? device.answerCall(phone, c.id) : device.endCall(phone, c.id)).catch(() => sim.updateCall(c.id, status))
+      : sim.updateFraudCall(c.id, status)
+    ).catch(() => {});
   const accept = async () => {
     if (!call) return;
     voice.current?.start();
@@ -358,6 +363,7 @@ export function Device({ phone, bank, bankId = '', realPhone = false }: { phone:
                       bank={bank}
                       items={items ?? []}
                       callId={bankCallId}
+                      spoofedCall={call?.kind === 'fraud' && (phase === 'incoming' || phase === 'active')}
                       session={session}
                       onSession={setSession}
                       onCheck={check}

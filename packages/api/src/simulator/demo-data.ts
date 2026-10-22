@@ -179,6 +179,9 @@ export interface FraudCall {
   status: 'ringing' | 'answered' | 'ended';
   at: string;
   expiresAt: string;
+  // Set when it ended on the customer's real phone or from the console.
+  endedBy?: 'agent' | 'customer';
+  declined?: boolean;
 }
 
 export function newFraudCall(b: { phone?: unknown; from?: unknown }, id: string, now = new Date()): { ok: true; call: FraudCall } | { ok: false; message: string } {

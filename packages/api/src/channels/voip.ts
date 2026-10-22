@@ -10,6 +10,11 @@ export interface VoipCall {
   bank: string;
   code: string;
   expiresAt: string;
+  // Answers or ends this one call from the phone, even with the app closed.
+  token?: string;
+  // 'unverified': the demo's fraud call. bank is the name the caller shows, code is empty, and no voice plays.
+  kind?: 'bank' | 'unverified';
+  number?: string;
 }
 
 export interface VoipPush {

@@ -318,6 +318,17 @@ svg.orange { color: var(--orange); } svg.red { color: var(--red); } svg.muted { 
 .btn.success { background: var(--green); }
 .btn.plain { background: transparent; color: var(--blue); padding: 8px 10px; min-height: 36px; box-shadow: none; }
 .btn.plain:hover { background: var(--fill-2); }
+.btn.plain.danger { color: var(--red); background: transparent; }
+.btn.plain.danger:hover { background: rgba(229, 72, 77, 0.1); }
+.btn.danger.solid { background: var(--red); color: #fff; }
+.btn.danger.solid:disabled { background: var(--red); }
+
+/* Confirmation dialog */
+.modal-backdrop { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 16px; background: rgba(8, 12, 10, 0.42); animation: rise 0.18s ease-out; }
+.modal { width: min(440px, 100%); background: var(--surface); color: var(--label); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 22px; }
+.modal h2 { font-size: 18px; margin: 0 0 8px; letter-spacing: -0.01em; }
+.modal p { margin: 0 0 18px; color: var(--label-2); font-size: 14.5px; line-height: 1.5; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
 .btn.plain:disabled { background: transparent; }
 .btn.wide { width: 100%; min-height: 46px; }
 .btn svg { width: 17px; height: 17px; }

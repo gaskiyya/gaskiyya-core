@@ -261,19 +261,23 @@ class Explanation {
 }
 
 class CallSession {
-  CallSession({required this.id, required this.purpose, required this.code, required this.status, required this.expiresAt});
+  CallSession({required this.id, required this.purpose, required this.code, required this.status, required this.expiresAt, this.token});
   factory CallSession.fromJson(Map<String, dynamic> j) => CallSession(
         id: (j['id'] ?? j['callId']) as String,
         purpose: j['purpose'] as String,
         code: (j['code'] as String?) ?? '',
         status: (j['status'] as String?) ?? 'open',
         expiresAt: DateTime.parse(j['expiresAt'] as String),
+        token: j['token'] is String && (j['token'] as String).isNotEmpty ? j['token'] as String : null,
       );
   final String id;
   final String purpose;
   final String code;
   final String status;
   final DateTime expiresAt;
+
+  /// This call's own token: the phone's call screen answers and ends the call with it, even with the app closed.
+  final String? token;
 }
 
 class CallStatus {
@@ -681,6 +685,19 @@ class GaskiyaClient {
       return CallStatus.fromJson(await _send('GET', '/v1/calls/open'));
     } catch (_) {
       return CallStatus.unavailable();
+    }
+  }
+
+  /// The person answered or hung up (or declined) on the phone, so the agent's call follows. False if the registry did not take it.
+  Future<bool> answerCall(String id) => _callAction(id, 'answer');
+  Future<bool> endCall(String id) => _callAction(id, 'end');
+
+  Future<bool> _callAction(String id, String action) async {
+    try {
+      await _send('POST', '/v1/calls/${Uri.encodeComponent(id)}/$action', const {});
+      return true;
+    } catch (_) {
+      return false;
     }
   }
 

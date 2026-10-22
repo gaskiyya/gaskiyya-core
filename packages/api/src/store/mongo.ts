@@ -294,7 +294,7 @@ export class MongoStore implements Store {
       .sort((a, b) => Date.parse(b.openedAt) - Date.parse(a.openedAt));
   }
 
-  async updateCall(tenantId: string, id: string, patch: Partial<Pick<CallSession, 'status' | 'expiresAt'>>) {
+  async updateCall(tenantId: string, id: string, patch: Partial<Pick<CallSession, 'status' | 'expiresAt' | 'endedBy' | 'declined'>>) {
     const set: Document = clean(patch);
     if (patch.expiresAt) set.expireAt = new Date(Date.parse(patch.expiresAt) + CALL_TTL_MS);
     return strip<CallSession>(await this.c.calls.findOneAndUpdate({ _id: id, tenantId }, { $set: set }, { returnDocument: 'after' }));
@@ -510,6 +510,10 @@ export class MongoStore implements Store {
       this.a.appUsers.findOneAndUpdate({ _id: hashId(tenantId, phone) }, { $set: { tenantId, phone, lastSeenAt: at }, $setOnInsert: { firstSeenAt: at } }, { upsert: true, returnDocument: 'after' }),
     );
     return strip<AppUser>(d)!;
+  }
+
+  async removeAppUser(tenantId: string, phone: string) {
+    return (await timed(this.a.appUsers.deleteOne({ _id: hashId(tenantId, phone) }))).deletedCount > 0;
   }
 
   async listAppUsers(tenantId: string, limit: number) {

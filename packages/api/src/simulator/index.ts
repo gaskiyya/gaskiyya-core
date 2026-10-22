@@ -26,6 +26,8 @@ import {
 } from './demo-data.ts';
 import { MemoryStore } from '../store/memory.ts';
 import type { Store } from '../store/types.ts';
+import type { DemoNotice } from '../channels/channels.ts';
+import { preview } from './message-push.ts';
 
 export { advisoryToSend, DEMO_BANK_CODE, DEMO_CUSTOMERS, demoAccount, FAKE_CREDIT_ALERT, FAKE_TEMPLATES, fakeCustomerCareMessage, genuineTemplate, knowsNumber, tamper, type FraudCall, type Transfer };
 export { DEMO_BANKS, demoBank, demoTenant, type DemoBank } from './demo-banks.ts';
@@ -45,9 +47,26 @@ export interface SimOptions {
   orgs?: SimOrg[];
   fakeCustomerCare?: { whatsapp: string; handle: string };
   // Where numbers that sign in through the demo login are kept, so the console still lists them after a restart.
-  appUsers?: Pick<Store, 'recordAppUser' | 'listAppUsers'>;
+  appUsers?: Pick<Store, 'recordAppUser' | 'listAppUsers' | 'removeAppUser'>;
   // When set, routes that act as the bank need a bank console session for this bank (its sign-in code).
   consoleCheck?: (authorization: string | undefined) => Promise<{ tenantId: string } | null>;
+  // Demo only: rings the customer's real phone for a fraud call (spoofed caller, no code, not a call session) and ends it.
+  demoCalls?: DemoCalls;
+  // Demo only: alerts the customer's phones to what the console sent them (a message, a payment receipt).
+  notifyCustomer?: (tenantId: string, phone: string, notice: DemoNotice) => Promise<unknown>;
+}
+
+export interface DemoCallState {
+  status: 'open' | 'answered' | 'ended' | 'expired';
+  expiresAt: string;
+  endedBy?: 'agent' | 'customer';
+  declined?: boolean;
+}
+
+export interface DemoCalls {
+  ringUnverified(tenantId: string, phone: string, call: { id: string; caller: string; number: string; expiresAt: string }): Promise<unknown>;
+  unverifiedState(id: string): DemoCallState | null;
+  endUnverified(id: string): Promise<unknown>;
 }
 
 export interface SimOrg {
@@ -111,7 +130,10 @@ export async function registerSimulator(app: FastifyInstance, o: SimOptions) {
   const jwk: JWK = { ...(await exportJWK(publicKey)), kid, alg: 'ES256', use: 'sig' };
 
   const inbox = new Map<string, InboxItem[]>();
-  const calls = new Map<string, { id: string; phone: string; purpose: string; code: string; status: string; agentRef: string; openedAt: string; expiresAt: string }>();
+  const calls = new Map<
+    string,
+    { id: string; phone: string; purpose: string; code: string; status: string; agentRef: string; openedAt: string; expiresAt: string; endedBy?: string; declined?: boolean }
+  >();
   const transfers: Transfer[] = [];
   const appUsers = o.appUsers ?? new MemoryStore();
   const fraudCalls = new Map<string, FraudCall>();
@@ -122,6 +144,24 @@ export async function registerSimulator(app: FastifyInstance, o: SimOptions) {
     list.unshift(full);
     inbox.set(phone, list.slice(0, 50));
     return full;
+  };
+  const notify = async (tenantId: string, phone: string, notice: DemoNotice) => {
+    await o.notifyCustomer?.(tenantId, phone, notice).catch((err: Error) => app.log.warn({ err: err.message }, 'customer push failed'));
+  };
+  // Places the message in the demo inbox, then alerts the phone like a real SMS or WhatsApp would.
+  const deliver = async (phone: string, item: Omit<InboxItem, 'id' | 'at'>) => {
+    const full = pushInbox(phone, item);
+    const orgId = full.tenantId ?? o.tenantId;
+    await notify(orgId, phone, { type: 'message.received', itemId: full.id, orgId, from: full.from, preview: preview(full.text), channel: full.channel });
+    return full;
+  };
+  // The payment alert: the payee can check the receipt in the app. Genuine and fake receipts read the same.
+  const alertTransfer = async (t: Transfer, payer: boolean) => {
+    const base = { transferId: t.id, orgId: o.tenantId, from: o.bankName, amountKobo: t.amountKobo, accountLast4: t.account.slice(-4), reference: t.reference, valueDate: t.valueDate };
+    await Promise.all([
+      notify(o.tenantId, t.merchant, { type: 'transfer.received', ...base }),
+      ...(payer ? [notify(o.tenantId, t.payer, { type: 'transfer.sent', ...base })] : []),
+    ]);
   };
 
   const orgs = new Map<string, SimOrg>([
@@ -182,7 +222,7 @@ export async function registerSimulator(app: FastifyInstance, o: SimOptions) {
     if (req.url.startsWith('/sim/')) {
       reply.header('access-control-allow-origin', '*');
       reply.header('access-control-allow-headers', 'authorization, content-type');
-      reply.header('access-control-allow-methods', 'GET, POST, PATCH, OPTIONS');
+      reply.header('access-control-allow-methods', 'GET, POST, PATCH, DELETE, OPTIONS');
     }
   });
   app.options('/sim/*', async (_req, reply) => reply.code(204).send());
@@ -236,6 +276,14 @@ export async function registerSimulator(app: FastifyInstance, o: SimOptions) {
     customers: (await appUsers.listAppUsers(o.tenantId, APP_USERS_LISTED)).map(appUserView),
   }));
 
+  // Takes a number off the console's customer list only: registry records stay. Signing in again lists it again.
+  app.delete<{ Params: { phone: string } }>('/sim/customers/:phone', async (req, reply) => {
+    const phone = req.params.phone;
+    if (!phoneOk(phone)) return fail(reply, 400, 'invalid_request', 'phone must be E.164');
+    if (!(await appUsers.removeAppUser(o.tenantId, phone))) return fail(reply, 404, 'not_found', 'This number is not on the customer list');
+    return reply.code(204).send();
+  });
+
   app.get('/sim/inbox', async (req, reply) => {
     const who = await customerFrom(req.headers.authorization);
     if (!who) return fail(reply, 401, 'unauthorized', 'Customer token required');
@@ -272,7 +320,7 @@ export async function registerSimulator(app: FastifyInstance, o: SimOptions) {
       org.tenantId,
     );
     if (reg.status >= 300) return reply.code(502).send(reg.data);
-    const item = pushInbox(phone, { from: org.name, text, kind: 'genuine', category, channel, ...(org.tenantId !== o.tenantId ? { tenantId: org.tenantId } : {}) });
+    const item = await deliver(phone, { from: org.name, text, kind: 'genuine', category, channel, ...(org.tenantId !== o.tenantId ? { tenantId: org.tenantId } : {}) });
     const d = reg.data as { recordId: string; simSwapWarning?: boolean; simSwapStatus?: string };
     return {
       item,
@@ -288,16 +336,16 @@ export async function registerSimulator(app: FastifyInstance, o: SimOptions) {
     const list = inbox.get(phone) ?? [];
     const source = (itemId ? list.find((i) => i.id === itemId) : list.find((i) => i.kind === 'genuine')) ?? null;
     const text = source ? tamper(source.text) : tamper(genuineTemplate('service_update', o.bankName, phone, new Date(), o.domain).text);
-    return { item: pushInbox(phone, { from: o.bankName, text, kind: 'tampered', category: source?.category, channel: source?.channel ?? 'sms' }) };
+    return { item: await deliver(phone, { from: o.bankName, text, kind: 'tampered', category: source?.category, channel: source?.channel ?? 'sms' }) };
   });
 
   app.post<{ Body: { phone?: string; template?: number | 'credit_alert' } }>('/sim/send-fake', async (req, reply) => {
     const { phone, template = 0 } = req.body ?? {};
     if (!phoneOk(phone)) return fail(reply, 400, 'invalid_request', 'phone must be E.164');
-    if (template === 'credit_alert') return { item: pushInbox(phone, { from: o.bankName, text: FAKE_CREDIT_ALERT(o.bankName, phone), kind: 'fake', category: 'transaction_alert', channel: 'sms' }) };
+    if (template === 'credit_alert') return { item: await deliver(phone, { from: o.bankName, text: FAKE_CREDIT_ALERT(o.bankName, phone), kind: 'fake', category: 'transaction_alert', channel: 'sms' }) };
     const n = Number(template);
     const tpl = FAKE_TEMPLATES[(Number.isInteger(n) && n >= 0 ? n : 0) % FAKE_TEMPLATES.length]!;
-    return { item: pushInbox(phone, { from: o.bankName, text: tpl(o.bankName, o.lookalikeDomain), kind: 'fake', channel: 'sms' }) };
+    return { item: await deliver(phone, { from: o.bankName, text: tpl(o.bankName, o.lookalikeDomain), kind: 'fake', channel: 'sms' }) };
   });
 
   app.post<{ Body: { phone?: string } }>('/sim/send-fake-care', async (req, reply) => {
@@ -305,7 +353,7 @@ export async function registerSimulator(app: FastifyInstance, o: SimOptions) {
     if (!phoneOk(phone)) return fail(reply, 400, 'invalid_request', 'phone must be E.164');
     if (!o.fakeCustomerCare) return fail(reply, 404, 'not_found', 'This demo bank has no fake customer care number');
     const text = fakeCustomerCareMessage(o.bankName, o.fakeCustomerCare.whatsapp);
-    return { item: pushInbox(phone, { from: o.bankName, text, kind: 'fake', channel: 'sms' }), contact: o.fakeCustomerCare };
+    return { item: await deliver(phone, { from: o.bankName, text, kind: 'fake', channel: 'sms' }), contact: o.fakeCustomerCare };
   });
 
   app.post<{ Body: { phone?: string; purpose?: string; agentRef?: string } }>('/sim/calls', async (req, reply) => {
@@ -329,21 +377,48 @@ export async function registerSimulator(app: FastifyInstance, o: SimOptions) {
     return r.data;
   });
 
-  app.get('/sim/calls', async () => ({ calls: [...calls.values()].sort((a, b) => b.openedAt.localeCompare(a.openedAt)).slice(0, 20) }));
+  // The customer can answer or end a call from their phone, so live calls are read back from the registry.
+  app.get('/sim/calls', async () => {
+    const list = [...calls.values()].sort((a, b) => b.openedAt.localeCompare(a.openedAt)).slice(0, 20);
+    const now = Date.now();
+    await Promise.all(
+      list
+        .filter((c) => (c.status === 'open' || c.status === 'answered') && Date.parse(c.expiresAt) > now)
+        .map(async (c) => {
+          const r = await bank('GET', `/v1/calls/${encodeURIComponent(c.id)}`).catch(() => null);
+          if (r && r.status < 300) Object.assign(c, r.data);
+        }),
+    );
+    return { calls: list };
+  });
 
   app.post<{ Body: { phone?: string; from?: string } }>('/sim/fraud-calls', async (req, reply) => {
     const r = newFraudCall(req.body ?? {}, randomUUID());
     if (!r.ok) return fail(reply, 400, 'invalid_request', r.message);
     fraudCalls.set(r.call.id, r.call);
+    // The customer's real phone rings too, showing the name the fraudster spoofs and no code.
+    await o.demoCalls
+      ?.ringUnverified(o.tenantId, r.call.phone, { id: r.call.id, caller: o.bankName, number: r.call.from, expiresAt: r.call.expiresAt })
+      .catch((err: Error) => app.log.warn({ err: err.message }, 'fraud call ring failed'));
     return r.call;
   });
-  app.get('/sim/fraud-calls', async () => ({ calls: listFraudCalls(fraudCalls) }));
+  app.get('/sim/fraud-calls', async () => {
+    // What the customer did on their phone: answered, declined or hung up.
+    for (const c of fraudCalls.values()) {
+      const s = c.status === 'ended' ? null : o.demoCalls?.unverifiedState(c.id);
+      if (!s) continue;
+      if (s.status === 'answered' && c.status === 'ringing') c.status = 'answered';
+      if (s.status === 'ended') Object.assign(c, { status: 'ended', ...(s.endedBy ? { endedBy: s.endedBy } : {}), ...(s.declined ? { declined: true } : {}) });
+    }
+    return { calls: listFraudCalls(fraudCalls) };
+  });
   app.patch<{ Params: { id: string }; Body: { status?: string } }>('/sim/fraud-calls/:id', async (req, reply) => {
     const c = fraudCalls.get(req.params.id);
     if (!c) return fail(reply, 404, 'not_found', 'No such call');
     const status = req.body?.status;
     if (status !== 'answered' && status !== 'ended') return fail(reply, 400, 'invalid_request', 'status must be answered or ended');
     c.status = status;
+    if (status === 'ended') await o.demoCalls?.endUnverified(c.id).catch((err: Error) => app.log.warn({ err: err.message }, 'fraud call end failed'));
     return c;
   });
 
@@ -374,6 +449,7 @@ export async function registerSimulator(app: FastifyInstance, o: SimOptions) {
     t.registered = (r.data as { stored?: boolean }).stored === true;
     transfers.unshift(t);
     transfers.splice(30);
+    await alertTransfer(t, true);
     return { transfer: t };
   });
 
@@ -386,6 +462,7 @@ export async function registerSimulator(app: FastifyInstance, o: SimOptions) {
       const t = forgedReceipt(from, to!, amountKobo!, bankCode, randomUUID());
       transfers.unshift(t);
       transfers.splice(30);
+      await alertTransfer(t, false);
       return { transfer: t };
     }
     const source = id ? transfers.find((t) => t.id === id) : transfers.find((t) => t.kind === 'genuine');
@@ -393,6 +470,7 @@ export async function registerSimulator(app: FastifyInstance, o: SimOptions) {
     const t = fakeReceipt(source, kind, bankCode, randomUUID());
     transfers.unshift(t);
     transfers.splice(30);
+    await alertTransfer(t, false);
     return { transfer: t };
   });
 
@@ -446,11 +524,13 @@ export async function registerSimulator(app: FastifyInstance, o: SimOptions) {
     });
     if (reg.status >= 300) return reply.code(502).send(reg.data);
     const records = (reg.data as { records: { recordId: string }[] }).records;
-    const sent = DEMO_CUSTOMERS.map((c, i) => ({
-      phone: c.phone,
-      recordId: records[i]!.recordId,
-      item: pushInbox(c.phone, { from: o.bankName, text: ready.text, kind: 'genuine', category: 'security_notice', channel }),
-    }));
+    const sent = await Promise.all(
+      DEMO_CUSTOMERS.map(async (c, i) => ({
+        phone: c.phone,
+        recordId: records[i]!.recordId,
+        item: await deliver(c.phone, { from: o.bankName, text: ready.text, kind: 'genuine', category: 'security_notice', channel }),
+      })),
+    );
     return { sent: sent.length, channel, text: ready.text, messages: sent };
   });
 
@@ -486,13 +566,15 @@ export async function registerSimulator(app: FastifyInstance, o: SimOptions) {
     return { reported: results.filter((s) => s === 201).length };
   });
 
+  // The on-screen phone answers and hangs up as the customer.
+  const DEVICE_CALL_ROUTE = /^\/v1\/calls\/[\w-]{1,64}\/(answer|end|status)$/;
   const DEVICE_ROUTES = new Set(['GET /v1/calls/open', 'GET /v1/activity', 'GET /v1/advisories', 'POST /v1/verify/message', 'POST /v1/verify/link', 'POST /v1/verify/contact', 'POST /v1/verify/receipt', 'POST /v1/verify/licence', 'POST /v1/explain', 'POST /v1/reports']);
   app.route<{ Params: { '*': string } }>({
     method: ['GET', 'POST'],
     url: '/sim/registry/*',
     handler: async (req, reply) => {
       const path = `/${req.params['*']}`;
-      if (!DEVICE_ROUTES.has(`${req.method} ${path}`)) return fail(reply, 404, 'not_found', 'Not found');
+      if (!DEVICE_ROUTES.has(`${req.method} ${path}`) && !(req.method === 'POST' && DEVICE_CALL_ROUTE.test(path))) return fail(reply, 404, 'not_found', 'Not found');
       const r = await fetch(`${o.apiUrl}${path}`, {
         method: req.method,
         headers: { authorization: req.headers.authorization ?? '', ...(req.method === 'POST' ? { 'content-type': 'application/json' } : {}) },

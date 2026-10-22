@@ -164,6 +164,12 @@ export const UpdateCall = z.strictObject({
   status: z.enum(['answered', 'ended']),
 });
 
+// The phone answering, ending or checking a call. Signed in, it sends the customer token; from the
+// phone's call screen with the app closed, it sends the call's own token from the ring instead.
+export const CustomerCallAction = z.strictObject({
+  token: z.string().min(8).max(200).optional(),
+});
+
 export const ApproveAdvisory = z.strictObject({
   analyst: z.string().trim().min(2).max(100),
 });

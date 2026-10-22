@@ -23,6 +23,9 @@ export interface FraudCall {
   status: 'ringing' | 'answered' | 'ended';
   at: string;
   expiresAt: string;
+  // Set when it ended: the customer declined or hung up on their phone, or the console ended it.
+  endedBy?: 'agent' | 'customer';
+  declined?: boolean;
 }
 
 export interface Campaign {
@@ -98,6 +101,8 @@ export interface Call {
   agentRef: string;
   openedAt: string;
   expiresAt: string;
+  endedBy?: 'agent' | 'customer';
+  declined?: boolean;
 }
 
 export interface Transfer {
@@ -173,6 +178,7 @@ export const sim = {
   sendTampered: (phone: string, itemId?: string) => call<{ item: InboxItem }>('POST', '/sim/send-tampered', { phone, itemId }),
   sendFake: (phone: string, template: number | 'credit_alert') => call<{ item: InboxItem }>('POST', '/sim/send-fake', { phone, template }),
   recentCustomers: () => call<{ customers: AppUser[] }>('GET', '/sim/customers/recent'),
+  removeCustomer: (phone: string) => call<unknown>('DELETE', `/sim/customers/${encodeURIComponent(phone)}`),
   fraudCall: (phone: string, from: string) => call<FraudCall>('POST', '/sim/fraud-calls', { phone, from }),
   fraudCalls: () => call<{ calls: FraudCall[] }>('GET', '/sim/fraud-calls'),
   updateFraudCall: (id: string, status: 'answered' | 'ended') => call<FraudCall>('PATCH', `/sim/fraud-calls/${id}`, { status }),

@@ -29,10 +29,54 @@ class InboxMessage {
   final String? channel;
 }
 
+/// The receipt fields a payment alert carries, to fill in the receipt check.
+typedef ReceiptPrefill = ({String? orgId, int amountKobo, String reference, String valueDate});
+
+/// A demo message or payment alert that reached the phone.
+class ArrivedNotice {
+  const ArrivedNotice({required this.id, required this.from, this.orgId, this.receipt});
+
+  final String id;
+  final String from;
+  final String? orgId;
+
+  /// Set for a payment alert; null for a message.
+  final ReceiptPrefill? receipt;
+
+  static ArrivedNotice? fromData(Map<String, dynamic> d) {
+    final from = d['bank'] as String? ?? '';
+    final orgId = d['orgId'] as String?;
+    if (d['type'] == 'message.received') {
+      final id = d['itemId'];
+      return id is String && id.isNotEmpty ? ArrivedNotice(id: id, from: from, orgId: orgId) : null;
+    }
+    if (d['type'] == 'transfer.received') {
+      final id = d['transferId'];
+      final kobo = int.tryParse('${d['amountKobo']}');
+      final reference = d['reference'];
+      final date = d['valueDate'];
+      if (id is! String || kobo == null || reference is! String || date is! String) return null;
+      return ArrivedNotice(id: id, from: from, orgId: orgId, receipt: (orgId: orgId, amountKobo: kobo, reference: reference, valueDate: date));
+    }
+    return null;
+  }
+}
+
 enum CallOutcome { ringing, active, answered, missed, declined }
 
 class CallRecord {
-  CallRecord({required this.id, required this.orgId, required this.bank, required this.code, this.purpose, required this.at, this.outcome = CallOutcome.ringing, this.answeredAt, this.endedAt});
+  CallRecord({
+    required this.id,
+    required this.orgId,
+    required this.bank,
+    required this.code,
+    this.purpose,
+    required this.at,
+    this.outcome = CallOutcome.ringing,
+    this.answeredAt,
+    this.endedAt,
+    this.unverified = false,
+  });
   factory CallRecord.fromJson(Map<String, dynamic> j) => CallRecord(
         id: j['id'] as String,
         orgId: j['orgId'] as String? ?? '',
@@ -43,6 +87,7 @@ class CallRecord {
         outcome: CallOutcome.values.asNameMap()[j['outcome']] ?? CallOutcome.missed,
         answeredAt: j['answeredAt'] == null ? null : DateTime.parse(j['answeredAt'] as String).toLocal(),
         endedAt: j['endedAt'] == null ? null : DateTime.parse(j['endedAt'] as String).toLocal(),
+        unverified: j['unverified'] == true,
       );
 
   final String id;
@@ -54,6 +99,9 @@ class CallRecord {
   CallOutcome outcome;
   DateTime? answeredAt;
   DateTime? endedAt;
+
+  /// A call no bank vouches for (the demo's fraud call): [bank] is the name the caller showed, and there is no code.
+  final bool unverified;
 
   bool get settled => outcome != CallOutcome.ringing && outcome != CallOutcome.active;
 
@@ -72,6 +120,7 @@ class CallRecord {
         'outcome': outcome.name,
         'answeredAt': ?answeredAt?.toUtc().toIso8601String(),
         'endedAt': ?endedAt?.toUtc().toIso8601String(),
+        if (unverified) 'unverified': true,
       };
 }
 
@@ -185,6 +234,14 @@ class AppState extends ChangeNotifier {
   /// The answered call still in progress.
   CallRecord? get activeCall => _callLog.where((r) => r.outcome == CallOutcome.active).firstOrNull;
 
+  static const unverifiedRingsFor = Duration(minutes: 2);
+
+  /// A call ringing or on right now that no bank vouches for (the demo's fraud call). While it lasts, the
+  /// Calls tab says the bank isn't calling.
+  CallRecord? get unverifiedCall => _callLog
+      .where((r) => r.unverified && (r.outcome == CallOutcome.active || (r.outcome == CallOutcome.ringing && _now().difference(r.at) < unverifiedRingsFor)))
+      .firstOrNull;
+
   final http.Client _http;
   final http.Client Function() _apiHttp;
   final PushService push;
@@ -194,6 +251,31 @@ class AppState extends ChangeNotifier {
   final openAlerts = ValueNotifier<int>(0);
 
   final arrivedAlert = ValueNotifier<({String bank, String id})?>(null);
+
+  /// Goes up when a message reaches the demo inbox, so the Check screen reloads it at once.
+  final inboxChanged = ValueNotifier<int>(0);
+
+  /// A message or payment receipt that arrived while the app was open: the Home screen shows a banner for it.
+  final arrivedMessage = ValueNotifier<ArrivedNotice?>(null);
+
+  /// The inbox message to open on the Check screen, set by a tapped notification. The screen clears it once shown.
+  final openMessage = ValueNotifier<String?>(null);
+
+  /// The payment receipt to check, set by a tapped payment alert. The Home screen clears it once opened.
+  final openReceipt = ValueNotifier<ReceiptPrefill?>(null);
+
+  /// Opens what a demo notice points at: the message on the Check screen, or the receipt check.
+  void openArrived(ArrivedNotice n) {
+    arrivedMessage.value = null;
+    if (n.receipt != null) {
+      openReceipt.value = n.receipt;
+    } else {
+      openMessage.value = n.id;
+    }
+  }
+
+  /// The client of the organisation a notice is from, else the selected one.
+  GaskiyaClient? clientFor(String? orgId) => (_links.where((l) => l.id == orgId).firstOrNull ?? selected)?.client;
   SharedPreferences? _prefs;
   bool _disposed = false;
 
@@ -256,9 +338,14 @@ class AppState extends ChangeNotifier {
         for (final r in _callLog.where((r) => r.outcome == CallOutcome.active)) {
           r.outcome = CallOutcome.answered;
         }
+        // An unverified call has no session to settle it: one still "ringing" from before is over.
+        for (final r in _callLog.where((r) => r.unverified && r.outcome == CallOutcome.ringing)) {
+          r.outcome = CallOutcome.missed;
+        }
       } catch (_) {}
     }
     _native ??= NativeCalls.instance.events.listen(handleNativeCall);
+    unawaited(NativeCalls.instance.sendConfig(Config.apiUrl));
     for (final l in _links) {
       unawaited(l._refreshToken().then((_) => _listen(l)).catchError((_) {}));
     }
@@ -444,7 +531,7 @@ class AppState extends ChangeNotifier {
       handleNotice(data, null, true);
       if (_isAdvisory(data)) {
         openAlerts.value++;
-      } else {
+      } else if (!const {'message.received', 'transfer.received', 'transfer.sent'}.contains(data['type'])) {
         openCallsTab.value++;
       }
     });
@@ -454,6 +541,18 @@ class AppState extends ChangeNotifier {
 
   void handleNotice(Map<String, dynamic> data, [BankLink? from, bool opened = false]) {
     final type = data['type'];
+    if (type == 'message.received' || type == 'transfer.received') {
+      if (type == 'message.received') inboxChanged.value++;
+      final n = ArrivedNotice.fromData(data);
+      if (n == null) return;
+      if (opened) {
+        openArrived(n);
+      } else {
+        arrivedMessage.value = n;
+      }
+      return;
+    }
+    if (type == 'transfer.sent') return;
     if (type == 'advisory.published' || type == 'advisory.withdrawn') {
       final l = from ?? _linkNamed(data['bank'] as String?);
       final targets = l == null ? _links : [l];
@@ -481,11 +580,14 @@ class AppState extends ChangeNotifier {
       } else {
         unawaited(refreshCall());
       }
+    } else if (type == 'call.unverified') {
+      _ringUnverified(data, from);
     } else if (type == 'call.closed') {
+      // The agent hung up, or the customer did on another device: the call ends here too.
       final id = data['callId'];
       if (id is String) {
         unawaited(NativeCalls.instance.endCall(id));
-        _settle(id);
+        _settle(id, declined: data['endedBy'] == 'customer');
       }
       for (final l in from == null ? _links : [from]) {
         if (l.liveCalls.isEmpty) continue;
@@ -493,6 +595,32 @@ class AppState extends ChangeNotifier {
         if (left.length != l.liveCalls.length) _setCalls(l, left);
       }
     }
+  }
+
+  // The demo's fraud call: it rings the phone's call screen with the name it shows and no code, and the
+  // registry is checked again, so the Calls tab says the bank isn't calling. It is never a call session.
+  void _ringUnverified(Map<String, dynamic> data, BankLink? from) {
+    final id = data['callId'];
+    if (id is! String || id.isEmpty) return;
+    final l = from ?? _linkNamed(data['bank'] as String?);
+    final caller = (data['caller'] as String?)?.trim() ?? '';
+    final name = caller.isNotEmpty ? caller : l?.bank.name ?? data['bank'] as String? ?? '';
+    final expiresAt = DateTime.tryParse(data['expiresAt'] as String? ?? '') ?? _now().add(const Duration(minutes: 1));
+    _logCall(id: id, orgId: l?.id ?? '', bank: name, code: '', unverified: true);
+    if (_rung.add(id)) {
+      final token = data['token'];
+      unawaited(NativeCalls.instance.ring(
+        callId: id,
+        orgId: l?.id ?? '',
+        bank: name,
+        code: '',
+        expiresAt: expiresAt,
+        token: token is String && token.isNotEmpty ? token : null,
+        apiUrl: Config.apiUrl,
+        unverified: true,
+      ));
+    }
+    unawaited(refreshCall());
   }
 
   BankLink? _linkNamed(String? name) {
@@ -564,7 +692,9 @@ class AppState extends ChangeNotifier {
       if (!live.contains(c.id) && !c.expiresAt.isAfter(now)) _settle(c.id, ringingOnly: true);
     }
     if (asOf != null) {
-      for (final r in _callLog.where((r) => r.orgId == l.id && !r.settled && !live.contains(r.id) && r.at.isBefore(asOf)).toList()) {
+      // The registry no longer has it open: the agent hung up, so the phone's call ends too.
+      for (final r in _callLog.where((r) => r.orgId == l.id && !r.unverified && !r.settled && !live.contains(r.id) && r.at.isBefore(asOf)).toList()) {
+        unawaited(NativeCalls.instance.endCall(r.id));
         _settle(r.id);
       }
     }
@@ -575,7 +705,7 @@ class AppState extends ChangeNotifier {
     final fresh = [for (final c in l.liveCalls) if (c.status == 'open' && c.code.isNotEmpty && _rung.add(c.id)) c];
     if (fresh.isNotEmpty) {
       final c = fresh.first;
-      unawaited(NativeCalls.instance.ring(callId: c.id, orgId: l.bank.id, bank: l.bank.name, code: c.code, expiresAt: c.expiresAt));
+      unawaited(NativeCalls.instance.ring(callId: c.id, orgId: l.bank.id, bank: l.bank.name, code: c.code, expiresAt: c.expiresAt, token: c.token, apiUrl: Config.apiUrl));
     }
     if (l.liveCalls.isNotEmpty) {
       final next = l.liveCalls.map((c) => c.expiresAt).reduce((a, b) => a.isBefore(b) ? a : b);
@@ -596,7 +726,7 @@ class AppState extends ChangeNotifier {
         }
       }();
 
-  CallRecord _logCall({required String id, required String orgId, required String bank, required String code, String? purpose, DateTime? at}) {
+  CallRecord _logCall({required String id, required String orgId, required String bank, required String code, String? purpose, DateTime? at, bool unverified = false}) {
     final known = _callLog.where((r) => r.id == id).firstOrNull;
     if (known != null) {
       if (purpose != null && known.purpose == null) {
@@ -605,7 +735,7 @@ class AppState extends ChangeNotifier {
       }
       return known;
     }
-    final r = CallRecord(id: id, orgId: orgId, bank: bank, code: code, purpose: purpose, at: at ?? _now());
+    final r = CallRecord(id: id, orgId: orgId, bank: bank, code: unverified ? '' : code, purpose: purpose, at: at ?? _now(), unverified: unverified);
     _callLog.insert(0, r);
     if (_callLog.length > _callLogMax) _callLog.removeRange(_callLogMax, _callLog.length);
     unawaited(_saveCallLog());
@@ -650,7 +780,10 @@ class AppState extends ChangeNotifier {
     if (r == null) return;
     unawaited(NativeCalls.instance.endCall(r.id));
     _settle(r.id, declined: true);
+    unawaited(_linkOf(r.orgId)?.client.endCall(r.id));
   }
+
+  BankLink? _linkOf(String orgId) => _links.where((l) => l.id == orgId).firstOrNull;
 
   void handleNativeCall(Map<String, dynamic> e) {
     final id = e['callId'];
@@ -659,14 +792,23 @@ class AppState extends ChangeNotifier {
     final l = _links.where((l) => l.id == orgId).firstOrNull;
     final ms = e['at'];
     final at = ms is int ? DateTime.fromMillisecondsSinceEpoch(ms) : null;
-    _logCall(id: id, orgId: orgId, bank: l?.bank.name ?? e['bank'] as String? ?? '', code: e['code'] as String? ?? '', at: at);
+    final unverified = e['kind'] == 'unverified';
+    final shown = e['bank'] as String? ?? '';
+    _logCall(id: id, orgId: orgId, bank: unverified && shown.isNotEmpty ? shown : l?.bank.name ?? shown, code: e['code'] as String? ?? '', at: at, unverified: unverified);
+    // The phone has told the registry already when it could; the app says it again, which the registry ignores
+    // if it heard. Then the agent's side ends with this one.
     switch (e['event']) {
       case 'answered':
         answerCall(id, at);
+        if (l != null) unawaited(l.client.answerCall(id));
       case 'ended':
         _settle(id, declined: true);
+        if (l != null) unawaited(l.client.endCall(id));
       case 'missed':
         _settle(id, ringingOnly: true);
+      case 'closed':
+        // The agent hung up while the call rang or was on.
+        _settle(id);
     }
   }
 

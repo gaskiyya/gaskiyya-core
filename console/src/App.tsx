@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import copy from '../../packages/schemas/copy.json';
-import { setConsoleToken, sim, type Call, type Metrics, type SimConfig, type SimSwapAnswer, type Transfer } from './api.ts';
+import { setConsoleToken, sim, type Call, type FraudCall, type Metrics, type SimConfig, type SimSwapAnswer, type Transfer } from './api.ts';
 import { type Category } from '@gaskiya/schemas';
 import { genuineTemplate } from '../../packages/api/src/simulator/demo-data.ts';
 import { normalisePhone } from './device/api.ts';
@@ -616,6 +616,7 @@ function Countdown({ expiresAt, total }: { expiresAt: string; total: number }) {
 type CallMode = 'announce' | 'spoof';
 
 const liveCall = (c: Call) => c.status !== 'ended' && Date.parse(c.expiresAt) > Date.now();
+const liveFraudCall = (c: FraudCall) => c.status === 'answered' || (c.status === 'ringing' && Date.parse(c.expiresAt) > Date.now());
 
 function CallsPage({ config, phone, setPhone, notify, placed }: { config: SimConfig; phone: string; setPhone: (p: string) => void; notify: (s: string) => void; placed?: Call | null }) {
   const isAppUser = useAppUser(phone);
@@ -630,6 +631,24 @@ function CallsPage({ config, phone, setPhone, notify, placed }: { config: SimCon
   }, [config.bank.name]);
   const listed = calls?.calls.find((c) => c.phone === phone && liveCall(c)) ?? null;
   const open = listed ?? (fresh && fresh.phone === phone && liveCall(fresh) && !calls?.calls.some((c) => c.id === fresh.id) ? fresh : null);
+  // The fraudster's call, which also rings the customer's real phone. It has no code.
+  const [fraudCalls, reloadFraud] = usePoll(() => sim.fraudCalls(), 1500);
+  const spoofed = fraudCalls?.calls.find((c) => c.phone === phone && liveFraudCall(c)) ?? null;
+  // The customer can hang up or decline on their phone: the agent's call ends with it.
+  const shown = useRef<{ bank: string | null; fraud: string | null }>({ bank: null, fraud: null });
+  useEffect(() => {
+    const was = shown.current;
+    if (was.bank && was.bank !== open?.id) {
+      const c = calls?.calls.find((x) => x.id === was.bank);
+      if (c?.endedBy === 'customer') notify(c.declined ? 'The customer declined the call.' : 'The customer hung up. Call ended.');
+      if (c && c.status === 'ended') setFresh((f) => (f?.id === c.id ? null : f));
+    }
+    if (was.fraud && was.fraud !== spoofed?.id) {
+      const c = fraudCalls?.calls.find((x) => x.id === was.fraud);
+      if (c?.endedBy === 'customer') notify(c.declined ? 'The customer declined the spoofed call.' : 'The customer hung up on the spoofed call.');
+    }
+    shown.current = { bank: open?.id ?? null, fraud: spoofed?.id ?? null };
+  }, [open?.id, spoofed?.id, calls, fraudCalls, notify]);
 
   const { run, busy, busyOn } = useActions((e) => notify(e.message));
   const modes: Scenario<CallMode>[] = [
@@ -644,8 +663,16 @@ function CallsPage({ config, phone, setPhone, notify, placed }: { config: SimCon
       } else {
         await sim.fraudCall(phone, number ?? '');
         notify(`The phone is ringing from ${config.bank.name}\u2019s number. No call is announced.`);
+        reloadFraud();
       }
       reload();
+    });
+  const endSpoofed = () =>
+    run('fraud:end', async () => {
+      if (!spoofed) return;
+      await sim.updateFraudCall(spoofed.id, 'ended');
+      reloadFraud();
+      notify('Spoofed call ended.');
     });
   const update = (status: 'answered' | 'ended') =>
     run(`call:${status}`, async () => {
@@ -708,6 +735,15 @@ function CallsPage({ config, phone, setPhone, notify, placed }: { config: SimCon
                   <button className="btn danger" disabled={busyOn('call:')} aria-busy={busy('call:ended')} onClick={() => update('ended')}>End call</button>
                 </div>
               </>
+            ) : spoofed ? (
+              <>
+                <div className="muted small" style={{ position: 'relative' }}>Fraudster&rsquo;s call from {spoofed.from ? <span className="mono">{spoofed.from}</span> : `${config.bank.name}\u2019s number`}</div>
+                <p style={{ position: 'relative', margin: '12px 0' }}>No code. The customer&rsquo;s app says {config.bank.name} is not calling.</p>
+                <span className={`tag ${spoofed.status === 'answered' ? 'red' : 'orange'}`}>{spoofed.status === 'answered' ? 'In call' : 'Ringing'}</span>
+                <div className="row" style={{ justifyContent: 'center', marginTop: 18, position: 'relative' }}>
+                  <button className="btn danger" disabled={busy('fraud:end')} aria-busy={busy('fraud:end')} onClick={endSpoofed}>End call</button>
+                </div>
+              </>
             ) : (
               <div className="empty" style={{ padding: '40px 10px' }}>
                 <IconPhone />
@@ -727,7 +763,7 @@ function CallsPage({ config, phone, setPhone, notify, placed }: { config: SimCon
                   <span className="muted small"> · {label(copy.purposes, c.purpose)} · {timeOf(c.openedAt)}</span>
                 </span>
                 <span className={`tag ${c.status === 'ended' ? '' : Date.parse(c.expiresAt) > Date.now() ? 'blue' : ''}`}>
-                  {Date.parse(c.expiresAt) <= Date.now() && c.status === 'open' ? 'expired' : c.status}
+                  {Date.parse(c.expiresAt) <= Date.now() && c.status === 'open' ? 'expired' : c.declined ? 'declined' : c.endedBy === 'customer' ? 'customer hung up' : c.status}
                 </span>
               </div>
             ))}

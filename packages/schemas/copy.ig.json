@@ -152,7 +152,8 @@
       "fingerprintNote": "A na-ewere mkp\u1ecdr\u1ecdka ozi ah\u1ee5 na ekwent\u1ecb a. \u1ecc b\u1ee5 naan\u1ecb mkp\u1ecdr\u1ecdka ah\u1ee5 ka a na-eziga iji lelee ozi ah\u1ee5. \u1ecc b\u1ee5r\u1ee5 na a kwadogh\u1ecb ya, a na-eziga ederede ah\u1ee5, ebe e zoro ogologo n\u1ecdmba, iji kow\u1ee5ta ihe kpatara ya.",
       "recentMessages": "Ozi nd\u1ecb na-ad\u1ecbbegh\u1ecb anya",
       "demoInbox": "Igbe nnwale",
-      "inboxEmpty": "Ozi \u1ee5l\u1ecd ak\u1ee5 g\u1ecb zitere na n\u1ecdmba a ga-egosi ebe a. \u1eca nwekwara ike kesaa ozi \u1ecd b\u1ee5la na Gaskiyya site na ngwa \u1ecdz\u1ecd."
+      "inboxEmpty": "Ozi \u1ee5l\u1ecd ak\u1ee5 g\u1ecb zitere na n\u1ecdmba a ga-egosi ebe a. \u1eca nwekwara ike kesaa ozi \u1ecd b\u1ee5la na Gaskiyya site na ngwa \u1ecdz\u1ecd.",
+      "newMessage": "Ozi \u1ecdh\u1ee5r\u1ee5. P\u1ecba ka \u1ecb lelee ya."
     },
     "result": {
       "linkCheck": "Nlele link",
@@ -179,6 +180,10 @@
       "answer": "Zaa",
       "decline": "J\u1ee5\u1ecd",
       "callerName": "{bank} \u00b7 Koodu {code}",
+      "unverifiedCaller": "{caller} \u00b7 Gaskiyya ekwenyeghi ya",
+      "unverified": "Gaskiyya ekwenyeghi oku a. Ekenyela koodu, PIN ma \u1ecd b\u1ee5 paswo\u1ecdd\u1ee5 \u1ecd b\u1ee5la.",
+      "notVerified": "Gaskiyya ekwenyeghi ya",
+      "empty": "Enwegh\u1ecb oku \u1ecd b\u1ee5la ka",
       "noneCalling": "Onweghi \u1ee5l\u1ecd ak\u1ee5 g\u1ecb na-akp\u1ecd g\u1ecb",
       "outcome": {
         "ringing": "\u1ecc na-akp\u1ecd ugbu a",

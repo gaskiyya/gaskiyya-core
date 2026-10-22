@@ -621,6 +621,20 @@ const jwks = await issuer.jwks(); // publish at your tokenKeysUrl</code></pre>
   "code": "4821"
 }</code></pre>
           </div>
+          <h3 class="ep"><span class="m m-get">GET</span> <code>/v1/calls/{id}</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Bank access token &middot; <b>Success:</b> 200; 404 <code>not_found</code> for an unknown id</p>
+          <p>Where the session stands. The customer can answer, decline or hang up on their phone, so poll this while the agent's screen is open: <code>status</code> is <code>open</code>, <code>answered</code>, <code>ended</code> or <code>expired</code>. An ended session says who ended it in <code>endedBy</code> (<code>agent</code> or <code>customer</code>), and <code>declined</code> is true when the customer ended it before answering. End the agent's call when it is <code>ended</code> or <code>expired</code>.</p>
+          <p class="code-label">Response</p>
+          <div class="code" data-copy>
+            <pre><code data-json>{
+  "id": "call_8c1e4b2a9f7d3e5c6a01",
+  "status": "ended",
+  "expiresAt": "2026-10-20T13:03:02.000Z",
+  "code": "4821",
+  "endedBy": "customer",
+  "declined": true
+}</code></pre>
+          </div>
           <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/sim-swap/check</code></h3>
           <p class="ep-meta"><b>Auth:</b> Bank access token &middot; <b>Success:</b> 200 &middot; <b>Rate limit:</b> per bank client (429 <code>rate_limited</code>)</p>
           <p>Has this number's SIM changed in the last <code>maxAgeHours</code> (1 to 2400, default 240)? POST only, so the number never appears in a URL. When the mobile network cannot answer, or no network is connected, <code>status</code> is <code>unknown</code>: treat that as risky, never as "not swapped".</p>
@@ -1204,6 +1218,17 @@ const jwks = await issuer.jwks(); // publish at your tokenKeysUrl</code></pre>
       "expiresAt": "2026-10-20T13:05:11.000Z"
     }
   ]
+}</code></pre>
+          </div>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/calls/{id}/answer</code></h3>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/calls/{id}/end</code></h3>
+          <h3 class="ep"><span class="m m-post">POST</span> <code>/v1/calls/{id}/status</code></h3>
+          <p class="ep-meta"><b>Auth:</b> Customer token, or the call's own <code>token</code> in the body &middot; <b>Success:</b> 200; 404 <code>not_found</code> for an unknown call or one to another number</p>
+          <p>The phone answered, ended (or declined) or checks one call, so both ends hang up together. A customer token reaches only calls to the customer's own number. The call's own <code>token</code> comes with the ring and with <code>GET /v1/calls/open</code>, and reaches that one call only: the phone's call screen uses it when the app is closed. Ending a call ends it on the agent's screen and on the customer's other devices. The answer has the same shape as <code>GET /v1/calls/{id}</code>.</p>
+          <p class="code-label">Request body (only without a customer token)</p>
+          <div class="code" data-copy>
+            <pre><code data-schema="CustomerCallAction">{
+  "token": "demobank.6f1c0d0e2b"
 }</code></pre>
           </div>
           <h3 class="ep"><span class="m m-get">GET</span> <code>/v1/activity</code></h3>

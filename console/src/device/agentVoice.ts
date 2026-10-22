@@ -1,5 +1,5 @@
 interface Manifest {
-  pauses: Record<'afterOpening' | 'betweenDigits', number>;
+  pauses: Record<'afterOpening' | 'betweenDigits', number> & { betweenRepeats?: number };
   clips: Record<string, { text: string; ms: number }>;
 }
 
@@ -9,6 +9,7 @@ export interface AgentCall {
 }
 
 const BASE = 'audio/agent/';
+const REPEAT_PAUSE_MS = 1800;
 
 let manifestP: Promise<Manifest> | null = null;
 const manifest = () => (manifestP ??= fetch(`${BASE}voice.json`).then((r) => (r.ok ? (r.json() as Promise<Manifest>) : Promise.reject(new Error('no voice')))));
@@ -64,19 +65,26 @@ export class AgentVoice {
     if (ctx) void ctx.close().catch(() => {});
   }
 
+  // The opening line once, then the code again and again with a short pause, until the call ends (stop()).
   private async run(): Promise<void> {
     const m = await manifest();
     const ctx = this.ctx!;
-    const ids = this.ids(m);
-    const bufs = await Promise.all(ids.map(async (id) => ctx.decodeAudioData((await clip(id)).slice(0))));
-    if (this.stopped) return;
-    let t = ctx.currentTime + 0.6;
-    bufs.forEach((buf, i) => {
+    const [opening, ...digits] = await Promise.all(this.ids(m).map(async (id) => ctx.decodeAudioData((await clip(id)).slice(0))));
+    if (this.stopped || !opening) return;
+    const play = (buf: AudioBuffer, at: number) => {
       const src = ctx.createBufferSource();
       src.buffer = buf;
       src.connect(this.out!);
-      src.start(t);
-      t += buf.duration + (i === 0 ? m.pauses.afterOpening : m.pauses.betweenDigits) / 1000;
-    });
+      src.start(at);
+      return at + buf.duration;
+    };
+    let t = play(opening, ctx.currentTime + 0.6) + m.pauses.afterOpening / 1000;
+    while (!this.stopped) {
+      digits.forEach((buf, i) => (t = play(buf, t) + (i < digits.length - 1 ? m.pauses.betweenDigits / 1000 : 0)));
+      t += (m.pauses.betweenRepeats ?? REPEAT_PAUSE_MS) / 1000;
+      // Queue the next round just before this one ends, so stop() never leaves more than one round queued.
+      await new Promise((r) => setTimeout(r, Math.max(0, (t - ctx.currentTime - 0.4) * 1000)));
+      if (ctx.state === 'closed') return;
+    }
   }
 }
