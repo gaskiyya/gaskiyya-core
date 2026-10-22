@@ -1,6 +1,7 @@
 import type { Firestore } from '@google-cloud/firestore';
 import { describe, expect, it } from 'vitest';
-import { FirestoreRateLimiter, FirestoreStore } from '../packages/api/src/index.ts';
+import type { Db } from 'mongodb';
+import { FirestoreRateLimiter, FirestoreStore, MongoRateLimiter, MongoStore } from '../packages/api/src/index.ts';
 import { testRateLimiters, testStore } from './helpers.ts';
 
 const T0 = 30_000_000 * 60_000;
@@ -10,6 +11,7 @@ describe('rate limiter', () => {
     const store = testStore();
     const make = testRateLimiters(store);
     expect(make('verify', 1) instanceof FirestoreRateLimiter).toBe(store instanceof FirestoreStore);
+    expect(make('verify', 1) instanceof MongoRateLimiter).toBe(store instanceof MongoStore);
     const verify = make('verify', 3, 60_000);
     const results = [];
     for (let i = 0; i < 5; i++) results.push(await verify.take('cust-a', T0 + i * 1000));
@@ -30,6 +32,26 @@ describe('rate limiter', () => {
         expect(d.id).toMatch(/^[0-9a-f]{64}$/);
         expect(Object.keys(d.data()).sort()).toEqual(['count', 'expireAt']);
       }
+    }
+    if (store instanceof MongoStore) {
+      const other = testRateLimiters(store)('verify', 3, 60_000);
+      expect(await other.take('cust-b', T0 + 6000)).toBe(true);
+      expect(await other.take('cust-b', T0 + 7000)).toBe(true);
+      expect(await verify.take('cust-b', T0 + 8000)).toBe(false);
+      const docs = await store.db.collection(`${store.prefix}_ratelimits`).find().toArray();
+      expect(docs.length).toBeGreaterThan(0);
+      for (const d of docs) {
+        expect(d._id).toMatch(/^[0-9a-f]{64}$/);
+        expect(Object.keys(d).sort()).toEqual(['_id', 'count', 'expireAt']);
+      }
+    }
+  });
+
+  it('SEC-4: the MongoDB limiter still limits, in memory, when MongoDB fails or hangs', async () => {
+    const fake = (op: () => Promise<never>) => ({ collection: () => ({ findOneAndUpdate: op }) }) as unknown as Db;
+    for (const db of [fake(() => Promise.reject(new Error('down'))), fake(() => new Promise<never>(() => {}))]) {
+      const lim = new MongoRateLimiter({ db, collection: 'x', name: 'verify', limit: 2, timeoutMs: 50 });
+      expect([await lim.take('k', T0), await lim.take('k', T0 + 1), await lim.take('k', T0 + 2)]).toEqual([true, true, false]);
     }
   });
 

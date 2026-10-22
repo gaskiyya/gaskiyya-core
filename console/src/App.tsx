@@ -213,7 +213,7 @@ function Shell({ ws, config, notify, toast, onSignOut, onExpired }: {
   });
   const [phone, setPhone] = useState('');
   const [placed, setPlaced] = useState<Call | null>(null);
-  const [metrics, reloadMetrics, online] = usePoll(() => ws.metrics(), 2500, [ws], onExpired);
+  const [metrics, reloadMetrics, online] = usePoll(() => ws.metrics(), 10_000, [ws], onExpired);
   const events = useLiveEvents(metrics);
   const seen = useRef(0);
 

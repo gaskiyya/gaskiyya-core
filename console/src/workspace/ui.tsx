@@ -13,10 +13,16 @@ export function usePoll<T>(fn: () => Promise<T>, ms: number, deps: unknown[] = [
       .then((d) => (setData(d), setOk(true)))
       .catch((e) => (e instanceof SignedOut ? out.current?.() : setOk(false)));
   }, []);
+  // A hidden tab stops polling and catches up as soon as it is shown again.
   useEffect(() => {
+    const tick = () => document.visibilityState !== 'hidden' && load();
     load();
-    const t = setInterval(load, ms);
-    return () => clearInterval(t);
+    const t = setInterval(tick, ms);
+    document.addEventListener('visibilitychange', tick);
+    return () => {
+      clearInterval(t);
+      document.removeEventListener('visibilitychange', tick);
+    };
   }, [ms, load, ...deps]);
   return [data, load, ok];
 }

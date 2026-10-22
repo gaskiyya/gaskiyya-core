@@ -4,7 +4,7 @@ import OpenAI from 'openai';
 import { Resend } from 'resend';
 import { FcmPush } from '../packages/api/src/channels/fcm.ts';
 import { testEmail } from '../packages/api/src/emails/templates.ts';
-import { configFromEnv, FirestoreStore, GeminiProvider, OpenAIProvider } from '../packages/api/src/index.ts';
+import { configFromEnv, FirestoreStore, GeminiProvider, MongoStore, OpenAIProvider } from '../packages/api/src/index.ts';
 
 if (existsSync('.env')) process.loadEnvFile('.env');
 const env = process.env;
@@ -40,7 +40,20 @@ try {
 }
 
 console.log('\nStorage');
-if (cfg.store instanceof FirestoreStore) {
+if (cfg.store instanceof MongoStore) {
+  const store = cfg.store;
+  await check('MongoDB read and write', async () => {
+    const t0 = Date.now();
+    await store.ping();
+    const col = store.db.collection<{ _id: string; at?: string }>(`${store.prefix}_stats`);
+    await col.replaceOne({ _id: '_check_server' }, { at: new Date().toISOString() }, { upsert: true });
+    const found = await col.findOne({ _id: '_check_server' });
+    await col.deleteOne({ _id: '_check_server' });
+    if (!found) throw new Error('wrote a document but could not read it back');
+    return `${cfg.integrations.store}; indexes in place; round trip ${Date.now() - t0} ms`;
+  });
+  await store.close();
+} else if (cfg.store instanceof FirestoreStore) {
   const db = cfg.store.db;
   await check(`Firestore read and write`, async () => {
     const ref = db.collection(`${env.FIRESTORE_COLLECTION_PREFIX || 'gaskiya'}_stats`).doc('_check_server');

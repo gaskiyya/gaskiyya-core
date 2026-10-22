@@ -1,5 +1,6 @@
 import { exportJWK, generateKeyPair, SignJWT, type CryptoKey } from 'jose';
 import { randomUUID } from 'node:crypto';
+import { MongoClient } from 'mongodb';
 import {
   createSystem,
   FirestoreStore,
@@ -8,6 +9,8 @@ import {
   MemoryPush,
   memoryRateLimiters,
   MemoryStore,
+  MongoStore,
+  mongoRateLimiters,
   StaticKeyService,
   type KeyService,
   type ModelProvider,
@@ -40,7 +43,14 @@ export const TOKEN_SECRET = 'test-token-secret-not-real-0123456789abcdef';
 export const WA = { verifyToken: 'wa-verify-test', appSecret: 'wa-app-secret-test', tenantId: 'demobank' };
 export const USSD = { token: 'ussd-test-token-not-real-000001', tenantId: 'demobank' };
 
+let mongoClient: MongoClient | null = null;
+
 export function testStore(): Store {
+  if (process.env.GASKIYA_TEST_STORE === 'mongo') {
+    if (!process.env.MONGODB_TEST_URI) throw new Error('GASKIYA_TEST_STORE=mongo needs MONGODB_TEST_URI (set by tests/mongo-global.ts)');
+    mongoClient ??= new MongoClient(process.env.MONGODB_TEST_URI);
+    return new MongoStore({ client: mongoClient, dbName: `t${randomUUID().slice(0, 8)}` });
+  }
   if (process.env.GASKIYA_TEST_STORE === 'firestore') {
     if (!process.env.FIRESTORE_EMULATOR_HOST) throw new Error('GASKIYA_TEST_STORE=firestore needs FIRESTORE_EMULATOR_HOST');
     return new FirestoreStore({ projectId: 'demo-gaskiya', prefix: `t${randomUUID().slice(0, 8)}` });
@@ -49,6 +59,7 @@ export function testStore(): Store {
 }
 
 export function testRateLimiters(store: Store): RateLimiterFactory {
+  if (store instanceof MongoStore) return mongoRateLimiters(store.db, store.prefix);
   return store instanceof FirestoreStore ? firestoreRateLimiters(store.db, store.prefix) : memoryRateLimiters;
 }
 

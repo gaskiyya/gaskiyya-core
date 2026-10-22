@@ -22,9 +22,10 @@ import {
   type PushProvider,
 } from './channels/channels.ts';
 import { parseTenantKeys, StaticKeyService, type KeyService, type TenantKeyConfig } from './keys/keys.ts';
-import { firestoreRateLimiters, memoryRateLimiters, type RateLimiterFactory } from './ratelimit/ratelimit.ts';
+import { firestoreRateLimiters, memoryRateLimiters, mongoRateLimiters, type RateLimiterFactory } from './ratelimit/ratelimit.ts';
 import { GaskiyaService, type Logger } from './service.ts';
 import { FirestoreStore } from './store/firestore.ts';
+import { MongoStore } from './store/mongo.ts';
 import { MemoryStore } from './store/memory.ts';
 import { BUNDLED_LICENCES } from '@gaskiya/licences/bundled';
 import { DirectoryLicenceRegistry } from './licences/directory.ts';
@@ -451,7 +452,7 @@ export function configFromEnv(env: NodeJS.ProcessEnv = process.env) {
     if (!tenants.some((t) => t.id === c.tenantId)) errors.push(`bank client ${c.clientId}: tenantId ${c.tenantId} is not a configured tenant`);
   }
 
-  const storeKind = (env.STORE || (env.FIRESTORE_PROJECT_ID || env.FIRESTORE_EMULATOR_HOST ? 'firestore' : 'memory')).toLowerCase();
+  const storeKind = (env.STORE || (env.MONGODB_URI ? 'mongo' : env.FIRESTORE_PROJECT_ID || env.FIRESTORE_EMULATOR_HOST ? 'firestore' : 'memory')).toLowerCase();
   let store: Store = new MemoryStore();
   if (storeKind === 'firestore') {
     try {
@@ -478,10 +479,14 @@ export function configFromEnv(env: NodeJS.ProcessEnv = process.env) {
     } catch (e) {
       errors.push(`Firestore: ${(e as Error).message}`);
     }
+  } else if (storeKind === 'mongo') {
+    if (!env.MONGODB_URI) errors.push('STORE=mongo needs MONGODB_URI');
+    else if (!/^mongodb(\+srv)?:\/\//.test(env.MONGODB_URI)) errors.push('MONGODB_URI must start with mongodb:// or mongodb+srv://');
+    else store = new MongoStore({ uri: env.MONGODB_URI, dbName: env.MONGODB_DB || 'gaskiyya', prefix: env.MONGODB_COLLECTION_PREFIX || 'gaskiya' });
   } else if (storeKind !== 'memory') {
-    errors.push('STORE must be firestore or memory');
+    errors.push('STORE must be mongo, firestore or memory');
   } else if (env.NODE_ENV === 'production') {
-    errors.push('STORE=memory loses every record on restart; set FIRESTORE_PROJECT_ID (or STORE=firestore) in production');
+    errors.push('STORE=memory loses every record on restart; set MONGODB_URI in production');
   }
 
   let model: ModelProvider = new NoModelProvider();
@@ -564,13 +569,16 @@ export function configFromEnv(env: NodeJS.ProcessEnv = process.env) {
   if (env.AGENT_IN_PROCESS && !['true', 'false'].includes(env.AGENT_IN_PROCESS)) errors.push('AGENT_IN_PROCESS must be true or false');
   const agentJobToken = env.AGENT_JOB_TOKEN || null;
   if (agentJobToken && agentJobToken.length < 32) errors.push('AGENT_JOB_TOKEN must be at least 32 characters (e.g. openssl rand -hex 32)');
-  const limitKind = (env.RATE_LIMIT_STORE || (store instanceof FirestoreStore ? 'firestore' : 'memory')).toLowerCase();
+  // Limits are shared through the store when it is a database, so every replica counts the same requests.
+  const shared = store instanceof MongoStore || store instanceof FirestoreStore;
+  const limitKind = (env.RATE_LIMIT_STORE || (shared ? 'store' : 'memory')).toLowerCase();
   let rateLimiters: RateLimiterFactory = memoryRateLimiters;
-  if (limitKind === 'firestore') {
-    if (store instanceof FirestoreStore) rateLimiters = firestoreRateLimiters(store.db, store.prefix);
-    else errors.push('RATE_LIMIT_STORE=firestore needs the Firestore store (set FIRESTORE_PROJECT_ID)');
+  if (['store', 'mongo', 'firestore'].includes(limitKind)) {
+    if (store instanceof MongoStore) rateLimiters = mongoRateLimiters(store.db, store.prefix);
+    else if (store instanceof FirestoreStore) rateLimiters = firestoreRateLimiters(store.db, store.prefix);
+    else errors.push(`RATE_LIMIT_STORE=${limitKind} needs a database store (set MONGODB_URI)`);
   } else if (limitKind !== 'memory') {
-    errors.push('RATE_LIMIT_STORE must be firestore or memory');
+    errors.push('RATE_LIMIT_STORE must be store or memory');
   }
 
   const corsList = (env.CORS_ORIGINS ?? '').split(',').map((s) => s.trim()).filter(Boolean);
@@ -590,7 +598,7 @@ export function configFromEnv(env: NodeJS.ProcessEnv = process.env) {
     sessionHours: num('ADMIN_SESSION_HOURS', 8, 1),
     refreshSeconds,
     loginRateLimitPerMinute: num('ADMIN_LOGIN_RATE_LIMIT_PER_MINUTE', 10, 1),
-    keyActivationSeconds: num('KEY_ACTIVATION_SECONDS', store instanceof FirestoreStore ? refreshSeconds * 2 : 0, 0),
+    keyActivationSeconds: num('KEY_ACTIVATION_SECONDS', shared ? refreshSeconds * 2 : 0, 0),
   };
   if (adminSettings.sessionHours > 72) errors.push('ADMIN_SESSION_HOURS must be at most 72');
 
@@ -607,7 +615,9 @@ export function configFromEnv(env: NodeJS.ProcessEnv = process.env) {
 
   const integrations: Integrations = {
     store:
-      store instanceof FirestoreStore
+      store instanceof MongoStore
+        ? `MongoDB (database ${store.db.databaseName}, prefix ${store.prefix})`
+        : store instanceof FirestoreStore
         ? `Firestore (project ${env.FIRESTORE_PROJECT_ID || env.GOOGLE_CLOUD_PROJECT}${env.FIRESTORE_EMULATOR_HOST ? `, emulator ${env.FIRESTORE_EMULATOR_HOST}` : ''}, prefix ${env.FIRESTORE_COLLECTION_PREFIX || 'gaskiya'})`
         : 'memory: not persisted, demo only',
     ai:
@@ -713,7 +723,8 @@ export function systemFromEnv(env: NodeJS.ProcessEnv = process.env) {
 
 export { orgErrors } from './orgs.ts';
 export { FirestoreStore } from './store/firestore.ts';
-export { MemoryRateLimiter, FirestoreRateLimiter, memoryRateLimiters, firestoreRateLimiters, type RateLimiter, type RateLimiterFactory } from './ratelimit/ratelimit.ts';
+export { MongoStore } from './store/mongo.ts';
+export { MemoryRateLimiter, FirestoreRateLimiter, MongoRateLimiter, memoryRateLimiters, firestoreRateLimiters, mongoRateLimiters, type RateLimiter, type RateLimiterFactory } from './ratelimit/ratelimit.ts';
 export { RegistrationGuard, DEFAULT_GUARD } from './guard.ts';
 export { MemoryStore, StaticKeyService, MemoryPush, MemoryMessaging, NoModelProvider, GeminiProvider, OpenAIProvider, OllamaProvider, FcmPush, ResendMailer, MemoryMailer };
 export type { Store, Tenant, ModelProvider, KeyService, BankClient };

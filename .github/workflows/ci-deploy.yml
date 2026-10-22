@@ -38,6 +38,8 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm exec eslint .
       - run: pnpm exec vitest run --exclude tests/languages.test.ts
+      - name: Tests against a real MongoDB
+        run: GASKIYA_TEST_STORE=mongo pnpm exec vitest run --exclude tests/languages.test.ts
       - name: Translation coverage (reported, does not block deploys)
         continue-on-error: true
         run: pnpm exec vitest run tests/languages.test.ts
@@ -88,11 +90,19 @@ jobs:
         env:
           INSTANCE_ID: ${{ vars.AWS_INSTANCE_ID }}
           GH_TOKEN: ${{ github.token }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: |
           # The job's read-only token fetches the commit; it expires when this job ends and is never stored on the server.
           auth=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
           echo "::add-mask::$auth"
-          script="cd /opt/gaskiyya/repo && sudo -u ubuntu git -c http.extraHeader='AUTHORIZATION: basic $auth' fetch --quiet origin main && sudo -u ubuntu git checkout --quiet --force $GITHUB_SHA && sudo -u ubuntu scripts/server-deploy.sh $GITHUB_SHA"
+          # The database connection string comes from the MONGODB_URI secret and is written into prod.env before the swap.
+          env_steps=""
+          if [ -n "$MONGODB_URI" ]; then
+            uri=$(printf '%s' "$MONGODB_URI" | base64 -w0)
+            echo "::add-mask::$uri"
+            env_steps="sudo scripts/server-env.sh MONGODB_URI $uri && sudo scripts/server-env.sh STORE $(printf mongo | base64 -w0) && "
+          fi
+          script="cd /opt/gaskiyya/repo && sudo -u ubuntu git -c http.extraHeader='AUTHORIZATION: basic $auth' fetch --quiet origin main && sudo -u ubuntu git checkout --quiet --force $GITHUB_SHA && ${env_steps}sudo -u ubuntu scripts/server-deploy.sh $GITHUB_SHA"
           id=$(aws ssm send-command --instance-ids "$INSTANCE_ID" --document-name AWS-RunShellScript \
             --comment "deploy ${GITHUB_SHA::12}" --timeout-seconds 600 \
             --parameters "{\"commands\":[\"$script\"],\"executionTimeout\":[\"1500\"]}" \

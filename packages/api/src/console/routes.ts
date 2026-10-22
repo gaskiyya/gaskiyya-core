@@ -31,6 +31,19 @@ declare module 'fastify' {
 
 const Login = z.strictObject({ code: z.string().min(1).max(32) });
 
+// Every open tab of a bank polls the same numbers; load them once per interval and share the result.
+function sharedFor<T>(ttlMs: number, now: () => number) {
+  const hits = new Map<string, { at: number; value: Promise<T> }>();
+  return (key: string, load: () => Promise<T>): Promise<T> => {
+    const hit = hits.get(key);
+    if (hit && now() - hit.at < ttlMs) return hit.value;
+    const value = load();
+    hits.set(key, { at: now(), value });
+    value.catch(() => hits.delete(key));
+    return value;
+  };
+}
+
 function fail(reply: FastifyReply, status: number, code: string, message: string) {
   return reply.code(status).send({ code, message });
 }
@@ -114,9 +127,12 @@ export function registerConsoleRoutes(app: FastifyInstance, d: ConsoleDeps) {
     return { ok: true };
   });
 
-  app.get('/v1/console/metrics', signedIn, async (req) => svc.metrics(req.console!.tenantId));
+  const metricsFor = sharedFor<Awaited<ReturnType<typeof svc.metrics>>>(5_000, now);
+  app.get('/v1/console/metrics', signedIn, async (req) => metricsFor(req.console!.tenantId, () => svc.metrics(req.console!.tenantId)));
 
-  app.get('/v1/console/overview', signedIn, async (req) => {
+  const overviewFor = sharedFor<object>(15_000, now);
+
+  app.get('/v1/console/overview', signedIn, async (req) => overviewFor(req.console!.tenantId, async () => {
     const t = tenantOf(req);
     const [metrics, usage, campaigns, alerts] = await Promise.all([
       svc.store.metrics(t.id),
@@ -136,7 +152,7 @@ export function registerConsoleRoutes(app: FastifyInstance, d: ConsoleDeps) {
       },
       alerts,
     };
-  });
+  }));
 
   app.get('/v1/console/campaigns', signedIn, async (req) => ({ campaigns: await svc.store.listCampaigns(req.console!.tenantId) }));
 

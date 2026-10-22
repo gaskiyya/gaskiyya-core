@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { contentDigest } from '@gaskiya/canonical';
-import { configFromEnv, FirestoreStore, MemoryStore } from '../packages/api/src/index.ts';
+import { configFromEnv, FirestoreStore, MemoryStore, MongoStore } from '../packages/api/src/index.ts';
 import { decideVerdict } from '../packages/api/src/domain/verdict.ts';
 import { ALERT, ALICE, BOB, harness, LINK_MSG } from './helpers.ts';
 
@@ -320,6 +320,9 @@ describe('registry and verification', () => {
       const stats = ((await h.sys.store.dump()) as unknown as { stats: { _id: string }[] }).stats.map((d) => d._id);
       expect(stats.length).toBeGreaterThan(1);
       expect(stats.every((id) => /^demobank_\d+$/.test(id))).toBe(true);
+    }
+    if (h.sys.store instanceof MongoStore) {
+      expect(((await h.sys.store.dump()) as unknown as { stats: { _id: string }[] }).stats.map((d) => d._id)).toEqual(['demobank']);
     }
   });
 });

@@ -21,7 +21,7 @@ const sum = (o: Record<string, number> | undefined) => Object.values(o ?? {}).re
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).replace(/_/g, ' ');
 
 export function OverviewPage({ ws, metrics, events, go, onSignedOut }: { ws: Workspace; metrics: Metrics | null; events: LiveEvent[]; go: (p: 'fraud' | 'integration') => void; onSignedOut: () => void }) {
-  const [ov] = usePoll(() => ws.overview(), 5000, [ws], onSignedOut);
+  const [ov] = usePoll(() => ws.overview(), 15_000, [ws], onSignedOut);
   const v = metrics?.verifications ?? {};
   const cov = metrics?.coverage;
   const checks = OUTCOMES.reduce((a, o) => a + (v[o.k] ?? 0), 0);

@@ -168,7 +168,7 @@ describe('security and privacy', () => {
     expect(configFromEnv({ ...base, CORS_ORIGINS: ' https://a.example , https://b.example ' }).corsOrigins).toEqual(['https://a.example', 'https://b.example']);
     expect(configFromEnv({ ...base, CORS_ORIGINS: '*' }).corsOrigins).toBe(true);
     expect(() => configFromEnv({ ...base, CORS_ORIGINS: '*', NODE_ENV: 'production', FIRESTORE_PROJECT_ID: 'p' })).toThrow(/CORS_ORIGINS=\* must not be used in production/);
-    expect(() => configFromEnv({ ...base, RATE_LIMIT_STORE: 'firestore' })).toThrow(/RATE_LIMIT_STORE=firestore needs the Firestore store/);
+    expect(() => configFromEnv({ ...base, RATE_LIMIT_STORE: 'firestore' })).toThrow(/RATE_LIMIT_STORE=firestore needs a database store/);
   });
 
   it('SEC-5: no screen text, bot reply or prompt template asks for a PIN, password, card number or OTP', () => {

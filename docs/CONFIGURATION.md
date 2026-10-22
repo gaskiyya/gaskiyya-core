@@ -177,33 +177,30 @@ Notes for running it:
 - Alert webhooks are posted as JSON with `x-gaskiyya-event` and `x-gaskiyya-signature: t=<unix seconds>,v1=<hex>`, where `v1` is HMAC-SHA256 of `<t>.<body>` with the signing secret shown once when the webhook is saved. Events: `registration_alert`, `campaign_alert`, `sim_swap` and `test`. They carry IDs, counts and domains, never message text or phone numbers.
 - With the dashboard on, `GASKIYA_TENANTS` may be an empty list (`[]`); organisations can all be added in the dashboard.
 
-## Storage (Firestore)
+## Storage (MongoDB)
 
-The registry stores its records in Cloud Firestore (Native mode).
+The registry stores its records in MongoDB ([decision 0023](decisions/0023-mongodb.md)). MongoDB Atlas works, including the free M0 tier.
 
 | Variable | Notes |
 | --- | --- |
-| `FIRESTORE_PROJECT_ID` | Setting it switches storage to Firestore |
-| `FIRESTORE_SERVICE_ACCOUNT_JSON` | Raw or base64 JSON of a service account with the *Cloud Datastore User* role (the Firebase Admin SDK account works). Leave empty on Google Cloud to use the runtime's own identity |
-| `FIRESTORE_COLLECTION_PREFIX` | `gaskiya` in production. Local development uses `gaskiya_dev`, so a demo reset can never touch production data |
-| `FIRESTORE_DATABASE_ID` | Only if you use a named database rather than `(default)` |
-| `FIRESTORE_STATS_SHARDS` | Counter documents per bank for the dashboard numbers, default `10`. Each write picks one at random and reads add them up, so no one document takes every write. Raise it for very high registration rates; never lower it, or the higher shards stop being counted |
+| `MONGODB_URI` | Setting it switches storage to MongoDB. Prefer Atlas's standard `mongodb://host1,host2,host3/?tls=true&replicaSet=...&authSource=admin` string over `mongodb+srv://`: some networks return DNS answers for the SRV lookup that Node cannot read |
+| `MONGODB_DB` | Database name, default `gaskiyya` |
+| `MONGODB_COLLECTION_PREFIX` | `gaskiya` in production. Use another prefix (or database) for local development, so a demo reset can never touch production data |
+| `STORE` | `mongo`, `firestore` or `memory`. Only needed to override the choice `MONGODB_URI` makes |
 
-**One-time setup:** deploy the index and the expiry (TTL) policies in `firestore.indexes.json`, and the deny-all rules in `firestore.rules`:
+**Atlas setup:** create a database user with read and write access, and add the server's public IP under *Network Access* (for the AWS box, `16.192.138.140`). On start the server pings the database and creates its indexes; it will not start if the database cannot be reached.
 
-```bash
-npx firebase login        # as a project Owner or Editor
-npx firebase deploy --only firestore:indexes,firestore:rules --project <project-id>
-```
+- **Expiry:** TTL indexes delete expired messages, call sessions, verification logs, idempotency keys, sessions, API usage and rate-limit windows (MongoDB checks about once a minute; reads check expiry themselves).
+- **Counters:** each bank's dashboard numbers live in one document updated with atomic increments, and API usage in one document per bank per day, so the dashboard reads one document instead of many.
+- **Transactions:** message and receipt registration with an idempotency key runs in a transaction, which needs a replica set. Atlas always has one; for a self-hosted server, run a one-node replica set.
+- **Region:** put the cluster in the region nearest the server. A verification is one or two reads.
+- **Tests:** `GASKIYA_TEST_STORE=mongo pnpm exec vitest run` runs the whole suite against a real MongoDB that the tests start themselves. CI runs it on every push.
 
-Deploy as a person with project Owner/Editor rights. The Firebase Admin SDK service account used by the server deliberately cannot change indexes or rules, and that is how it should stay. To deploy from CI with a dedicated service account instead, give that account *Cloud Datastore Index Admin* and *Firebase Rules Admin* (plus *Service Usage Consumer* for the CLI), or run `GOOGLE_APPLICATION_CREDENTIALS=key.json pnpm firestore:deploy:api <project-id>`, which needs only the first two.
+Without `MONGODB_URI` (or `FIRESTORE_PROJECT_ID`), records are kept in memory and lost on restart; the server refuses this when `NODE_ENV=production`.
 
-- **Index:** the "what did the bank send me recently" query needs one composite index. Until it exists, a "not confirmed" result omits that summary; verdicts are unaffected.
-- **TTL:** Firestore deletes expired messages, call sessions, verification logs, idempotency keys and rate-limit windows on its own (usually within a day; reads check expiry themselves).
-- **Rules:** only the server, through the Admin SDK, touches the registry. The rules deny every app and browser.
-- **Region:** create the database in the region nearest your server and your customers. Each verification is one document read, so the server should run in that same region.
+### Firestore (previous store)
 
-Without `FIRESTORE_PROJECT_ID`, records are kept in memory and lost on restart; the server refuses this when `NODE_ENV=production`.
+The Firestore store is still built in. Set `STORE=firestore` and `FIRESTORE_PROJECT_ID` (plus `FIRESTORE_SERVICE_ACCOUNT_JSON`, and optionally `FIRESTORE_DATABASE_ID`, `FIRESTORE_COLLECTION_PREFIX` and `FIRESTORE_STATS_SHARDS`) to use it, and deploy the indexes, TTL policies and rules in `firestore.indexes.json` and `firestore.rules`. On the free Spark plan its daily read quota is easy to exhaust; see decision 0023.
 
 ## Optional
 
@@ -212,7 +209,7 @@ Without `FIRESTORE_PROJECT_ID`, records are kept in memory and lost on restart; 
 | Network | `PORT` (8080), `HOST`, `CORS_ORIGINS` (none), `TRUST_PROXY` (false) | Put mutual TLS and the bank's IP allowlist on the ingress or API gateway in front. `CORS_ORIGINS` is a comma-separated list of browser origins; empty allows none, `*` allows any and is refused in production. Set `TRUST_PROXY=true` behind Cloud Run or a load balancer so per-IP limits see the real client |
 | Behaviour | `RECORD_TTL_DAYS` (30), `RECEIPT_TTL_DAYS` (30), `CALL_RING_SECONDS` (180), `REGISTER_MAX_FUTURE_SECONDS` (300), `LOG_LEVEL` | A registration whose `sentAt` is more than `REGISTER_MAX_FUTURE_SECONDS` ahead of server time is refused (400 `sent_at_in_future`), and so is one older than the TTL (400 `sent_at_expired`). `RECEIPT_TTL_DAYS` is how long a registered transfer receipt can be checked |
 | Behaviour | `RECORD_TTL_DAYS` (30), `CALL_RING_SECONDS` (180), `REGISTER_MAX_FUTURE_SECONDS` (300), `ADVISORY_TTL_DAYS` (14), `LOG_LEVEL` | A registration whose `sentAt` is more than `REGISTER_MAX_FUTURE_SECONDS` ahead of server time is refused (400 `sent_at_in_future`), and so is one older than the TTL (400 `sent_at_expired`). An approved fraud advisory is shown to customers for `ADVISORY_TTL_DAYS` from approval unless withdrawn sooner ([decision 0018](decisions/0018-advisory-outreach.md)) |
-| Rate limits | `VERIFY_RATE_LIMIT_PER_MINUTE` (30), `REPORT_RATE_LIMIT_PER_MINUTE` (10), `TOKEN_RATE_LIMIT_PER_MINUTE` (20), `RATE_LIMIT_STORE` | Checks and reports count per customer, `/v1/oauth/token` per client IP. `RATE_LIMIT_STORE` is `firestore` (counts shared by every instance, in `<prefix>_ratelimits`, deleted by a TTL policy) or `memory` (per instance); it defaults to the store in use. If Firestore fails, each instance falls back to counting in memory |
+| Rate limits | `VERIFY_RATE_LIMIT_PER_MINUTE` (30), `REPORT_RATE_LIMIT_PER_MINUTE` (10), `TOKEN_RATE_LIMIT_PER_MINUTE` (20), `RATE_LIMIT_STORE` | Checks and reports count per customer, `/v1/oauth/token` per client IP. `RATE_LIMIT_STORE` is `store` (counts shared by every instance through the database, in `<prefix>_ratelimits`, deleted by a TTL index) or `memory` (per instance); it defaults to `store` when a database is in use. If the database fails, each instance falls back to counting in memory |
 | Campaign agent | `AGENT_IN_PROCESS` (`true`), `AGENT_INTERVAL_SECONDS` (60), `AGENT_JOB_TOKEN` | See below |
 | Registration guard | `REG_SPIKE_WINDOW_MINUTES` (5), `REG_SPIKE_BASELINE_MINUTES` (60), `REG_SPIKE_FACTOR` (5), `REG_SPIKE_MIN_COUNT` (200) | Alerts the fraud desk (console, `/v1/registration-alerts`, email) when registrations in the window reach the minimum and exceed the factor times the trailing rate. Link domains outside the tenant's `domains` always alert. Never blocks |
 | AI | `AI_PROVIDER` (`gemini` default, `openai`, `ollama`, `none`), `GEMINI_API_KEY`, `GEMINI_MODEL`, `GEMINI_EMBEDDING_MODEL`, `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_EMBEDDING_MODEL`, `OLLAMA_URL` (`http://127.0.0.1:11434`), `OLLAMA_MODEL` (`qwen3:4b-instruct`), `OLLAMA_VISION_MODEL` (`gemma3:4b`), `OLLAMA_EMBEDDING_MODEL` (`nomic-embed-text`), `AI_TIMEOUT_MS` (4000; 10000 with `ollama`) | No key: fixed fallback explanations. `ollama` runs open-weights models inside the bank's network and needs no key; if Ollama is unreachable or a model is not pulled, each call uses the fixed fallback. See [decision 0011](decisions/0011-open-source-model.md). Verdicts never depend on it. Hosted defaults (checked against the provider model lists on 2026-10-20): `gemini-3.8-flash` and `gemini-embedding-001`; `gpt-5.4-mini` and `text-embedding-3-small` |
