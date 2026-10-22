@@ -50,7 +50,8 @@
 
 <p align="center"><b>Contents:</b> <a href="#try-it-as-demobank">Try it as DemoBank</a> · <a href="#the-problem">The problem</a> · <a href="#how-customers-check">How customers check</a> · <a href="#calls">Calls</a> · <a href="#the-app">The app</a> · <a href="#privacy">Privacy</a> · <a href="#for-banks">For banks</a> · <a href="#questions">Questions</a> · <a href="#ai-declaration">AI declaration</a> · <a href="#development">Development</a></p>
 
-## Try it as DemoBank
+<details>
+<summary><h2><a id="try-it-as-demobank"></a>Try it as DemoBank</h2></summary>
 
 Open the DemoBank simulation at **[gaskiyya-io.web.app/console](https://gaskiyya-io.web.app/console/)**. You play the bank on the left, and a customer's phone sits on the right, with the Gaskiyya app on it. Everything runs in your browser with the registry's own code, so nothing is sent anywhere, and reloading the page starts fresh.
 
@@ -65,7 +66,10 @@ What you can try:
 - **Fraud desk.** Simulate customer reports, run the agent and approve the advisory it drafts.
 - **USSD, contacts and licences.** Use the feature phone menu, check a fake customer care number, and ask whether a lender is licensed.
 
-## The problem
+</details>
+
+<details>
+<summary><h2><a id="the-problem"></a>The problem</h2></summary>
 
 A fake looks exactly like the real thing. Fraudsters copy a bank's wording, its sender name and its tone. Often the only difference is a single character.
 
@@ -75,7 +79,10 @@ A fake looks exactly like the real thing. Fraudsters copy a bank's wording, its 
 
 Customers can't be expected to spot that. The bank's own records can, once every message is registered with Gaskiyya.
 
-## How customers check
+</details>
+
+<details>
+<summary><h2><a id="how-customers-check"></a>How customers check</h2></summary>
 
 Customers check inside their bank's own app through the Gaskiyya API, or in the Gaskiyya app. Either way, the answer comes from the bank's records.
 
@@ -86,7 +93,10 @@ Customers check inside their bank's own app through the Gaskiyya API, or in the 
 
 Change one character and the check fails. Extra spaces don't matter. A changed letter, digit or dot does. The check is also tied to your phone number, so a real message forwarded to someone else will not verify for them.
 
-## Calls
+</details>
+
+<details>
+<summary><h2><a id="calls"></a>Calls</h2></summary>
 
 Caller ID can be faked, so Gaskiyya uses a code that only your bank can read to you. When your bank calls, Gaskiyya shows you a four-digit code at the same moment it appears on the agent's screen. If the caller can't read it, hang up.
 
@@ -94,7 +104,10 @@ Caller ID can be faked, so Gaskiyya uses a code that only your bank can read to 
 - The code expires after three minutes.
 - With no call on record, Gaskiyya tells you the bank isn't calling.
 
-## The app
+</details>
+
+<details>
+<summary><h2><a id="the-app"></a>The app</h2></summary>
 
 - **Check any link.** Lookalike addresses, shortened links and disguised characters are caught. Only your bank's registered domains pass.
 - **Know why it's fake.** Plain-language reasons, from urgent threats to links that aren't your bank's.
@@ -103,7 +116,10 @@ Caller ID can be faked, so Gaskiyya uses a code that only your bank can read to 
 - **Easy to read, day or night.** Follows your phone's light or dark setting.
 - **Know who is calling.** When your bank calls, the app says so. When it isn't calling, the app says that too.
 
-## Privacy
+</details>
+
+<details>
+<summary><h2><a id="privacy"></a>Privacy</h2></summary>
 
 Gaskiyya is built so there is nothing to leak.
 
@@ -112,7 +128,10 @@ Gaskiyya is built so there is nothing to leak.
 - **Only your bank confirms.** An answer of "sent by your bank" comes from an exact match in your bank's records, never from a guess or an AI.
 - **When in doubt, it says so.** If a check can't be completed, you're told plainly. Gaskiyya never guesses "genuine".
 
-## For banks
+</details>
+
+<details>
+<summary><h2><a id="for-banks"></a>For banks</h2></summary>
 
 One API call per message, and fewer customers fooled.
 
@@ -1590,7 +1609,10 @@ Response
 1. Customer token signing and JWKS published (Mobile backend)
 1. Fraud desk trained on the console; test alert email received (Fraud team)
 
-## Questions
+</details>
+
+<details>
+<summary><h2><a id="questions"></a>Questions</h2></summary>
 
 **Does Gaskiyya read my SMS inbox?**
 No. You choose what to check by pasting, sharing or taking a screenshot. The app never reads your messages on its own.
@@ -1613,7 +1635,10 @@ Both, in that order. Gaskiyya is verification infrastructure that banks connect 
 **Does it work with my bank?**
 Only if your bank uses Gaskiyya. A message can be confirmed only when the bank registered it, so the app links your number through your bank's own login. If your bank is not on Gaskiyya yet, the app cannot confirm its messages. Ask your bank to join.
 
-## AI declaration
+</details>
+
+<details>
+<summary><h2><a id="ai-declaration"></a>AI declaration</h2></summary>
 
 Gaskiyya uses AI in a few places. None of them decides whether a message, call, link or payment is genuine.
 
@@ -1652,7 +1677,10 @@ The team built Gaskiyya. We used AI assistants, including Claude, as a guide and
 
 Every suggestion was reviewed by the team before we used it. The decisions, the security model and the verdict rules are our own, recorded in [docs/decisions](docs/decisions).
 
-## Development
+</details>
+
+<details>
+<summary><h2><a id="development"></a>Development</h2></summary>
 
 This repository holds the registry API (`packages/api`), the Gaskiyya app (`mobile/`), the landing page and bank guide (`site/`), the bank sandbox console and phone emulator (`console/`), the admin dashboard (`admin/`) and the docs (`docs/`). Shared code lives in `packages/`. The bank SDK lives in its own repository, [gaskiyya/gaskiyya-sdk](https://github.com/gaskiyya/gaskiyya-sdk).
 
@@ -1676,3 +1704,5 @@ cd mobile && flutter run --dart-define=API_URL=http://<your computer's address>:
 ```
 
 `docs/DEMO.md` walks through a full demo, and `docs/CONFIGURATION.md` explains every setting.
+
+</details>
