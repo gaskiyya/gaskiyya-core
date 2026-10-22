@@ -1,4 +1,5 @@
 import type { Category } from '@gaskiya/schemas';
+import type { AppUser } from '../store/types.ts';
 
 export const DEMO_CUSTOMERS = [
   { name: 'Amina Bello', phone: '+2348012345678' },
@@ -146,18 +147,12 @@ export function FAKE_CREDIT_ALERT(bank: string, phone: string, now = new Date())
   return `${bank}: Credit\nAmt: NGN${money(rand(30, 120) * 5_000)}\nAcc: ***${phone.slice(-4)}\nDesc: TRF FROM CHUKWUEMEKA O.\nDate: ${stamp(now)}\nBal: NGN${money(rand(400_000, 1_400_000) + rand(0, 99) / 100)}`;
 }
 
-const SIGN_IN_KEPT_MS = 7 * 24 * 3600_000;
-const SIGN_INS_KEPT = 200;
+export const APP_USERS_LISTED = 200;
 
-// Every number that signs in to the app through the demo bank becomes a demo customer the console can message and call.
-export function rememberSignIn(list: Map<string, string>, phone: string, now = new Date()): void {
-  list.delete(phone);
-  list.set(phone, now.toISOString());
-  for (const [p, at] of list) if (now.getTime() - Date.parse(at) > SIGN_IN_KEPT_MS) list.delete(p);
-  while (list.size > SIGN_INS_KEPT) list.delete(list.keys().next().value!);
-}
+// The demo bank takes any number as a new customer; the other demo organisations know only the demo customers.
+export const knowsNumber = (demoBankId: string, tenantId: string, phone: string) => tenantId === demoBankId || DEMO_CUSTOMERS.some((c) => c.phone === phone);
 
-export const recentSignIns = (list: Map<string, string>) => [...list].reverse().map(([phone, at]) => ({ phone, at }));
+export const appUserView = (u: AppUser) => ({ phone: u.phone, at: u.lastSeenAt, firstSeenAt: u.firstSeenAt, lastSeenAt: u.lastSeenAt });
 
 export interface FraudCall {
   id: string;

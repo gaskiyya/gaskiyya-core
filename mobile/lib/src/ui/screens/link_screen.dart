@@ -183,40 +183,10 @@ class _LinkScreenState extends State<LinkScreen> {
         child: Text(c.t('app.link.finding'), textAlign: TextAlign.center, style: G.footnote(context)),
       );
     }
-    if (found == null) return const SizedBox(width: double.infinity);
-    if (found.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.fromLTRB(6, 12, 6, 0),
-        child: Text(c.t('app.link.notFound'), textAlign: TextAlign.center, style: G.footnote(context)),
-      );
-    }
+    if (found == null || found.isNotEmpty) return const SizedBox(width: double.infinity);
     return Padding(
-      padding: const EdgeInsets.only(top: 22),
-      child: Semantics(
-        container: true,
-        label: c.orList([for (final l in found) l.bank.name]),
-        excludeSemantics: true,
-        child: Wrap(
-          alignment: WrapAlignment.center,
-          spacing: 10,
-          runSpacing: 16,
-          children: [
-            for (final (i, l) in found.indexed)
-              Reveal(
-                key: ValueKey('found-${l.id}'),
-                delay: Duration(milliseconds: 50 * i),
-                child: SizedBox(
-                  width: 92,
-                  child: Column(children: [
-                    BankLogo(name: l.bank.name, url: l.bank.logoUrl, size: 52),
-                    const SizedBox(height: 6),
-                    Text(l.bank.name, maxLines: 3, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: G.caption(context).copyWith(height: 1.25)),
-                  ]),
-                ),
-              ),
-          ],
-        ),
-      ),
+      padding: const EdgeInsets.fromLTRB(6, 12, 6, 0),
+      child: Text(c.t('app.link.notFound'), textAlign: TextAlign.center, style: G.footnote(context)),
     );
   }
 }

@@ -3,6 +3,13 @@ export interface Customer {
   phone: string;
 }
 
+export interface AppUser {
+  phone: string;
+  at: string;
+  firstSeenAt: string;
+  lastSeenAt: string;
+}
+
 export interface InboxItem {
   id: string;
   from: string;
@@ -171,7 +178,7 @@ export const sim = {
   sendFakeCare: (phone: string) => call<{ item: InboxItem; contact: { whatsapp: string; handle: string } }>('POST', '/sim/send-fake-care', { phone }),
   sendTampered: (phone: string, itemId?: string) => call<{ item: InboxItem }>('POST', '/sim/send-tampered', { phone, itemId }),
   sendFake: (phone: string, template: number | 'credit_alert') => call<{ item: InboxItem }>('POST', '/sim/send-fake', { phone, template }),
-  recentCustomers: () => call<{ customers: { phone: string; at: string }[] }>('GET', '/sim/customers/recent'),
+  recentCustomers: () => call<{ customers: AppUser[] }>('GET', '/sim/customers/recent'),
   fraudCall: (phone: string, from: string) => call<FraudCall>('POST', '/sim/fraud-calls', { phone, from }),
   fraudCalls: () => call<{ calls: FraudCall[] }>('GET', '/sim/fraud-calls'),
   updateFraudCall: (id: string, status: 'answered' | 'ended') => call<FraudCall>('PATCH', `/sim/fraud-calls/${id}`, { status }),

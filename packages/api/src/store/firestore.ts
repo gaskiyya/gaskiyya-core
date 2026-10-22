@@ -6,6 +6,7 @@ import type {
   ApiCallEvent,
   ApiClientRecord,
   ApiUsageDay,
+  AppUser,
   AuditEntry,
   Campaign,
   CallSession,
@@ -70,7 +71,7 @@ export class FirestoreStore implements Store {
   private readonly statsShards: number;
   readonly prefix: string;
   private c: Record<'messages' | 'idempotency' | 'receipts' | 'calls' | 'verifications' | 'devices' | 'languages' | 'reports' | 'campaigns' | 'alerts' | 'stats', CollectionReference>;
-  private a: Record<'orgs' | 'clients' | 'keys' | 'audit' | 'sessions' | 'consoleCodes' | 'consoleSessions' | 'usage' | 'errors', CollectionReference>;
+  private a: Record<'orgs' | 'clients' | 'keys' | 'audit' | 'sessions' | 'consoleCodes' | 'consoleSessions' | 'appUsers' | 'usage' | 'errors', CollectionReference>;
 
   constructor(o: FirestoreStoreOptions = {}) {
     this.db =
@@ -107,6 +108,7 @@ export class FirestoreStore implements Store {
       sessions: col('admin_sessions'),
       consoleCodes: col('console_codes'),
       consoleSessions: col('console_sessions'),
+      appUsers: col('app_users'),
       usage: col('api_usage'),
       errors: col('api_errors'),
     };
@@ -605,6 +607,23 @@ export class FirestoreStore implements Store {
 
   async deleteConsoleSession(idHash: string) {
     await timed(this.a.consoleSessions.doc(idHash).delete());
+  }
+
+  async recordAppUser(tenantId: string, phone: string, at: string) {
+    const ref = this.a.appUsers.doc(hashId(tenantId, phone));
+    return timed(
+      this.db.runTransaction(async (tx) => {
+        const snap = await tx.get(ref);
+        const user: AppUser = { tenantId, phone, firstSeenAt: (snap.data() as AppUser | undefined)?.firstSeenAt ?? at, lastSeenAt: at };
+        tx.set(ref, user);
+        return user;
+      }),
+    );
+  }
+
+  async listAppUsers(tenantId: string, limit: number) {
+    const docs = (await timed(this.a.appUsers.where('tenantId', '==', tenantId).get())).docs.map((d) => d.data() as AppUser);
+    return docs.sort((a, b) => b.lastSeenAt.localeCompare(a.lastSeenAt)).slice(0, limit);
   }
 
   private usageDoc(tenantId: string, day: string, shard: number) {

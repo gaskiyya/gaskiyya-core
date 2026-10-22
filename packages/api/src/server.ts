@@ -34,6 +34,7 @@ if (process.env.SIM_ENABLED === 'true') {
     ussdToken: process.env.USSD_WEBHOOK_TOKEN || undefined,
     ...simOrgsFromEnv(),
     bankCode: process.env.SIM_BANK_CODE || undefined,
+    appUsers: system.store,
     consoleCheck: (authorization: string | undefined) => system.consoleAccess.check(authorization),
   };
   await app.register(async (scope) => {

@@ -17,6 +17,8 @@ import { handleUssd } from '../../../packages/api/src/ussd.ts';
 import { MemoryLicenceRegistry } from '../../../packages/api/src/licences/registry.ts';
 import {
   advisoryToSend,
+  APP_USERS_LISTED,
+  appUserView,
   DEMO_BANK_CODE,
   DEMO_CUSTOMERS,
   demoAccount,
@@ -27,8 +29,6 @@ import {
   genuineTemplate,
   listFraudCalls,
   newFraudCall,
-  recentSignIns,
-  rememberSignIn,
   sessionId,
   tamper,
   type FraudCall,
@@ -85,7 +85,6 @@ export function createSandbox() {
   const inbox = new Map<string, InboxItem[]>();
   const calls = new Map<string, { id: string; phone: string; purpose: string; code: string; status: string; agentRef: string; openedAt: string; expiresAt: string }>();
   const tokens = new Map<string, { phone: string; tenantId: string; exp: number }>();
-  const signedIn = new Map<string, string>();
   const fraudCalls = new Map<string, FraudCall>();
   const checks: number[] = [];
   const transfers: Transfer[] = [];
@@ -232,12 +231,12 @@ export function createSandbox() {
         if (!phoneOk(b.phone)) return fail(400, 'invalid_request', 'phone must be E.164');
         const token = crypto.randomUUID();
         tokens.set(token, { phone: b.phone, tenantId: BANK.id, exp: Date.now() + 600_000 });
-        rememberSignIn(signedIn, b.phone);
+        await store.recordAppUser(BANK.id, b.phone, new Date().toISOString());
         return { status: 200, body: { token, expiresIn: 600, bank: { id: BANK.id, name: BANK.name }, apiUrl: '' } };
       }
 
       case method === 'GET' && path === '/sim/customers/recent':
-        return { status: 200, body: { customers: recentSignIns(signedIn) } };
+        return { status: 200, body: { customers: (await store.listAppUsers(BANK.id, APP_USERS_LISTED)).map(appUserView) } };
 
       case method === 'GET' && path === '/sim/inbox': {
         const who = session(auth);

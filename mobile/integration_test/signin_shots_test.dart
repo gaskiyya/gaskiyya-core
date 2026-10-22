@@ -47,10 +47,8 @@ void main() {
     await _until(tester, find.byType(CupertinoTextField));
     await _shot(tester, '02_signin_empty', unfocus: false);
     await tester.enterText(find.byType(CupertinoTextField), _phone);
-    await _until(tester, find.byWidgetPredicate((w) => w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith('found-')));
-    final found = find.byWidgetPredicate((w) => w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith('found-')).evaluate();
-    debugPrint('FOUND ${found.map((e) => (e.widget.key! as ValueKey<String>).value.substring(6)).join(',')}');
-    await _shot(tester, '03_signin_found');
+    await _until(tester, find.byWidgetPredicate((w) => w is Pressable && w.key == const ValueKey('signIn') && w.onTap != null));
+    await _shot(tester, '03_signin_ready');
 
     await tester.tap(find.byKey(const ValueKey('signIn')));
     await _until(tester, find.text('Recent messages'));

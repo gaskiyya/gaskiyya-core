@@ -117,7 +117,7 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
     await tester.scrollUntilVisible(find.byKey(const ValueKey('licence-entry')), 300, scrollable: find.byType(Scrollable).first);
     await tester.pump(const Duration(milliseconds: 500));
-    expect(find.bySemanticsLabel('${c.t('licence.title')} ${c.t('licence.entryHint')}'), findsOneWidget);
+    expect(find.bySemanticsLabel(c.t('licence.title')), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('licence-entry')));
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 100));

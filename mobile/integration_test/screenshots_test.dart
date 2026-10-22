@@ -72,7 +72,7 @@ void main() {
     await tester.tap(find.text('Skip'));
     await _until(tester, find.byType(CupertinoTextField));
     await tester.enterText(find.byType(CupertinoTextField), '8012345678');
-    await _until(tester, find.byKey(const ValueKey('found-demobank')));
+    await _until(tester, find.byWidgetPredicate((w) => w is Pressable && w.key == const ValueKey('signIn') && w.onTap != null));
     await _shot(tester, '05_link_bank');
     await tester.tap(find.byKey(const ValueKey('signIn')));
     await _until(tester, find.text('Recent messages'));
@@ -89,6 +89,9 @@ void main() {
     await _shot(tester, '06b_check_messages');
 
     await tester.tap(find.text(security['item']['text'] as String).first);
+    await _until(tester, find.byKey(const ValueKey('preview-check')));
+    await _shot(tester, '06c_message_preview');
+    await tester.tap(find.byKey(const ValueKey('preview-check')));
     await _until(tester, find.text('Sent by your bank'));
     await _shot(tester, '07_result_confirmed');
     await _done(tester);
@@ -97,6 +100,8 @@ void main() {
     await tester.ensureVisible(find.text(tamperedText).first);
     await _wait(tester, const Duration(milliseconds: 400));
     await tester.tap(find.text(tamperedText).first);
+    await _until(tester, find.byKey(const ValueKey('preview-check')));
+    await tester.tap(find.byKey(const ValueKey('preview-check')));
     await _until(tester, find.text('Not confirmed'));
     await _shot(tester, '08_result_not_confirmed');
     await _done(tester);

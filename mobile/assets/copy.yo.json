@@ -419,5 +419,14 @@
       "moreHeading": "Awon ayewo miiran:",
       "backOption": "0. Pada"
     }
+  },
+  "shield": {
+    "ios": {
+      "alerts": {
+        "title": "Itaniji lati \u1ecdd\u1ecd banki r\u1eb9",
+        "body": "Gba itaniji ipe ati ikil\u1ecd jibiti lati \u1ecdd\u1ecd banki r\u1eb9 paapaa nigba ti Gaskiyya ba ti pa."
+      },
+      "note": "Lori iPhone, app ko le \u1e63ay\u1eb9wo ipe ati ifiran\u1e63\u1eb9 bi w\u1ecdn ti n de. Lati \u1e63ay\u1eb9wo ifiran\u1e63\u1eb9, pin in si Gaskiyya."
+    }
   }
 }

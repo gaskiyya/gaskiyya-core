@@ -294,6 +294,14 @@ export interface Device {
   updatedAt: string;
 }
 
+// A number that signed in to the app through a demo organisation's sign-in. Demo data only: the number is kept in the clear, as the bank itself would.
+export interface AppUser {
+  tenantId: string;
+  phone: string;
+  firstSeenAt: string;
+  lastSeenAt: string;
+}
+
 export interface LanguagePreference {
   tenantId: string;
   recipientKey: string;
@@ -380,6 +388,8 @@ export interface Store {
   putConsoleSession(session: ConsoleSession): Promise<void>;
   getConsoleSession(idHash: string): Promise<ConsoleSession | null>;
   deleteConsoleSession(idHash: string): Promise<void>;
+  recordAppUser(tenantId: string, phone: string, at: string): Promise<AppUser>;
+  listAppUsers(tenantId: string, limit: number): Promise<AppUser[]>;
   recordApiCall(event: ApiCallEvent): Promise<void>;
   apiUsage(tenantId: string, days: string[]): Promise<ApiUsageDay[]>;
   apiErrors(tenantId: string, limit: number): Promise<ApiCallEvent[]>;

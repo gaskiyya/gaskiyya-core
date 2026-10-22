@@ -443,7 +443,13 @@
   "shield": {
     "settingsTitle": "Automatic protection",
     "settingsIntro": "Gaskiyya checks bank calls and messages as they arrive, without opening the app. Message text never leaves your phone.",
-    "androidOnly": "Automatic protection works on Android phones only.",
+    "ios": {
+      "alerts": {
+        "title": "Bank alerts",
+        "body": "Get your bank's call alerts and scam warnings when Gaskiyya is closed."
+      },
+      "note": "On iPhone, apps can't check calls and messages as they arrive. To check a message, share it to Gaskiyya."
+    },
     "on": "On",
     "turnOn": "Turn On",
     "perm": {

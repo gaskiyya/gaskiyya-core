@@ -23,12 +23,11 @@ Revised the same day at the owner's request: one short code per organisation, is
 
 The console always opens on the sign-in page. A demo server (`SIM_ENABLED=true` with `SIM_DEMO_LOGIN=true`) shows the demo bank's code at the foot of that page (`GET /v1/console/demo`), and signing in with it opens DemoBank's workspace with the demo tools (messages, calls, transfers, USSD, contacts, licence check). The simulator routes that act as the bank (`/sim/send`, `/sim/calls` and the rest) now need that DemoBank console session; the routes the phone app uses (`/sim/customer-token`, `/sim/inbox`, `/sim/config`, keys) stay open.
 
-Anyone who signs in to the Gaskiyya app with their number on a demo server becomes a DemoBank demo customer: the app offers the number to each organisation, DemoBank's demo login accepts it, and the console lists it among the recipients (kept for seven days, up to 200 numbers, in memory) so the demo bank can send it messages and calls.
+Anyone who signs in to the Gaskiyya app with their number on a demo server becomes a DemoBank customer, and only that: the app offers the number to each organisation, DemoBank's demo login accepts any number, and the demo agencies accept only the demo customers (404 for anyone else). Each sign-in is kept in the store with its first and last time (per organisation; demo data only, so the number is kept in the clear as the bank would keep it, and a demo reset does not clear it). The console's *Customers* page lists DemoBank's newest 200, with Call (announces the call, which rings the app through push and, on an iPhone, CallKit), Text (a registered message), a scam test and a SIM check for each; the same numbers are offered as recipients on the demo tool pages.
 
 In the in-browser sandbox the demo code is derived in the browser and shown the same way; other codes are sent to the live registry's console (`REGISTRY_CONSOLE_URL` at build time).
 
 ## Not done
 
 - One code per organisation, not per person; the analyst's name is typed when approving. Personal accounts with roles would replace codes if a bank asks for them.
-- The demo customer list lives in the simulator's memory, so a restart empties it until those phones sign in again (the app renews its token every few minutes while open).
 - Profile changes, API clients and keys stay with Gaskiyya staff.

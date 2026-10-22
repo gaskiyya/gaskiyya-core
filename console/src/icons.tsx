@@ -51,6 +51,9 @@ export const IconPlug = (p: P) => (
 export const IconBuilding = (p: P) => (
   <svg {...base} {...p}><path d="M3 20.5h18M5 20.5V9.5l7-5 7 5v11M9 20.5v-6h6v6M9 11h.01M15 11h.01" /></svg>
 );
+export const IconUsers = (p: P) => (
+  <svg {...base} {...p}><circle cx="9" cy="8" r="3.5" /><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.8a3.5 3.5 0 0 1 0 6.4M18 14.2a6.5 6.5 0 0 1 3.5 5.8" /></svg>
+);
 export const IconClock = (p: P) => (
   <svg {...base} {...p}><circle cx="12" cy="12" r="9" /><path d="M12 7.5V12l3 2" /></svg>
 );

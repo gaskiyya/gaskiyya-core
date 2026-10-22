@@ -49,6 +49,8 @@ Future<void> _checkInboxItem(WidgetTester tester, String text, String verdict) a
   await tester.ensureVisible(row.first);
   await _settle(tester, 300);
   await tester.tap(row.first);
+  await _until(tester, find.byKey(const ValueKey('preview-check')));
+  await tester.tap(find.byKey(const ValueKey('preview-check')));
   await _until(tester, find.text(verdict));
   await _settle(tester, 1500);
   await tester.tap(find.text('Done'));
@@ -69,7 +71,7 @@ void main() {
     await _until(tester, find.byType(CupertinoTextField));
     await _settle(tester, 400);
     await tester.enterText(find.byType(CupertinoTextField), _local);
-    await _until(tester, find.byKey(const ValueKey('found-demobank')));
+    await _until(tester, find.byWidgetPredicate((w) => w is Pressable && w.key == const ValueKey('signIn') && w.onTap != null));
     await tester.tap(find.byKey(const ValueKey('signIn')));
     await _until(tester, find.text('Recent messages'));
 

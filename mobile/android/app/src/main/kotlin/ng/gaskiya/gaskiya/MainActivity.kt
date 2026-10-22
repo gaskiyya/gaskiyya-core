@@ -81,8 +81,8 @@ class MainActivity : FlutterActivity() {
                         "supported" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q),
                     ),
                 )
-                "requestScreeningRole" -> result.success(requestRole(ROLE_SCREENING))
-                "requestRedirectionRole" -> result.success(requestRole(ROLE_REDIRECTION))
+                "requestScreeningRole" -> result.success(requestRole(ROLE_SCREENING) || openDefaultApps())
+                "requestRedirectionRole" -> result.success(requestRole(ROLE_REDIRECTION) || openDefaultApps())
                 "openOverlaySettings" -> {
                     askPostNotifications()
                     result.success(open(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))))
@@ -138,6 +138,9 @@ class MainActivity : FlutterActivity() {
             requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), REQUEST_NOTIFICATIONS)
         }
     }
+
+    // Where the role dialog is unavailable, the phone's own Default apps page still lets the person choose Gaskiyya.
+    private fun openDefaultApps(): Boolean = open(Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS))
 
     private fun open(intent: Intent): Boolean = try {
         startActivity(intent)

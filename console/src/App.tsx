@@ -22,10 +22,12 @@ import {
   IconSend,
   IconShield,
   IconTransfer,
+  IconUsers,
   IconWarning,
 } from './icons.tsx';
 import { demoCode, demoWorkspace, liveWorkspace, loadSession, resume, saveSession, SignedOut, signOut, type OrgProfile, type StoredSession, type Workspace } from './workspace/data.ts';
 import { ActivityPage } from './workspace/Activity.tsx';
+import { CustomersPage } from './workspace/Customers.tsx';
 import { FraudDeskPage } from './workspace/FraudDesk.tsx';
 import { IntegrationPage } from './workspace/Integration.tsx';
 import { OrganisationPage } from './workspace/Organisation.tsx';
@@ -34,12 +36,12 @@ import { SignIn } from './workspace/SignIn.tsx';
 import { ago, usePoll } from './workspace/ui.tsx';
 
 type WorkPage = 'overview' | 'fraud' | 'integration' | 'organisation' | 'activity';
-type DemoPage = 'messages' | 'calls' | 'transfers' | 'ussd' | 'contacts' | 'licence';
+type DemoPage = 'customers' | 'messages' | 'calls' | 'transfers' | 'ussd' | 'contacts' | 'licence';
 type Page = WorkPage | DemoPage;
 
 const SANDBOX = __SANDBOX__;
 const WORK_PAGES: WorkPage[] = ['overview', 'fraud', 'integration', 'organisation', 'activity'];
-const DEMO_PAGES: DemoPage[] = ['messages', 'calls', 'transfers', 'ussd', 'contacts', 'licence'];
+const DEMO_PAGES: DemoPage[] = ['customers', 'messages', 'calls', 'transfers', 'ussd', 'contacts', 'licence'];
 
 const label = (map: Record<string, string>, key: string) => {
   const s = map[key] ?? key.replace(/_/g, ' ');
@@ -213,11 +215,13 @@ function Shell({ ws, config, notify, toast, onSignOut, onExpired }: {
     return p && (demo || WORK_PAGES.includes(p as WorkPage)) ? p : 'overview';
   });
   const [phone, setPhone] = useState(config?.customers[0]?.phone ?? '');
+  const [placed, setPlaced] = useState<Call | null>(null);
   const [metrics, reloadMetrics, online] = usePoll(() => ws.metrics(), 2500, [ws], onExpired);
   const events = useLiveEvents(metrics);
   const seen = useRef(0);
 
   const setPage = (p: Page) => {
+    if (p !== 'calls') setPlaced(null);
     setPageState(p);
     history.replaceState(null, '', `#/${p}`);
   };
@@ -232,8 +236,9 @@ function Shell({ ws, config, notify, toast, onSignOut, onExpired }: {
     if (e) seen.current = e.key;
   }, [events]);
 
-  const work: { id: WorkPage; name: string; icon: ReactNode }[] = [
+  const work: { id: Page; name: string; icon: ReactNode }[] = [
     { id: 'overview', name: 'Overview', icon: <IconHome /> },
+    ...(demo ? [{ id: 'customers' as const, name: 'Customers', icon: <IconUsers /> }] : []),
     { id: 'fraud', name: 'Fraud desk', icon: <IconShield /> },
     { id: 'integration', name: 'Integration', icon: <IconPlug /> },
     { id: 'organisation', name: 'Organisation', icon: <IconBuilding /> },
@@ -315,7 +320,7 @@ function Shell({ ws, config, notify, toast, onSignOut, onExpired }: {
             <b>{SANDBOX ? 'Live sandbox.' : 'Demo bank.'}</b>{' '}
             {SANDBOX
               ? 'DemoBank and the Gaskiyya registry run in this browser tab, with the registry’s own code. Nothing leaves your device; reload to start fresh.'
-              : 'The demo tools act as the bank’s systems and its customers. Anyone who signs in to the Gaskiyya app with their number appears as a recipient.'}
+              : 'The demo tools act as the bank’s systems and its customers. Anyone who signs in to the Gaskiyya app with their number becomes a customer under Customers.'}
           </p>
         )}
         {page === 'overview' && <OverviewPage ws={ws} metrics={metrics} events={events} go={setPage} onSignedOut={onExpired} />}
@@ -323,8 +328,23 @@ function Shell({ ws, config, notify, toast, onSignOut, onExpired }: {
         {page === 'integration' && <IntegrationPage ws={ws} onSignedOut={onExpired} />}
         {page === 'organisation' && <OrganisationPage ws={ws} />}
         {page === 'activity' && <ActivityPage ws={ws} onSignedOut={onExpired} />}
+        {demo && page === 'customers' && (
+          <CustomersPage
+            config={config}
+            notify={notify}
+            onCalled={(c) => {
+              setPhone(c.phone);
+              setPlaced(c);
+              setPage('calls');
+            }}
+            onOpen={(p) => {
+              setPhone(p);
+              setPage('messages');
+            }}
+          />
+        )}
         {demo && page === 'messages' && <MessagesPage config={config} phone={phone} setPhone={setPhone} notify={notify} />}
-        {demo && page === 'calls' && <CallsPage config={config} phone={phone} setPhone={setPhone} notify={notify} />}
+        {demo && page === 'calls' && <CallsPage config={config} phone={phone} setPhone={setPhone} notify={notify} placed={placed} />}
         {demo && page === 'transfers' && <TransfersPage config={config} notify={notify} />}
         {demo && page === 'ussd' && <UssdPage config={config} phone={phone} setPhone={setPhone} />}
         {demo && page === 'contacts' && <ContactsPage config={config} phone={phone} setPhone={setPhone} notify={notify} />}
@@ -396,7 +416,7 @@ function People({ config, phone, setPhone }: { config: SimConfig; phone: string;
                 <span className="avatar app">{c.phone.slice(-2)}</span>
                 <span>
                   <div className="person-name">{showPhone(c.phone)}</div>
-                  <div className="person-phone">App user &middot; {ago(c.at)}</div>
+                  <div className="person-phone">App user &middot; {ago(c.lastSeenAt)}</div>
                 </span>
               </button>
             ))}
@@ -635,9 +655,9 @@ function Countdown({ expiresAt, total }: { expiresAt: string; total: number }) {
   );
 }
 
-function CallsPage({ config, phone, setPhone, notify }: { config: SimConfig; phone: string; setPhone: (p: string) => void; notify: (s: string) => void }) {
-  const [purpose, setPurpose] = useState(config.purposes[0]!);
-  const [active, setActive] = useState<Call | null>(null);
+function CallsPage({ config, phone, setPhone, notify, placed }: { config: SimConfig; phone: string; setPhone: (p: string) => void; notify: (s: string) => void; placed?: Call | null }) {
+  const [purpose, setPurpose] = useState(placed?.purpose ?? config.purposes[0]!);
+  const [active, setActive] = useState<Call | null>(placed ?? null);
   const [calls, reload] = usePoll(() => sim.calls(), 1500);
 
   useEffect(() => {

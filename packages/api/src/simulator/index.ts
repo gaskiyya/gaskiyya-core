@@ -5,6 +5,8 @@ import { contentDigest, lagosDate, receiptDigest } from '@gaskiya/canonical';
 import { CALL_PURPOSES, CATEGORIES, type Category } from '@gaskiya/schemas';
 import {
   advisoryToSend,
+  APP_USERS_LISTED,
+  appUserView,
   DEMO_BANK_CODE,
   DEMO_CUSTOMERS,
   demoAccount,
@@ -13,17 +15,18 @@ import {
   fakeCustomerCareMessage,
   fakeReceipt,
   genuineTemplate,
+  knowsNumber,
   listFraudCalls,
   newFraudCall,
-  recentSignIns,
-  rememberSignIn,
   sessionId,
   tamper,
   type FraudCall,
   type Transfer,
 } from './demo-data.ts';
+import { MemoryStore } from '../store/memory.ts';
+import type { Store } from '../store/types.ts';
 
-export { advisoryToSend, DEMO_BANK_CODE, DEMO_CUSTOMERS, demoAccount, FAKE_CREDIT_ALERT, FAKE_TEMPLATES, fakeCustomerCareMessage, genuineTemplate, tamper, type FraudCall, type Transfer };
+export { advisoryToSend, DEMO_BANK_CODE, DEMO_CUSTOMERS, demoAccount, FAKE_CREDIT_ALERT, FAKE_TEMPLATES, fakeCustomerCareMessage, genuineTemplate, knowsNumber, tamper, type FraudCall, type Transfer };
 export { DEMO_BANKS, DEMO_ORGS, demoBank, demoTenant, type DemoBank } from './demo-banks.ts';
 
 export interface SimOptions {
@@ -40,6 +43,8 @@ export interface SimOptions {
   bankCode?: string;
   orgs?: SimOrg[];
   fakeCustomerCare?: { whatsapp: string; handle: string };
+  // Where numbers that sign in through the demo login are kept, so the console still lists them after a restart.
+  appUsers?: Pick<Store, 'recordAppUser' | 'listAppUsers'>;
   // When set, routes that act as the bank need a bank console session for this bank (its sign-in code).
   consoleCheck?: (authorization: string | undefined) => Promise<{ tenantId: string } | null>;
 }
@@ -107,7 +112,7 @@ export async function registerSimulator(app: FastifyInstance, o: SimOptions) {
   const inbox = new Map<string, InboxItem[]>();
   const calls = new Map<string, { id: string; phone: string; purpose: string; code: string; status: string; agentRef: string; openedAt: string; expiresAt: string }>();
   const transfers: Transfer[] = [];
-  const signedIn = new Map<string, string>();
+  const appUsers = o.appUsers ?? new MemoryStore();
   const fraudCalls = new Map<string, FraudCall>();
   const bankCode = o.bankCode ?? DEMO_BANK_CODE;
   const pushInbox = (phone: string, item: Omit<InboxItem, 'id' | 'at'>) => {
@@ -222,11 +227,14 @@ export async function registerSimulator(app: FastifyInstance, o: SimOptions) {
     if (!phoneOk(phone)) return fail(reply, 400, 'invalid_request', 'phone must be E.164');
     const org = orgs.get(req.query.tenant ?? req.body?.tenantId ?? o.tenantId);
     if (!org) return fail(reply, 404, 'not_found', 'Unknown organisation');
-    rememberSignIn(signedIn, phone);
+    if (!knowsNumber(o.tenantId, org.tenantId, phone)) return fail(reply, 404, 'not_found', `${org.name} has no customer with this number`);
+    await appUsers.recordAppUser(org.tenantId, phone, new Date().toISOString()).catch((err: Error) => req.log.warn({ err: err.message }, 'could not record the sign-in'));
     return { token: await signCustomer(phone, privateKey, org.tenantId), expiresIn: 600, bank: { id: org.tenantId, name: org.name }, apiUrl: o.apiUrl };
   });
 
-  app.get('/sim/customers/recent', async () => ({ customers: recentSignIns(signedIn) }));
+  app.get('/sim/customers/recent', async () => ({
+    customers: (await appUsers.listAppUsers(o.tenantId, APP_USERS_LISTED)).map(appUserView),
+  }));
 
   app.get('/sim/inbox', async (req, reply) => {
     const who = await customerFrom(req.headers.authorization);

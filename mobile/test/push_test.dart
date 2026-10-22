@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gaskiya/src/core/api.dart';
 import 'package:gaskiya/src/core/push.dart';
@@ -9,8 +10,9 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 
 class FakeTransport implements PushTransport {
-  FakeTransport({this.available = true, this.initial});
+  FakeTransport({this.available = true, this.initial, this.tokenFails = false});
   final bool available;
+  final bool tokenFails;
   final Map<String, dynamic>? initial;
   final refresh = StreamController<String>.broadcast();
   final incoming = StreamController<Map<String, dynamic>>.broadcast();
@@ -19,7 +21,7 @@ class FakeTransport implements PushTransport {
   @override
   Future<bool> start() async => available;
   @override
-  Future<String?> token() async => 'fcm-token-1';
+  Future<String?> token() async => tokenFails ? throw StateError('apns-token-not-set') : 'fcm-token-1';
   @override
   Stream<String> get tokenRefresh => refresh.stream;
   @override
@@ -84,6 +86,39 @@ void main() {
     await pumpEventQueue();
     expect(notices.single['code'], '4821');
     expect(taps.length, 2);
+  });
+
+  test('a push token that is not ready at sign-in is registered when it arrives', () async {
+    final r = registry();
+    final t = FakeTransport(tokenFails: true);
+    final push = PushService(t);
+    await push.start(client: r.client, onNotice: (_) {}, onOpened: (_) {});
+    expect(r.devices, isEmpty);
+    t.refresh.add('fcm-token-2');
+    await pumpEventQueue();
+    expect(r.devices, [
+      {'pushToken': 'fcm-token-2', 'platform': 'android'},
+    ]);
+  });
+
+  test('an iPhone registers its VoIP token with the push token, and again when the VoIP token arrives later', () async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+    const calls = MethodChannel('ng.gaskiya/calls');
+    final messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    String? voip;
+    messenger.setMockMethodCallHandler(calls, (call) async => call.method == 'voipToken' ? voip : null);
+    try {
+      final r = registry();
+      await PushService(FakeTransport()).start(client: r.client, onNotice: (_) {}, onOpened: (_) {});
+      expect(r.devices.single.containsKey('voipToken'), isFalse);
+      voip = 'ab' * 32;
+      await messenger.handlePlatformMessage(calls.name, calls.codec.encodeMethodCall(MethodCall('voipToken', voip)), (_) {});
+      await pumpEventQueue();
+      expect(r.devices.last, {'pushToken': 'fcm-token-1', 'platform': 'android', 'voipToken': voip});
+    } finally {
+      messenger.setMockMethodCallHandler(calls, null);
+      debugDefaultTargetPlatformOverride = null;
+    }
   });
 
   test('without Firebase configured, push stays off and nothing is registered', () async {

@@ -247,6 +247,13 @@ svg.orange { color: var(--orange); } svg.red { color: var(--red); } svg.muted { 
 .rows li { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--separator); font-size: 13.5px; }
 .rows li:last-child { border-bottom: 0; }
 .rows li svg { width: 18px; height: 18px; flex: none; }
+.app-users { list-style: none; margin: 0; padding: 0; }
+.app-users > li { padding: 12px 0; border-bottom: 1px solid var(--separator); }
+.app-users > li:last-child { border-bottom: 0; }
+.app-user { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.app-user-actions { gap: 6px; }
+.app-user-actions .btn { min-height: 34px; padding: 6px 12px; font-size: 13px; }
+.app-user-tool { margin: 12px 0 2px 48px; padding: 14px; border-radius: 12px; background: var(--surface-2); }
 .list-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 28px 2px 12px; }
 .list-head h2 { font-size: 17px; font-weight: 650; }
 .campaign { display: grid; gap: 16px; animation: rise 0.45s var(--spring) both; }
@@ -482,6 +489,8 @@ textarea { resize: vertical; min-height: 86px; line-height: 1.45; }
   .campaign-foot > .row { width: 100%; }
   .campaign-foot > .row .btn { flex: 1; }
   .rows li { flex-wrap: wrap; }
+  .app-user-actions { width: 100%; }
+  .app-user-tool { margin-left: 0; }
   .day-bars { height: 120px; gap: 3px; }
   .toast { bottom: calc(90px + env(safe-area-inset-bottom, 0px)); max-width: calc(100vw - 32px); text-align: center; }
   .gate-card { padding: 28px 22px 22px; }

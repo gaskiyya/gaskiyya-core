@@ -101,6 +101,12 @@ class _CheckScreenState extends State<CheckScreen> {
     await checkText(context, widget.state, text ?? _ctrl.text, asContact: text == null && _contactMode);
   }
 
+  Future<void> _preview(InboxMessage item) async {
+    _focus.unfocus();
+    final check = await showCupertinoSheet<bool>(context: context, scrollableBuilder: (_, controller) => MessagePreview(item: item, controller: controller));
+    if (check == true && mounted) await _check(item.text);
+  }
+
   void _checkContact() {
     setState(() => _contactMode = true);
     if (_ctrl.text.trim().isNotEmpty) {
@@ -141,8 +147,6 @@ class _CheckScreenState extends State<CheckScreen> {
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(c.t('receipt.title'), style: G.headline(context)),
-              const SizedBox(height: 2),
-              Text(c.t('receipt.subtitle'), style: G.footnote(context)),
             ]),
           ),
           const SizedBox(width: 6),
@@ -235,12 +239,6 @@ class _CheckScreenState extends State<CheckScreen> {
                     onTap: hasText ? _check : null,
                   ),
                 ),
-                const SizedBox(height: 10),
-                Text(
-                  c.t('app.check.fingerprintNote'),
-                  textAlign: TextAlign.center,
-                  style: G.caption(context),
-                ),
                 if (widget.state.client != null) ...[
                   const SizedBox(height: 18),
                   Reveal(delay: const Duration(milliseconds: 90), child: _receiptTile(context)),
@@ -266,7 +264,7 @@ class _CheckScreenState extends State<CheckScreen> {
                     child: Column(children: [
                       for (var i = 0; i < _inbox.length && i < 8; i++) ...[
                         if (i > 0) Container(height: 0.5, margin: const EdgeInsets.only(left: 64), color: G.separator.resolveFrom(context)),
-                        _InboxRow(item: _inbox[i], onTap: () => _check(_inbox[i].text)),
+                        _InboxRow(key: ValueKey('inbox-${_inbox[i].id}'), item: _inbox[i], onTap: () => _preview(_inbox[i])),
                       ],
                     ]),
                   ),
@@ -275,7 +273,7 @@ class _CheckScreenState extends State<CheckScreen> {
                   delay: const Duration(milliseconds: 90),
                   child: Semantics(
                     button: true,
-                    label: '${c.t('licence.title')} ${c.t('licence.entryHint')}',
+                    label: c.t('licence.title'),
                     excludeSemantics: true,
                     child: Pressable(
                       key: const ValueKey('licence-entry'),
@@ -294,8 +292,6 @@ class _CheckScreenState extends State<CheckScreen> {
                           Expanded(
                             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                               Text(c.t('licence.title'), style: G.headline(context)),
-                              const SizedBox(height: 2),
-                              Text(c.t('licence.entryHint'), style: G.subhead(context)),
                             ]),
                           ),
                           Icon(CupertinoIcons.chevron_forward, size: 14, color: G.label3.resolveFrom(context)),
@@ -304,12 +300,6 @@ class _CheckScreenState extends State<CheckScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 22),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Icon(CupertinoIcons.lock_shield_fill, size: 15, color: G.label3.resolveFrom(context)),
-                  const SizedBox(width: 6),
-                  Flexible(child: Text(c.t('safety.neverAsks'), textAlign: TextAlign.center, style: G.caption(context))),
-                ]),
               ]),
             ),
           ],
@@ -319,14 +309,15 @@ class _CheckScreenState extends State<CheckScreen> {
   }
 }
 
+String _clock(DateTime t) => '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
+
 class _InboxRow extends StatelessWidget {
-  const _InboxRow({required this.item, required this.onTap});
+  const _InboxRow({super.key, required this.item, required this.onTap});
   final InboxMessage item;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final t = item.at;
     return Pressable(
       scale: 0.985,
       onTap: onTap,
@@ -346,13 +337,74 @@ class _InboxRow extends StatelessWidget {
               Row(children: [
                 Expanded(child: Text(item.from, style: G.headline(context))),
                 if (item.channel != null) Text('${Copy.I.channel(item.channel!)} \u00b7 ', style: G.footnote(context)),
-                Text('${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}', style: G.footnote(context)),
+                Text(_clock(item.at), style: G.footnote(context)),
                 const SizedBox(width: 4),
                 Icon(CupertinoIcons.chevron_forward, size: 14, color: G.label3.resolveFrom(context)),
               ]),
               const SizedBox(height: 2),
               Text(item.text, maxLines: 2, overflow: TextOverflow.ellipsis, style: G.subhead(context)),
             ]),
+          ),
+        ]),
+      ),
+    );
+  }
+}
+
+class MessagePreview extends StatelessWidget {
+  const MessagePreview({super.key, required this.item, this.controller});
+  final InboxMessage item;
+  final ScrollController? controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Copy.I;
+    return CupertinoPageScaffold(
+      key: const ValueKey('message-preview'),
+      backgroundColor: G.bg.resolveFrom(context),
+      child: SafeArea(
+        bottom: false,
+        child: Column(children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 8, 0),
+            child: Row(children: [
+              Container(
+                width: 38,
+                height: 38,
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(shape: BoxShape.circle, gradient: G.brandGradient),
+                child: Text(item.from.substring(0, 1), style: G.headline(context).copyWith(color: CupertinoColors.white)),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Semantics(header: true, child: Text(item.from, style: G.headline(context))),
+                  Text('${item.channel == null ? '' : '${c.channel(item.channel!)} \u00b7 '}${_clock(item.at)}', style: G.footnote(context)),
+                ]),
+              ),
+              CupertinoButton(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(c.t('app.common.done'), style: G.headline(context).copyWith(color: G.tint.resolveFrom(context))),
+              ),
+            ]),
+          ),
+          Expanded(
+            child: ListView(
+              controller: controller,
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 40),
+              children: [
+                GroupCard(child: Text(item.text, style: G.body(context))),
+                const SizedBox(height: 14),
+                PrimaryButton(
+                  key: const ValueKey('preview-check'),
+                  label: c.t('app.check.checkMessage'),
+                  icon: CupertinoIcons.checkmark_shield_fill,
+                  gradient: true,
+                  onTap: () => Navigator.of(context).pop(true),
+                ),
+              ],
+            ),
           ),
         ]),
       ),

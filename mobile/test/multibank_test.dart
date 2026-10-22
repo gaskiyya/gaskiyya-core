@@ -327,15 +327,16 @@ void main() {
       await close(tester, state, registry);
     });
 
-    testWidgets('a number shows the logo of every organisation that knows it, and proceeding links them all', (tester) async {
+    testWidgets('a number lists no organisations, and proceeding links every one that knows it', (tester) async {
       phoneSize(tester);
       final registry = twoBanks();
       final state = await linkedState(registry, const []);
       await open(tester, state);
       await type(tester, '0809 876 5432');
-      expect(find.byKey(const ValueKey('found-demobank')), findsOneWidget);
-      expect(find.byKey(const ValueKey('found-acme')), findsOneWidget);
-      expect(find.byType(BankLogo), findsNWidgets(2));
+      expect(find.byType(BankLogo), findsNothing);
+      for (final name in ['DemoBank', 'Acme Bank']) {
+        expect(find.text(name), findsNothing);
+      }
       expect(state.linked, isFalse);
       await tester.tap(find.byKey(const ValueKey('signIn')));
       await tester.pumpAndSettle();
@@ -343,14 +344,12 @@ void main() {
       await close(tester, state, registry);
     });
 
-    testWidgets('only organisations that know the number are shown', (tester) async {
+    testWidgets('only organisations that know the number are linked', (tester) async {
       phoneSize(tester);
       final registry = twoBanks()..strangers['demobank'] = {tunde};
       final state = await linkedState(registry, const []);
       await open(tester, state);
       await type(tester, '08098765432');
-      expect(find.byKey(const ValueKey('found-demobank')), findsNothing);
-      expect(find.byKey(const ValueKey('found-acme')), findsOneWidget);
       await tester.tap(find.byKey(const ValueKey('signIn')));
       await tester.pumpAndSettle();
       expect(state.links.map((l) => l.id), ['acme']);

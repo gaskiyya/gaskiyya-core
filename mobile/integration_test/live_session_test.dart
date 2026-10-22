@@ -4,6 +4,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gaskiya/main.dart' as app;
+import 'package:gaskiya/src/ui/widgets/widgets.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,7 +30,7 @@ void main() {
     await tester.tap(find.text('Skip'));
     await _until(tester, find.byType(CupertinoTextField));
     await tester.enterText(find.byType(CupertinoTextField), _local);
-    await _until(tester, find.byKey(const ValueKey('found-demobank')));
+    await _until(tester, find.byWidgetPredicate((w) => w is Pressable && w.key == const ValueKey('signIn') && w.onTap != null));
     await tester.tap(find.byKey(const ValueKey('signIn')));
     await _until(tester, find.text('Recent messages'));
 

@@ -54,7 +54,7 @@ void main() {
     await tester.tap(find.text('Skip'));
     await _until(tester, () => find.byType(CupertinoTextField).evaluate().isNotEmpty, 'sign-in');
     await tester.enterText(find.byType(CupertinoTextField), _local);
-    await _until(tester, () => find.byKey(const ValueKey('found-demobank')).evaluate().isNotEmpty, 'organisations');
+    await _until(tester, () => find.byWidgetPredicate((w) => w is Pressable && w.key == const ValueKey('signIn') && w.onTap != null).evaluate().isNotEmpty, 'number lookup');
     await tester.tap(find.byKey(const ValueKey('signIn')));
     await _until(tester, () => find.text('Recent messages').evaluate().isNotEmpty, 'home');
     _mark('READY');
@@ -74,6 +74,8 @@ void main() {
       await tester.ensureVisible(find.text(text).first);
       await _wait(tester, const Duration(milliseconds: 300));
       await tester.tap(find.text(text).first);
+      await _until(tester, () => find.byKey(const ValueKey('preview-check')).evaluate().isNotEmpty, 'preview of $text');
+      await tester.tap(find.byKey(const ValueKey('preview-check')));
       await _until(tester, () => find.text(want).evaluate().isNotEmpty, '"$want" for ${item['kind']}');
       _mark('VERDICT ${item['kind']} -> $want');
       await _wait(tester, const Duration(milliseconds: 1500));

@@ -419,5 +419,14 @@
       "moreHeading": "Nlele ndi ozo:",
       "backOption": "0. Laghachi"
     }
+  },
+  "shield": {
+    "ios": {
+      "alerts": {
+        "title": "\u1ecckwa site n'\u1ee5l\u1ecd ak\u1ee5 g\u1ecb",
+        "body": "Nata \u1ecdkwa oku na \u1ecbd\u1ecd aka na nt\u1ecb gbasara agh\u1ee5gh\u1ecd site n'\u1ee5l\u1ecd ak\u1ee5 g\u1ecb, \u1ecdb\u1ee5lagodi mgbe Gaskiyya mechiri emechi."
+      },
+      "note": "Na iPhone, ngwa enwegh\u1ecb ike ilele oku na ozi ka ha na-abata. Iji lelee ozi, kesaa ya na Gaskiyya."
+    }
   }
 }

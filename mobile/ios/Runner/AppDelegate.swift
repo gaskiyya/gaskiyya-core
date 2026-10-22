@@ -3,6 +3,7 @@ import CallKit
 import Flutter
 import PushKit
 import UIKit
+import UserNotifications
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
@@ -23,6 +24,42 @@ import UIKit
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
     bankCalls.attach(FlutterMethodChannel(name: "ng.gaskiya/calls", binaryMessenger: engineBridge.applicationRegistrar.messenger()))
+    ShieldSetup.attach(FlutterMethodChannel(name: "ng.gaskiya/shield.setup", binaryMessenger: engineBridge.applicationRegistrar.messenger()))
+  }
+}
+
+// Settings > Automatic protection on iPhone. iOS lets no app screen calls or read messages, so the
+// one switch is notification permission: bank call alerts and scam warnings while the app is closed.
+enum ShieldSetup {
+  static func attach(_ channel: FlutterMethodChannel) {
+    channel.setMethodCallHandler { call, result in
+      let center = UNUserNotificationCenter.current()
+      switch call.method {
+      case "status":
+        center.getNotificationSettings { s in
+          let on = s.authorizationStatus == .authorized || s.authorizationStatus == .provisional
+          DispatchQueue.main.async { result(["alerts": on, "supported": true]) }
+        }
+      case "requestAlerts":
+        center.getNotificationSettings { s in
+          DispatchQueue.main.async {
+            // Once asked, iOS shows no second prompt: only the app's page in Settings can change it.
+            guard s.authorizationStatus == .notDetermined else {
+              if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
+              return result(false)
+            }
+            center.requestAuthorization(options: [.alert, .sound]) { granted, _ in
+              DispatchQueue.main.async {
+                if granted { UIApplication.shared.registerForRemoteNotifications() }
+                result(granted)
+              }
+            }
+          }
+        }
+      default:
+        result(FlutterMethodNotImplemented)
+      }
+    }
   }
 }
 

@@ -6,6 +6,7 @@ import type {
   ApiCallEvent,
   ApiClientRecord,
   ApiUsageDay,
+  AppUser,
   AuditEntry,
   Campaign,
   CallSession,
@@ -298,6 +299,7 @@ export class MemoryStore implements Store {
   private adminSessions = new Map<string, AdminSession>();
   private consoleCodes = new Map<string, ConsoleCodeRecord>();
   private consoleSessions = new Map<string, ConsoleSession>();
+  private appUsers = new Map<string, AppUser>();
   private usage = new Map<string, ApiUsageDay>();
   private errors: ApiCallEvent[] = [];
 
@@ -398,6 +400,23 @@ export class MemoryStore implements Store {
 
   async deleteConsoleSession(idHash: string) {
     this.consoleSessions.delete(idHash);
+  }
+
+  async recordAppUser(tenantId: string, phone: string, at: string) {
+    const k = pairKey(tenantId, phone);
+    const user = { tenantId, phone, firstSeenAt: this.appUsers.get(k)?.firstSeenAt ?? at, lastSeenAt: at };
+    this.appUsers.delete(k);
+    this.appUsers.set(k, user);
+    return { ...user };
+  }
+
+  async listAppUsers(tenantId: string, limit: number) {
+    return [...this.appUsers.values()]
+      .reverse()
+      .filter((u) => u.tenantId === tenantId)
+      .sort((a, b) => b.lastSeenAt.localeCompare(a.lastSeenAt))
+      .slice(0, limit)
+      .map((u) => ({ ...u }));
   }
 
   async recordApiCall(e: ApiCallEvent) {

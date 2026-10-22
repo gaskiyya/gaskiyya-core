@@ -419,5 +419,14 @@
       "moreHeading": "More checks:",
       "backOption": "0. Go back"
     }
+  },
+  "shield": {
+    "ios": {
+      "alerts": {
+        "title": "Alert from your bank",
+        "body": "Make you dey get your bank call alert and scam warning even when Gaskiyya close."
+      },
+      "note": "For iPhone, app no fit check call and message as dem dey enter. To check message, share am give Gaskiyya."
+    }
   }
 }

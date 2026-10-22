@@ -6,18 +6,22 @@ import '../core/copy.dart';
 import '../ui/theme.dart';
 
 class ShieldStatus {
-  const ShieldStatus({this.screening = false, this.redirection = false, this.overlay = false, this.notifications = false, this.supported = false});
+  const ShieldStatus({this.screening = false, this.redirection = false, this.overlay = false, this.notifications = false, this.alerts = false, this.supported = false});
   factory ShieldStatus.fromMap(Map<Object?, Object?> m) => ShieldStatus(
         screening: m['screening'] == true,
         redirection: m['redirection'] == true,
         overlay: m['overlay'] == true,
         notifications: m['notifications'] == true,
+        alerts: m['alerts'] == true,
         supported: m['supported'] == true,
       );
   final bool screening;
   final bool redirection;
   final bool overlay;
   final bool notifications;
+
+  /// iPhone: bank calls and warnings may ring and notify.
+  final bool alerts;
 
   final bool supported;
 }
@@ -26,6 +30,7 @@ class ShieldSetup {
   static const channel = MethodChannel('ng.gaskiya/shield.setup');
 
   static bool get available => !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+  static bool get ios => !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
 
   static Future<ShieldStatus> status() async {
     try {
@@ -74,26 +79,30 @@ class _ShieldSettingsSectionState extends State<ShieldSettingsSection> with Widg
   }
 
   Future<void> _refresh() async {
-    if (!ShieldSetup.available) return;
+    if (!ShieldSetup.available && !ShieldSetup.ios) return;
     final s = await ShieldSetup.status();
     if (mounted) setState(() => _status = s);
   }
 
-  Widget _row(BuildContext context, String perm, bool on, String method) {
+  Future<void> _turnOn(String method) async {
+    await ShieldSetup.request(method);
+    await _refresh();
+  }
+
+  Widget _row(BuildContext context, String perm, bool on, String method, {String? copy}) {
     final c = Copy.I;
+    final k = copy ?? 'shield.perm.$perm';
     return CupertinoListTile(
       key: ValueKey('shield-$perm'),
-      title: Text(c.t('shield.perm.$perm.title'), maxLines: 3, overflow: TextOverflow.visible),
-      subtitle: Text(c.t('shield.perm.$perm.body'), maxLines: 6, overflow: TextOverflow.visible),
+      title: Text(c.t('$k.title'), maxLines: 3, overflow: TextOverflow.visible),
+      subtitle: Text(c.t('$k.body'), maxLines: 6, overflow: TextOverflow.visible),
+      onTap: on ? null : () => _turnOn(method),
       trailing: on
           ? Text(c.t('shield.on'), style: TextStyle(color: G.greenInk.resolveFrom(context)))
           : CupertinoButton(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               minimumSize: const Size(44, 44),
-              onPressed: () async {
-                await ShieldSetup.request(method);
-                await _refresh();
-              },
+              onPressed: () => _turnOn(method),
               child: Text(c.t('shield.turnOn')),
             ),
     );
@@ -106,10 +115,10 @@ class _ShieldSettingsSectionState extends State<ShieldSettingsSection> with Widg
     final android = ShieldSetup.available;
     return CupertinoListSection.insetGrouped(
       header: widget.header,
-      footer: android ? Text(c.t('shield.settingsIntro')) : null,
+      footer: Text(c.t(android ? 'shield.settingsIntro' : 'shield.ios.note')),
       children: [
         if (!android)
-          CupertinoListTile(padding: const EdgeInsetsDirectional.fromSTEB(20, 11, 14, 11), leading: const Icon(CupertinoIcons.shield), title: Text(c.t('shield.androidOnly'), maxLines: 4, overflow: TextOverflow.visible))
+          _row(context, 'alerts', s?.alerts ?? false, 'requestAlerts', copy: 'shield.ios.alerts')
         else ...[
           _row(context, 'calls', s?.screening ?? false, 'requestScreeningRole'),
           _row(context, 'dialled', s?.redirection ?? false, 'requestRedirectionRole'),

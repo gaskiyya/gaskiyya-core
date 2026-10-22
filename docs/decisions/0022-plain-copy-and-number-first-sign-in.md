@@ -32,4 +32,4 @@ Organisations have a new optional `logoUrl` (https, or a path on this server). I
 
 ### Privacy
 
-Discovery shows which organisations know a number to whoever types it. That is safe only if each organisation's `customerTokenUrl` authenticates the customer before it answers, as the admin form already requires. The demo simulator answers for any number, so in the demo every organisation is found for every number. A production rollout needs the number proved first (for example with a one-time code), so that a stranger's number cannot be used to learn where they bank.
+Discovery shows which organisations know a number to whoever types it. That is safe only if each organisation's `customerTokenUrl` authenticates the customer before it answers, as the admin form already requires. In the demo, DemoBank answers for any number and the demo agencies only for the demo customers, so a new number finds DemoBank alone. A production rollout needs the number proved first (for example with a one-time code), so that a stranger's number cannot be used to learn where they bank.

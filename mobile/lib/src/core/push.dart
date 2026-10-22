@@ -59,15 +59,25 @@ class FirebasePushTransport implements PushTransport {
     try {
       await Firebase.initializeApp(options: options);
       FirebaseMessaging.onBackgroundMessage(_onBackgroundMessage);
-      final settings = await FirebaseMessaging.instance.requestPermission(alert: true, sound: true, badge: false);
-      return settings.authorizationStatus == AuthorizationStatus.authorized || settings.authorizationStatus == AuthorizationStatus.provisional;
+      // The device registers even if alerts are declined: an iPhone still rings bank calls through CallKit.
+      await FirebaseMessaging.instance.requestPermission(alert: true, sound: true, badge: false);
+      return true;
     } catch (_) {
       return false;
     }
   }
 
   @override
-  Future<String?> token() => FirebaseMessaging.instance.getToken();
+  Future<String?> token() async {
+    final m = FirebaseMessaging.instance;
+    // On iPhone the FCM token needs the APNs token, which can arrive a few seconds after launch.
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      for (var i = 0; i < 10 && await m.getAPNSToken() == null; i++) {
+        await Future<void>.delayed(const Duration(seconds: 1));
+      }
+    }
+    return m.getToken();
+  }
 
   @override
   Stream<String> get tokenRefresh => FirebaseMessaging.instance.onTokenRefresh;
@@ -106,24 +116,33 @@ class PushService {
     enabled = await transport.start();
     if (!enabled || run != _run) return;
     final calls = NativeCalls.instance;
+    String? latest;
     Future<void> register(String? token) async {
-      if (token == null || token.isEmpty) return;
+      if (token != null && token.isNotEmpty) latest = token;
+      final t = latest;
+      if (t == null || run != _run) return;
       final voip = await calls.voipToken();
       for (final c in all) {
         try {
-          await c.registerDevice(token, transport.platform, voipToken: voip);
-          registeredToken = token;
+          await c.registerDevice(t, transport.platform, voipToken: voip);
+          registeredToken = t;
         } catch (_) {
         }
       }
     }
 
     await calls.prepareAudio();
-    await register(await transport.token());
     if (run != _run) return;
     _subs
       ..add(transport.tokenRefresh.listen(register))
-      ..add(calls.tokenRefresh.listen((_) => register(registeredToken)))
+      ..add(calls.tokenRefresh.listen((_) => register(null)));
+    String? first;
+    try {
+      first = await transport.token();
+    } catch (_) {}
+    await register(first);
+    if (run != _run) return;
+    _subs
       ..add(transport.messages.listen(onNotice))
       ..add(transport.opened.listen(onOpened));
     final initial = await transport.launchedFrom();

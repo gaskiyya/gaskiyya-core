@@ -419,5 +419,14 @@
       "moreHeading": "Karin dubawa:",
       "backOption": "0. Koma baya"
     }
+  },
+  "shield": {
+    "ios": {
+      "alerts": {
+        "title": "Sanarwa daga bankinku",
+        "body": "Kar\u0253i sanarwar kira da garga\u0257in zamba daga bankinku ko da Gaskiyya a rufe take."
+      },
+      "note": "A iPhone, manhaja ba za ta iya duba kira da sa\u0199onni yayin da suke shigowa ba. Don duba sa\u0199o, tura shi zuwa Gaskiyya."
+    }
   }
 }
