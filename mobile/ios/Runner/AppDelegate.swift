@@ -246,7 +246,8 @@ final class BankCalls: NSObject, PKPushRegistryDelegate, CXProviderDelegate {
     call.timeout?.cancel()
     call.answered = true
     calls[action.callUUID] = call
-    try? AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .voiceChat, options: [])
+    // .voiceChat adds voice processing that turns playback down; nothing is recorded, so plain playback is louder.
+    try? AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .default, options: [])
     voice?.stop()
     voice = AgentVoice(orgId: call.orgId, code: call.code)
     action.fulfill()
