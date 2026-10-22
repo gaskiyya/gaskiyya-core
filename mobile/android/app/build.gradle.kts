@@ -6,7 +6,8 @@ plugins {
 
 android {
     namespace = "ng.gaskiya.gaskiya"
-    compileSdk = flutter.compileSdkVersion
+    // receive_sharing_intent 1.9 compiles against API 37; targetSdk stays on Flutter's default.
+    compileSdk = maxOf(flutter.compileSdkVersion, 37)
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
