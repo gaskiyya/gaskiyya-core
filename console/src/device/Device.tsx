@@ -6,6 +6,7 @@ import { CodeDigits, GaskiyyaApp, LicenceSheet, loadSession, requestFor, ResultS
 import { I } from './gaskiyya/icons.tsx';
 import { callShield, messageShield, type Shield } from './shield.ts';
 import { AgentVoice } from './agentVoice.ts';
+import { Ringtone } from './ringtone.ts';
 import copy from '../../../packages/schemas/copy.json';
 import { AppIcon, CallGlyph, Glyph } from './icons.tsx';
 import './device.css';
@@ -248,6 +249,14 @@ export function Device({ phone, name, bank, bankId = '' }: { phone: string; name
     setMuted(false);
   };
   useEffect(() => () => voice.current?.stop(), []);
+
+  // Ring until the call is answered, declined or withdrawn.
+  useEffect(() => {
+    if (phase !== 'incoming') return;
+    const ring = new Ringtone();
+    ring.start();
+    return () => ring.stop();
+  }, [phase]);
 
   useInterval(() => {
     Promise.all([sim.calls(), sim.fraudCalls().catch(() => ({ calls: [] }))])
