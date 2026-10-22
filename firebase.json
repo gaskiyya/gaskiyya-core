@@ -13,8 +13,12 @@
         "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
       },
       {
-        "source": "**/*.@(html|webp|png|svg|pdf|mp4|webm)",
+        "source": "**/*.@(html|webp|png|svg|pdf)",
         "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+      },
+      {
+        "source": "**/*.@(mp4|webm)",
+        "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000" }]
       },
       {
         "source": "/",
